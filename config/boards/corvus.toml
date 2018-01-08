@@ -1,0 +1,19 @@
+[board]
+name = "at91sam9g45"
+toolchain = "cortexa8hf-neon"
+defconfig = "corvus_defconfig"
+
+[board.power]
+on_command = "remote_power at91sam9g45 on"
+off_command = "remote_power at91sam9g45 off"
+
+[board.shell]
+name = "connect_at91sam9g45"
+command = "connect at91sam9g45"
+
+[uboot]
+patchdir = "/work/hs/tbot/patches/corvus_uboot_patches"
+env_location = "/home/hws/env/corvus-env.txt"
+
+[tftp]
+boarddir = "at91sam9g45"

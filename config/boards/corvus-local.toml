@@ -1,0 +1,20 @@
+[board]
+name = "corvus-local"
+toolchain = "cortexa8hf-neon"
+defconfig = "corvus_defconfig"
+
+[board.power]
+on_command = "echo POWER ON; echo ON >/tmp/powerstate"
+off_command = "echo POWER_OFF; echo OFF >/tmp/powerstate"
+
+[board.shell]
+name = "local-ub"
+# Fake connect. Also contains a read call to simulate autoboot abort
+command = "sh\nPROMPT_COMMAND=\nPS1='U-Boot> ';read"
+
+[uboot]
+patchdir = "/home/hws/Documents/corvus_patches"
+env_location = "/home/hws/Documents/tbot2/env/corvus-env.txt"
+
+[tftp]
+boarddir = "corvus-local"
