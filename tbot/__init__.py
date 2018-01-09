@@ -6,7 +6,6 @@ import sys
 import paramiko
 from tbot.boardshell import rlogin
 from tbot import config_parser
-from tbot import connection
 from tbot import logger
 from tbot.shell import sh_noenv
 from tbot import testcase_collector
