@@ -23,3 +23,8 @@ prefix = "arm-poky-linux-gnueabi-"
 path = "/opt/yocto-2.4/generic-armv7a-hf/sysroots/x86_64-pokysdk-linux/usr/bin/arm-poky-linux-gnueabi"
 env_setup_script = "/opt/yocto-2.4/generic-armv7a-hf/environment-setup-armv7ahf-neon-poky-linux-gnueabi"
 prefix = "arm-poky-linux-gnueabi-"
+
+[toolchains."generic-powerpc-e500v2"]
+path = "/opt/yocto-2.4/generic-powerpc-e500v2/sysroots/x86_64-pokysdk-linux/usr/bin/powerpc-poky-linux-gnuspe"
+env_setup_script = "/opt/yocto-2.4/generic-powerpc-e500v2/environment-setup-ppce500v2-poky-linux-gnuspe"
+prefix = "powerpc-poky-linux-gnuspe-"

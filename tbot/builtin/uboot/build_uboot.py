@@ -15,7 +15,7 @@ def build_uboot(tb):
     tb.call("clean_repo_checkout",
             repo=tb.config.get("uboot.repository"),
             target=build_dir)
-    patchdir = tb.config.get("uboot.patchdir")
+    patchdir = tb.config.try_get("uboot.patchdir")
     if patchdir is not None:
         tb.call("apply_git_patches", gitdir=build_dir, patchdir=patchdir)
 

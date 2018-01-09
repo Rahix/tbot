@@ -1,0 +1,4 @@
+[board]
+name = "p2020rdb"
+toolchain = "generic-powerpc-e500v2"
+defconfig = "P2020RDB-PC_SDCARD_defconfig"
