@@ -6,6 +6,8 @@ OMIT_LINES = 6
 
 def main():
     """ Main """
+
+    # TODO: implement a cli
     log = json.load(open("log.json"))
 
     appendices = []

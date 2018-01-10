@@ -120,6 +120,7 @@ class TestcaseEndLogEvent(LogEvent):
     def __init__(self, tc_name, layer):
         super().__init__()
         self._dict["name"] = tc_name
+        # TODO: Include run time
         self.layer = layer
 
     def _init(self):
