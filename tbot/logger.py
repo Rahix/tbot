@@ -117,10 +117,10 @@ class TestcaseBeginLogEvent(LogEvent):
 
 class TestcaseEndLogEvent(LogEvent):
     """ Log event for end of testcase """
-    def __init__(self, tc_name, layer):
+    def __init__(self, tc_name, layer, duration):
         super().__init__()
         self._dict["name"] = tc_name
-        # TODO: Include run time
+        self._dict["duration"] = duration
         self.layer = layer
 
     def _init(self):

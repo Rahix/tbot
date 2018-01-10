@@ -12,18 +12,11 @@ testcases = [
     ]
 
 # Get testcase begin and end times
-t = itertools.chain(
-        *map(lambda tc: (time.mktime(time.strptime(e['time']))
-                         for e in log
-                         if e['type'][0] == 'testcase' and e['name'] == tc[1]),
-             testcases))
-
-# Subtract end from start time
-t1, t2 = itertools.tee(t, 2)
-times = map(lambda x: x[1] - x[0],
-            itertools.compress(zip(t1, itertools.islice(t2, 1, None)),
-                               itertools.cycle([1, 0])))
+times = map(lambda tc: (tc[0], [e['duration']
+                                for e in log
+                                if e['type'] == ['testcase', 'end'] and e['name'] == tc[1]][0]),
+            testcases)
 
 # Print values
-for name, t in zip(map(lambda tc: tc[0], testcases), times):
-    print(f"{name}: {t}s")
+for name, t in times:
+    print(f"{name}: {t:.2f}s")

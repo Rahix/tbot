@@ -1,5 +1,6 @@
 """ TBOT """
 import argparse
+import time
 import os
 import traceback
 import sys
@@ -83,13 +84,15 @@ class TBot:
                 name = tc if isinstance(tc, str) else f"@{tc.__name__}"
                 self.log.log(logger.TestcaseBeginLogEvent(name, self.layer))
                 self.layer += 1
+                start_time = time.monotonic()
                 try:
                     if isinstance(tc, str):
                         retval = self.testcases[tc](self, **kwargs)
                     else:
                         retval = tc(self, **kwargs)
                     self.layer -= 1
-                    self.log.log(logger.TestcaseEndLogEvent(name, self.layer))
+                    run_duration = time.monotonic() - start_time
+                    self.log.log(logger.TestcaseEndLogEvent(name, self.layer, run_duration))
                     return retval
                 except Exception: #pylint: disable=broad-except
                     # Cleanup is done by "with" handler __exit__
