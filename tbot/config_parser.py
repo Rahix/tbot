@@ -1,6 +1,6 @@
 """ TBOT config parser """
+import random
 import toml
-# import random
 
 
 def apply_config(acc, cur):
@@ -33,9 +33,10 @@ class Config:
         # Set a few commonly used config options directly
         self.lab_name = self.get("lab.name", "defaultLabName")
         self.board_name = self.get("board.name", "defaultBoardName")
-        # TODO: Add config option for random builddir
+        use_rand = self.get("tbot.random_workdir", False)
         self.workdir = self.get("tbot.workdir", "/tmp/tbot-{board}-{rand}") \
-            .format(rand="NORAND",  # str(random.randint(0, 999999999))
+            .format(rand=str(random.randint(1111, 999999999)) \
+                        if use_rand else "NORAND",
                     board=self.board_name,
                     lab=self.lab_name)
 
@@ -47,7 +48,7 @@ class Config:
             for key_segment in key_path:
                 current = current[key_segment]
             return current
-        except: # TODO: Set exception type
+        except KeyError:
             return None
 
     def get(self, key, default=None):

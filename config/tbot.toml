@@ -1,2 +1,3 @@
 [tbot]
 workdir = "/tmp/tbot-{rand}"
+random_workdir = false
