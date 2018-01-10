@@ -49,12 +49,13 @@ class LogEvent(abc.ABC):
 
 class ShellCommandLogEvent(LogEvent):
     """ Log event for shell commands """
-    def __init__(self, sh, command, prefix="   ## "):
+    def __init__(self, sh, command, prefix="   ## ", log_show=True):
         super().__init__()
         self.sh = sh
         self.output = ""
         self.prefix = prefix
         self._dict["command"] = command
+        self._dict["show"] = log_show
         self.verbosity = Verbosity.VERBOSE
 
     def _init(self):
@@ -198,6 +199,20 @@ class Logger:
         self.logevents.append(ev)
         ev._init_dict()
         ev._init()
+
+    def doc_log(self, text):
+        """ Create a log event for documentation generating backends with some
+            text to be added """
+        ev = CustomLogEvent(["doc", "text"], dict_values={"text": text})
+        self.log(ev)
+
+    def doc_appendix(self, title, text):
+        """ Create a log event for documentation generating backends with some
+            text to be added """
+        ev = CustomLogEvent(
+            ["doc", "appendix"],
+            dict_values={"text": text, "title": title})
+        self.log(ev)
 
     def write_logfile(self, filename=None):
         """ Write log to a file """

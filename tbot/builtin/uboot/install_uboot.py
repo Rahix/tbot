@@ -21,8 +21,14 @@ def install_uboot_to_tftp(tb, additional=None):
         tb.config.get("tftp.boarddir"),
         tb.config.get("tftp.tbotsubdir"))
 
+    tb.log.doc_log(f"""
+## Installing uboot into the tftp folder ##
+Move u-boot files into the tftp folder. Our tftpfolder is `{tftpdir}`. Adjust
+for your setup.
+""")
+
     # Make sure tftpdir exists
-    tb.shell.exec0(f"mkdir -p {tftpdir}")
+    tb.shell.exec0(f"mkdir -p {tftpdir}", log_show=False)
 
     def tfile(f):
         """ Return path inside tftp directory for f """
@@ -36,6 +42,7 @@ def install_uboot_to_tftp(tb, additional=None):
              "u-boot.bin",
              "System.map",
              "boot.bin"]
+
     collections.deque(map(lambda f:
                           tb.shell.exec0(f"cp {sfile(f)} {tfile(f)}"), files),
                       maxlen=0)

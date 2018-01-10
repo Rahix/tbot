@@ -33,24 +33,29 @@ PS1='{self.prompt}'
     def _read_to_prompt(self):
         buf = ""
         line = ""
+        first = True
         while len(line) < len(self.prompt) or \
                 (not line[:len(self.prompt)] == self.prompt):
             buf += line
+            if self.log_event is not None and not first:
+                self.log_event.add_line(line[:-1])
+            first = False
             line = self.channel_file.readline()
             line = line[:-2] + "\n" if line[-2] == "\r" else line
-            if self.log_event is not None:
-                self.log_event.add_line(line[:-1])
 
         return buf
 
     def _exec(self, command, log_event):
         self.channel_file.write(f"{command}\n\n")
-        self.log_event = log_event
         try:
             self._read_to_prompt()
+            self.log_event = log_event
             stdout = self._read_to_prompt()
+            stdout = stdout[len(self.prompt)+len(command):-len(self.prompt)]
         except socket.timeout:
-            stdout = ""
+            stdout = "\n"
+
+        self.log_event = None
 
         self.channel_file.write("echo $?\n\n")
         self._read_to_prompt()

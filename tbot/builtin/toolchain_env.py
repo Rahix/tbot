@@ -22,6 +22,11 @@ def toolchain_env(tb, toolchain=None, and_then=None, params=None):
     toolchain_script = tb.config.get(f"""\
 toolchains.{toolchain}.env_setup_script""")
 
+    tb.log.doc_log(f"""
+### Setting up the toolchain ###
+Setup the `{toolchain}` toolchain by calling its env script:
+""")
+
     # Create an env shell
     with tb.new_shell(tbot.shell.sh_env.ShellShEnv) as tbn:
         tbn.shell.exec0(f"source {toolchain_script}")
