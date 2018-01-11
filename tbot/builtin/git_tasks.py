@@ -54,7 +54,7 @@ find {patchdir} -name '*.patch'""", log_show=False).split("\n")
 
     for patch in patchfiles:
         tb.shell.exec0(f"""\
-cd {gitdir}; git am -3 {patch}""")
+cd {gitdir}; git am -3 {patch}""", log_show_stdout=False)
         patchfile = tb.shell.exec0(f"cat {patch}", log_show=False)
         tb.log.doc_appendix(f"Patch {patch.split('/')[-1]}", f"""```patch
 {patchfile}

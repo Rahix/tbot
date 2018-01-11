@@ -49,13 +49,15 @@ class LogEvent(abc.ABC):
 
 class ShellCommandLogEvent(LogEvent):
     """ Log event for shell commands """
-    def __init__(self, sh, command, prefix="   ## ", log_show=True):
+    #pylint: disable=too-many-arguments
+    def __init__(self, sh, command, prefix="   ## ", log_show=True, log_show_stdout=True):
         super().__init__()
         self.sh = sh
         self.output = ""
         self.prefix = prefix
         self._dict["command"] = command
         self._dict["show"] = log_show
+        self._dict["show_stdout"] = log_show_stdout
         self.verbosity = Verbosity.VERBOSE
 
     def _init(self):
@@ -72,7 +74,8 @@ class ShellCommandLogEvent(LogEvent):
         else:
             self.output += '\n'
         self.verbosity = Verbosity.VERY_VERBOSE
-        self.log_print(self.prefix + line)
+        for print_line in line.split('\n'):
+            self.log_print("\x1B[0m" + self.prefix + print_line)
         self.verbosity = Verbosity.VERBOSE
 
     def finished(self):

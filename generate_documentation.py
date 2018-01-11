@@ -26,7 +26,7 @@ $ {msg['command']}
 """
 
             out = msg['output'][:-1]
-            if out != "":
+            if msg['show_stdout'] and out != "":
                 output = msg['output'][:-1]
                 output_lines = output.split('\n')
                 if len(output_lines) > OMIT_LINES: # Truncate

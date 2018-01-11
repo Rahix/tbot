@@ -30,11 +30,12 @@ class Shell(abc.ABC):
             self.shell_type_string += self.shell_type[i] + ", "
         self.shell_type_string += self.shell_type[-1] + ")"
 
-    def exec(self, command, log_show=True):
+    def exec(self, command, log_show=True, log_show_stdout=True):
         """ Execute a command in this shell """
         log_event = tbot.logger.ShellCommandLogEvent(self.shell_type,
                                                      command,
-                                                     log_show=log_show)
+                                                     log_show=log_show,
+                                                     log_show_stdout=log_show_stdout)
         self._log.log(log_event)
         ret = self._exec(command, log_event)
         log_event.finished()

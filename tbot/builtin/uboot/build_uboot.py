@@ -55,8 +55,8 @@ uboot using the `{defconfig}` defconfig.
 Prepare the buildprocess by doing
 """)
         tb.shell.exec0(f"cd {build_dir}")
-        tb.shell.exec0(f"make mrproper")
-        tb.shell.exec0(f"make {defconfig}")
+        tb.shell.exec0(f"make mrproper", log_show_stdout=False)
+        tb.shell.exec0(f"make {defconfig}", log_show_stdout=False)
 
         @tb.call
         def compile(tb): #pylint: disable=redefined-builtin, unused-variable
