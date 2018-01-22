@@ -21,8 +21,7 @@ def cp_to_tftpdir(tb, name=None, dest_name=None, from_builddir=True):
     """ Copy a file into the tftp folder """
     assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
 
-    if name is None:
-        raise "Trying to copy nothing"
+    assert name is not None, "Trying to copy nothing"
 
     build_dir = os.path.join(
         tb.config.workdir,

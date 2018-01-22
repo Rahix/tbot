@@ -69,8 +69,8 @@ Copy U-Boot into your tftp directory:
             filename = os.path.join(tftpdir, "u-boot-with-spl.bin")
             strings = tbn.shell.exec0(f"strings {filename}", log_show=False)
             vers = tbn.boardshell.exec0("version").split('\n')[0]
-            if not vers in strings:
-                raise "Version does not seem to match, something went wrong with flashing!"
+            assert vers in strings, \
+                "Version does not seem to match, something went wrong with flashing!"
 
             env = tbn.boardshell.exec0("printenv", log_show=False)
             tbn.log.doc_appendix("U-Boot environment", f"""```sh

@@ -9,8 +9,8 @@ def clean_repo_checkout(tb, target=None, repo=None):
         no artifacts left from previous builds """
     assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
 
-    if target is None or repo is None:
-        raise "No target dir or no repository supplied"
+    assert target is not None, "No target supplied"
+    assert repo is not None, "No repository supplied"
 
     tb.log.doc_log(f"Checkout the git repository `{repo}`:\n")
 
@@ -38,8 +38,8 @@ def apply_git_patches(tb, gitdir=None, patchdir=None):
         gitdir """
     assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
 
-    if gitdir is None or patchdir is None:
-        raise "No gitdir or no patchdir supplied"
+    assert gitdir is not None, "No gitdir supplied"
+    assert patchdir is not None, "No patchdir supplied"
 
     tb.log.doc_log(f"Apply the patches in `{patchdir}` \
 (Copies of the patch files can be found in the appendix of this document):\n")

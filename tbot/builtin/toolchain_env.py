@@ -10,8 +10,7 @@ def toolchain_env(tb, toolchain=None, and_then=None, params=None):
     if params is None:
         params = dict()
 
-    if toolchain is None:
-        raise "Empty toolchain parameter provided"
+    assert toolchain is not None, "Empty toolchain parameter provided"
 
     # If no code will be executed with the toolchain env,
     # why bother setting it up in the first place?
