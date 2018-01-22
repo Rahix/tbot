@@ -107,12 +107,12 @@ class TBot:
     def __exit__(self, exc_type, exc_value, trceback):
         # Make sure logfile is written
         self.log.write_logfile()
-        self.tb.log.log(logger.CustomLogEvent(
-            ("boardshell_cleanup"),
-            "├─\x1B[1mBOARD CLEANUP\x1B[0m",
-            logger.Verbosity.INFO))
         # Try boardshell
         if hasattr(self.tb, "boardshell"):
+            self.tb.log.log(logger.CustomLogEvent(
+                ("boardshell_cleanup"),
+                "├─\x1B[1mBOARD CLEANUP\x1B[0m",
+                logger.Verbosity.INFO))
             #pylint: disable=protected-access
             self.tb.boardshell._cleanup_boardstate()
         elif exc_type is not None: # If no boardshell exists but we had an exception, try cleaning

@@ -5,8 +5,7 @@ import tbot
 @tbot.testcase
 def setup_tftpdir(tb):
     """ Setup the tftp directory """
-    if not tb.shell.shell_type[0] == "sh":
-        raise "Need an sh shell"
+    assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
 
     tftpdir = os.path.join(
         tb.config.get("tftp.rootdir"),
@@ -20,8 +19,7 @@ def setup_tftpdir(tb):
 @tbot.testcase
 def cp_to_tftpdir(tb, name=None, dest_name=None, from_builddir=True):
     """ Copy a file into the tftp folder """
-    if not tb.shell.shell_type[0] == "sh":
-        raise "Need an sh shell"
+    assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
 
     if name is None:
         raise "Trying to copy nothing"

@@ -211,8 +211,8 @@ class Logger:
         self.log(ev)
 
     def doc_appendix(self, title, text):
-        """ Create a log event for documentation generating backends with some
-            text to be added """
+        """ Create a log event for documentation generating backends which hints
+            for an appendix to be created """
         ev = CustomLogEvent(
             ["doc", "appendix"],
             dict_values={"text": text, "title": title})
@@ -230,7 +230,3 @@ class Logger:
         #pylint: disable=protected-access
         if ev._verbosity_level <= self.verbosity:
             print(msg)
-
-    def __del__(self):
-        # TODO: Make this work
-        self.write_logfile()

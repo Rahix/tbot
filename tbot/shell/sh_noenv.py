@@ -31,8 +31,12 @@ class ShellShNoEnv(tbot.shell.Shell):
         stdout = channel.makefile().read()
         ret_code = channel.recv_exit_status()
 
-        # TODO: Make sure this works when there is no trailing newline
-        output = stdout[:-1].decode("utf-8")
+        output = ""
+        if stdout[-1] == 10:
+            output = stdout[:-1].decode("utf-8")
+        else:
+            output = stdout.decode("utf-8")
+
         for line in output.split("\n"):
             log_event.add_line(line)
         return ret_code, output

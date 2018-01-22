@@ -5,6 +5,8 @@ import tbot
 @tbot.testcase
 def board_corvus(tb):
     """ Corvus board specific testcase """
+    assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
+
     tb.log.doc_log("""U-Boot on the Corvus board
 ============
 """)

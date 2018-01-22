@@ -14,8 +14,8 @@ prompt = "U-Boot> "
 
 [uboot]
 patchdir = "/home/hws/corvus_patches"
-env_location = "/home/hws/env/corvus-env.txt"
 test_hooks = "/home/hws/hooks/corvus"
+test_boardname = "corvus"
 
 [tftp]
 boarddir = "at91sam9g45"

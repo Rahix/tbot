@@ -5,8 +5,7 @@ import tbot
 @tbot.testcase
 def uboot_tests(tb):
     """ Run U-Boot tests on real hardware """
-    if not tb.shell.shell_type[0] == "sh":
-        raise "Need an sh shell"
+    assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
 
     build_dir = os.path.join(
         tb.config.workdir,

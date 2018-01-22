@@ -5,11 +5,10 @@ import tbot.shell.sh_env
 @tbot.testcase
 def toolchain_env(tb, toolchain=None, and_then=None, params=None):
     """ Setup a toolchain environment and call a testcase inside """
+    assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
+
     if params is None:
         params = dict()
-
-    if not tb.shell.shell_type[0] == "sh":
-        raise "Need an sh shell"
 
     if toolchain is None:
         raise "Empty toolchain parameter provided"

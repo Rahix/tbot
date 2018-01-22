@@ -47,6 +47,7 @@ class BoardShellRLogin(tbot.boardshell.BoardShell):
             buf_data = self.channel.recv(1024)
             buf += buf_data
 
+            # TODO: Make this more robust
             while b"\n" in buf[last_newline:]:
                 line_nl = buf[last_newline:].split(b'\n')[0]
                 line_nl_notrail = line_nl[:-1] if line_nl != b'' and line_nl[-1] == 13 else line_nl
@@ -86,8 +87,7 @@ class BoardShellRLogin(tbot.boardshell.BoardShell):
         self.noenv_shell.exec0(self.power_cmd_off, log_show_stdout=False)
 
     def _exec(self, command, log_event):
-        if not self.is_on:
-            raise "Trying to execute commands on a turned off board"
+        assert self.is_on, "Trying to execute commands on a turned off board"
         log_event.prefix = "   >> "
         self.log_event = log_event
         self.channel.send(command + "\n")

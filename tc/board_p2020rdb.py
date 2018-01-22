@@ -5,6 +5,8 @@ import tbot
 @tbot.testcase
 def board_p2020rdb(tb):
     """ P2020RDB-PCA board specific testcase """
+    assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
+
     tb.log.doc_log("""U-Boot on the P2020RDB-PCA board
 ============
 """)
@@ -17,8 +19,7 @@ def board_p2020rdb(tb):
 @tbot.testcase
 def p2020rdb_install_uboot(tb):
     """ Install uboot into flash """
-    if not tb.shell.shell_type[0] == "sh":
-        raise "Need an sh shell"
+    assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
 
     tb.log.doc_log("""
 ## Installing U-Boot into NAND flash ##

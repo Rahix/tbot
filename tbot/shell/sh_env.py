@@ -4,7 +4,6 @@ import random
 import tbot.shell
 
 
-# TODO: Make this interface way more stable
 class ShellShEnv(tbot.shell.Shell):
     """ Shell with environment (Only use this if you have to. Prefer using
         a noenv shell for reduced side effects """
@@ -46,6 +45,7 @@ PS1='{self.prompt}'
         return buf
 
     def _exec(self, command, log_event):
+        # TODO: Fix stdout
         self.channel_file.write(f"{command}\n\n")
         try:
             self._read_to_prompt()

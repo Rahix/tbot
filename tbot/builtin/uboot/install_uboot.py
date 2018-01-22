@@ -7,8 +7,7 @@ import tbot
 @tbot.testcase
 def install_uboot_to_tftp(tb, additional=None):
     """ Install uboot files into tftp folder """
-    if not tb.shell.shell_type[0] == "sh":
-        raise "Need an sh shell"
+    assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
 
     if additional is None:
         additional = list()
