@@ -32,7 +32,7 @@ class ShellShNoEnv(tbot.shell.Shell):
         ret_code = channel.recv_exit_status()
 
         output = ""
-        if stdout[-1] == 10:
+        if stdout != b"" and stdout[-1] == 10:
             output = stdout[:-1].decode("utf-8")
         else:
             output = stdout.decode("utf-8")

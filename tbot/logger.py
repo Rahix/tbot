@@ -222,7 +222,8 @@ class Logger:
         """ Write log to a file """
         #pylint: disable=protected-access
         json.dump([ev._dict for ev in self.logevents],
-                  open(self.logfile if filename is None else filename, "w"))
+                  open(self.logfile if filename is None else filename, "w"),
+                  indent=4)
 
     def log_print(self, msg, ev):
         """ Try printing to stdout. This is influenced by the
