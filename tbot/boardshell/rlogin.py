@@ -32,6 +32,7 @@ class BoardShellRLogin(tbot.boardshell.BoardShell):
 
         self.connect_command = tb.config.get("board.shell.command")
         self.uboot_prompt = tb.config.get("board.shell.prompt")
+        self.uboot_timeout = tb.config.get("board.shell.timeout", 2)
 
         self.log_event = None
         self.is_on = False
@@ -73,8 +74,7 @@ class BoardShellRLogin(tbot.boardshell.BoardShell):
         self.noenv_shell.exec0(self.power_cmd_on, log_show_stdout=False)
 
         # Stop autoboot
-        # TODO: Make timeout configurable
-        time.sleep(2)
+        time.sleep(self.uboot_timeout)
         self.channel.send("\n")
         self.prompt = self.uboot_prompt
         boot_stdout = self._read_to_prompt()
