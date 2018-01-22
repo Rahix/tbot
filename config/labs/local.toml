@@ -14,6 +14,7 @@ tbotsubdir = "tbot"
 
 [uboot]
 repository = "git://git.denx.de/u-boot.git"
+test_use_venv = true
 
 [toolchains."cortexa8hf-neon"]
 path = "/home/hws/Documents/sdk/sysroots/x86_64-pokysdk-linux/usr/bin/arm-poky-linux-gnueabi"

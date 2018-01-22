@@ -71,7 +71,7 @@ class TBot:
                     as a parameter """
                 def _decorator(f):
                     kwargs["and_then"] = f
-                    self.call(tc, **kwargs)
+                    return self.call(tc, **kwargs)
                 return _decorator
 
             def call(self, tc, **kwargs):
@@ -98,19 +98,27 @@ class TBot:
                     # Cleanup is done by "with" handler __exit__
                     traceback.print_exc()
                     self.log.log(logger.TBotFinishedLogEvent(False))
+                    self.log.write_logfile()
                     sys.exit(1)
 
         self.tb = TBotResource(self)
         return self.tb
 
     def __exit__(self, exc_type, exc_value, trceback):
+        # Make sure logfile is written
+        self.log.write_logfile()
+        self.tb.log.log(logger.CustomLogEvent(
+            ("boardshell_cleanup"),
+            "├─\x1B[1mBOARD CLEANUP\x1B[0m",
+            logger.Verbosity.INFO))
+        # Try boardshell
         if hasattr(self.tb, "boardshell"):
-            self.tb.log.log(logger.CustomLogEvent(
-                ("boardshell_cleanup"),
-                "├─\x1B[1mBOARD CLEANUP\x1B[0m",
-                logger.Verbosity.INFO))
             #pylint: disable=protected-access
             self.tb.boardshell._cleanup_boardstate()
+        elif exc_type is not None: # If no boardshell exists but we had an exception, try cleaning
+                                   # up ourselves to make sure we don't leave the board running
+            power_cmd_off = self.tb.config.get("board.power.off_command")
+            self.tb.shell.exec0(power_cmd_off, log_show=False)
 
 
 def main():

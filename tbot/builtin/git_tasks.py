@@ -13,7 +13,7 @@ def clean_repo_checkout(tb, target=None, repo=None):
     if target is None or repo is None:
         raise "No target dir or no repository supplied"
 
-    tb.log.doc_log(f"\nCheckout the git repository `{repo}`:\n")
+    tb.log.doc_log(f"Checkout the git repository `{repo}`:\n")
 
     tb.shell.exec0(f"mkdir -p {target}")
     if not tb.shell.exec(f"""\
@@ -43,7 +43,7 @@ def apply_git_patches(tb, gitdir=None, patchdir=None):
     if gitdir is None or patchdir is None:
         raise "No gitdir or no patchdir supplied"
 
-    tb.log.doc_log(f"\nApply the patches in `{patchdir}` \
+    tb.log.doc_log(f"Apply the patches in `{patchdir}` \
 (Copies of the patch files can be found in the appendix of this document):\n")
 
     patchfiles = tb.shell.exec0(f"""\

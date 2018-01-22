@@ -11,6 +11,7 @@ off_command = "echo POWER_OFF; echo OFF >/tmp/powerstate"
 name = "local-ub"
 # Fake connect. Also contains a read call to simulate autoboot abort
 command = "sh\nPROMPT_COMMAND=\nPS1='U-Boot> ';read"
+prompt = "U-Boot> "
 
 [uboot]
 patchdir = "/home/hws/Documents/corvus_patches"

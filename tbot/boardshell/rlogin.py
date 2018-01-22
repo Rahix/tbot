@@ -31,8 +31,10 @@ class BoardShellRLogin(tbot.boardshell.BoardShell):
         self.prompt = f"TBOT-BS-START-{random.randint(11111,99999)}>"
 
         self.connect_command = tb.config.get("board.shell.command")
+        self.uboot_prompt = tb.config.get("board.shell.prompt")
 
         self.log_event = None
+        self.is_on = False
 
     def _read_to_prompt(self):
         prompt_bytes = bytes(self.prompt, "utf-8")
@@ -45,36 +47,47 @@ class BoardShellRLogin(tbot.boardshell.BoardShell):
             buf += buf_data
 
             while b"\n" in buf[last_newline:]:
-                line = buf[last_newline:].split(b'\n')[0]
-                if last_newline != 0:
-                    if self.log_event is not None:
-                        self.log_event.add_line(line.decode('utf-8'))
-                last_newline += len(line) + 1
+                line_nl = buf[last_newline:].split(b'\n')[0]
+                line_nl_notrail = line_nl[:-1] if line_nl != b'' and line_nl[-1] == 13 else line_nl
+                if self.log_event is not None:
+                    if last_newline != 0:
+                        for line in line_nl_notrail.split(b'\r'):
+                            self.log_event.add_line(line.decode('utf-8'))
+                last_newline += len(line_nl) + 1
 
             if buf[-len(prompt_bytes):] == prompt_bytes:
                 break
 
-        return buf.decode("utf-8")
+        # Sometimes the boards sent something before booting.
+        # This makes sure, we don't panic if that is not decodable.
+        try:
+            return buf.decode("utf-8")
+        except UnicodeDecodeError:
+            return ""
 
     def poweron(self):
         self.channel.send(f"PROMPT_COMMAND=\nPS1='{self.prompt}'\n")
 
         self._read_to_prompt()
         self.channel.send(f"{self.connect_command}\n")
-        self.noenv_shell.exec0(self.power_cmd_on)
+        self.noenv_shell.exec0(self.power_cmd_on, log_show_stdout=False)
 
         # Stop autoboot
+        # TODO: Make timeout configurable
         time.sleep(2)
         self.channel.send("\n")
-        self.prompt = "U-Boot> "
+        self.prompt = self.uboot_prompt
         boot_stdout = self._read_to_prompt()
+        self.is_on = True
         return boot_stdout
 
     def _cleanup_boardstate(self):
-        # self.env_shell.fd.write("~.")
-        self.noenv_shell.exec0(self.power_cmd_off)
+        self.channel.close()
+        self.noenv_shell.exec0(self.power_cmd_off, log_show_stdout=False)
 
     def _exec(self, command, log_event):
+        if not self.is_on:
+            raise "Trying to execute commands on a turned off board"
         log_event.prefix = "   >> "
         self.log_event = log_event
         self.channel.send(command + "\n")

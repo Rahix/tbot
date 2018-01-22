@@ -10,8 +10,7 @@ def build_uboot(tb):
         raise "Need an sh shell"
 
     tb.log.doc_log("""
-## Build U-BOOT ##
-Build the u-boot bootloader using the following instructions:
+## Build U-Boot ##
 """)
 
     build_dir = os.path.join(
@@ -24,7 +23,7 @@ Build the u-boot bootloader using the following instructions:
     docstr = f"""In this document, we assume the following file locations:
 
 * The build directory is `{build_dir}`
-* The u-boot repository is `{repo}`
+* The U-Boot repository is `{repo}`
 """
     docstr += "(For you it will most likely be `git://git.denx.de/u-boot.git`)\n" \
         if repo != "git://git.denx.de/u-boot.git" else ""
@@ -37,8 +36,8 @@ Build the u-boot bootloader using the following instructions:
     defconfig = tb.config.get("board.defconfig")
 
     tb.log.doc_log(f"""
-We are using the `{toolchain}` toolchain and will compile
-uboot using the `{defconfig}` defconfig.
+We are using the `{toolchain}` toolchain and will compile \
+U-Boot using the `{defconfig}` defconfig.
 """)
 
     tb.call("clean_repo_checkout",
@@ -52,7 +51,7 @@ uboot using the `{defconfig}` defconfig.
         """ The actual build """
         tb.log.doc_log("""
 ### The build process ###
-Prepare the buildprocess by doing
+Prepare the buildprocess by moving into the build directory and executing the following commands:
 """)
         tb.shell.exec0(f"cd {build_dir}")
         tb.shell.exec0(f"make mrproper", log_show_stdout=False)
@@ -61,5 +60,5 @@ Prepare the buildprocess by doing
         @tb.call
         def compile(tb): #pylint: disable=redefined-builtin, unused-variable
             """ The actual compilation process """
-            tb.log.doc_log("\nAnd start the actual compilation using\n")
+            tb.log.doc_log("Start the compilation using\n")
             tb.shell.exec0(f"make -j4 all")

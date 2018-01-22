@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """ Build a markdown document of the tbot run """
 import json
 import math
@@ -19,10 +20,10 @@ def main():
         #         name = msg['name'].replace('_', '\\_')
         #         return f"# Testcase: {name} #\n\n"
         if msg['type'][0] == "shell" and msg['show'] is True:
+            prompt = "bash$" if msg['type'][1] == "sh" else "U-Boot>"
             string = f"""
 ```console
-$ {msg['command']}
-```
+{prompt} {msg['command']}
 """
 
             out = msg['output'][:-1]
@@ -34,12 +35,9 @@ $ {msg['command']}
                     output = '\n'.join(output_lines[:lnum]) \
                         + f"\n... {len(output_lines) - lnum*2} lines omitted ...\n" \
                         + '\n'.join(output_lines[-lnum:])
-                string += f"""
-Example Output:
-
-```text
-{output}
-```
+                string += f"""{output}
+"""
+            string += """```
 """
 
             return string
@@ -51,9 +49,15 @@ Example Output:
         return ""
 
     print("".join(map(gen_md, log)))
-    print("\n# Appendix #\n\n")
-    for title, text in appendices:
-        print(f"## {title} ##\n{text}\n")
+    if appendices != []:
+        print("\n# Appendix #\n\n")
+        for title, text in appendices:
+            print(f"## {title} ##\n{text}\n")
+    print("""
+# Disclaimer #
+> This documentation was generated automatically. The steps described here \
+led to a successful build on our system. Please make changes to accomodate for \
+differences in your system.""")
 
 if __name__ == "__main__":
     main()

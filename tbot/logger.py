@@ -232,4 +232,5 @@ class Logger:
             print(msg)
 
     def __del__(self):
+        # TODO: Make this work
         self.write_logfile()
