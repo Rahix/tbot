@@ -23,6 +23,13 @@ windows line ending'")
         assert out == "a string with a \nin the middle and a \n\
 windows line ending\n", "%r does not match" % out
 
+    # Test return codes
+    return_code, _ = shell.exec("true")
+    assert return_code == 0, f"Shell returned {return_code} instead of 0"
+
+    return_code, _ = shell.exec("false")
+    assert return_code == 1, f"Shell returned {return_code} instead of 1"
+
 @tbot.testcase
 def selftest(tb):
     """ TBOT self test """
