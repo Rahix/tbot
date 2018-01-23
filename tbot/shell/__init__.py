@@ -38,7 +38,7 @@ class Shell(abc.ABC):
                                                      log_show_stdout=log_show_stdout)
         self._log.log(log_event)
         ret = self._exec(command, log_event)
-        log_event.finished()
+        log_event.finished(ret[0])
         return ret
 
     def exec0(self, command, **kwargs):

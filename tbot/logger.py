@@ -78,10 +78,12 @@ class ShellCommandLogEvent(LogEvent):
         for print_line in line.split('\n'):
             self.log_print("\x1B[0m" + self.prefix + print_line)
         self.verbosity = Verbosity.VERBOSE
+        self._dict["output"] = self.output
 
-    def finished(self):
+    def finished(self, exit_code):
         """ Tell the log event that the command is done """
         self._dict["output"] = self.output
+        self._dict["exit_code"] = exit_code
 
     @property
     def _verbosity_level(self):

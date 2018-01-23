@@ -38,7 +38,7 @@ cd {target}; git pull""", log_show=False)
         event = tbot.logger.ShellCommandLogEvent(['sh', 'noenv'], f"""\
 git clone {repo} {target}""", log_show=True)
         tb.log.log(event)
-        event.finished()
+        event.finished(0)
 
 
 @tbot.testcase
