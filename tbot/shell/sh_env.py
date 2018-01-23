@@ -15,6 +15,8 @@ class ShellShEnv(tbot.shell.Shell):
         self.conn = tb.shell.conn
         self.channel = self.conn.get_transport().open_session()
         self.channel.get_pty()
+        # Resize the pty to ensure we do not get escape sequences from the terminal
+        # trying to wrap to the next line
         self.channel.resize_pty(1000, 1000, 10000, 10000)
         self.channel.invoke_shell()
 

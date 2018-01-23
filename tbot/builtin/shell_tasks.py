@@ -1,10 +1,17 @@
-""" Common shell operations """
+"""
+Common shell operations
+-----------------------
+"""
 import os
 import tbot
 
 @tbot.testcase
 def setup_tftpdir(tb):
-    """ Setup the tftp directory """
+    """
+    Setup the tftp directory
+
+    :returns: Returns the path to the tftp folder
+    """
     assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
 
     tftpdir = os.path.join(
@@ -18,7 +25,15 @@ def setup_tftpdir(tb):
 
 @tbot.testcase
 def cp_to_tftpdir(tb, name=None, dest_name=None, from_builddir=True):
-    """ Copy a file into the tftp folder """
+    """
+    Copy a file into the tftp folder
+
+    :param name: Name of the file if from_builddir is True, else path to the file (str)
+    :param dest_name: Name of the file inside the tftp folder (str)
+    :param from_builddir: Wether name is a file inside the builddir or the path to
+        an external file (bool)
+    :returns: Nothing
+    """
     assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
 
     assert name is not None, "Trying to copy nothing"

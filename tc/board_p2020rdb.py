@@ -1,10 +1,16 @@
-""" P2020RDB-PCA board specific testcase """
+"""
+P2020RDB-PCA board specific testcases
+-------------------------------------
+"""
 import os
 import tbot
 
 @tbot.testcase
 def board_p2020rdb(tb):
-    """ P2020RDB-PCA board specific testcase """
+    """
+    P2020RDB-PCA board specific testcase to build U-Boot, flash it into
+    NAND and run the U-Boot test suite
+    """
     assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
 
     tb.log.doc_log("""U-Boot on the P2020RDB-PCA board
@@ -18,7 +24,7 @@ def board_p2020rdb(tb):
 
 @tbot.testcase
 def p2020rdb_install_uboot(tb):
-    """ Install uboot into flash """
+    """ Install uboot into NAND flash of the P2020RDB-PCA """
     assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
 
     tb.log.doc_log("""

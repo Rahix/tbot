@@ -1,4 +1,7 @@
-""" Run U-Boot tests inside the sandbox """
+"""
+Run U-Boot tests inside the sandbox
+-----------------------------------
+"""
 import os
 import tbot
 
@@ -6,6 +9,8 @@ import tbot
 def uboot_sandbox(tb):
     """ Run U-Boot tests inside the sandbox """
     assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
+
+    # TODO: Don't use the boards working tree for this
 
     build_dir = os.path.join(
         tb.config.workdir,

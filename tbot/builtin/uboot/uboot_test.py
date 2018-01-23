@@ -1,4 +1,7 @@
-""" Run U-Boot tests on real hardware """
+"""
+Run U-Boot tests on real hardware
+---------------------------------
+"""
 import os
 import tbot
 

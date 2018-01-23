@@ -1,4 +1,7 @@
-""" Testcase for installing uboot """
+"""
+Testcase for installing uboot
+-----------------------------
+"""
 import os
 import collections
 import tbot

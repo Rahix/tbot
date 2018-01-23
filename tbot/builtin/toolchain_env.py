@@ -1,10 +1,19 @@
-""" Testcase to setup toolchain environment """
+"""
+Testcase to setup a toolchain environment
+-----------------------------------------
+"""
 import tbot.shell.sh_env
 
 
 @tbot.testcase
 def toolchain_env(tb, toolchain=None, and_then=None, params=None):
-    """ Setup a toolchain environment and call a testcase inside """
+    """
+    Setup a toolchain environment and call a testcase inside
+
+    :param toolchain: Which toolchain to use (str)
+    :param and_then: What testcase to call inside the env (str)
+    :param params: Parameters for the testcase (dict)
+    """
     assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
 
     if params is None:

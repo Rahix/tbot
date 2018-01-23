@@ -1,12 +1,21 @@
-""" Testcases for working with git """
+"""
+Testcases for working with git
+------------------------------
+"""
 import os
 import tbot
 
 
 @tbot.testcase
 def clean_repo_checkout(tb, target=None, repo=None):
-    """ Checkout a git repo if it does not exist yet and make sure there are
-        no artifacts left from previous builds """
+    """
+    Checkout a git repo if it does not exist yet and make sure there are
+    no artifacts left from previous builds.
+
+    :param target: Where to clone the repository to
+    :param repo: Where the git repository can be found
+    :returns: Nothing
+    """
     assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
 
     assert target is not None, "No target supplied"
@@ -34,8 +43,13 @@ git clone {repo} {target}""", log_show=True)
 
 @tbot.testcase
 def apply_git_patches(tb, gitdir=None, patchdir=None):
-    """ Apply patchfiles inside patchdir onto the git repository in
-        gitdir """
+    """
+    Apply patchfiles inside patchdir onto the git repository in gitdir.
+
+    :param gitdir: Path to the git repository
+    :param patchdir: Path to the folder containing the patches
+    :returns: Nothing
+    """
     assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
 
     assert gitdir is not None, "No gitdir supplied"

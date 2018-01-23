@@ -1,8 +1,19 @@
-""" TBOT self test """
+"""
+TBOT self test
+--------------
+"""
 import tbot
 
 def test_shell(shell, has_printf, has_echo_e):
-    """ Run a couple of tests on a shell """
+    """
+    Run a couple of tests on a shell
+
+    :param shell: The shell to run commands on instanceof(tbot.shell.Shell)
+    :param has_printf: Wether the shell supports printf (bool)
+    :param has_echo_e: Wether the shell supports echo -e (bool)
+    :returns: Nothing
+    :raises AssertionError: If a test failed
+    """
 
     # Test basic IO, does printf without a newline work?
     out = shell.exec0("echo 'Hello World'")
