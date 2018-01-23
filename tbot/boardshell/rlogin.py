@@ -26,6 +26,9 @@ class BoardShellRLogin(tbot.boardshell.BoardShell):
 
         self.channel = self.conn.get_transport().open_session()
         self.channel.get_pty()
+        # Resize the pty to ensure we do not get escape sequences from the terminal
+        # trying to wrap to the next line
+        self.channel.resize_pty(1000, 1000, 10000, 10000)
         self.channel.invoke_shell()
 
         self.prompt = f"TBOT-BS-START-{random.randint(11111,99999)}>"
@@ -38,34 +41,42 @@ class BoardShellRLogin(tbot.boardshell.BoardShell):
         self.is_on = False
 
     def _read_to_prompt(self):
-        prompt_bytes = bytes(self.prompt, "utf-8")
-        buf = b""
+        buf = ""
 
         last_newline = 0
 
-        while True:
-            buf_data = self.channel.recv(1024)
-            buf += buf_data
-
-            # TODO: Make this more robust
-            while b"\n" in buf[last_newline:]:
-                line_nl = buf[last_newline:].split(b'\n')[0]
-                line_nl_notrail = line_nl[:-1] if line_nl != b'' and line_nl[-1] == 13 else line_nl
-                if self.log_event is not None:
-                    if last_newline != 0:
-                        for line in line_nl_notrail.split(b'\r'):
-                            self.log_event.add_line(line.decode('utf-8'))
-                last_newline += len(line_nl) + 1
-
-            if buf[-len(prompt_bytes):] == prompt_bytes:
-                break
-
-        # Sometimes the boards sent something before booting.
-        # This makes sure, we don't panic if that is not decodable.
         try:
-            return buf.decode("utf-8")
+            while True:
+                # Read a lot and hope that this is all there is, so
+                # we don't cut off inside a unicode sequence and fail
+                buf_data = self.channel.recv(10000000)
+                buf_data = buf_data.decode("utf-8")
+
+                # Fix '\r's, replace '\r\n' twice to avoid some glitches
+                buf_data = buf_data.replace('\r\n', '\n') \
+                    .replace('\r\n', '\n') \
+                    .replace('\r', '\n')
+
+                buf += buf_data
+
+                if self.log_event is not None:
+                    while "\n" in buf[last_newline:]:
+                        line = buf[last_newline:].split('\n')[0]
+                        if last_newline != 0:
+                            self.log_event.add_line(line)
+                        last_newline += len(line) + 1
+
+                if buf[-len(self.prompt):] == self.prompt:
+                    # Print rest of last line to make sure nothing gets lost
+                    if self.log_event is not None and "\n" not in buf[last_newline:]:
+                        line = buf[last_newline:-len(self.prompt)]
+                        if line != "":
+                            self.log_event.add_line(line)
+                    break
         except UnicodeDecodeError:
             return ""
+
+        return buf
 
     def poweron(self):
         self.channel.send(f"PROMPT_COMMAND=\nPS1='{self.prompt}'\n")
@@ -91,15 +102,16 @@ class BoardShellRLogin(tbot.boardshell.BoardShell):
         log_event.prefix = "   >> "
         self.log_event = log_event
         self.channel.send(command + "\n")
-        stdout = self._read_to_prompt()[len(command)+2:-len(self.prompt)]
-        stdout = stdout.replace("\r\n", "\n")
+        stdout = self._read_to_prompt()[len(command)+1:-len(self.prompt)]
+
         self.log_event = None
+
         # return code parsing
         self.channel.send("echo $?\n")
         retcode_stdout = self._read_to_prompt()
-        retcode_stdout = retcode_stdout[len("echo $?")+2:-len(self.prompt)]
+        retcode_stdout = retcode_stdout[len("echo $?")+1:-len(self.prompt)]
         retcode_stdout = retcode_stdout.strip()
-        return (int(retcode_stdout), stdout)
+        return int(retcode_stdout), stdout
 
     def _board_shell_type(self):
         return ("rlogin", self.shellname)

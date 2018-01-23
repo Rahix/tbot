@@ -65,7 +65,8 @@ class ShellCommandLogEvent(LogEvent):
         for i in range(0, len(self.sh) - 1):
             shell_type_string += self.sh[i] + ", "
         shell_type_string += self.sh[-1] + ")"
-        self.log_print(f"{shell_type_string} {self._dict['command']}")
+        cmd = repr(self._dict['command'])[1:-1]
+        self.log_print(f"{shell_type_string} {cmd}")
 
     def add_line(self, line):
         """ Add a line of stdout to this log event """

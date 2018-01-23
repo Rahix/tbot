@@ -31,13 +31,11 @@ class ShellShNoEnv(tbot.shell.Shell):
         stdout = channel.makefile().read()
         ret_code = channel.recv_exit_status()
 
-        output = ""
-        if stdout != b"" and stdout[-1] == 10:
-            output = stdout[:-1].decode("utf-8")
-        else:
-            output = stdout.decode("utf-8")
+        output = stdout.decode("utf-8") \
+            .replace('\r\n', '\n') \
+            .replace('\r', '\n')
 
-        for line in output.split("\n"):
+        for line in output.strip('\n').split('\n'):
             log_event.add_line(line)
         return ret_code, output
 

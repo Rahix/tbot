@@ -12,6 +12,9 @@ name = "local-ub"
 # Fake connect. Also contains a read call to simulate autoboot abort
 command = "sh\nPROMPT_COMMAND=\nPS1='U-Boot> ';read"
 prompt = "U-Boot> "
+timeout = 0.1
+support_echo_e = true
+support_printf = true
 
 [uboot]
 patchdir = "/home/hws/Documents/corvus_patches"

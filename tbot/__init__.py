@@ -117,8 +117,11 @@ class TBot:
             self.tb.boardshell._cleanup_boardstate()
         elif exc_type is not None: # If no boardshell exists but we had an exception, try cleaning
                                    # up ourselves to make sure we don't leave the board running
-            power_cmd_off = self.tb.config.get("board.power.off_command")
-            self.tb.shell.exec0(power_cmd_off, log_show=False)
+            # TODO: Fix this using the current shell, as we do not know, what type
+            # of shell that is (could be an env shell with an unknown environment)
+            # power_cmd_off = self.tb.config.get("board.power.off_command")
+            # self.tb.shell.exec0(power_cmd_off, log_show=False)
+            pass
 
 
 def main():

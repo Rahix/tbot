@@ -234,7 +234,8 @@ good-names=i,
            tc,
            ev,
            ty,
-           sh
+           sh,
+           st
 
 # Include a hint for the correct naming format with invalid-name
 include-naming-hint=no
