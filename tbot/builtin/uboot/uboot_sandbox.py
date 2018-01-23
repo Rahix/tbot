@@ -10,11 +10,16 @@ def uboot_sandbox(tb):
     """ Run U-Boot tests inside the sandbox """
     assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
 
-    # TODO: Don't use the boards working tree for this
-
     build_dir = os.path.join(
         tb.config.workdir,
-        f"u-boot-{tb.config.board_name}")
+        f"u-boot-sandbox")
+    patchdir = tb.config.try_get("uboot.patchdir")
+
+    tb.call("clean_repo_checkout",
+            repo=tb.config.get("uboot.repository"),
+            target=build_dir)
+    if patchdir is not None:
+        tb.call("apply_git_patches", gitdir=build_dir, patchdir=patchdir)
 
     tb.log.doc_log("""
 ## Run U-Boot tests inside sandbox on host (optional) ##

@@ -17,8 +17,8 @@ _Start time is {msg['time']}_
             return f"""_Testcase {msg['name']} finished after {msg['duration']:.2f}s_
 """
         elif msg['type'][0] == "shell":
-            string = f"""Command \
-`{repr(tuple(msg['type'][1:]))} {repr(msg['command'])[1:-1]}` \
+            cmd = repr(msg['command'])[1:-1]
+            string = f"""Command ``{repr(tuple(msg['type'][1:]))} {cmd} `` \
 returned `{msg['exit_code']}`."""
             output = msg['output'][:-1]
             if output != "":
@@ -43,4 +43,5 @@ _Time: {msg['time']}_
 
         raise Exception(f"Unknown event: {repr(msg['type'])}")
 
-    print("".join(map(gen_md, LOG)))
+    print("# TBOT Log #")
+    print("\n".join(map(gen_md, LOG)))

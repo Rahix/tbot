@@ -59,7 +59,7 @@ def apply_git_patches(tb, gitdir=None, patchdir=None):
 (Copies of the patch files can be found in the appendix of this document):\n")
 
     patchfiles = tb.shell.exec0(f"""\
-find {patchdir} -name '*.patch'""", log_show=False).split("\n")
+find {patchdir} -name '*.patch'""", log_show=False).strip('\n').split("\n")
 
     # Make sure, we apply patches in the correct order
     patchfiles.sort()
