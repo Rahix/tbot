@@ -42,7 +42,7 @@ Copy U-Boot into your tftp directory:
     tb.log.doc_log("Find out the size of the U-Boot binary, as we will need it later:\n")
 
     filename = os.path.join(tftpdir, "u-boot-with-spl.bin")
-    size = tb.shell.exec0(f"printf '%x\\n' `stat -c '%s' {filename}`")
+    size = tb.shell.exec0(f"printf '%x' `stat -c '%s' {filename}`")
 
     @tb.call
     def install(tb): #pylint: disable=unused-variable
@@ -73,7 +73,7 @@ Copy U-Boot into your tftp directory:
             tbn.boardshell.poweron()
 
             filename = os.path.join(tftpdir, "u-boot-with-spl.bin")
-            strings = tbn.shell.exec0(f"strings {filename}", log_show=False)
+            strings = tbn.shell.exec0(f"strings {filename} | grep U-Boot", log_show=False)
             vers = tbn.boardshell.exec0("version").split('\n')[0]
             assert vers in strings, \
                 "Version does not seem to match, something went wrong with flashing!"
