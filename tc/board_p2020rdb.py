@@ -20,6 +20,16 @@ def board_p2020rdb(tb):
 
     tb.call("p2020rdb_install_uboot")
 
+    with tb.new_boardshell() as tbn:
+        tbn.boardshell.poweron()
+
+        tbn.call("check_uboot_version", uboot_bin="{builddir}/u-boot-with-spl.bin")
+
+        env = tbn.boardshell.exec0("printenv", log_show=False)
+        tbn.log.doc_appendix("U-Boot environment", f"""```sh
+{env}
+```""")
+
     tb.call("uboot_tests")
 
 @tbot.testcase
@@ -64,21 +74,3 @@ Copy U-Boot into your tftp directory:
             tbn.boardshell.exec0(f"nand write 10000000 0 {size}")
 
             tb.log.doc_log("Powercycle the board and check the U-Boot version:\n")
-
-    @tb.call
-    def check(tb): #pylint: disable=unused-variable
-        """ Check U-Boot version """
-
-        with tb.new_boardshell() as tbn:
-            tbn.boardshell.poweron()
-
-            filename = os.path.join(tftpdir, "u-boot-with-spl.bin")
-            strings = tbn.shell.exec0(f"strings {filename} | grep U-Boot", log_show=False)
-            vers = tbn.boardshell.exec0("version").split('\n')[0]
-            assert vers in strings, \
-                "Version does not seem to match, something went wrong with flashing!"
-
-            env = tbn.boardshell.exec0("printenv", log_show=False)
-            tbn.log.doc_appendix("U-Boot environment", f"""```sh
-{env}
-```""")

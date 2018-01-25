@@ -25,16 +25,20 @@ class TBot:
             self.old_inst = old_inst
             self.shell = None
             self.layer = 0
+            self.old_inst = None
         else:
             self.config = old_inst.config
             self.testcases = old_inst.testcases
             self.log = old_inst.log
             self.shell = old_inst.shell
             self.layer = old_inst.layer
+            self.old_inst = old_inst
         # shellnew is set if a new shell should be created
         self.shellnew = None
-        # Wether to open a new boardshell
+        # Whether to open a new boardshell
         self.install_boardshell = False
+        # Whether to inherit parents boardshell
+        self.inherit_boardshell = False
 
     def __enter__(self):
         class TBotResource:
@@ -50,6 +54,11 @@ class TBot:
 
                 if wrapper.install_boardshell is True:
                     self.boardshell = rlogin.BoardShellRLogin(self)
+                    self.boardshell_inherited = False
+
+                if wrapper.inherit_boardshell is True:
+                    self.boardshell = wrapper.old_inst.boardshell
+                    self.boardshell_inherited = True
 
                 if wrapper.shellnew is not None:
                     self.shell = wrapper.shellnew(self)
@@ -63,7 +72,11 @@ class TBot:
             def new_boardshell(self):
                 """ Create a new tbot instance with a boardshell started """
                 new_inst = TBot(None, None, None, old_inst=self)
-                new_inst.install_boardshell = True
+                #pylint: disable=simplifiable-if-statement
+                if hasattr(self, "boardshell"):
+                    new_inst.inherit_boardshell = True
+                else:
+                    new_inst.install_boardshell = True
                 return new_inst
 
             def call_then(self, tc, **kwargs):
@@ -108,10 +121,13 @@ class TBot:
         # Make sure logfile is written
         self.log.write_logfile()
         # Try boardshell
-        if hasattr(self.tb, "boardshell"):
+        if hasattr(self.tb, "boardshell") and self.tb.boardshell_inherited is False:
+            msg = ""
+            for _ in range(0, self.tb.layer):
+                msg += "│   "
             self.tb.log.log(logger.CustomLogEvent(
                 ("boardshell_cleanup"),
-                "├─\x1B[1mBOARD CLEANUP\x1B[0m",
+                msg + "├─\x1B[1mBOARD CLEANUP\x1B[0m",
                 logger.Verbosity.INFO))
             #pylint: disable=protected-access
             self.tb.boardshell._cleanup_boardstate()

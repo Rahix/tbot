@@ -79,19 +79,22 @@ class BoardShellRLogin(tbot.boardshell.BoardShell):
         return buf
 
     def poweron(self):
-        self.channel.send(f"PROMPT_COMMAND=\nPS1='{self.prompt}'\n")
+        if not self.is_on:
+            self.channel.send(f"PROMPT_COMMAND=\nPS1='{self.prompt}'\n")
 
-        self._read_to_prompt()
-        self.channel.send(f"{self.connect_command}\n")
-        self.noenv_shell.exec0(self.power_cmd_on, log_show_stdout=False)
+            self._read_to_prompt()
+            self.channel.send(f"{self.connect_command}\n")
+            self.noenv_shell.exec0(self.power_cmd_on, log_show_stdout=False)
 
-        # Stop autoboot
-        time.sleep(self.uboot_timeout)
-        self.channel.send("\n")
-        self.prompt = self.uboot_prompt
-        boot_stdout = self._read_to_prompt()
-        self.is_on = True
-        return boot_stdout
+            # Stop autoboot
+            time.sleep(self.uboot_timeout)
+            self.channel.send("\n")
+            self.prompt = self.uboot_prompt
+            boot_stdout = self._read_to_prompt()
+            self.is_on = True
+            return boot_stdout
+
+        return ""
 
     def _cleanup_boardstate(self):
         self.channel.close()
