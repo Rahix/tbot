@@ -1,6 +1,6 @@
 """
-Testcase for installing uboot
------------------------------
+Testcase for installing U-Boot
+------------------------------
 """
 import os
 import collections
@@ -9,7 +9,7 @@ import tbot
 
 @tbot.testcase
 def install_uboot_to_tftp(tb, additional=None):
-    """ Install uboot files into tftp folder """
+    """ Install U-Boot files into tftp folder """
     assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
 
     if additional is None:
@@ -24,8 +24,8 @@ def install_uboot_to_tftp(tb, additional=None):
         tb.config.get("tftp.tbotsubdir"))
 
     tb.log.doc_log(f"""
-## Installing uboot into the tftp folder ##
-Move u-boot files into the tftp folder. Our tftpfolder is `{tftpdir}`. Adjust
+## Installing U-Boot into the tftp folder ##
+Move U-Boot files into the tftp folder. Our tftpfolder is `{tftpdir}`. Adjust
 for your setup.
 """)
 

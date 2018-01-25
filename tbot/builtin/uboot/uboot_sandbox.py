@@ -41,7 +41,7 @@ Here we will run it on the host. Make sure all dependencies are met.  Refer to
                             log_show_stdout=False)
             tbn.shell.exec0(f"pip install pytest", log_show_stdout=False)
 
-            tbn.log.doc_log(f"""Now clean the uboot repository and start the sandbox testsuite.
+            tbn.log.doc_log(f"""Now clean the U-Boot repository and start the sandbox testsuite.
 """)
             tbn.shell.exec0(f"make mrproper", log_show_stdout=False)
 
@@ -52,7 +52,7 @@ Here we will run it on the host. Make sure all dependencies are met.  Refer to
     else:
         tb.log.doc_log("""Here we do not use virtualenv because our build host
 does not have it installed, but it is recommended to do so.  
-Clean the uboot repository and start the sandbox testsuite:
+Clean the U-Boot repository and start the sandbox testsuite:
 """)
 
         with tb.new_shell(tbot.shell.sh_env.ShellShEnv) as tbn:

@@ -1,6 +1,6 @@
 """
-Testcase to build uboot
------------------------
+Testcase to build U-Boot
+------------------------
 """
 import os
 import tbot

@@ -203,6 +203,6 @@ def main():
         else:
             @tb.call
             def default(tb): #pylint: disable=unused-variable
-                """ Default testcase is building uboot """
+                """ Default testcase is building U-Boot """
                 tb.call("build_uboot")
         tb.log.log(logger.TBotFinishedLogEvent(True))

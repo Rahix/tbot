@@ -34,7 +34,7 @@ def board_p2020rdb(tb):
 
 @tbot.testcase
 def p2020rdb_install_uboot(tb):
-    """ Install uboot into NAND flash of the P2020RDB-PCA """
+    """ Install U-Boot into NAND flash of the P2020RDB-PCA """
     assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
 
     tb.log.doc_log("""
