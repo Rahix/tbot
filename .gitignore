@@ -1,5 +1,5 @@
 build/
 _build/
 *.egg-info/
-log.json/
+log.json
 *.pyc
