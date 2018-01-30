@@ -1,12 +1,18 @@
 #!/usr/bin/python3
-""" Build a markdown document of the tbot run """
+"""
+Generate a markdown documentation of the tbot run
+-------------------------------------------------
+This script will print out a markdown documentation
+describing how to reproduce the exact steps that happend
+during the run.
+"""
 import json
 import math
 
 OMIT_LINES = 6
 
 def main():
-    """ Main """
+    """ Generate a markdown documentation """
 
     # TODO: implement a cli
     log = json.load(open("log.json"))

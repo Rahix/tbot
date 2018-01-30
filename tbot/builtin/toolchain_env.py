@@ -11,7 +11,7 @@ def toolchain_env(tb, toolchain=None, and_then=None, params=None):
     Setup a toolchain environment and call a testcase inside
 
     :param toolchain: Which toolchain to use (str)
-    :param and_then: What testcase to call inside the env (str)
+    :param and_then: What testcase to call inside the env (str/function)
     :param params: Parameters for the testcase (dict)
     """
     assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
