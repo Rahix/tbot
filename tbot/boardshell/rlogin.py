@@ -97,8 +97,10 @@ class BoardShellRLogin(tbot.boardshell.BoardShell):
         return ""
 
     def _cleanup_boardstate(self):
-        self.channel.close()
         self.noenv_shell.exec0(self.power_cmd_off, log_show_stdout=False)
+        # Assert after trying to do it, just in  case
+        assert self.is_on, "Trying to poweroff an already off board"
+        self.channel.close()
 
     def _exec(self, command, log_event):
         assert self.is_on, "Trying to execute commands on a turned off board"
