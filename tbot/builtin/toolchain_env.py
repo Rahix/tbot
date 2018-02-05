@@ -36,6 +36,7 @@ Setup the `{toolchain}` toolchain by calling its env script:
 
     # Create an env shell
     with tb.new_shell(tbot.shell.sh_env.ShellShEnv) as tbn:
+        tbn.shell.exec0(f"unset LD_LIBRARY_PATH")
         tbn.shell.exec0(f"source {toolchain_script}")
 
         tbn.call(and_then, **params)
