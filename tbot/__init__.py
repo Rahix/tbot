@@ -13,131 +13,87 @@ from tbot import testcase_collector
 
 from tbot.testcase_collector import testcase
 
-
-#pylint: disable=too-many-instance-attributes, too-few-public-methods
 class TBot:
-    """ Base class of TBOT """
-    def __init__(self, config, testcases, log, old_inst=None):
-        if old_inst is None:
-            self.config = config
-            self.testcases = testcases
-            self.log = log
-            self.old_inst = old_inst
-            self.shell = None
-            self.layer = 0
-            self.old_inst = None
+    """ A tbot instance """
+    def __init__(self, config, testcases, log):
+        self.config = config
+        self.testcases = testcases
+        self.log = log
+        self.shell = None
+        self.layer = 0
+        self.boardshell_inherited = False
+        self.shell = sh_noenv.ShellShNoEnv(self)
+
+    def call_then(self, tc, **kwargs):
+        """ Decorator for calling a calling a testcase with a closure
+            as a parameter """
+        def _decorator(f):
+            kwargs["and_then"] = f
+            return self.call(tc, **kwargs)
+        return _decorator
+
+    def call(self, tc, **kwargs):
+        """ Call a testcase
+
+            tc can be either a string or a closure.
+            If it is a string, the testcase with this name will be
+            called. If it is a closure, the closure will be called
+            as an implicit testcase """
+        name = tc if isinstance(tc, str) else f"@{tc.__name__}"
+        self.log.log(logger.TestcaseBeginLogEvent(name, self.layer))
+        self.layer += 1
+        start_time = time.monotonic()
+        try:
+            if isinstance(tc, str):
+                retval = self.testcases[tc](self, **kwargs)
+            else:
+                retval = tc(self, **kwargs)
+            self.layer -= 1
+            run_duration = time.monotonic() - start_time
+            self.log.log(logger.TestcaseEndLogEvent(name, self.layer, run_duration))
+            return retval
+        except Exception: #pylint: disable=broad-except
+            # Cleanup is done by "with" handler __exit__
+            traceback.print_exc()
+            self.log.log(logger.TBotFinishedLogEvent(False))
+            self.log.write_logfile()
+            sys.exit(1)
+
+    def new_shell(self, shell):
+        """ New shell """
+        new_inst = TBot(self.config, self.testcases, self.log)
+        new_inst.layer = self.layer
+        new_inst.shell = shell(new_inst)
+        return new_inst
+
+    def new_boardshell(self):
+        """ New boardshell """
+        new_inst = TBot(self.config, self.testcases, self.log)
+        new_inst.layer = self.layer
+        if hasattr(self, "boardshell"):
+            new_inst.boardshell_inherited = True
+            new_inst.boardshell = self.boardshell
         else:
-            self.config = old_inst.config
-            self.testcases = old_inst.testcases
-            self.log = old_inst.log
-            self.shell = old_inst.shell
-            self.layer = old_inst.layer
-            self.old_inst = old_inst
-        # shellnew is set if a new shell should be created
-        self.shellnew = None
-        # Whether to open a new boardshell
-        self.install_boardshell = False
-        # Whether to inherit parents boardshell
-        self.inherit_boardshell = False
+            new_inst.boardshell = rlogin.BoardShellRLogin(new_inst)
+        return new_inst
 
     def __enter__(self):
-        class TBotResource:
-            """ Wrapped TBOT Instance for ensuring proper cleanup """
-            def __init__(self, wrapper):
-                self.config = wrapper.config
-                self.testcases = wrapper.testcases
-                self.log = wrapper.log
-                self.shell = wrapper.shell
-                if self.shell is None:
-                    self.shell = sh_noenv.ShellShNoEnv(self)
-                self.layer = wrapper.layer
-
-                if wrapper.install_boardshell is True:
-                    self.boardshell = rlogin.BoardShellRLogin(self)
-                    self.boardshell_inherited = False
-
-                if wrapper.inherit_boardshell is True:
-                    self.boardshell = wrapper.old_inst.boardshell
-                    self.boardshell_inherited = True
-
-                if wrapper.shellnew is not None:
-                    self.shell = wrapper.shellnew(self)
-
-            def new_shell(self, shell):
-                """ Create a new tbot instance with a new shell started """
-                new_inst = TBot(None, None, None, old_inst=self)
-                new_inst.shellnew = shell
-                return new_inst
-
-            def new_boardshell(self):
-                """ Create a new tbot instance with a boardshell started """
-                new_inst = TBot(None, None, None, old_inst=self)
-                #pylint: disable=simplifiable-if-statement
-                if hasattr(self, "boardshell"):
-                    new_inst.inherit_boardshell = True
-                else:
-                    new_inst.install_boardshell = True
-                return new_inst
-
-            def call_then(self, tc, **kwargs):
-                """ Decorator for calling a calling a testcase with a closure
-                    as a parameter """
-                def _decorator(f):
-                    kwargs["and_then"] = f
-                    return self.call(tc, **kwargs)
-                return _decorator
-
-            def call(self, tc, **kwargs):
-                """ Call a testcase
-
-                    tc can be either a string or a closure.
-                    If it is a string, the testcase with this name will be
-                    called. If it is a closure, the closure will be called
-                    as an implicit testcase """
-                name = tc if isinstance(tc, str) else f"@{tc.__name__}"
-                self.log.log(logger.TestcaseBeginLogEvent(name, self.layer))
-                self.layer += 1
-                start_time = time.monotonic()
-                try:
-                    if isinstance(tc, str):
-                        retval = self.testcases[tc](self, **kwargs)
-                    else:
-                        retval = tc(self, **kwargs)
-                    self.layer -= 1
-                    run_duration = time.monotonic() - start_time
-                    self.log.log(logger.TestcaseEndLogEvent(name, self.layer, run_duration))
-                    return retval
-                except Exception: #pylint: disable=broad-except
-                    # Cleanup is done by "with" handler __exit__
-                    traceback.print_exc()
-                    self.log.log(logger.TBotFinishedLogEvent(False))
-                    self.log.write_logfile()
-                    sys.exit(1)
-
-        self.tb = TBotResource(self)
-        return self.tb
+        return self
 
     def __exit__(self, exc_type, exc_value, trceback):
         # Make sure logfile is written
         self.log.write_logfile()
         # Try boardshell
-        if hasattr(self.tb, "boardshell") and self.tb.boardshell_inherited is False:
+        if hasattr(self, "boardshell") and self.boardshell_inherited is False:
             msg = ""
-            for _ in range(0, self.tb.layer):
+            for _ in range(0, self.layer):
                 msg += "│   "
-            self.tb.log.log(logger.CustomLogEvent(
+            self.log.log(logger.CustomLogEvent(
                 ("boardshell_cleanup"),
                 msg + "├─\x1B[1mBOARD CLEANUP\x1B[0m",
                 logger.Verbosity.INFO))
             #pylint: disable=protected-access
-            self.tb.boardshell._cleanup_boardstate()
-        elif exc_type is not None: # If no boardshell exists but we had an exception, try cleaning
-                                   # up ourselves to make sure we don't leave the board running
-            # TODO: Fix this using the current shell, as we do not know, what type
-            # of shell that is (could be an env shell with an unknown environment)
-            # power_cmd_off = self.tb.config.get("board.power.off_command")
-            # self.tb.shell.exec0(power_cmd_off, log_show=False)
-            pass
+            self.boardshell._cleanup_boardstate()
 
 
 def main():
