@@ -10,19 +10,29 @@ from tbot import config_parser
 from tbot import logger
 from tbot.shell import sh_noenv
 from tbot import testcase_collector
+from tbot import machine
+from tbot.machine import lab_noenv
 
 from tbot.testcase_collector import testcase
 
+#pylint: disable=too-many-instance-attributes
 class TBot:
     """ A tbot instance """
     def __init__(self, config, testcases, log):
         self.config = config
         self.testcases = testcases
         self.log = log
-        self.shell = None
         self.layer = 0
         self.boardshell_inherited = False
-        self.shell = sh_noenv.ShellShNoEnv(self)
+        self.machines = machine.MachineManager(self)
+
+        labhost = lab_noenv.MachineLabNoEnv()
+        labhost._setup(self) #pylint: disable=protected-access
+        self.machines["labhost"] = labhost
+
+    @property
+    def shell(self):
+        return self.machines["labhost"]
 
     def call_then(self, tc, **kwargs):
         """ Decorator for calling a calling a testcase with a closure
@@ -59,11 +69,14 @@ class TBot:
             self.log.write_logfile()
             sys.exit(1)
 
-    def new_shell(self, shell):
-        """ New shell """
+    def machine(self, mach):
+        """ New TBOT instance with new machine """
         new_inst = TBot(self.config, self.testcases, self.log)
         new_inst.layer = self.layer
-        new_inst.shell = shell(new_inst)
+
+        #pylint: disable=protected-access
+        mach._setup(new_inst)
+        new_inst.machines[mach.default_machine_name] = mach
         return new_inst
 
     def new_boardshell(self):

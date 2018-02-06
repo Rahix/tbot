@@ -44,14 +44,11 @@ windows line ending\n", "%r does not match" % out
 @tbot.testcase
 def selftest(tb):
     """ TBOT self test """
-    assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
 
     @tb.call
     def noenv_shell(tb): #pylint: disable=unused-variable
         """ Test noenv shell functionality """
-        with tb.new_shell(tbot.shell.sh_noenv.ShellShNoEnv) as tbn:
-            st = tbn.shell.shell_type
-            assert st == ('sh', 'noenv'), "%r is not a noenv shell" % st
+        with tb.machine(tbot.machine.lab_noenv.MachineLabNoEnv()) as tbn:
             test_shell(tbn.shell, True, True)
 
             # Test if environment is actually not shared
@@ -62,9 +59,7 @@ def selftest(tb):
     @tb.call
     def env_shell(tb): #pylint: disable=unused-variable
         """ Test env shell functionality """
-        with tb.new_shell(tbot.shell.sh_env.ShellShEnv) as tbn:
-            st = tbn.shell.shell_type
-            assert st == ('sh', 'env'), "%r is not an env shell" % st
+        with tb.machine(tbot.machine.lab_noenv.MachineLabNoEnv()) as tbn:
             test_shell(tbn.shell, True, True)
 
             # Test if environment is actually working
