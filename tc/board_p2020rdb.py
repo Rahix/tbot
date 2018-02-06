@@ -11,8 +11,6 @@ def board_p2020rdb(tb):
     P2020RDB-PCA board specific testcase to build U-Boot, flash it into
     NAND and run the U-Boot test suite
     """
-    assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
-
     tb.log.doc_log("""U-Boot on the P2020RDB-PCA board
 ============
 """)
@@ -20,9 +18,7 @@ def board_p2020rdb(tb):
 
     tb.call("p2020rdb_install_uboot")
 
-    with tb.new_boardshell() as tbn:
-        tbn.boardshell.poweron()
-
+    with tb.with_boardshell() as tbn:
         tbn.call("check_uboot_version", uboot_bin="{builddir}/u-boot-with-spl.bin")
 
         env = tbn.boardshell.exec0("printenv", log_show=False)
@@ -35,8 +31,6 @@ def board_p2020rdb(tb):
 @tbot.testcase
 def p2020rdb_install_uboot(tb):
     """ Install U-Boot into NAND flash of the P2020RDB-PCA """
-    assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
-
     tb.log.doc_log("""
 ## Installing U-Boot into NAND flash ##
 
@@ -60,8 +54,7 @@ Copy U-Boot into your tftp directory:
 
         tb.log.doc_log("Power on the board and download U-Boot via TFTP:\n")
 
-        with tb.new_boardshell() as tbn:
-            tbn.boardshell.poweron()
+        with tb.with_boardshell() as tbn:
             filename = os.path.join(tb.config.get("tftp.boarddir"),
                                     tb.config.get("tftp.tbotsubdir"),
                                     "u-boot-with-spl.bin")

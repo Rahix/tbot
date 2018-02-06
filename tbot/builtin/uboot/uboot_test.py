@@ -6,10 +6,8 @@ import os
 import tbot
 
 @tbot.testcase
-def uboot_tests(tb):
+def uboot_tests(tb: tbot.TBot):
     """ Run U-Boot tests on real hardware """
-    assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
-
     build_dir = os.path.join(
         tb.config.workdir,
         f"u-boot-{tb.config.board_name}")
@@ -47,7 +45,7 @@ the U-Boot tree:
         # Setup python
         tb.shell.exec0(f"cd {build_dir}; virtualenv-2.7 venv", log_show_stdout=False)
 
-        with tb.new_shell(tbot.shell.sh_env.ShellShEnv) as tbn:
+        with tb.machine(tbot.machine.MachineLabEnv()) as tbn:
             tbn.shell.exec0(f"cd {build_dir}")
             tbn.shell.exec0(f"VIRTUAL_ENV_DISABLE_PROMPT=1 source venv/bin/activate",
                             log_show_stdout=False)
@@ -68,7 +66,7 @@ does not have it installed, but it is recommended to do so. \
 Install the necessary hooks and start the U-Boot testsuite using the following commands:
 """)
 
-        with tb.new_shell(tbot.shell.sh_env.ShellShEnv) as tbn:
+        with tb.machine(tbot.machine.MachineLabEnv()) as tbn:
             tbn.shell.exec0(f"cd {build_dir}")
             tbn.shell.exec0(f"export PATH={tbn.config.get('uboot.test_hooks')}:$PATH")
 
@@ -81,4 +79,4 @@ Install the necessary hooks and start the U-Boot testsuite using the following c
     tb.log.doc_log("The U-Boot testsuite, which has hopefully finished successfully by now, is \
 not capable of turning off the board itself. You have to do that manually:\n")
 
-    tb.shell.exec0(power_cmd_off, log_show_stdout=False)
+    tb.machines["labhost-noenv"].exec0(power_cmd_off, log_show_stdout=False)

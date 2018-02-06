@@ -41,10 +41,10 @@ class LogEvent(abc.ABC):
         self._dict["type"] = self._event_type
         self._dict["time"] = time.ctime()
 
-    def log_print(self, msg, prefix=True):
+    def log_print(self, msg, *args, **kwargs):
         """ Try printing something to stdout. Whether that actually happens
             depends on the verbosity setting """
-        self._log.log_print(msg, self, prefix)
+        self._log.log_print(msg, self, *args, **kwargs)
 
 
 class ShellCommandLogEvent(LogEvent):
@@ -76,7 +76,7 @@ class ShellCommandLogEvent(LogEvent):
             self.output += '\n'
         self.verbosity = Verbosity.VERY_VERBOSE
         for print_line in line.split('\n'):
-            self.log_print("\x1B[0m" + self.prefix + print_line)
+            self.log_print("\x1B[0m" + self.prefix + print_line, prefix_dash=False)
         self.verbosity = Verbosity.VERBOSE
         self._dict["output"] = self.output
 
@@ -229,7 +229,7 @@ class Logger:
                   open(self.logfile if filename is None else filename, "w"),
                   indent=4)
 
-    def log_print(self, msg, ev, prefix=True):
+    def log_print(self, msg, ev, prefix=True, prefix_dash=True):
         """ Try printing to stdout. This is influenced by the
             verbosity level """
 
@@ -237,7 +237,10 @@ class Logger:
         if prefix is True:
             for _ in range(0, self.layer):
                 msg_prefix += "│   "
-            msg_prefix += f"├─"
+            if prefix_dash:
+                msg_prefix += f"├─"
+            else:
+                msg_prefix += f"│ "
         #pylint: disable=protected-access
         if ev._verbosity_level <= self.verbosity:
             print(msg_prefix + msg)

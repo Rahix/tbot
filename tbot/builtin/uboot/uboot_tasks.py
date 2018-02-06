@@ -15,11 +15,7 @@ def check_uboot_version(tb, uboot_bin="{builddir}/u-boot.bin"):
                       with the U-Boot build dir used by tbot. (str)
     :returns: Nothing
     """
-    assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
-
-    with tb.new_boardshell() as tbn:
-        tbn.boardshell.poweron()
-
+    with tb.with_boardshell() as tbn:
         filename = uboot_bin.format(builddir=os.path.join(
             tb.config.workdir,
             f"u-boot-{tb.config.board_name}"))

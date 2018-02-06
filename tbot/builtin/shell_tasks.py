@@ -12,8 +12,6 @@ def setup_tftpdir(tb):
 
     :returns: Returns the path to the tftp folder
     """
-    assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
-
     tftpdir = os.path.join(
         tb.config.get("tftp.rootdir"),
         tb.config.get("tftp.boarddir"),
@@ -34,8 +32,6 @@ def cp_to_tftpdir(tb, name=None, dest_name=None, from_builddir=True):
         an external file (bool)
     :returns: Nothing
     """
-    assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
-
     assert name is not None, "Trying to copy nothing"
 
     build_dir = os.path.join(
