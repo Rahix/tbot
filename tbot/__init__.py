@@ -34,6 +34,10 @@ class TBot:
     def shell(self):
         return self.machines["labhost"]
 
+    @property
+    def boardshell(self):
+        return self.machines["board"]
+
     def call_then(self, tc, **kwargs):
         """ Decorator for calling a calling a testcase with a closure
             as a parameter """
@@ -70,25 +74,28 @@ class TBot:
             sys.exit(1)
 
     def machine(self, mach):
-        """ New TBOT instance with new machine """
         new_inst = TBot(self.config, self.testcases, self.log)
         new_inst.layer = self.layer
 
-        #pylint: disable=protected-access
-        mach._setup(new_inst)
+        # TODO: Inherit list of machines
+
+        mach._setup(new_inst) #pylint: disable=protected-access
         new_inst.machines[mach.common_machine_name] = mach
         new_inst.machines[mach.unique_machine_name] = mach
         return new_inst
 
-    def new_boardshell(self):
-        """ New boardshell """
+    def with_boardshell(self):
         new_inst = TBot(self.config, self.testcases, self.log)
         new_inst.layer = self.layer
-        if hasattr(self, "boardshell"):
-            new_inst.boardshell_inherited = True
-            new_inst.boardshell = self.boardshell
-        else:
-            new_inst.boardshell = rlogin.BoardShellRLogin(new_inst)
+
+        # TODO: Inherit list of machines
+
+        if "board" not in new_inst.machines:
+            board = machine.MachineBoardRlogin()
+            board._setup(new_inst) #pylint: disable=protected-access
+            new_inst.machines[board.common_machine_name] = board
+            new_inst.machines[board.unique_machine_name] = board
+
         return new_inst
 
     def __enter__(self):
@@ -98,7 +105,8 @@ class TBot:
         # Make sure logfile is written
         self.log.write_logfile()
         # Try boardshell
-        if hasattr(self, "boardshell") and self.boardshell_inherited is False:
+        # TODO: Cleanup all machines that were not inherited
+        if "board" in self.machines and self.boardshell_inherited is False:
             msg = ""
             for _ in range(0, self.layer):
                 msg += "│   "
@@ -107,7 +115,7 @@ class TBot:
                 msg + "├─\x1B[1mBOARD CLEANUP\x1B[0m",
                 logger.Verbosity.INFO))
             #pylint: disable=protected-access
-            self.boardshell._cleanup_boardstate()
+            self.boardshell._destruct(self)
 
 
 def main():

@@ -70,11 +70,7 @@ def selftest(tb):
     @tb.call
     def board_shell(tb): #pylint: disable=unused-variable
         """ Test board shell functionality """
-        with tb.new_boardshell() as tbn:
-            tbn.boardshell.poweron()
-
-            st = tbn.boardshell.shell_type
-            assert st[0] == 'board', "%r is not a board shell" % st
+        with tb.with_boardshell() as tbn:
             test_shell(tbn.boardshell,
                        tbn.config.get("board.shell.support_printf", False),
                        tbn.config.get("board.shell.support_echo_e", False))
@@ -82,14 +78,12 @@ def selftest(tb):
     @tb.call
     def nested_boardshells(tb): #pylint: disable=unused-variable
         """ Test if tbot handles nested boardshells correctly """
-        with tb.new_boardshell() as tb1:
-            tb1.boardshell.poweron()
-
+        with tb.with_boardshell() as tb1:
             out = tb1.boardshell.exec0("echo Hello World")
             assert out == "Hello World\n", "%r != 'Hello World'" % out
 
-            with tb1.new_boardshell() as tb2:
-                tb2.boardshell.poweron()
-
-                out = tb1.boardshell.exec0("echo Hello World")
-                assert out == "Hello World\n", "%r != 'Hello World'" % out
+            @tb1.call
+            def inner(tb): #pylint: disable=unused-variable
+                with tb.with_boardshell() as tb2:
+                    out = tb2.boardshell.exec0("echo Hello World")
+                    assert out == "Hello World\n", "%r != 'Hello World'" % out

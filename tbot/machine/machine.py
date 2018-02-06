@@ -16,7 +16,7 @@ class Machine(abc.ABC):
     def _setup(self, tb):
         self._log = tb.log
 
-    def _destruct(self):
+    def _destruct(self, tb):
         pass
 
     @abc.abstractmethod

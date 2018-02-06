@@ -6,11 +6,10 @@ import tbot
 
 
 @tbot.testcase
-def test_boardshell(tb):
+def test_boardshell(tb: tbot.TBot):
     """ Test if the boardshell is working """
-    with tb.new_boardshell() as tbn:
-        tbn.boardshell.poweron()
+    with tb.with_boardshell() as tbn:
         tbn.boardshell.exec0("sleep 2")
         assert tbn.boardshell.exec0("echo SOMESTRING") == "SOMESTRING\n"
-        tbn.boardshell.exec0("coninfo")
-        tbn.boardshell.exec0("version")
+        # tbn.boardshell.exec0("coninfo")
+        # tbn.boardshell.exec0("version")
