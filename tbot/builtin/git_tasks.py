@@ -3,11 +3,14 @@ Testcases for working with git
 ------------------------------
 """
 import os
+import typing
 import tbot
 
 
 @tbot.testcase
-def clean_repo_checkout(tb, target=None, repo=None):
+def clean_repo_checkout(tb: tbot.TBot,
+                        target: typing.Optional[str] = None,
+                        repo: typing.Optional[str] = None) -> None:
     """
     Checkout a git repo if it does not exist yet and make sure there are
     no artifacts left from previous builds.
@@ -40,7 +43,9 @@ git clone {repo} {target}""", log_show=True)
 
 
 @tbot.testcase
-def apply_git_patches(tb, gitdir=None, patchdir=None):
+def apply_git_patches(tb: tbot.TBot,
+                      gitdir: typing.Optional[str] = None,
+                      patchdir: typing.Optional[str] = None) -> None:
     """
     Apply patchfiles inside patchdir onto the git repository in gitdir.
 

@@ -1,10 +1,13 @@
 import random
 import time
+import typing
+import paramiko
+import tbot
 from . import board
 
 #pylint: disable=too-many-instance-attributes
 class MachineBoardRlogin(board.MachineBoard):
-    def __init__(self):
+    def __init__(self) -> None:
         self.name = "unknown"
 
         self.power_cmd_on = ""
@@ -15,12 +18,12 @@ class MachineBoardRlogin(board.MachineBoard):
         self.uboot_prompt = "U-Boot> "
         self.uboot_timeout = 2
 
-        self.channel = None
-        self.noenv = None
+        self.channel: typing.Optional[paramiko.Channel] = None
+        self.noenv: typing.Optional[tbot.machine.Machine] = None
 
         super().__init__()
 
-    def _setup(self, tb):
+    def _setup(self, tb: 'tbot.TBot') -> None:
         super()._setup(tb)
         self.name = tb.config.get("board.shell.name", self.name)
 
@@ -57,14 +60,23 @@ class MachineBoardRlogin(board.MachineBoard):
         boot_stdout = self._read_to_prompt(None)
         # TODO: Add boot stdout to log
 
-    def _destruct(self, tb):
-        self.noenv.exec0(self.power_cmd_off, log_show_stdout=False)
-        self.channel.close()
+    def _destruct(self, tb: 'tbot.TBot') -> None:
+        if isinstance(self.noenv, tbot.machine.Machine):
+            self.noenv.exec0(self.power_cmd_off, log_show_stdout=False)
+        else:
+            raise Exception("noenv shell not initialized correctly, board might still be on!")
+        if isinstance(self.channel, paramiko.Channel):
+            self.channel.close()
+        else:
+            raise Exception("Channel not initilized")
 
-    def _read_to_prompt(self, log_event):
+    def _read_to_prompt(self, log_event: tbot.logger.LogEvent) -> str:
         buf = ""
 
         last_newline = 0
+
+        if not isinstance(self.channel, paramiko.Channel):
+            raise Exception("Channel not initilized")
 
         try:
             while True:
@@ -100,13 +112,20 @@ class MachineBoardRlogin(board.MachineBoard):
 
         return buf
 
-    def _command(self, command, log_event):
+    def _command(self,
+                 command: str,
+                 log_event: tbot.logger.LogEvent) -> str:
+        if not isinstance(self.channel, paramiko.Channel):
+            raise Exception("Channel not initilized")
+
         self.channel.send(f"{command}\n")
         stdout = self._read_to_prompt(log_event)[len(command)+1:-len(self.prompt)]
 
         return stdout
 
-    def _exec(self, command, log_event):
+    def _exec(self,
+              command: str,
+              log_event: tbot.logger.LogEvent) -> typing.Tuple[int, str]:
         log_event.prefix = "   >> "
         stdout = self._command(command, log_event)
 
@@ -116,5 +135,5 @@ class MachineBoardRlogin(board.MachineBoard):
         return retcode, stdout
 
     @property
-    def unique_machine_name(self):
+    def unique_machine_name(self) -> str:
         return f"board-rlogin-{self.name}"

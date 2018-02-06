@@ -1,6 +1,7 @@
 import abc
+import typing
 import paramiko
-import tbot.logger
+import tbot
 
 KWARGS_LIST = [
     ("lab.port", "port"),
@@ -10,44 +11,50 @@ KWARGS_LIST = [
     ]
 
 class Machine(abc.ABC):
-    def __init__(self):
-        self._log = "foo"
+    def __init__(self) -> None:
+        self._log: typing.Optional[tbot.logger.Logger] = None
 
-    def _setup(self, tb):
+    def _setup(self, tb: 'tbot.TBot') -> None:
         self._log = tb.log
 
-    def _destruct(self, tb):
+    def _destruct(self, tb: 'tbot.TBot') -> None:
         pass
 
     @abc.abstractmethod
-    def _exec(self, command, log_event):
+    def _exec(self,
+              command: str,
+              log_event: tbot.logger.LogEvent) -> typing.Tuple[int, str]:
         pass
 
     @abc.abstractproperty
-    def common_machine_name(self):
+    def common_machine_name(self) -> str:
         pass
 
     @abc.abstractproperty
-    def unique_machine_name(self):
+    def unique_machine_name(self) -> str:
         pass
 
-    def exec(self, command, log_show=True, log_show_stdout=True):
+    def exec(self,
+             command: str,
+             log_show: bool = True,
+             log_show_stdout: bool = True) -> typing.Tuple[int, str]:
         log_event = tbot.logger.ShellCommandLogEvent(self.unique_machine_name.split('-'),
                                                      command,
                                                      log_show=log_show,
                                                      log_show_stdout=log_show_stdout)
-        self._log.log(log_event)
+        if isinstance(self._log, tbot.logger.Logger):
+            self._log.log(log_event)
         ret = self._exec(command, log_event)
         log_event.finished(ret[0])
         return ret
 
-    def exec0(self, command, **kwargs):
+    def exec0(self, command: str, **kwargs: bool) -> str:
         ret = self.exec(command, **kwargs)
         assert ret[0] == 0, f"Command \"{command}\" failed:\n{ret[1]}"
         return ret[1]
 
 class MachineManager(dict):
-    def __init__(self, tb):
+    def __init__(self, tb: 'tbot.TBot') -> None:
         self.connection = paramiko.SSHClient()
         self.connection.load_system_host_keys()
 

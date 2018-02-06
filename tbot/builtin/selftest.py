@@ -2,9 +2,12 @@
 TBOT self test
 --------------
 """
+import typing
 import tbot
 
-def test_shell(shell, has_printf, has_echo_e):
+def test_shell(shell: tbot.machine.Machine,
+               has_printf: bool,
+               has_echo_e: bool) -> None:
     """
     Run a couple of tests on a shell
 
@@ -42,11 +45,11 @@ windows line ending\n", "%r does not match" % out
     assert return_code == 1, f"Shell returned {return_code} instead of 1"
 
 @tbot.testcase
-def selftest(tb):
+def selftest(tb: tbot.TBot) -> None:
     """ TBOT self test """
 
     @tb.call
-    def noenv_shell(tb): #pylint: disable=unused-variable
+    def noenv_shell(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
         """ Test noenv shell functionality """
         with tb.machine(tbot.machine.MachineLabNoEnv()) as tbn:
             test_shell(tbn.shell, True, True)
@@ -57,7 +60,7 @@ def selftest(tb):
             assert out == "\n", f"Environment variable was set when it shouldn't: {repr(out)}"
 
     @tb.call
-    def env_shell(tb): #pylint: disable=unused-variable
+    def env_shell(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
         """ Test env shell functionality """
         with tb.machine(tbot.machine.MachineLabEnv()) as tbn:
             test_shell(tbn.shell, True, True)
@@ -68,7 +71,7 @@ def selftest(tb):
             assert out == "avalue\n", f"Environment variable was not set correctly: {repr(out)}"
 
     @tb.call
-    def board_shell(tb): #pylint: disable=unused-variable
+    def board_shell(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
         """ Test board shell functionality """
         with tb.with_boardshell() as tbn:
             test_shell(tbn.boardshell,
@@ -76,7 +79,7 @@ def selftest(tb):
                        tbn.config.get("board.shell.support_echo_e", False))
 
     @tb.call
-    def nested_boardshells(tb): #pylint: disable=unused-variable
+    def nested_boardshells(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
         """ Test if tbot handles nested boardshells correctly """
         with tb.with_boardshell() as tb1:
             out = tb1.boardshell.exec0("echo Hello World")
@@ -85,7 +88,7 @@ def selftest(tb):
             bs1 = tb1.boardshell
 
             @tb1.call
-            def inner(tb): #pylint: disable=unused-variable
+            def inner(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
                 with tb.with_boardshell() as tb2:
                     out = tb2.boardshell.exec0("echo Hello World")
                     assert out == "Hello World\n", "%r != 'Hello World'" % out

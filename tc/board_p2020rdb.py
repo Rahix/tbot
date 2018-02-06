@@ -6,7 +6,7 @@ import os
 import tbot
 
 @tbot.testcase
-def board_p2020rdb(tb):
+def board_p2020rdb(tb: tbot.TBot) -> None:
     """
     P2020RDB-PCA board specific testcase to build U-Boot, flash it into
     NAND and run the U-Boot test suite
@@ -29,7 +29,7 @@ def board_p2020rdb(tb):
     tb.call("uboot_tests")
 
 @tbot.testcase
-def p2020rdb_install_uboot(tb):
+def p2020rdb_install_uboot(tb: tbot.TBot) -> None:
     """ Install U-Boot into NAND flash of the P2020RDB-PCA """
     tb.log.doc_log("""
 ## Installing U-Boot into NAND flash ##
@@ -49,7 +49,7 @@ Copy U-Boot into your tftp directory:
     size = tb.shell.exec0(f"printf '%x' `stat -c '%s' {filename}`")
 
     @tb.call
-    def install(tb): #pylint: disable=unused-variable
+    def install(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
         """ Actually flash to nand """
 
         tb.log.doc_log("Power on the board and download U-Boot via TFTP:\n")

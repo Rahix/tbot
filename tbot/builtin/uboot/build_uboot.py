@@ -7,7 +7,7 @@ import tbot
 
 
 @tbot.testcase
-def build_uboot(tb):
+def build_uboot(tb: tbot.TBot) -> None:
     """ Build U-Boot for the selected board """
 
     tb.log.doc_log("""
@@ -48,7 +48,7 @@ U-Boot using the `{defconfig}` defconfig.
         tb.call("apply_git_patches", gitdir=build_dir, patchdir=patchdir)
 
     @tb.call_then("toolchain_env", toolchain=toolchain)
-    def build(tb): #pylint: disable=unused-variable
+    def build(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
         """ The actual build """
         tb.log.doc_log("""
 ### The build process ###
@@ -59,7 +59,7 @@ Prepare the buildprocess by moving into the build directory and executing the fo
         tb.shell.exec0(f"make {defconfig}", log_show_stdout=False)
 
         @tb.call
-        def compile(tb): #pylint: disable=redefined-builtin, unused-variable
+        def compile(tb: tbot.TBot) -> None: #pylint: disable=redefined-builtin, unused-variable
             """ The actual compilation process """
             tb.log.doc_log("Start the compilation using\n")
             tb.shell.exec0(f"make -j4 all")

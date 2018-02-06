@@ -2,11 +2,15 @@
 Testcase to setup a toolchain environment
 -----------------------------------------
 """
+import typing
 import tbot
 
 
 @tbot.testcase
-def toolchain_env(tb, toolchain=None, and_then=None, params=None):
+def toolchain_env(tb: tbot.TBot,
+                  toolchain: typing.Optional[str] = None,
+                  and_then: typing.Union[str, typing.Callable, None] = None,
+                  params: typing.Optional[typing.Dict[str, typing.Any]] = None) -> None:
     """
     Setup a toolchain environment and call a testcase inside
 

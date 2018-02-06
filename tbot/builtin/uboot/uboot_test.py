@@ -6,7 +6,7 @@ import os
 import tbot
 
 @tbot.testcase
-def uboot_tests(tb: tbot.TBot):
+def uboot_tests(tb: tbot.TBot) -> None:
     """ Run U-Boot tests on real hardware """
     build_dir = os.path.join(
         tb.config.workdir,
@@ -56,7 +56,7 @@ testsuite using the following commands:\n")
             tbn.shell.exec0(f"export PATH={tbn.config.get('uboot.test_hooks')}:$PATH")
 
             @tbn.call
-            def run_tests(tb): #pylint: disable=unused-variable
+            def run_tests(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
                 """ Actual test run """
                 tb.shell.exec0(f"./test/py/test.py --bd {tb.config.get('uboot.test_boardname')}")
 
@@ -71,7 +71,7 @@ Install the necessary hooks and start the U-Boot testsuite using the following c
             tbn.shell.exec0(f"export PATH={tbn.config.get('uboot.test_hooks')}:$PATH")
 
             @tbn.call
-            def run_tests(tb): #pylint: disable=unused-variable
+            def run_tests_no_venv(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
                 """ Actual test run """
                 tb.shell.exec0(f"./test/py/test.py --bd {tb.config.get('uboot.test_boardname')}")
 
@@ -79,4 +79,5 @@ Install the necessary hooks and start the U-Boot testsuite using the following c
     tb.log.doc_log("The U-Boot testsuite, which has hopefully finished successfully by now, is \
 not capable of turning off the board itself. You have to do that manually:\n")
 
+    # TODO: Ensure, this is always done
     tb.machines["labhost-noenv"].exec0(power_cmd_off, log_show_stdout=False)

@@ -2,58 +2,58 @@
 import argparse
 import time
 import os
+import typing
 import traceback
 import sys
 import paramiko
 from tbot import config_parser
 from tbot import logger
 from tbot import testcase_collector
-from tbot import machine
+import tbot.machine
 
 from tbot.testcase_collector import testcase
 
 #pylint: disable=too-many-instance-attributes
 class TBot:
-    """ A tbot instance """
-    def __init__(self, config, testcases, log, new=True):
+    def __init__(self,
+                 config: config_parser.Config,
+                 testcases: dict,
+                 log: logger.Logger,
+                 new: bool = True) -> None:
         self.config = config
         self.testcases = testcases
         self.log = log
         self.layer = 0
         self.boardshell_inherited = False
-        self.machines = machine.MachineManager(self)
-        self.destruct_machines = list()
+        self.machines = tbot.machine.MachineManager(self)
+        self.destruct_machines: typing.List[tbot.machine.Machine] = list()
 
         if new:
-            labhost = machine.MachineLabNoEnv()
+            labhost = tbot.machine.MachineLabNoEnv()
             labhost._setup(self) #pylint: disable=protected-access
             self.machines[labhost.common_machine_name] = labhost
             self.machines[labhost.unique_machine_name] = labhost
             self.destruct_machines.append(labhost)
 
     @property
-    def shell(self):
+    def shell(self) -> tbot.machine.Machine:
         return self.machines["labhost"]
 
     @property
-    def boardshell(self):
+    def boardshell(self) -> tbot.machine.Machine:
         return self.machines["board"]
 
-    def call_then(self, tc, **kwargs):
-        """ Decorator for calling a calling a testcase with a closure
-            as a parameter """
-        def _decorator(f):
+    def call_then(self,
+                  tc: typing.Union[str, typing.Callable],
+                  **kwargs: typing.Any) -> typing.Callable:
+        def _decorator(f: typing.Callable) -> typing.Any:
             kwargs["and_then"] = f
             return self.call(tc, **kwargs)
         return _decorator
 
-    def call(self, tc, **kwargs):
-        """ Call a testcase
-
-            tc can be either a string or a closure.
-            If it is a string, the testcase with this name will be
-            called. If it is a closure, the closure will be called
-            as an implicit testcase """
+    def call(self,
+             tc: typing.Union[str, typing.Callable],
+             **kwargs: typing.Any) -> typing.Any:
         name = tc if isinstance(tc, str) else f"@{tc.__name__}"
         self.log.log(logger.TestcaseBeginLogEvent(name, self.layer))
         self.layer += 1
@@ -76,7 +76,9 @@ class TBot:
             self.log.write_logfile()
             sys.exit(1)
 
-    def machine(self, mach, overwrite=True):
+    def machine(self,
+                mach: tbot.machine.Machine,
+                overwrite: bool = True) -> 'TBot':
         new_inst = TBot(self.config, self.testcases, self.log, False)
         new_inst.layer = self.layer
 
@@ -90,27 +92,30 @@ class TBot:
             new_inst.destruct_machines.append(mach)
         return new_inst
 
-    def with_boardshell(self):
-        return self.machine(machine.MachineBoardRlogin(), overwrite=False)
+    def with_boardshell(self) -> 'TBot':
+        return self.machine(tbot.machine.MachineBoardRlogin(), overwrite=False)
 
-    def __enter__(self):
+    def __enter__(self) -> 'TBot':
         return self
 
-    def __exit__(self, exc_type, exc_value, trceback):
+    def __exit__(self,
+                 exc_type: typing.Any,
+                 exc_value: typing.Any,
+                 trceback: typing.Any) -> None:
         # Make sure logfile is written
         self.log.write_logfile()
         # Destruct all machines that need to be destructed
         for mach in self.destruct_machines:
             if mach.common_machine_name == "board":
                 self.log.log(logger.CustomLogEvent(
-                    ("boardshell_cleanup"),
+                    ["boardshell_cleanup"],
                     "\x1B[1mBOARD CLEANUP\x1B[0m",
                     logger.Verbosity.INFO))
             #pylint: disable=protected-access
             mach._destruct(self)
 
 
-def main():
+def main() -> None:
     """ Main entry point of tbot """
     parser = argparse.ArgumentParser(
         prog="tbot",
@@ -161,7 +166,8 @@ def main():
     tc_paths = [path.format(tbotpath=tbotpath) for path in args.tcdir]
     testcases = testcase_collector.get_testcases(tc_paths)
 
-    log = logger.Logger(logger.Verbosity.INFO + len(args.verbose),
+    verbosity = logger.Verbosity(logger.Verbosity.INFO + len(args.verbose))
+    log = logger.Logger(verbosity,
                         args.logfile)
 
     with TBot(config, testcases, log) as tb:
@@ -172,7 +178,7 @@ def main():
             tb.call(args.testcase)
         else:
             @tb.call
-            def default(tb): #pylint: disable=unused-variable
+            def default(tb: TBot) -> None: #pylint: disable=unused-variable
                 """ Default testcase is building U-Boot """
                 tb.call("build_uboot")
         tb.log.log(logger.TBotFinishedLogEvent(True))

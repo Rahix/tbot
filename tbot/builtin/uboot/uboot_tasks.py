@@ -6,7 +6,8 @@ import os
 import tbot
 
 @tbot.testcase
-def check_uboot_version(tb, uboot_bin="{builddir}/u-boot.bin"):
+def check_uboot_version(tb: tbot.TBot,
+                        uboot_bin: str = "{builddir}/u-boot.bin") -> None:
     """
     Check whether the version of U-Boot running on the board is the same
     as the one supplied as a binary file in uboot_bin.

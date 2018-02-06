@@ -1,11 +1,12 @@
 """ Tescase collector """
 import os
+import typing
 import importlib.util
 
-TBOT_TESTCASES = dict()
+TBOT_TESTCASES: typing.Dict[str, typing.Callable] = dict()
 
 
-def testcase(f):
+def testcase(f: typing.Callable) -> typing.Callable:
     """ Decorator for testcases """
     #pylint: disable=global-statement
     global TBOT_TESTCASES
@@ -15,12 +16,11 @@ def testcase(f):
     return f
 
 
-def get_testcases(paths=None):
-    """ Collect testcases """
-
+def get_testcases(paths: typing.Optional[typing.List[str]] = None) \
+        -> typing.Dict[str, typing.Callable]:
     if paths is None:
         paths = ["tc"]
-    sources = list()
+    sources: typing.List[str] = list()
     for path in paths:
         # skip nonexistant paths
         if os.path.isdir(path):
@@ -31,6 +31,9 @@ def get_testcases(paths=None):
     for source in sources:
         module_spec = importlib.util.spec_from_file_location("tc", source)
         module = importlib.util.module_from_spec(module_spec)
-        module_spec.loader.exec_module(module)
+        if isinstance(module_spec.loader, importlib.abc.Loader):
+            module_spec.loader.exec_module(module)
+        else:
+            raise Exception(f"Failed to load {source}")
 
     return TBOT_TESTCASES

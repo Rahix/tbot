@@ -1,9 +1,11 @@
 """ TBOT config parser """
 import random
+import typing
 import toml
 
 
-def apply_config(acc, cur):
+def apply_config(acc: typing.Dict[str, typing.Any],
+                 cur: typing.Dict[str, typing.Any]) -> typing.Dict[str, typing.Any]:
     """ Add keys from one config object to another """
     if isinstance(cur, dict):
         for k in cur:
@@ -20,11 +22,10 @@ def apply_config(acc, cur):
 
 
 class Config:
-    """ TBOT config """
-    def __init__(self, configs):
+    def __init__(self, configs: typing.List[str]) -> None:
         configs_parsed = [toml.load(config) for config in configs]
 
-        merged = dict()
+        merged: typing.Dict[str, typing.Any] = dict()
         for config in configs_parsed:
             merged = apply_config(merged, config)
 
@@ -40,8 +41,7 @@ class Config:
                     board=self.board_name,
                     lab=self.lab_name)
 
-    def try_get(self, key):
-        """ Try getting a config value. If it does not exist, return None """
+    def try_get(self, key: str) -> typing.Any:
         try:
             key_path = key.split(".")
             current = self.cfg
@@ -51,9 +51,7 @@ class Config:
         except KeyError:
             return None
 
-    def get(self, key, default=None):
-        """ Get a config value. If it does not exist, return default. If
-            default is None, raise an Exception """
+    def get(self, key: str, default: typing.Any = None) -> typing.Any:
         ret = self.try_get(key)
         if ret is None:
             if default is None:

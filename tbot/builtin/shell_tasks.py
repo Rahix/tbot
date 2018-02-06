@@ -3,10 +3,11 @@ Common shell operations
 -----------------------
 """
 import os
+import typing
 import tbot
 
 @tbot.testcase
-def setup_tftpdir(tb):
+def setup_tftpdir(tb: tbot.TBot) -> str:
     """
     Setup the tftp directory
 
@@ -22,7 +23,10 @@ def setup_tftpdir(tb):
     return tftpdir
 
 @tbot.testcase
-def cp_to_tftpdir(tb, name=None, dest_name=None, from_builddir=True):
+def cp_to_tftpdir(tb: tbot.TBot,
+                  name: typing.Optional[str] = None,
+                  dest_name: typing.Optional[str] = None,
+                  from_builddir: bool = True) -> None:
     """
     Copy a file into the tftp folder
 

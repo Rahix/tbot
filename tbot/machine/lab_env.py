@@ -1,19 +1,22 @@
 import random
+import typing
 import socket
+import paramiko
+import tbot
 from . import machine
 
 class MachineLabEnv(machine.Machine):
-    def __init__(self, prompt=None):
-        self.channel = None
+    def __init__(self, prompt: typing.Optional[str] = None) -> None:
+        self.channel: typing.Optional[paramiko.Channel] = None
 
-        self.prompt = prompt
-        if self.prompt is None:
-            # Set custom prompt to know when output ends
-            self.prompt = f"TBOT-{random.randint(100000, 999999)}>"
+        # Set custom prompt to know when output ends
+        self.prompt = f"TBOT-{random.randint(100000, 999999)}>"
+        if isinstance(prompt, str):
+            self.prompt = prompt
 
         super().__init__()
 
-    def _setup(self, tb):
+    def _setup(self, tb: 'tbot.TBot') -> None:
         conn = tb.machines.connection
         self.channel = conn.get_transport().open_session()
         self.channel.get_pty()
@@ -31,10 +34,13 @@ PS1='{self.prompt}'
 
         super()._setup(tb)
 
-    def _read_to_prompt(self, log_event):
+    def _read_to_prompt(self, log_event: tbot.logger.LogEvent) -> str:
         buf = ""
 
         last_newline = 0
+
+        if not isinstance(self.channel, paramiko.Channel):
+            raise Exception("Channel not initialized")
 
         try:
             while True:
@@ -70,7 +76,12 @@ PS1='{self.prompt}'
 
         return buf
 
-    def _command(self, command, log_event):
+    def _command(self,
+                 command: str,
+                 log_event: tbot.logger.LogEvent) -> str:
+        if not isinstance(self.channel, paramiko.Channel):
+            raise Exception("Channel not initialized")
+
         self.channel.send(f"{command}\n")
         try:
             # Read until next occurence of the prompt. Then cut of the first part,
@@ -83,7 +94,9 @@ PS1='{self.prompt}'
 
         return stdout
 
-    def _exec(self, command, log_event):
+    def _exec(self,
+              command: str,
+              log_event: tbot.logger.LogEvent) -> typing.Tuple[int, str]:
         stdout = self._command(command, log_event)
 
         # Get the return code
@@ -92,9 +105,9 @@ PS1='{self.prompt}'
         return retcode, stdout
 
     @property
-    def common_machine_name(self):
+    def common_machine_name(self) -> str:
         return "labhost"
 
     @property
-    def unique_machine_name(self):
+    def unique_machine_name(self) -> str:
         return "labhost-env"

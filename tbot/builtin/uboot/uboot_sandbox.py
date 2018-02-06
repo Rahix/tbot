@@ -6,7 +6,7 @@ import os
 import tbot
 
 @tbot.testcase
-def uboot_sandbox(tb):
+def uboot_sandbox(tb: tbot.TBot) -> None:
     """ Run U-Boot tests inside the sandbox """
     build_dir = os.path.join(
         tb.config.workdir,
@@ -44,7 +44,7 @@ Here we will run it on the host. Make sure all dependencies are met.  Refer to
             tbn.shell.exec0(f"make mrproper", log_show_stdout=False)
 
             @tbn.call
-            def run_tests(tb): #pylint: disable=unused-variable
+            def run_tests(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
                 """ Actual test run """
                 tb.shell.exec0(f"./test/py/test.py --bd sandbox --build")
     else:
@@ -53,11 +53,11 @@ does not have it installed, but it is recommended to do so.
 Clean the U-Boot repository and start the sandbox testsuite:
 """)
 
-        with tb.new_shell(tbot.shell.sh_env.ShellShEnv) as tbn:
+        with tb.machine(tbot.machine.MachineLabEnv()) as tbn:
             tbn.shell.exec0(f"cd {build_dir}")
             tbn.shell.exec0(f"make mrproper", log_show_stdout=False)
 
             @tbn.call
-            def run_tests(tb): #pylint: disable=unused-variable
+            def run_tests_no_venv(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
                 """ Actual test run """
                 tb.shell.exec0(f"./test/py/test.py --bd sandbox --build")

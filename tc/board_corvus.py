@@ -3,7 +3,7 @@ import tbot
 
 
 @tbot.testcase
-def board_corvus(tb):
+def board_corvus(tb: tbot.TBot) -> None:
     """ Corvus board specific testcase """
     assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
 

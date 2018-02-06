@@ -6,7 +6,7 @@ import tbot
 
 
 @tbot.testcase
-def test_boardshell(tb: tbot.TBot):
+def test_boardshell(tb: tbot.TBot) -> None:
     """ Test if the boardshell is working """
     with tb.with_boardshell() as tbn:
         tbn.boardshell.exec0("sleep 2")

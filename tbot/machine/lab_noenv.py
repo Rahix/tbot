@@ -1,11 +1,15 @@
+import typing
+import tbot
 from . import machine
 
 class MachineLabNoEnv(machine.Machine):
-    def _setup(self, tb):
+    def _setup(self, tb: 'tbot.TBot') -> None:
         self.conn = tb.machines.connection
         super()._setup(tb)
 
-    def _exec(self, command, log_event):
+    def _exec(self,
+              command: str,
+              log_event: tbot.logger.LogEvent) -> typing.Tuple[int, str]:
         channel = self.conn.get_transport().open_session()
         channel.set_combine_stderr(True)
         channel.exec_command(command)
@@ -21,9 +25,9 @@ class MachineLabNoEnv(machine.Machine):
         return ret_code, output
 
     @property
-    def common_machine_name(self):
+    def common_machine_name(self) -> str:
         return "labhost"
 
     @property
-    def unique_machine_name(self):
+    def unique_machine_name(self) -> str:
         return "labhost-noenv"
