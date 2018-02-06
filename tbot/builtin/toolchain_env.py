@@ -2,7 +2,7 @@
 Testcase to setup a toolchain environment
 -----------------------------------------
 """
-import tbot.shell.sh_env
+import tbot
 
 
 @tbot.testcase
