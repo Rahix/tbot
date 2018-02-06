@@ -24,7 +24,7 @@ class Machine(abc.ABC):
         pass
 
     @abc.abstractproperty
-    def default_machine_name(self):
+    def common_machine_name(self):
         pass
 
     @abc.abstractproperty

@@ -29,7 +29,7 @@ class TBot:
 
         labhost = lab_noenv.MachineLabNoEnv()
         labhost._setup(self) #pylint: disable=protected-access
-        self.machines[labhost.default_machine_name] = labhost
+        self.machines[labhost.common_machine_name] = labhost
         self.machines[labhost.unique_machine_name] = labhost
 
     @property
@@ -78,7 +78,7 @@ class TBot:
 
         #pylint: disable=protected-access
         mach._setup(new_inst)
-        new_inst.machines[mach.default_machine_name] = mach
+        new_inst.machines[mach.common_machine_name] = mach
         new_inst.machines[mach.unique_machine_name] = mach
         return new_inst
 

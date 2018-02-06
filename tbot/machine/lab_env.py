@@ -92,7 +92,7 @@ PS1='{self.prompt}'
         return retcode, stdout
 
     @property
-    def default_machine_name(self):
+    def common_machine_name(self):
         return "labhost"
 
     @property
