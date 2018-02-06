@@ -8,8 +8,6 @@ import tbot
 @tbot.testcase
 def uboot_sandbox(tb):
     """ Run U-Boot tests inside the sandbox """
-    assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
-
     build_dir = os.path.join(
         tb.config.workdir,
         f"u-boot-sandbox")
@@ -35,7 +33,7 @@ Here we will run it on the host. Make sure all dependencies are met.  Refer to
         # Setup python
         tb.shell.exec0(f"cd {build_dir}; virtualenv-2.7 venv", log_show_stdout=False)
 
-        with tb.new_shell(tbot.shell.sh_env.ShellShEnv) as tbn:
+        with tb.machine(tbot.machine.MachineLabEnv()) as tbn:
             tbn.shell.exec0(f"cd {build_dir}")
             tbn.shell.exec0(f"VIRTUAL_ENV_DISABLE_PROMPT=1 source venv/bin/activate",
                             log_show_stdout=False)

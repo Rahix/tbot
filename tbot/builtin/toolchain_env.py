@@ -14,8 +14,6 @@ def toolchain_env(tb, toolchain=None, and_then=None, params=None):
     :param and_then: What testcase to call inside the env (str/function)
     :param params: Parameters for the testcase (dict)
     """
-    assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
-
     if params is None:
         params = dict()
 
@@ -35,7 +33,7 @@ Setup the `{toolchain}` toolchain by calling its env script:
 """)
 
     # Create an env shell
-    with tb.new_shell(tbot.shell.sh_env.ShellShEnv) as tbn:
+    with tb.machine(tbot.machine.MachineLabEnv()) as tbn:
         tbn.shell.exec0(f"unset LD_LIBRARY_PATH")
         tbn.shell.exec0(f"source {toolchain_script}")
 

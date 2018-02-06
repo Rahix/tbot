@@ -41,10 +41,10 @@ class LogEvent(abc.ABC):
         self._dict["type"] = self._event_type
         self._dict["time"] = time.ctime()
 
-    def log_print(self, msg):
+    def log_print(self, msg, prefix=True):
         """ Try printing something to stdout. Whether that actually happens
             depends on the verbosity setting """
-        self._log.log_print(msg, self)
+        self._log.log_print(msg, self, prefix)
 
 
 class ShellCommandLogEvent(LogEvent):
@@ -110,7 +110,7 @@ class TestcaseBeginLogEvent(LogEvent):
         for _ in range(0, self.layer):
             msg += "│   "
         msg += f"├─Calling \x1B[1;34m{self.tc}\x1B[0m ... "
-        self.log_print(msg)
+        self.log_print(msg, False)
 
     @property
     def _verbosity_level(self):
@@ -134,7 +134,7 @@ class TestcaseEndLogEvent(LogEvent):
         for _ in range(0, self.layer):
             msg += "│   "
         msg += "│   └─\x1B[1;32mDone.\x1B[0m"
-        self.log_print(msg)
+        self.log_print(msg, False)
 
     @property
     def _verbosity_level(self):
@@ -154,9 +154,9 @@ class TBotFinishedLogEvent(LogEvent):
 
     def _init(self):
         if self.success:
-            self.log_print("└─Done, \x1B[1;32mSUCCESS\x1B[0m\n")
+            self.log_print("└─Done, \x1B[1;32mSUCCESS\x1B[0m\n", False)
         else:
-            self.log_print("└─Done, \x1B[1;31mFAILURE\x1B[0m\n")
+            self.log_print("└─Done, \x1B[1;31mFAILURE\x1B[0m\n", False)
 
     @property
     def _verbosity_level(self):
@@ -198,6 +198,7 @@ class Logger:
         self.logevents = list()
         self.verbosity = verbosity
         self.logfile = logfile
+        self.layer = 0
 
     def log(self, ev):
         """ Log a log event """
@@ -228,9 +229,15 @@ class Logger:
                   open(self.logfile if filename is None else filename, "w"),
                   indent=4)
 
-    def log_print(self, msg, ev):
+    def log_print(self, msg, ev, prefix=True):
         """ Try printing to stdout. This is influenced by the
             verbosity level """
+
+        msg_prefix = ""
+        if prefix is True:
+            for _ in range(0, self.layer):
+                msg_prefix += "│   "
+            msg_prefix += f"├─"
         #pylint: disable=protected-access
         if ev._verbosity_level <= self.verbosity:
-            print(msg)
+            print(msg_prefix + msg)

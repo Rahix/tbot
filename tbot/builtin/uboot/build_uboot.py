@@ -9,7 +9,6 @@ import tbot
 @tbot.testcase
 def build_uboot(tb):
     """ Build U-Boot for the selected board """
-    assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
 
     tb.log.doc_log("""
 ## Build U-Boot ##

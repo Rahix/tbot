@@ -16,8 +16,6 @@ def clean_repo_checkout(tb, target=None, repo=None):
     :param repo: Where the git repository can be found
     :returns: Nothing
     """
-    assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
-
     assert target is not None, "No target supplied"
     assert repo is not None, "No repository supplied"
 
@@ -50,8 +48,6 @@ def apply_git_patches(tb, gitdir=None, patchdir=None):
     :param patchdir: Path to the folder containing the patches
     :returns: Nothing
     """
-    assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
-
     assert gitdir is not None, "No gitdir supplied"
     assert patchdir is not None, "No patchdir supplied"
 

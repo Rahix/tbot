@@ -82,8 +82,14 @@ def selftest(tb):
             out = tb1.boardshell.exec0("echo Hello World")
             assert out == "Hello World\n", "%r != 'Hello World'" % out
 
+            bs1 = tb1.boardshell
+
             @tb1.call
             def inner(tb): #pylint: disable=unused-variable
                 with tb.with_boardshell() as tb2:
                     out = tb2.boardshell.exec0("echo Hello World")
                     assert out == "Hello World\n", "%r != 'Hello World'" % out
+
+                    bs2 = tb2.boardshell
+
+                    assert bs1 is bs2, "%r is not %r" % (bs1, bs2)

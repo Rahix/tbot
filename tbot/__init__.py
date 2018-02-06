@@ -17,18 +17,21 @@ from tbot.testcase_collector import testcase
 #pylint: disable=too-many-instance-attributes
 class TBot:
     """ A tbot instance """
-    def __init__(self, config, testcases, log):
+    def __init__(self, config, testcases, log, new=True):
         self.config = config
         self.testcases = testcases
         self.log = log
         self.layer = 0
         self.boardshell_inherited = False
         self.machines = machine.MachineManager(self)
+        self.destruct_machines = list()
 
-        labhost = machine.MachineLabNoEnv()
-        labhost._setup(self) #pylint: disable=protected-access
-        self.machines[labhost.common_machine_name] = labhost
-        self.machines[labhost.unique_machine_name] = labhost
+        if new:
+            labhost = machine.MachineLabNoEnv()
+            labhost._setup(self) #pylint: disable=protected-access
+            self.machines[labhost.common_machine_name] = labhost
+            self.machines[labhost.unique_machine_name] = labhost
+            self.destruct_machines.append(labhost)
 
     @property
     def shell(self):
@@ -56,6 +59,7 @@ class TBot:
         name = tc if isinstance(tc, str) else f"@{tc.__name__}"
         self.log.log(logger.TestcaseBeginLogEvent(name, self.layer))
         self.layer += 1
+        self.log.layer = self.layer
         start_time = time.monotonic()
         try:
             if isinstance(tc, str):
@@ -63,6 +67,7 @@ class TBot:
             else:
                 retval = tc(self, **kwargs)
             self.layer -= 1
+            self.log.layer = self.layer
             run_duration = time.monotonic() - start_time
             self.log.log(logger.TestcaseEndLogEvent(name, self.layer, run_duration))
             return retval
@@ -73,30 +78,22 @@ class TBot:
             self.log.write_logfile()
             sys.exit(1)
 
-    def machine(self, mach):
-        new_inst = TBot(self.config, self.testcases, self.log)
+    def machine(self, mach, overwrite=True):
+        new_inst = TBot(self.config, self.testcases, self.log, False)
         new_inst.layer = self.layer
 
-        # TODO: Inherit list of machines
+        for machine_name in self.machines.keys():
+            new_inst.machines[machine_name] = self.machines[machine_name]
 
-        mach._setup(new_inst) #pylint: disable=protected-access
-        new_inst.machines[mach.common_machine_name] = mach
-        new_inst.machines[mach.unique_machine_name] = mach
+        if overwrite or not mach.common_machine_name in new_inst.machines:
+            mach._setup(new_inst) #pylint: disable=protected-access
+            new_inst.machines[mach.common_machine_name] = mach
+            new_inst.machines[mach.unique_machine_name] = mach
+            new_inst.destruct_machines.append(mach)
         return new_inst
 
     def with_boardshell(self):
-        new_inst = TBot(self.config, self.testcases, self.log)
-        new_inst.layer = self.layer
-
-        # TODO: Inherit list of machines
-
-        if "board" not in new_inst.machines:
-            board = machine.MachineBoardRlogin()
-            board._setup(new_inst) #pylint: disable=protected-access
-            new_inst.machines[board.common_machine_name] = board
-            new_inst.machines[board.unique_machine_name] = board
-
-        return new_inst
+        return self.machine(machine.MachineBoardRlogin(), overwrite=False)
 
     def __enter__(self):
         return self
@@ -104,18 +101,15 @@ class TBot:
     def __exit__(self, exc_type, exc_value, trceback):
         # Make sure logfile is written
         self.log.write_logfile()
-        # Try boardshell
-        # TODO: Cleanup all machines that were not inherited
-        if "board" in self.machines and self.boardshell_inherited is False:
-            msg = ""
-            for _ in range(0, self.layer):
-                msg += "│   "
-            self.log.log(logger.CustomLogEvent(
-                ("boardshell_cleanup"),
-                msg + "├─\x1B[1mBOARD CLEANUP\x1B[0m",
-                logger.Verbosity.INFO))
+        # Destruct all machines that need to be destructed
+        for mach in self.destruct_machines:
+            if mach.common_machine_name == "board":
+                self.log.log(logger.CustomLogEvent(
+                    ("boardshell_cleanup"),
+                    "\x1B[1mBOARD CLEANUP\x1B[0m",
+                    logger.Verbosity.INFO))
             #pylint: disable=protected-access
-            self.boardshell._destruct(self)
+            mach._destruct(self)
 
 
 def main():
