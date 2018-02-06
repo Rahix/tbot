@@ -20,5 +20,10 @@ class MachineLabNoEnv(tbot.machine.Machine):
             log_event.add_line(line)
         return ret_code, output
 
+    @property
     def default_machine_name(self):
         return "labhost"
+
+    @property
+    def unique_machine_name(self):
+        return "labhost-noenv"

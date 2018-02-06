@@ -59,7 +59,7 @@ def selftest(tb):
     @tb.call
     def env_shell(tb): #pylint: disable=unused-variable
         """ Test env shell functionality """
-        with tb.machine(tbot.machine.lab_noenv.MachineLabNoEnv()) as tbn:
+        with tb.machine(tbot.machine.lab_env.MachineLabEnv()) as tbn:
             test_shell(tbn.shell, True, True)
 
             # Test if environment is actually working

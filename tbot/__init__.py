@@ -12,6 +12,7 @@ from tbot.shell import sh_noenv
 from tbot import testcase_collector
 from tbot import machine
 from tbot.machine import lab_noenv
+from tbot.machine import lab_env
 
 from tbot.testcase_collector import testcase
 
@@ -28,7 +29,8 @@ class TBot:
 
         labhost = lab_noenv.MachineLabNoEnv()
         labhost._setup(self) #pylint: disable=protected-access
-        self.machines["labhost"] = labhost
+        self.machines[labhost.default_machine_name] = labhost
+        self.machines[labhost.unique_machine_name] = labhost
 
     @property
     def shell(self):
@@ -77,6 +79,7 @@ class TBot:
         #pylint: disable=protected-access
         mach._setup(new_inst)
         new_inst.machines[mach.default_machine_name] = mach
+        new_inst.machines[mach.unique_machine_name] = mach
         return new_inst
 
     def new_boardshell(self):

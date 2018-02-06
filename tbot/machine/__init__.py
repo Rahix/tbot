@@ -27,8 +27,12 @@ class Machine(abc.ABC):
     def default_machine_name(self):
         pass
 
+    @abc.abstractproperty
+    def unique_machine_name(self):
+        pass
+
     def exec(self, command, log_show=True, log_show_stdout=True):
-        log_event = tbot.logger.ShellCommandLogEvent(["TODO"],
+        log_event = tbot.logger.ShellCommandLogEvent(self.unique_machine_name.split('-'),
                                                      command,
                                                      log_show=log_show,
                                                      log_show_stdout=log_show_stdout)
