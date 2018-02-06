@@ -11,8 +11,6 @@ from tbot import logger
 from tbot.shell import sh_noenv
 from tbot import testcase_collector
 from tbot import machine
-from tbot.machine import lab_noenv
-from tbot.machine import lab_env
 
 from tbot.testcase_collector import testcase
 
@@ -27,7 +25,7 @@ class TBot:
         self.boardshell_inherited = False
         self.machines = machine.MachineManager(self)
 
-        labhost = lab_noenv.MachineLabNoEnv()
+        labhost = machine.MachineLabNoEnv()
         labhost._setup(self) #pylint: disable=protected-access
         self.machines[labhost.common_machine_name] = labhost
         self.machines[labhost.unique_machine_name] = labhost

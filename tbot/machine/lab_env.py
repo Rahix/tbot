@@ -1,8 +1,8 @@
 import random
 import socket
-import tbot.machine
+from . import machine
 
-class MachineLabEnv(tbot.machine.Machine):
+class MachineLabEnv(machine.Machine):
     def __init__(self, prompt=None):
         self.channel = None
 

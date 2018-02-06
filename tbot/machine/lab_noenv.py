@@ -1,6 +1,6 @@
-import tbot.machine
+from . import machine
 
-class MachineLabNoEnv(tbot.machine.Machine):
+class MachineLabNoEnv(machine.Machine):
     def _setup(self, tb):
         self.conn = tb.machines.connection
         super()._setup(tb)
