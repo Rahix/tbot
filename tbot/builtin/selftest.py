@@ -54,6 +54,11 @@ def selftest(tb):
             assert st == ('sh', 'noenv'), "%r is not a noenv shell" % st
             test_shell(tbn.shell, True, True)
 
+            # Test if environment is actually not shared
+            tbn.shell.exec0("FOOBAR='avalue'")
+            out = tbn.shell.exec0("echo $FOOBAR")
+            assert out == "\n", f"Environment variable was set when it shouldn't: {repr(out)}"
+
     @tb.call
     def env_shell(tb): #pylint: disable=unused-variable
         """ Test env shell functionality """
@@ -61,6 +66,11 @@ def selftest(tb):
             st = tbn.shell.shell_type
             assert st == ('sh', 'env'), "%r is not an env shell" % st
             test_shell(tbn.shell, True, True)
+
+            # Test if environment is actually working
+            tbn.shell.exec0("FOOBAR='avalue'")
+            out = tbn.shell.exec0("echo $FOOBAR")
+            assert out == "avalue\n", f"Environment variable was not set correctly: {repr(out)}"
 
     @tb.call
     def board_shell(tb): #pylint: disable=unused-variable
