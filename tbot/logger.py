@@ -1,4 +1,7 @@
-""" TBOT Logger """
+"""
+Logger
+------
+"""
 import abc
 import time
 import json
@@ -236,7 +239,7 @@ class Logger:
             dict_values={"text": text, "title": title})
         self.log(ev)
 
-    def write_logfile(self, filename: typing.Union[str, None] = None) -> None:
+    def write_logfile(self, filename: typing.Optional[str] = None) -> None:
         """ Write log to a file """
         #pylint: disable=protected-access
         json.dump([ev._dict for ev in self.logevents],

@@ -1,4 +1,7 @@
-""" TBOT config parser """
+"""
+Config parser
+-------------
+"""
 import random
 import typing
 import toml
@@ -22,6 +25,7 @@ def apply_config(acc: typing.Dict[str, typing.Any],
 
 
 class Config:
+    """ Configuration container """
     def __init__(self, configs: typing.List[str]) -> None:
         configs_parsed = [toml.load(config) for config in configs]
 
@@ -42,6 +46,12 @@ class Config:
                     lab=self.lab_name)
 
     def try_get(self, key: str) -> typing.Any:
+        """
+        Try accessing a config key
+
+        :param key: The key to be retrieved
+        :returns: The value associated with the key or None if the key was not found
+        """
         try:
             key_path = key.split(".")
             current = self.cfg
@@ -52,6 +62,14 @@ class Config:
             return None
 
     def get(self, key: str, default: typing.Any = None) -> typing.Any:
+        """
+        Get a config key or return a default value
+
+        :param key: The key to be retrieved
+        :param default: The default value
+        :returns: The value associated with the key or default if the key was not
+            found. If default is None, this will raise an exception.
+        """
         ret = self.try_get(key)
         if ret is None:
             if default is None:

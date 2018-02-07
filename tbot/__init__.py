@@ -1,4 +1,7 @@
-""" TBOT """
+"""
+TBot
+----
+"""
 import argparse
 import time
 import os
@@ -15,6 +18,19 @@ from tbot.testcase_collector import testcase
 
 #pylint: disable=too-many-instance-attributes
 class TBot:
+    """
+    Main class of TBOT
+
+    :param config: A configuration to be used
+    :param testcase: Testcases available to this instance
+    :param log: The logger that TBot should use
+    :param new: Whether this is a new instance that should create a noenv machine.
+        Always ``True`` unless you know what you are doing.
+    :ivar config: :class:`tbot.config_parser.Config()`
+    :ivar testcases: All available testcases
+    :ivar log: :class:`tbot.logger.Logger()`
+    :ivar machines: All available machines :class:`tbot.machine.machine.MachineManager()`
+    """
     def __init__(self,
                  config: config_parser.Config,
                  testcases: dict,
@@ -24,7 +40,8 @@ class TBot:
         self.testcases = testcases
         self.log = log
         self.layer = 0
-        self.boardshell_inherited = False
+
+        # TODO: Fix multiple connections being opened
         self.machines = tbot.machine.MachineManager(self)
         self.destruct_machines: typing.List[tbot.machine.Machine] = list()
 
@@ -37,15 +54,24 @@ class TBot:
 
     @property
     def shell(self) -> tbot.machine.Machine:
+        """ The default labhost machine """
         return self.machines["labhost"]
 
     @property
     def boardshell(self) -> tbot.machine.Machine:
+        """ The default board machine """
         return self.machines["board"]
 
     def call_then(self,
                   tc: typing.Union[str, typing.Callable],
                   **kwargs: typing.Any) -> typing.Callable:
+        """
+        Decorator to call a testcase with a function as a payload ("and_then" argument)
+
+        :param tc: The testcase to call
+        :param kwargs: Additional arguments for the testcase
+        :returns: The decorated function
+        """
         def _decorator(f: typing.Callable) -> typing.Any:
             kwargs["and_then"] = f
             return self.call(tc, **kwargs)
@@ -54,6 +80,13 @@ class TBot:
     def call(self,
              tc: typing.Union[str, typing.Callable],
              **kwargs: typing.Any) -> typing.Any:
+        """
+        Call a testcase
+
+        :param tc: The testcase to be called. Can either be a string or a callable
+        :param kwargs: Additional arguments for the testcase
+        :returns: The return value from the testcase
+        """
         name = tc if isinstance(tc, str) else f"@{tc.__name__}"
         self.log.log(logger.TestcaseBeginLogEvent(name, self.layer))
         self.layer += 1
@@ -79,6 +112,14 @@ class TBot:
     def machine(self,
                 mach: tbot.machine.Machine,
                 overwrite: bool = True) -> 'TBot':
+        """
+        Create a new TBot instance with a new machine
+
+        :param mach: The machine to be added in the new instance
+        :param overwrite: Whether overwriting an existing machine is allowed
+        :returns: The new TBot instance, which has to be used inside a with
+            statement
+        """
         new_inst = TBot(self.config, self.testcases, self.log, False)
         new_inst.layer = self.layer
 
@@ -93,6 +134,12 @@ class TBot:
         return new_inst
 
     def with_boardshell(self) -> 'TBot':
+        """
+        Shortcut to create a new TBot instance with a boardmachine
+
+        :returns: The new TBot instance, which has to be used inside a with
+            statement
+        """
         return self.machine(tbot.machine.MachineBoardRlogin(), overwrite=False)
 
     def __enter__(self) -> 'TBot':
@@ -102,6 +149,7 @@ class TBot:
                  exc_type: typing.Any,
                  exc_value: typing.Any,
                  trceback: typing.Any) -> None:
+        # TODO: Add a destruct method which is called from here
         # Make sure logfile is written
         self.log.write_logfile()
         # Destruct all machines that need to be destructed

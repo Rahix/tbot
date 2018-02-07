@@ -13,7 +13,7 @@ def check_uboot_version(tb: tbot.TBot,
     as the one supplied as a binary file in uboot_bin.
 
     :param uboot_bin: Path to the U-Boot binary. "{builddir}" will be replaced
-                      with the U-Boot build dir used by tbot. (str)
+                      with the U-Boot build dir used by tbot.
     :returns: Nothing
     """
     with tb.with_boardshell() as tbn:

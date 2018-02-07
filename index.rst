@@ -18,6 +18,7 @@ support for U-Boot.
    doc/getting-started
    doc/configuration
    doc/logging
+   doc/tbot
    doc/builtins
    doc/examples
 

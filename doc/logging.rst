@@ -45,8 +45,8 @@ as an ``asctime()``. Other keys may exist, depending on the event type. The foll
 
 As a demonstration of how this log might be used, take a look at the generate scripts:
 
-.. automodule:: generate_documentation
+.. automodule:: generators.generate_documentation
    :members:
 
-.. automodule:: generate_htmllog
+.. automodule:: generators.generate_htmllog
    :members:

@@ -1,8 +1,13 @@
+"""
+Labhost machine without environment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""
 import typing
 import tbot
 from . import machine
 
 class MachineLabNoEnv(machine.Machine):
+    """ Labhost machine without environment """
     def _setup(self, tb: 'tbot.TBot') -> None:
         self.conn = tb.machines.connection
         super()._setup(tb)
@@ -26,8 +31,10 @@ class MachineLabNoEnv(machine.Machine):
 
     @property
     def common_machine_name(self) -> str:
+        """ Common name of this machine, always ``"labhost"`` """
         return "labhost"
 
     @property
     def unique_machine_name(self) -> str:
+        """ Unique name of this machine, always ``"labhost-noenv"`` """
         return "labhost-noenv"

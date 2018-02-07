@@ -2,7 +2,6 @@
 TBOT self test
 --------------
 """
-import typing
 import tbot
 
 def test_shell(shell: tbot.machine.Machine,
@@ -11,9 +10,9 @@ def test_shell(shell: tbot.machine.Machine,
     """
     Run a couple of tests on a shell
 
-    :param shell: The shell to run commands on instanceof(tbot.shell.Shell)
-    :param has_printf: Wether the shell supports printf (bool)
-    :param has_echo_e: Wether the shell supports echo -e (bool)
+    :param shell: The shell to run commands on
+    :param has_printf: Wether the shell supports printf
+    :param has_echo_e: Wether the shell supports echo -e
     :returns: Nothing
     :raises AssertionError: If a test failed
     """

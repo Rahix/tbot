@@ -14,9 +14,9 @@ def toolchain_env(tb: tbot.TBot,
     """
     Setup a toolchain environment and call a testcase inside
 
-    :param toolchain: Which toolchain to use (str)
-    :param and_then: What testcase to call inside the env (str/function)
-    :param params: Parameters for the testcase (dict)
+    :param toolchain: Which toolchain to use
+    :param and_then: What testcase to call inside the env
+    :param params: Parameters for the testcase
     """
     if params is None:
         params = dict()

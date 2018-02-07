@@ -1,3 +1,7 @@
+"""
+Labhost machine with environment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""
 import random
 import typing
 import socket
@@ -6,6 +10,7 @@ import tbot
 from . import machine
 
 class MachineLabEnv(machine.Machine):
+    """ Labhost machine with environment """
     def __init__(self, prompt: typing.Optional[str] = None) -> None:
         self.channel: typing.Optional[paramiko.Channel] = None
 
@@ -106,8 +111,10 @@ PS1='{self.prompt}'
 
     @property
     def common_machine_name(self) -> str:
+        """ Common name of this machine, always ``"labhost"`` """
         return "labhost"
 
     @property
     def unique_machine_name(self) -> str:
+        """ Unique name of this machine, always ``"labhost-env"`` """
         return "labhost-env"

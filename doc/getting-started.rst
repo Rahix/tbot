@@ -37,26 +37,25 @@ following::
     import tbot
 
     @tbot.testcase
-    def shell_interaction(tb):
-        assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
-
+    def shell_interaction(tb: tbot.TBot) -> None:
         # exec0 executes a command and expects a return code of 0
         # and will raise an exception otherwise
         out = tb.shell.exec0("echo Hello World")
         assert out == "Hello World\n", "%r is not Hello World" % out
 
         # exec executes a command and returns a tuple (ret_code, output)
-        ret_code, _ = tb.shell.exec0("false")
+        ret_code, _ = tb.shell.exec("false")
         assert ret_code == 1, "%r is not 1" % ret_code
 
-By default, the tbot shell is a ``noenv`` shell. That means, each command is
-run in an isolated environment and setting environment vars or changing the
-working directory will not affect other commands. You should use this type of
-shell, whenever possible as this reduces sideeffects and with that minimizes the
-risk of strange bugs occuring.
+There are a few things happening here: First of all, ``tb.shell`` is just a shortcut
+for ``tb.machines["labhost"]``, which, by default but not always, is mapped to
+``tb.machines["labhost-noenv"]``. ``noenv`` means, each command is run in an isolated
+environment and setting environment vars or changing the working directory will
+not affect other commands. You should use this type of machine, whenever possible as
+this reduces sideeffects and with that minimizes the risk of strange bugs occuring.
 
 In some cases however, you need a shell, that keeps its environment and working
-directory. For that, tbot has an ``env`` shell. You can use it like this::
+directory. For that, tbot has an ``env`` machine. You can use it like this::
 
     import tbot
 
@@ -64,27 +63,25 @@ directory. For that, tbot has an ``env`` shell. You can use it like this::
     def envshell_demo(tb):
         assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
 
-        with tb.new_shell(tbot.shell.sh_env.ShellShEnv) as tbn:
+        with tb.machine(tbot.machine.MachineLabEnv()) as tbn:
             tbn.shell.exec0("FOO='bar'")
 
             out = tbn.shell.exec0("echo $FOO")
             assert out == "bar\n"
 
 
-Board shell interaction
------------------------
+Board interaction
+-----------------
 
 In a similar fashion, you can interact with the U-Boot shell of your board.
-tbot will automatically turn on the board and make sure it is turned off, when
+TBot will automatically turn on the board and make sure it is turned off, when
 your testcase is done. It might be looking like the following::
 
     import tbot
 
     @tbot.testcase
     def boardshell_demo(tb):
-        with tb.new_boardshell() as tbn:
-            tbn.boardshell.poweron()
-
+        with tb.with_boardshell() as tbn:
             tbn.boardshell.exec0("version")
 
         # Board is powered off after the end of the with statement

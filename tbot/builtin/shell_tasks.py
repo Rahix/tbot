@@ -30,10 +30,10 @@ def cp_to_tftpdir(tb: tbot.TBot,
     """
     Copy a file into the tftp folder
 
-    :param name: Name of the file if from_builddir is True, else path to the file (str)
-    :param dest_name: Name of the file inside the tftp folder (str)
+    :param name: Name of the file if from_builddir is True, else path to the file
+    :param dest_name: Name of the file inside the tftp folder
     :param from_builddir: Wether name is a file inside the builddir or the path to
-        an external file (bool)
+        an external file
     :returns: Nothing
     """
     assert name is not None, "Trying to copy nothing"

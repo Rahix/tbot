@@ -1,3 +1,7 @@
+"""
+Board machine for rlogin like interfaces
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""
 import random
 import time
 import typing
@@ -7,6 +11,7 @@ from . import board
 
 #pylint: disable=too-many-instance-attributes
 class MachineBoardRlogin(board.MachineBoard):
+    """ Board machine for rlogin like interfaces """
     def __init__(self) -> None:
         self.name = "unknown"
 
@@ -136,4 +141,5 @@ class MachineBoardRlogin(board.MachineBoard):
 
     @property
     def unique_machine_name(self) -> str:
+        """ Unique name of this machine, ``"board-rlogin-<boardshell-name>"`` """
         return f"board-rlogin-{self.name}"

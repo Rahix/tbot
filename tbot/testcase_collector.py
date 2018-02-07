@@ -1,4 +1,7 @@
-""" Tescase collector """
+"""
+Tescase collector
+-----------------
+"""
 import os
 import typing
 import importlib.util
