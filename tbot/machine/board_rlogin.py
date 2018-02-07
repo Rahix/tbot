@@ -63,7 +63,14 @@ class MachineBoardRlogin(board.MachineBoard):
         self.channel.send("\n")
         self.prompt = self.uboot_prompt
         boot_stdout = self._read_to_prompt(None)
-        # TODO: Add boot stdout to log
+
+        ev = tbot.logger.CustomLogEvent(
+            ["board", "boot"],
+            stdout="\x1B[1mBOARD POWERUP\x1B[0m",
+            verbosity=tbot.logger.Verbosity.INFO,
+            dict_values={"log": boot_stdout})
+
+        tb.log.log(ev)
 
     def _destruct(self, tb: 'tbot.TBot') -> None:
         if isinstance(self.noenv, tbot.machine.Machine):

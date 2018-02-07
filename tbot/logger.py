@@ -323,7 +323,7 @@ class Logger:
         #pylint: disable=protected-access
         if ev._verbosity_level <= self.verbosity:
             for i, line in enumerate(msg.split('\n')):
-                msg_prefix = ""
+                msg_prefix = "\x1B[0m"
                 if prefix is True:
                     for _ in range(0, self.layer):
                         msg_prefix += "│   "
