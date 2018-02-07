@@ -146,11 +146,11 @@ class TBot:
     def __enter__(self) -> 'TBot':
         return self
 
-    def __exit__(self,
-                 exc_type: typing.Any,
-                 exc_value: typing.Any,
-                 trceback: typing.Any) -> None:
-        # TODO: Add a destruct method which is called from here
+    def destruct(self) -> None:
+        """
+        Destruct this TBot instance and all associated machines. This
+        method will be called automatically when exiting a with statement.
+        """
         # Make sure logfile is written
         self.log.write_logfile()
         # Destruct all machines that need to be destructed
@@ -162,6 +162,12 @@ class TBot:
                     logger.Verbosity.INFO))
             #pylint: disable=protected-access
             mach._destruct(self)
+
+    def __exit__(self,
+                 exc_type: typing.Any,
+                 exc_value: typing.Any,
+                 trceback: typing.Any) -> None:
+        self.destruct()
 
 
 def main() -> None:
