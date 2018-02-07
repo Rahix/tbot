@@ -88,6 +88,7 @@ def selftest(tb: tbot.TBot) -> None:
 
             @tb1.call
             def inner(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
+                """ Second attempt of starting a boardshell """
                 with tb.with_boardshell() as tb2:
                     out = tb2.boardshell.exec0("echo Hello World")
                     assert out == "Hello World\n", "%r != 'Hello World'" % out
@@ -95,3 +96,38 @@ def selftest(tb: tbot.TBot) -> None:
                     bs2 = tb2.boardshell
 
                     assert bs1 is bs2, "%r is not %r" % (bs1, bs2)
+
+    @tb.call
+    def logger(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
+        """ Test logger """
+        text = """\
+Esse eligendi optio reiciendis. Praesentium possimus et autem.
+Ea in odit sit deleniti est nemo. Distinctio aspernatur facere aut culpa.
+
+Sit veniam ducimus nihil. Totam enim consequuntur vel assumenda quisquam.
+Voluptates quidem fugit qui laudantium quia perspiciatis voluptatem
+expedita. Placeat et possimus iste explicabo asperiores ipsum.
+
+Magnam commodi libero molestiae. A sequi et qui architecto magni quos.
+Rerum consequatur tempora quo nostrum qui. Sint aperiam non quia
+consectetur numquam.
+
+Facilis dolorem voluptate laudantium vero quis. Voluptatem quia ipsa
+quo pariatur iusto odio omnis. Nulla necessitatibus sapiente et
+perferendis dolor. Tempore at ipsum eos molestiae nobis error corporis."""
+
+        custom_ev = tbot.logger.CustomLogEvent(["custom", "event"], text,
+                                               tbot.logger.Verbosity.INFO,
+                                               {"text": text})
+
+        tb.log.log(custom_ev)
+
+    @tb.call
+    def testcase_calling(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
+        """ Test calling testcases """
+        def a_testcase(_tb: tbot.TBot, param: str) -> int:
+            """ Sample testcase """
+            return int(param)
+
+        out = tb.call(a_testcase, param="123")
+        assert out == 123, "Testcase did not return 123: %r" % out

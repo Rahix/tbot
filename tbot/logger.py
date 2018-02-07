@@ -58,7 +58,16 @@ class LogEvent(abc.ABC):
 
 
 class ShellCommandLogEvent(LogEvent):
-    """ Log event for shell commands """
+    """
+    Log event for shell commands
+
+    :param sh: Shell/Machine type
+    :param command: The command that was executed
+    :param prefix: An optional prefix to print before output lines
+    :param log_show: Whether documentation backends should include this command
+    :param log_show_stdout: Whether documentation backends should include this
+        commands output
+    """
     #pylint: disable=too-many-arguments
     def __init__(self,
                  sh: typing.List[str],
@@ -84,7 +93,11 @@ class ShellCommandLogEvent(LogEvent):
         self.log_print(f"{shell_type_string} {cmd}")
 
     def add_line(self, line: str) -> None:
-        """ Add a line of stdout to this log event """
+        """
+        Add a line of stdout to this log event
+
+        :param line: The line to be added
+        """
         if not line == "":
             self.output += line + ('' if line[-1] == '\n' else '\n')
         else:
@@ -96,7 +109,11 @@ class ShellCommandLogEvent(LogEvent):
         self._dict["output"] = self.output
 
     def finished(self, exit_code: int) -> None:
-        """ Tell the log event that the command is done """
+        """
+        Tell the log event that the command is done
+
+        :param exit_code: The commands exit code
+        """
         self._dict["output"] = self.output
         self._dict["exit_code"] = exit_code
 
@@ -113,7 +130,12 @@ class ShellCommandLogEvent(LogEvent):
 
 
 class TestcaseBeginLogEvent(LogEvent):
-    """ Log event for the start of a testcase """
+    """
+    Log event for the start of a testcase
+
+    :param tc_name: Name of the testcase
+    :param layer: Call graph depth
+    """
     def __init__(self, tc_name: str, layer: int) -> None:
         super().__init__()
         self._dict["name"] = tc_name
@@ -137,7 +159,13 @@ class TestcaseBeginLogEvent(LogEvent):
 
 
 class TestcaseEndLogEvent(LogEvent):
-    """ Log event for end of testcase """
+    """
+    Log event for the end of testcase
+
+    :param tc_name: Name of the testcase
+    :param layer: Call graph depth
+    :param duration: Duration of the testcase in seconds
+    """
     def __init__(self, tc_name: str, layer: int, duration: float) -> None:
         super().__init__()
         self._dict["name"] = tc_name
@@ -161,7 +189,11 @@ class TestcaseEndLogEvent(LogEvent):
 
 
 class TBotFinishedLogEvent(LogEvent):
-    """ Log event for end of tbot """
+    """
+    Log event for the end of a TBot run
+
+    :param success: Whether this run was successful
+    """
     def __init__(self, success: bool) -> None:
         super().__init__()
         self._dict["success"] = success
@@ -183,7 +215,14 @@ class TBotFinishedLogEvent(LogEvent):
 
 
 class CustomLogEvent(LogEvent):
-    """ Custom Log Event """
+    """
+    Custom Log Event
+
+    :param ty: Type of the log event
+    :param stdout: Optional text to be printed to TBot's stdout
+    :param verbosity: Verbosity of this log event
+    :param dict_values: Additional dict values to be added to the log
+    """
     def __init__(self,
                  ty: typing.List[str],
                  stdout: typing.Optional[str] = None,
@@ -210,7 +249,12 @@ class CustomLogEvent(LogEvent):
 
 
 class Logger:
-    """ TBOT Logger """
+    """
+    TBot Logger
+
+    :param verbosity: Minimum verbosity level for printing to stdout
+    :param logfile: Where to store the ``json.log``
+    """
     def __init__(self, verbosity: Verbosity, logfile: str) -> None:
         self.logevents: typing.List[LogEvent] = list()
         self.verbosity = verbosity
@@ -226,21 +270,35 @@ class Logger:
         ev._init()
 
     def doc_log(self, text: str) -> None:
-        """ Create a log event for documentation generating backends with some
-            text to be added """
+        """
+        Create a log event for documentation generating backends with some
+        text to be added
+
+        :param text: The text
+        """
         ev = CustomLogEvent(["doc", "text"], dict_values={"text": text})
         self.log(ev)
 
     def doc_appendix(self, title: str, text: str) -> None:
-        """ Create a log event for documentation generating backends which hints
-            for an appendix to be created """
+        """
+        Create a log event for documentation generating backends which hints
+        for an appendix to be created
+
+        :param title: Title of the appendix
+        :param text: Text of the appendix
+        """
         ev = CustomLogEvent(
             ["doc", "appendix"],
             dict_values={"text": text, "title": title})
         self.log(ev)
 
     def write_logfile(self, filename: typing.Optional[str] = None) -> None:
-        """ Write log to a file """
+        """
+        Write log to a file
+
+        :param filename: Optional alternative log file. If this is None,
+            the logfile supplied on init will be used.
+        """
         #pylint: disable=protected-access
         json.dump([ev._dict for ev in self.logevents],
                   open(self.logfile if filename is None else filename, "w"),
@@ -251,17 +309,26 @@ class Logger:
                   ev: LogEvent,
                   prefix: bool = True,
                   prefix_dash: bool = True) -> None:
-        """ Try printing to stdout. This is influenced by the
-            verbosity level """
+        """
+        Try printing to stdout. This is influenced by the
+        verbosity level of the LogEvent.
 
-        msg_prefix = ""
-        if prefix is True:
-            for _ in range(0, self.layer):
-                msg_prefix += "│   "
-            if prefix_dash:
-                msg_prefix += f"├─"
-            else:
-                msg_prefix += f"│ "
+        :param msg: The text to be printed.
+        :param ev: The :class:`~tbot.logger.LogEvent` this print call originated
+            from
+        :param prefix: Whether to add a prefix to match other outputs indent
+        :param prefix_dash: Whether this prefix is supposed to contain a dash
+        """
+
         #pylint: disable=protected-access
         if ev._verbosity_level <= self.verbosity:
-            print(msg_prefix + msg)
+            for i, line in enumerate(msg.split('\n')):
+                msg_prefix = ""
+                if prefix is True:
+                    for _ in range(0, self.layer):
+                        msg_prefix += "│   "
+                    if prefix_dash and i == 0:
+                        msg_prefix += f"├─"
+                    else:
+                        msg_prefix += f"│ "
+                print(msg_prefix + line)
