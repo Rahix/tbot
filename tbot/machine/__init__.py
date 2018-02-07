@@ -5,3 +5,4 @@ from .lab_noenv import MachineLabNoEnv
 from .lab_env import MachineLabEnv
 
 from .board_rlogin import MachineBoardRlogin
+from .board_dummy import MachineBoardDummy

@@ -13,8 +13,6 @@ def uboot_tests(tb: tbot.TBot) -> None:
         f"u-boot-{tb.config.board_name}")
 
 
-    power_cmd_off = tb.config.get("board.power.off_command")
-
     tb.log.doc_log("""
 ## Run U-Boot tests ##
 U-Boot contains a python test suite that can be run on the host and on the target. \
@@ -58,7 +56,13 @@ testsuite using the following commands:\n")
             @tbn.call
             def run_tests(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
                 """ Actual test run """
-                tb.shell.exec0(f"./test/py/test.py --bd {tb.config.get('uboot.test_boardname')}")
+                with tb.machine(tbot.machine.MachineBoardDummy(False)) as tbn:
+                    tbn.shell.exec0(f"\
+./test/py/test.py --bd {tb.config.get('uboot.test_boardname')}")
+
+                    tb.log.doc_log("The U-Boot testsuite, which has hopefully finished \
+successfully by now, is not capable of turning off the board itself. \
+You have to do that manually:\n")
 
     else:
         tb.log.doc_log("""Here we do not use virtualenv because our build host \
@@ -73,11 +77,10 @@ Install the necessary hooks and start the U-Boot testsuite using the following c
             @tbn.call
             def run_tests_no_venv(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
                 """ Actual test run """
-                tb.shell.exec0(f"./test/py/test.py --bd {tb.config.get('uboot.test_boardname')}")
+                with tb.machine(tbot.machine.MachineBoardDummy(False)) as tbn:
+                    tbn.shell.exec0(f"\
+./test/py/test.py --bd {tb.config.get('uboot.test_boardname')}")
 
-    # Ensure the board is powered off
-    tb.log.doc_log("The U-Boot testsuite, which has hopefully finished successfully by now, is \
-not capable of turning off the board itself. You have to do that manually:\n")
-
-    # TODO: Ensure, this is always done
-    tb.machines["labhost-noenv"].exec0(power_cmd_off, log_show_stdout=False)
+                    tb.log.doc_log("The U-Boot testsuite, which has hopefully finished \
+successfully by now, is not capable of turning off the board itself. \
+You have to do that manually:\n")
