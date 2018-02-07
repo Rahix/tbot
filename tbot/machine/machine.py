@@ -78,14 +78,17 @@ class Machine(abc.ABC):
 
 class MachineManager(dict):
     """ A container to manage the list of available machines """
-    def __init__(self, tb: 'tbot.TBot') -> None:
-        self.connection = paramiko.SSHClient()
-        self.connection.load_system_host_keys()
+    def __init__(self, tb: 'tbot.TBot', conn: typing.Optional[paramiko.SSHClient] = None) -> None:
+        if isinstance(conn, paramiko.SSHClient):
+            self.connection = conn
+        else:
+            self.connection = paramiko.SSHClient()
+            self.connection.load_system_host_keys()
 
-        kwargs = dict(filter(lambda arg: arg[1] is not None,
-                             map(lambda arg:
-                                 (arg[1], tb.config.try_get(arg[0])),
-                                 KWARGS_LIST)))
-        self.connection.connect(tb.config.get("lab.hostname"), **kwargs)
+            kwargs = dict(filter(lambda arg: arg[1] is not None,
+                                 map(lambda arg:
+                                     (arg[1], tb.config.try_get(arg[0])),
+                                     KWARGS_LIST)))
+            self.connection.connect(tb.config.get("lab.hostname"), **kwargs)
 
         super().__init__()

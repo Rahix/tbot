@@ -41,11 +41,11 @@ class TBot:
         self.log = log
         self.layer = 0
 
-        # TODO: Fix multiple connections being opened
-        self.machines = tbot.machine.MachineManager(self)
         self.destruct_machines: typing.List[tbot.machine.Machine] = list()
 
         if new:
+            self.machines = tbot.machine.MachineManager(self)
+
             labhost = tbot.machine.MachineLabNoEnv()
             labhost._setup(self) #pylint: disable=protected-access
             self.machines[labhost.common_machine_name] = labhost
@@ -122,6 +122,7 @@ class TBot:
         """
         new_inst = TBot(self.config, self.testcases, self.log, False)
         new_inst.layer = self.layer
+        new_inst.machines = tbot.machine.MachineManager(new_inst, self.machines.connection)
 
         for machine_name in self.machines.keys():
             new_inst.machines[machine_name] = self.machines[machine_name]
