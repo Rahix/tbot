@@ -6,6 +6,7 @@ if __name__ == "__main__":
 
     LOG = json.load(open("log.json"))
 
+    #pylint: disable=too-many-return-statements
     def gen_md(msg):
         """ Generate markdown for a log message """
         if msg['type'] == ["testcase", "begin"]:
@@ -30,15 +31,24 @@ returned `{msg['exit_code']}`."""
             else:
                 string += "\n"
             return string
-        elif msg['type'] == "boardshell_cleanup":
+        elif msg['type'] == ["boardshell_cleanup"]:
             return f"""_Boardshell was cleaned up at {msg['time']}_
 """
-        elif msg['type'] == "tbotend":
+        elif msg['type'] == ["tbotend"]:
             return f"""
 ## TBot finished with {'success' if msg['success'] else 'a failure'} ##
 _Time: {msg['time']}_
 """
         elif msg['type'][0] == "doc":
+            return ""
+        elif msg['type'] == ["board", "boot"]:
+            return f""" Board booted:
+
+```
+{msg['log']}
+```
+"""
+        elif msg['type'][0] == "custom":
             return ""
 
         raise Exception(f"Unknown event: {repr(msg['type'])}")

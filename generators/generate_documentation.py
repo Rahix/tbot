@@ -26,7 +26,7 @@ def main():
         #         name = msg['name'].replace('_', '\\_')
         #         return f"# Testcase: {name} #\n\n"
         if msg['type'][0] == "shell" and msg['show'] is True:
-            prompt = "bash$" if msg['type'][1] == "sh" else "U-Boot>"
+            prompt = "bash$" if msg['type'][1] == "labhost" else "U-Boot>"
             string = f"""
 ```console
 {prompt} {msg['command']}

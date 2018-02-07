@@ -4,6 +4,8 @@ Abstract base class for board machines
 """
 from . import machine
 
+# TODO: Handle board log events in here
+
 class MachineBoard(machine.Machine):
     """ Abstract base class for board machines """
     @property

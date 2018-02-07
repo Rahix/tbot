@@ -101,7 +101,8 @@ class MachineBoardRlogin(board.MachineBoard):
                 # Fix '\r's, replace '\r\n' twice to avoid some glitches
                 buf_data = buf_data.replace('\r\n', '\n') \
                     .replace('\r\n', '\n') \
-                    .replace('\r', '\n')
+                    .replace('\r', '\n') \
+                    .replace('\0', '')
 
                 buf += buf_data
 

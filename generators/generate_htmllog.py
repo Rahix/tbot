@@ -13,6 +13,7 @@ def main():
 
     log = json.load(open("log.json"))
 
+    #pylint: disable=too-many-return-statements
     def gen_html(msg):
         """ Generate html for a log message """
         if msg['type'] == ["testcase", "begin"]:
@@ -45,8 +46,23 @@ def main():
 {output}</pre>
                              </div>
                            </div>"""
+        elif msg['type'] == ["board", "boot"]:
+            return f"""    <div class="stream block">
+                             <div class="stream-header block-header">
+                               -&gt; Board boot log
+                             </div>
+                             <div class="stream-content block-content">
+                               <pre>
+{msg['log']}</pre>
+                             </div>
+                           </div>"""
+        elif msg['type'] == ["boardshell_cleanup"] \
+             or msg['type'] == ["tbotend"] \
+             or msg['type'][0] == "custom" \
+             or msg['type'][0] == "doc":
+            return ""
 
-        return ""
+        raise Exception("unknown event %r" % (msg,))
 
     # Header
     print("""<html>
