@@ -61,8 +61,6 @@ directory. For that, tbot has an ``env`` machine. You can use it like this::
 
     @tbot.testcase
     def envshell_demo(tb):
-        assert tb.shell.shell_type[0] == "sh", "Need an sh shell"
-
         with tb.machine(tbot.machine.MachineLabEnv()) as tbn:
             tbn.shell.exec0("FOO='bar'")
 
