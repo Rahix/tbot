@@ -2,15 +2,12 @@
 Run U-Boot tests inside the sandbox
 -----------------------------------
 """
-import os
 import tbot
 
 @tbot.testcase
 def uboot_sandbox(tb: tbot.TBot) -> None:
     """ Run U-Boot tests inside the sandbox """
-    build_dir = os.path.join(
-        tb.config.workdir,
-        f"u-boot-sandbox")
+    build_dir = tb.config.workdir / f"u-boot-sandbox"
     patchdir = tb.config.try_get("uboot.patchdir")
 
     tb.call("clean_repo_checkout",

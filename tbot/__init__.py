@@ -4,7 +4,7 @@ TBot
 """
 import argparse
 import time
-import os
+import pathlib
 import typing
 import traceback
 import sys
@@ -184,17 +184,18 @@ def main() -> None:
 
     parser.add_argument("-c", "--confdir", type=str, default="config",
                         help="Specify alternate configuration directory")
+    confdir_path = pathlib.PurePosixPath("{confdir}")
     parser.add_argument("--labconfdir", type=str,
-                        default=os.path.join("{confdir}", "labs"),
+                        default=confdir_path / "labs",
                         help="Specify alternate lab config directory")
     parser.add_argument("--boardconfdir", type=str,
-                        default=os.path.join("{confdir}", "boards"),
+                        default=confdir_path / "boards",
                         help="Specify alternate board config directory")
 
+    tbot_path = pathlib.PurePosixPath("{tbotpath}")
     parser.add_argument("-d", "--tcdir", type=str, action="append",
-                        default=[os.path.join("{tbotpath}", "builtin"),
-                                 os.path.join("{tbotpath}", "builtin",
-                                              "uboot"),
+                        default=[tbot_path / "builtin",
+                                 tbot_path / "builtin" / "uboot",
                                  "tc",
                                 ],
                         help="Add a directory to the testcase search path")
@@ -205,20 +206,19 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    tbot_config_path = os.path.join(args.confdir, "tbot.toml")
-    lab_config_path = os.path.join(
-        args.labconfdir.format(confdir=args.confdir),
-        f"{args.lab}.toml")
-    board_config_path = os.path.join(
-        args.boardconfdir.format(confdir=args.confdir),
-        f"{args.board}.toml")
+    tbot_config_path = pathlib.PurePosixPath(args.confdir) / "tbot.toml"
+    lab_config_path = pathlib.PurePosixPath(str(args.labconfdir).format(confdir=args.confdir)) \
+        / f"{args.lab}.toml"
+    board_config_path = pathlib.PurePosixPath(str(args.boardconfdir).format(confdir=args.confdir)) \
+        / f"{args.board}.toml"
 
-    config = config_parser.Config([tbot_config_path,
-                                   lab_config_path,
-                                   board_config_path])
+    config = config_parser.Config(list(map(str,
+                                           [tbot_config_path,
+                                            lab_config_path,
+                                            board_config_path])))
 
-    tbotpath = os.path.dirname(os.path.realpath(__file__))
-    tc_paths = [path.format(tbotpath=tbotpath) for path in args.tcdir]
+    tbotpath = pathlib.Path(__file__).absolute().parent
+    tc_paths = [str(path).format(tbotpath=tbotpath) for path in args.tcdir]
     testcases = testcase_collector.get_testcases(tc_paths)
 
     verbosity = logger.Verbosity(logger.Verbosity.INFO + len(args.verbose))

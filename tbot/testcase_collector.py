@@ -2,7 +2,7 @@
 Tescase collector
 -----------------
 """
-import os
+import pathlib
 import typing
 import importlib.util
 
@@ -19,20 +19,27 @@ def testcase(f: typing.Callable) -> typing.Callable:
     return f
 
 
-def get_testcases(paths: typing.Optional[typing.List[str]] = None) \
+def get_testcases(paths: typing.Union[typing.List[str], typing.List[pathlib.Path], None] = None) \
         -> typing.Dict[str, typing.Callable]:
+    """
+    Collect all testcases from the directories
+    specified in ``paths``
+
+    :param paths: List of directories to search
+    :returns: Collection of testcases
+    """
     if paths is None:
-        paths = ["tc"]
-    sources: typing.List[str] = list()
+        paths = [pathlib.Path("tc")]
+    sources: typing.List[pathlib.Path] = list()
     for path in paths:
         # skip nonexistant paths
-        if os.path.isdir(path):
-            sources += [os.path.join(path, p)
-                        for p in os.listdir(path)
-                        if p.split(".")[-1] == "py"]
+        path = pathlib.Path(path) if not isinstance(path, pathlib.Path) else path
+        if path.is_dir():
+            sources += [p for p in path.iterdir()
+                        if p.suffix == ".py"]
 
     for source in sources:
-        module_spec = importlib.util.spec_from_file_location("tc", source)
+        module_spec = importlib.util.spec_from_file_location("tc", str(source))
         module = importlib.util.module_from_spec(module_spec)
         if isinstance(module_spec.loader, importlib.abc.Loader):
             module_spec.loader.exec_module(module)

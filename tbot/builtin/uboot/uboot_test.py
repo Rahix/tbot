@@ -2,15 +2,13 @@
 Run U-Boot tests on real hardware
 ---------------------------------
 """
-import os
+import pathlib
 import tbot
 
 @tbot.testcase
 def uboot_tests(tb: tbot.TBot) -> None:
     """ Run U-Boot tests on real hardware """
-    build_dir = os.path.join(
-        tb.config.workdir,
-        f"u-boot-{tb.config.board_name}")
+    build_dir = tb.config.workdir / f"u-boot-{tb.config.board_name}"
 
 
     tb.log.doc_log("""
@@ -27,8 +25,9 @@ configuration file for the testsuite. Copy the config file into `test/py` inside
 the U-Boot tree:
 """)
 
-        filename = os.path.basename(config)
-        target = os.path.join(build_dir, "test", "py", filename)
+        config = pathlib.PurePosixPath(config)
+        filename = config.name
+        target = build_dir / "test" / "py" / filename
         tb.shell.exec0(f"cp {config} {target}")
 
         tb.log.doc_log("The config file can be found in the appendix of this document.\n")

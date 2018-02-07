@@ -3,6 +3,7 @@ Config parser
 -------------
 """
 import random
+import pathlib
 import typing
 import toml
 
@@ -39,11 +40,12 @@ class Config:
         self.lab_name = self.get("lab.name", "defaultLabName")
         self.board_name = self.get("board.name", "defaultBoardName")
         use_rand = self.get("tbot.random_workdir", False)
-        self.workdir = self.get("tbot.workdir", "/tmp/tbot-{board}-{rand}") \
-            .format(rand=str(random.randint(1111, 999999999)) \
+        self.workdir = pathlib.PurePosixPath(\
+            self.get("tbot.workdir", "/tmp/tbot-{board}-{rand}") \
+                .format(rand=str(random.randint(1111, 999999999)) \
                         if use_rand else "NORAND",
-                    board=self.board_name,
-                    lab=self.lab_name)
+                        board=self.board_name,
+                        lab=self.lab_name))
 
     def try_get(self, key: str) -> typing.Any:
         """

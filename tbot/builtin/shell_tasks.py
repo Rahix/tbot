@@ -2,21 +2,19 @@
 Common shell operations
 -----------------------
 """
-import os
+import pathlib
 import typing
 import tbot
 
 @tbot.testcase
-def setup_tftpdir(tb: tbot.TBot) -> str:
+def setup_tftpdir(tb: tbot.TBot) -> pathlib.PurePosixPath:
     """
     Setup the tftp directory
 
     :returns: Returns the path to the tftp folder
     """
-    tftpdir = os.path.join(
-        tb.config.get("tftp.rootdir"),
-        tb.config.get("tftp.boarddir"),
-        tb.config.get("tftp.tbotsubdir"))
+    tftpdir = pathlib.PurePosixPath(tb.config.get("tftp.rootdir"))
+    tftpdir = tftpdir / tb.config.get("tftp.boarddir") / tb.config.get("tftp.tbotsubdir")
 
     tb.shell.exec0(f"mkdir -p {tftpdir}", log_show=False)
 
@@ -38,16 +36,11 @@ def cp_to_tftpdir(tb: tbot.TBot,
     """
     assert name is not None, "Trying to copy nothing"
 
-    build_dir = os.path.join(
-        tb.config.workdir,
-        f"u-boot-{tb.config.board_name}")
-    tftpdir = os.path.join(
-        tb.config.get("tftp.rootdir"),
-        tb.config.get("tftp.boarddir"),
-        tb.config.get("tftp.tbotsubdir"))
+    build_dir = tb.config.workdir / f"u-boot-{tb.config.board_name}"
+    tftpdir = pathlib.PurePosixPath(tb.config.get("tftp.rootdir"))
+    tftpdir = tftpdir / tb.config.get("tftp.boarddir") / tb.config.get("tftp.tbotsubdir")
 
-
-    source_path = os.path.join(build_dir, name) if from_builddir is True else name
-    dest_path = os.path.join(tftpdir, name if dest_name is None else dest_name)
+    source_path = build_dir / name if from_builddir is True else name
+    dest_path = tftpdir / (name if dest_name is None else dest_name)
 
     tb.shell.exec0(f"cp {source_path} {dest_path}")

@@ -2,7 +2,7 @@
 P2020RDB-PCA board specific testcases
 -------------------------------------
 """
-import os
+import pathlib
 import tbot
 
 @tbot.testcase
@@ -45,7 +45,7 @@ Copy U-Boot into your tftp directory:
 
     tb.log.doc_log("Find out the size of the U-Boot binary, as we will need it later:\n")
 
-    filename = os.path.join(tftpdir, "u-boot-with-spl.bin")
+    filename = tftpdir / "u-boot-with-spl.bin"
     size = tb.shell.exec0(f"printf '%x' `stat -c '%s' {filename}`")
 
     @tb.call
@@ -55,9 +55,8 @@ Copy U-Boot into your tftp directory:
         tb.log.doc_log("Power on the board and download U-Boot via TFTP:\n")
 
         with tb.with_boardshell() as tbn:
-            filename = os.path.join(tb.config.get("tftp.boarddir"),
-                                    tb.config.get("tftp.tbotsubdir"),
-                                    "u-boot-with-spl.bin")
+            filename = pathlib.PurePosixPath(tb.config.get("tftp.boarddir"))
+            filename = filename / tb.config.get("tftp.tbotsubdir") / "u-boot-with-spl.bin"
             tbn.boardshell.exec0(f"tftp 10000000 {filename}", log_show_stdout=False)
 
             tbn.log.doc_log("Write it into flash:\n")

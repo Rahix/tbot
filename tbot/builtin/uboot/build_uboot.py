@@ -2,7 +2,6 @@
 Testcase to build U-Boot
 ------------------------
 """
-import os
 import tbot
 
 
@@ -14,9 +13,7 @@ def build_uboot(tb: tbot.TBot) -> None:
 ## Build U-Boot ##
 """)
 
-    build_dir = os.path.join(
-        tb.config.workdir,
-        f"u-boot-{tb.config.board_name}")
+    build_dir = tb.config.workdir / f"u-boot-{tb.config.board_name}"
     patchdir = tb.config.try_get("uboot.patchdir")
 
     repo = tb.config.get("uboot.repository")

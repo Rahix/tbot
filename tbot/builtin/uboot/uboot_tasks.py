@@ -2,7 +2,6 @@
 Collection of U-Boot tasks
 --------------------------
 """
-import os
 import tbot
 
 @tbot.testcase
@@ -17,9 +16,7 @@ def check_uboot_version(tb: tbot.TBot,
     :returns: Nothing
     """
     with tb.with_boardshell() as tbn:
-        filename = uboot_bin.format(builddir=os.path.join(
-            tb.config.workdir,
-            f"u-boot-{tb.config.board_name}"))
+        filename = uboot_bin.format(builddir=tb.config.workdir / f"u-boot-{tb.config.board_name}")
         strings = tbn.shell.exec0(f"strings {filename} | grep U-Boot", log_show=False)
         version = tbn.boardshell.exec0("version").split('\n')[0]
         assert version in strings, "U-Boot version does not seem to match"
