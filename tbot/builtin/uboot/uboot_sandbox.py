@@ -8,10 +8,10 @@ import tbot
 def uboot_sandbox(tb: tbot.TBot) -> None:
     """ Run U-Boot tests inside the sandbox """
     build_dir = tb.config.workdir / f"u-boot-sandbox"
-    patchdir = tb.config.try_get("uboot.patchdir")
+    patchdir = tb.config["uboot.patchdir"]
 
     tb.call("clean_repo_checkout",
-            repo=tb.config.get("uboot.repository"),
+            repo=tb.config["uboot.repository"],
             target=build_dir)
     if patchdir is not None:
         tb.call("apply_git_patches", gitdir=build_dir, patchdir=patchdir)
@@ -23,7 +23,7 @@ Here we will run it on the host. Make sure all dependencies are met.  Refer to
 <http://git.denx.de/?p=u-boot.git;a=blob;f=test/py/README.md> for a list.
 """)
 
-    if tb.config.get("uboot.test_use_venv", True):
+    if tb.config["uboot.test_use_venv", True]:
         tb.log.doc_log("""Create a virtualenv and install pytest inside it:
 """)
 

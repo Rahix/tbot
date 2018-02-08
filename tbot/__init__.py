@@ -9,10 +9,12 @@ import typing
 import traceback
 import sys
 import paramiko
+import argcomplete
 from tbot import config_parser
 from tbot import logger
 from tbot import testcase_collector
 import tbot.machine
+import tbot.config
 
 from tbot.testcase_collector import testcase
 
@@ -32,7 +34,7 @@ class TBot:
     :ivar machines: All available machines :class:`tbot.machine.machine.MachineManager()`
     """
     def __init__(self,
-                 config: config_parser.Config,
+                 config: tbot.config.Config,
                  testcases: dict,
                  log: logger.Logger,
                  new: bool = True) -> None:
@@ -168,72 +170,3 @@ class TBot:
                  exc_value: typing.Any,
                  trceback: typing.Any) -> None:
         self.destruct()
-
-
-def main() -> None:
-    """ Main entry point of tbot """
-    parser = argparse.ArgumentParser(
-        prog="tbot",
-        description="A test tool for embedded linux development",
-        )
-
-    parser.add_argument("lab", type=str, help="name of the lab to connect to")
-    parser.add_argument("board", type=str, help="name of the board to test on")
-    parser.add_argument("testcase", type=str, nargs="?", default=None,
-                        help="name of the testcase to run")
-
-    parser.add_argument("-c", "--confdir", type=str, default="config",
-                        help="Specify alternate configuration directory")
-    confdir_path = pathlib.PurePosixPath("{confdir}")
-    parser.add_argument("--labconfdir", type=str,
-                        default=confdir_path / "labs",
-                        help="Specify alternate lab config directory")
-    parser.add_argument("--boardconfdir", type=str,
-                        default=confdir_path / "boards",
-                        help="Specify alternate board config directory")
-
-    tbot_path = pathlib.PurePosixPath("{tbotpath}")
-    parser.add_argument("-d", "--tcdir", type=str, action="append",
-                        default=[tbot_path / "builtin",
-                                 tbot_path / "builtin" / "uboot",
-                                 "tc",
-                                ],
-                        help="Add a directory to the testcase search path")
-    parser.add_argument("-l", "--logfile", type=str, default="log.json",
-                        help="Json log file name")
-    parser.add_argument("-v", "--verbose", action="append_const", const=0,
-                        default=[], help="Increase verbosity")
-
-    args = parser.parse_args()
-
-    tbot_config_path = pathlib.PurePosixPath(args.confdir) / "tbot.toml"
-    lab_config_path = pathlib.PurePosixPath(str(args.labconfdir).format(confdir=args.confdir)) \
-        / f"{args.lab}.toml"
-    board_config_path = pathlib.PurePosixPath(str(args.boardconfdir).format(confdir=args.confdir)) \
-        / f"{args.board}.toml"
-
-    config = config_parser.Config(list(map(str,
-                                           [tbot_config_path,
-                                            lab_config_path,
-                                            board_config_path])))
-
-    tbotpath = pathlib.Path(__file__).absolute().parent
-    tc_paths = [str(path).format(tbotpath=tbotpath) for path in args.tcdir]
-    testcases = testcase_collector.get_testcases(tc_paths)
-
-    verbosity = logger.Verbosity(logger.Verbosity.INFO + len(args.verbose))
-    log = logger.Logger(verbosity,
-                        args.logfile)
-
-    with TBot(config, testcases, log) as tb:
-        # tb.log.log_info(f"LAB: {config.lab_name}")
-        # tb.log.log_info(f"BOARD: {config.board_name}")
-
-        if args.testcase is not None:
-            tb.call(args.testcase)
-        else:
-            @tb.call
-            def default(tb: TBot) -> None: #pylint: disable=unused-variable
-                """ Default testcase is building U-Boot """
-                tb.call("build_uboot")
-        tb.log.log(logger.TBotFinishedLogEvent(True))

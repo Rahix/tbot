@@ -87,8 +87,8 @@ class MachineManager(dict):
 
             kwargs = dict(filter(lambda arg: arg[1] is not None,
                                  map(lambda arg:
-                                     (arg[1], tb.config.try_get(arg[0])),
+                                     (arg[1], tb.config[arg[0], None]),
                                      KWARGS_LIST)))
-            self.connection.connect(tb.config.get("lab.hostname"), **kwargs)
+            self.connection.connect(tb.config["lab.hostname"], **kwargs)
 
         super().__init__()

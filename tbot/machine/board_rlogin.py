@@ -30,10 +30,10 @@ class MachineBoardRlogin(board.MachineBoard):
 
     def _setup(self, tb: 'tbot.TBot') -> None:
         super()._setup(tb)
-        self.name = tb.config.get("board.shell.name", self.name)
+        self.name = tb.config["board.shell.name", self.name]
 
-        self.power_cmd_on = tb.config.get("board.power.on_command")
-        self.power_cmd_off = tb.config.get("board.power.off_command")
+        self.power_cmd_on = tb.config["board.power.on_command"]
+        self.power_cmd_off = tb.config["board.power.off_command"]
 
         conn = tb.machines.connection
         self.channel = conn.get_transport().open_session()
@@ -44,9 +44,9 @@ class MachineBoardRlogin(board.MachineBoard):
         self.channel.resize_pty(200, 200, 1000, 1000)
         self.channel.invoke_shell()
 
-        self.connect_command = tb.config.get("board.shell.command")
-        self.uboot_prompt = tb.config.get("board.shell.prompt", self.uboot_prompt)
-        self.uboot_timeout = tb.config.get("board.shell.timeout", self.uboot_timeout)
+        self.connect_command = tb.config["board.shell.command"]
+        self.uboot_prompt = tb.config["board.shell.prompt", self.uboot_prompt]
+        self.uboot_timeout = tb.config["board.shell.timeout", self.uboot_timeout]
 
         # Save the noenv shell to have it accessible later
         self.noenv = tb.machines["labhost-noenv"]

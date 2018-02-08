@@ -28,8 +28,7 @@ def toolchain_env(tb: tbot.TBot,
     if and_then is None:
         return
 
-    toolchain_script = tb.config.get(f"""\
-toolchains.{toolchain}.env_setup_script""")
+    toolchain_script = tb.config[f"toolchains.{toolchain}.env_setup_script"]
 
     tb.log.doc_log(f"""
 ### Setting up the toolchain ###

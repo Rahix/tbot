@@ -1,3 +1,4 @@
+# TODO: Move to new format
 [board]
 name = "at91sam9g45"
 toolchain = "cortexa8hf-neon"

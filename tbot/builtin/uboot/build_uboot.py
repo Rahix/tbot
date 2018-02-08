@@ -13,10 +13,10 @@ def build_uboot(tb: tbot.TBot) -> None:
 ## Build U-Boot ##
 """)
 
-    build_dir = tb.config.workdir / f"u-boot-{tb.config.board_name}"
-    patchdir = tb.config.try_get("uboot.patchdir")
+    build_dir = tb.config.workdir / f"u-boot-{tb.config['board.name']}"
+    patchdir = tb.config["uboot.patchdir", None]
 
-    repo = tb.config.get("uboot.repository")
+    repo = tb.config["uboot.repository"]
 
     docstr = f"""In this document, we assume the following file locations:
 
@@ -30,8 +30,8 @@ def build_uboot(tb: tbot.TBot) -> None:
 
     tb.log.doc_log(docstr)
 
-    toolchain = tb.config.get("board.toolchain")
-    defconfig = tb.config.get("board.defconfig")
+    toolchain = tb.config["board.toolchain"]
+    defconfig = tb.config["board.defconfig"]
 
     tb.log.doc_log(f"""
 We are using the `{toolchain}` toolchain and will compile \
@@ -39,7 +39,7 @@ U-Boot using the `{defconfig}` defconfig.
 """)
 
     tb.call("clean_repo_checkout",
-            repo=tb.config.get("uboot.repository"),
+            repo=repo,
             target=build_dir)
     if patchdir is not None:
         tb.call("apply_git_patches", gitdir=build_dir, patchdir=patchdir)

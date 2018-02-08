@@ -74,8 +74,8 @@ def selftest(tb: tbot.TBot) -> None:
         """ Test board shell functionality """
         with tb.with_boardshell() as tbn:
             test_shell(tbn.boardshell,
-                       tbn.config.get("board.shell.support_printf", False),
-                       tbn.config.get("board.shell.support_echo_e", False))
+                       tbn.config["board.shell.support_printf", False],
+                       tbn.config["board.shell.support_echo_e", False])
 
     @tb.call
     def nested_boardshells(tb: tbot.TBot) -> None: #pylint: disable=unused-variable

@@ -8,7 +8,7 @@ import tbot
 @tbot.testcase
 def uboot_tests(tb: tbot.TBot) -> None:
     """ Run U-Boot tests on real hardware """
-    build_dir = tb.config.workdir / f"u-boot-{tb.config.board_name}"
+    build_dir = tb.config.workdir / f"u-boot-{tb.config['board.name']}"
 
 
     tb.log.doc_log("""
@@ -18,7 +18,7 @@ Here we will run it on the target. Make sure all dependencies are met.  Refer to
 <http://git.denx.de/?p=u-boot.git;a=blob;f=test/py/README.md> for a list.
 """)
 
-    config = tb.config.try_get("uboot.test_config")
+    config = tb.config["uboot.test_config", None]
     if config is not None:
         tb.log.doc_log("""To ensure that the testcases work properly, we need a \
 configuration file for the testsuite. Copy the config file into `test/py` inside \
@@ -36,7 +36,7 @@ the U-Boot tree:
 {cfg_file_content}
 ```""")
 
-    if tb.config.get("uboot.test_use_venv", True):
+    if tb.config["uboot.test_use_venv", True]:
         tb.log.doc_log("Create a virtualenv and install pytest inside it:\n")
 
         # Setup python
@@ -50,14 +50,14 @@ the U-Boot tree:
 
             tbn.log.doc_log("Install the necessary hooks and start the U-Boot \
 testsuite using the following commands:\n")
-            tbn.shell.exec0(f"export PATH={tbn.config.get('uboot.test_hooks')}:$PATH")
+            tbn.shell.exec0(f"export PATH={tbn.config['uboot.test_hooks']}:$PATH")
 
             @tbn.call
             def run_tests(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
                 """ Actual test run """
                 with tb.machine(tbot.machine.MachineBoardDummy(False)) as tbn:
                     tbn.shell.exec0(f"\
-./test/py/test.py --bd {tb.config.get('uboot.test_boardname')}")
+./test/py/test.py --bd {tb.config['uboot.test_boardname']}")
 
                     tb.log.doc_log("The U-Boot testsuite, which has hopefully finished \
 successfully by now, is not capable of turning off the board itself. \
@@ -71,14 +71,14 @@ Install the necessary hooks and start the U-Boot testsuite using the following c
 
         with tb.machine(tbot.machine.MachineLabEnv()) as tbn:
             tbn.shell.exec0(f"cd {build_dir}")
-            tbn.shell.exec0(f"export PATH={tbn.config.get('uboot.test_hooks')}:$PATH")
+            tbn.shell.exec0(f"export PATH={tbn.config['uboot.test_hooks']}:$PATH")
 
             @tbn.call
             def run_tests_no_venv(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
                 """ Actual test run """
                 with tb.machine(tbot.machine.MachineBoardDummy(False)) as tbn:
                     tbn.shell.exec0(f"\
-./test/py/test.py --bd {tb.config.get('uboot.test_boardname')}")
+./test/py/test.py --bd {tb.config['uboot.test_boardname']}")
 
                     tb.log.doc_log("The U-Boot testsuite, which has hopefully finished \
 successfully by now, is not capable of turning off the board itself. \
