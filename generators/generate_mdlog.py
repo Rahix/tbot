@@ -42,10 +42,16 @@ _Time: {msg['time']}_
         elif msg['type'][0] == "doc":
             return ""
         elif msg['type'] == ["board", "boot"]:
-            return f""" Board booted:
+            return f"""Board booted:
 
 ```
 {msg['log']}
+```
+"""
+        elif msg['type'] == ["msg"]:
+            return f"""Message:
+```
+{msg['text']}
 ```
 """
         elif msg['type'][0] == "custom":

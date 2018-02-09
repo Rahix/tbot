@@ -56,6 +56,16 @@ def main():
 {msg['log']}</pre>
                              </div>
                            </div>"""
+        elif msg['type'] == ["msg"]:
+            return f"""    <div class="stream block">
+                             <div class="stream-header block-header">
+                               Message:
+                             </div>
+                             <div class="stream-content block-content">
+                               <pre>
+{msg['text']}</pre>
+                             </div>
+                           </div>"""
         elif msg['type'] == ["boardshell_cleanup"] \
              or msg['type'] == ["tbotend"] \
              or msg['type'][0] == "custom" \

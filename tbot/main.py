@@ -128,8 +128,9 @@ def main() -> None:
                         args.logfile)
 
     with tbot.TBot(config, testcases, log) as tb:
-        # tb.log.log_info(f"LAB: {config.lab_name}")
-        # tb.log.log_info(f"BOARD: {config.board_name}")
+        tb.log.log_msg(f"""\
+LAB:   {args.lab:10} name="{tb.config["lab.name"]}"
+BOARD: {args.board:10} name="{tb.config["board.name"]}" """)
 
         if args.testcase is not None:
             tb.call(args.testcase)

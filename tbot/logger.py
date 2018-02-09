@@ -260,6 +260,7 @@ class Logger:
         self.verbosity = verbosity
         self.logfile = logfile
         self.layer = 0
+        print("\x1B[33;1mTBot\x1B[0m starting ...")
 
     def log(self, ev: LogEvent) -> None:
         """ Log a log event """
@@ -290,6 +291,14 @@ class Logger:
         ev = CustomLogEvent(
             ["doc", "appendix"],
             dict_values={"text": text, "title": title})
+        self.log(ev)
+
+    def log_msg(self, message: str, verbosity: Verbosity = Verbosity.INFO) -> None:
+        ev = CustomLogEvent(
+            ["msg"],
+            verbosity=verbosity,
+            stdout=message,
+            dict_values={"text": message})
         self.log(ev)
 
     def write_logfile(self, filename: typing.Optional[str] = None) -> None:
