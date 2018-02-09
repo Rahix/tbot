@@ -25,6 +25,7 @@ configuration file for the testsuite. Copy the config file into `test/py` inside
 the U-Boot tree:
 """)
 
+        tb.log.log_debug(f"Using '{config}' for the U-Boot test suite")
         config = pathlib.PurePosixPath(config)
         filename = config.name
         target = build_dir / "test" / "py" / filename
@@ -35,8 +36,9 @@ the U-Boot tree:
         tb.log.doc_appendix(f"U-Boot test config: {filename}", f"""```python
 {cfg_file_content}
 ```""")
-
-    if tb.config["uboot.test_use_venv", True]:
+    has_venv = tb.config["uboot.test_use_venv", True]
+    tb.log.log_debug(f"Virtualenv availability: {has_venv}")
+    if has_venv:
         tb.log.doc_log("Create a virtualenv and install pytest inside it:\n")
 
         # Setup python

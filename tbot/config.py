@@ -65,8 +65,5 @@ class Config(dict):
                 else:
                     super().__setitem__(key, value)
 
-    def get(self, key, default=None):
-        raise Exception("delet this")
-
-    def try_get(self, key):
-        raise Exception("delet this")
+    def get(self, _key, _default=None):
+        raise Exception("The get method has been removed, please use [indexing]")

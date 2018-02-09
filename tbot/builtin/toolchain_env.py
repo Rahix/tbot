@@ -30,6 +30,8 @@ def toolchain_env(tb: tbot.TBot,
 
     toolchain_script = tb.config[f"toolchains.{toolchain}.env_setup_script"]
 
+    tb.log.log_debug(f"Setting up '{toolchain}' toolchain")
+
     tb.log.doc_log(f"""
 ### Setting up the toolchain ###
 Setup the `{toolchain}` toolchain by calling its env script:

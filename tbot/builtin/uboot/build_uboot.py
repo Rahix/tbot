@@ -51,6 +51,7 @@ U-Boot using the `{defconfig}` defconfig.
 ### The build process ###
 Prepare the buildprocess by moving into the build directory and executing the following commands:
 """)
+        tb.log.log_debug(f"Using '{defconfig}'")
         tb.shell.exec0(f"cd {build_dir}")
         tb.shell.exec0(f"make mrproper", log_show_stdout=False)
         tb.shell.exec0(f"make {defconfig}", log_show_stdout=False)

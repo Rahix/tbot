@@ -18,6 +18,8 @@ def setup_tftpdir(tb: tbot.TBot) -> pathlib.PurePosixPath:
 
     tb.shell.exec0(f"mkdir -p {tftpdir}", log_show=False)
 
+    tb.log.log_debug(f"tftpdir is '{tftpdir}'")
+
     return tftpdir
 
 @tbot.testcase
@@ -42,5 +44,7 @@ def cp_to_tftpdir(tb: tbot.TBot,
 
     source_path = build_dir / name if from_builddir is True else name
     dest_path = tftpdir / (name if dest_name is None else dest_name)
+
+    tb.log.log_debug(f"Copying '{source_path}' to '{dest_path}'")
 
     tb.shell.exec0(f"cp {source_path} {dest_path}")

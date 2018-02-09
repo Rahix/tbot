@@ -56,10 +56,10 @@ def main():
 {msg['log']}</pre>
                              </div>
                            </div>"""
-        elif msg['type'] == ["msg"]:
+        elif msg['type'][0] == "msg":
             return f"""    <div class="stream block">
                              <div class="stream-header block-header">
-                               Message:
+                               Message ({msg['type'][1]}):
                              </div>
                              <div class="stream-content block-content">
                                <pre>
@@ -69,6 +69,7 @@ def main():
         elif msg['type'] == ["boardshell_cleanup"] \
              or msg['type'] == ["tbotend"] \
              or msg['type'][0] == "custom" \
+             or msg['type'][0] == "board" \
              or msg['type'][0] == "doc":
             return ""
 

@@ -15,9 +15,12 @@ class Verbosity(enum.IntEnum):
     ERROR = 1
     WARNING = 2
     INFO = 3
-    VERBOSE = 4
-    VERY_VERBOSE = 5
-    DEBUG = 6
+    DEBUG = 4
+    VERBOSE = 5
+    VERY_VERBOSE = 6
+
+    def __str__(self) -> str:
+        return super(Verbosity, self).__str__().split(".")[-1]
 
 
 #pylint: disable=too-few-public-methods
@@ -295,11 +298,14 @@ class Logger:
 
     def log_msg(self, message: str, verbosity: Verbosity = Verbosity.INFO) -> None:
         ev = CustomLogEvent(
-            ["msg"],
+            ["msg", str(verbosity)],
             verbosity=verbosity,
             stdout=message,
             dict_values={"text": message})
         self.log(ev)
+
+    def log_debug(self, message: str) -> None:
+        self.log_msg(message, Verbosity.DEBUG)
 
     def write_logfile(self, filename: typing.Optional[str] = None) -> None:
         """

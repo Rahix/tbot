@@ -43,9 +43,11 @@ def main() -> None:
         description="A test tool for embedded linux development",
         )
 
-    parser.add_argument("lab", type=str, help="name of the lab to connect to") \
+    parser.add_argument("lab", type=str, nargs="?", default="local",
+                        help="name of the lab to connect to") \
         .completer = LabCompleter
-    parser.add_argument("board", type=str, help="name of the board to test on") \
+    parser.add_argument("board", type=str, nargs="?", default="corvus",
+                        help="name of the board to test on") \
         .completer = BoardCompleter
     parser.add_argument("testcase", type=str, nargs="?", default=None,
                         help="name of the testcase to run") \
@@ -82,8 +84,6 @@ def main() -> None:
     argcomplete.autocomplete(parser)
 
     args = parser.parse_args()
-
-    # TODO: Fail if no board or lab ist given
 
     from tbot import config_parser
     from tbot import testcase_collector

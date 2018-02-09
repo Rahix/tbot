@@ -22,6 +22,8 @@ def clean_repo_checkout(tb: tbot.TBot,
     assert target is not None, "No target supplied"
     assert repo is not None, "No repository supplied"
 
+    tb.log.log_debug(f"Git checkout '{repo}' to '{target}'")
+
     target_path = target \
         if isinstance(target, pathlib.PurePosixPath) \
         else pathlib.PurePosixPath(target)
@@ -60,6 +62,8 @@ def apply_git_patches(tb: tbot.TBot,
     assert gitdir is not None, "No gitdir supplied"
     assert patchdir is not None, "No patchdir supplied"
 
+    tb.log.log_debug(f"Applying patches in '{patchdir}' to '{gitdir}'")
+
     tb.log.doc_log(f"Apply the patches in `{patchdir}` \
 (Copies of the patch files can be found in the appendix of this document):\n")
 
@@ -68,6 +72,9 @@ find {patchdir} -name '*.patch'""", log_show=False).strip('\n').split("\n")
 
     # Make sure, we apply patches in the correct order
     patchfiles.sort()
+
+    dbg_str = '\n    -> '.join(patchfiles)
+    tb.log.log_debug(f"The following patches were found:\n    -> {dbg_str}")
 
     for patch in patchfiles:
         tb.shell.exec0(f"""\

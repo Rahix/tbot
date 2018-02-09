@@ -48,6 +48,8 @@ Copy U-Boot into your tftp directory:
     filename = tftpdir / "u-boot-with-spl.bin"
     size = tb.shell.exec0(f"printf '%x' `stat -c '%s' {filename}`")
 
+    tb.log.log_debug(f"U-Boot has size {size}")
+
     @tb.call
     def install(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
         """ Actually flash to nand """

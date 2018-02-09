@@ -32,6 +32,7 @@ returned `{msg['exit_code']}`."""
                 string += "\n"
             return string
         elif msg['type'] == ["boardshell_cleanup"]:
+            # TODO: New event name
             return f"""_Boardshell was cleaned up at {msg['time']}_
 """
         elif msg['type'] == ["tbotend"]:
@@ -48,13 +49,15 @@ _Time: {msg['time']}_
 {msg['log']}
 ```
 """
-        elif msg['type'] == ["msg"]:
-            return f"""Message:
+        elif msg['type'][0] == "msg":
+            return f"""Message ({msg['type'][1]}):
 ```
 {msg['text']}
 ```
 """
         elif msg['type'][0] == "custom":
+            return ""
+        elif msg['type'][0] == "board":
             return ""
 
         raise Exception(f"Unknown event: {repr(msg['type'])}")
