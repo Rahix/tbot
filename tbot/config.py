@@ -8,6 +8,7 @@ class Config(dict):
         self.workdir = pathlib.PurePosixPath("/tmp/tbot-workdir")
 
     def __getitem__(self, keys: typing.Union[str, typing.Tuple[str, typing.Any]]) -> typing.Any:
+        #TODO: Resolve unresolved keys in case resolving order is wrong
         if isinstance(keys, str):
             key = keys
         else:
@@ -63,3 +64,15 @@ class Config(dict):
 
     def try_get(self, key):
         raise Exception("delet this")
+
+def _resolve(root: Config(), cfg: Config) -> None:
+    rewrite = dict()
+    for key, val in cfg.items():
+        if isinstance(val, Config):
+            _resolve(root, val)
+        elif isinstance(val, typing.Callable):
+            rewrite[key] = val(root)
+
+    for key, val in rewrite.items():
+        del cfg[key]
+        cfg[key] = val

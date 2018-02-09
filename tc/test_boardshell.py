@@ -11,5 +11,6 @@ def test_boardshell(tb: tbot.TBot) -> None:
     with tb.with_boardshell() as tbn:
         tbn.boardshell.exec0("sleep 2")
         assert tbn.boardshell.exec0("echo SOMESTRING") == "SOMESTRING\n"
-        tbn.boardshell.exec0("coninfo")
-        tbn.boardshell.exec0("version")
+        if tbn.config["board.shell.is_uboot", True]:
+            tbn.boardshell.exec0("coninfo")
+            tbn.boardshell.exec0("version")

@@ -5,6 +5,7 @@ import typing
 from tbot import config
 
 
+
 def parse_config(configs: typing.List[pathlib.Path]) -> config.Config:
     cfg = config.Config()
     for cfg_file in configs:
@@ -17,6 +18,9 @@ def parse_config(configs: typing.List[pathlib.Path]) -> config.Config:
             raise Exception(f"Failed to load {cfg_file}")
 
         module.config(cfg)
+
+    # Resolve lambda config entries
+    config._resolve(cfg, cfg) #pylint: disable=protected-access
 
     cfg.workdir = pathlib.PurePosixPath(
         cfg["tbot.workdir",
