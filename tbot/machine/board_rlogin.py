@@ -51,28 +51,32 @@ class MachineBoardRlogin(board.MachineBoard):
         # Save the noenv shell to have it accessible later
         self.noenv = tb.machines["labhost-noenv"]
 
-        # Poweron the board
-        self.channel.send(f"PROMPT_COMMAND=\nPS1='{self.prompt}'\n")
-        self._read_to_prompt(None)
-        self.channel.send(f"{self.connect_command}\n")
+        try:
+            # Poweron the board
+            self.channel.send(f"PROMPT_COMMAND=\nPS1='{self.prompt}'\n")
+            self._read_to_prompt(None)
+            self.channel.send(f"{self.connect_command}\n")
 
-        self.noenv.exec0(self.power_cmd_on, log_show_stdout=False)
+            self.noenv.exec0(self.power_cmd_on, log_show_stdout=False)
 
-        # Stop autoboot
-        time.sleep(self.uboot_timeout)
-        self.channel.send("\n")
-        self.prompt = self.uboot_prompt
-        boot_stdout = self._read_to_prompt(None)
+            # Stop autoboot
+            time.sleep(self.uboot_timeout)
+            self.channel.send("\n")
+            self.prompt = self.uboot_prompt
+            boot_stdout = self._read_to_prompt(None)
 
-        ev = tbot.logger.CustomLogEvent(
-            ["board", "boot"],
-            stdout="\x1B[1mBOARD POWERUP\x1B[0m",
-            verbosity=tbot.logger.Verbosity.INFO,
-            dict_values={"log": boot_stdout})
+            ev = tbot.logger.CustomLogEvent(
+                ["board", "boot"],
+                verbosity=tbot.logger.Verbosity.INFO,
+                dict_values={"log": boot_stdout})
 
-        tb.log.log(ev)
+            tb.log.log(ev)
+        except: # If anything goes wrong, turn off again
+            self._destruct(tb)
+            raise
 
     def _destruct(self, tb: 'tbot.TBot') -> None:
+        super()._destruct(tb)
         if isinstance(self.noenv, tbot.machine.Machine):
             self.noenv.exec0(self.power_cmd_off, log_show_stdout=False)
         else:
@@ -121,7 +125,11 @@ class MachineBoardRlogin(board.MachineBoard):
                             log_event.add_line(line)
                     break
         except UnicodeDecodeError:
-            return ""
+            print("===> FAILED UNICODE PARSING")
+            print("buf: " + repr(buf))
+            print("buf_data: " + repr(buf_data))
+            raise
+            # return ""
 
         return buf
 

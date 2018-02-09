@@ -9,7 +9,7 @@ import tbot
 def test_boardshell(tb: tbot.TBot) -> None:
     """ Test if the boardshell is working """
     with tb.with_boardshell() as tbn:
-        tbn.boardshell.exec0("sleep 2")
+        # tbn.boardshell.exec0("sleep 2")
         assert tbn.boardshell.exec0("echo SOMESTRING") == "SOMESTRING\n"
         if tbn.config["board.shell.is_uboot", True]:
             tbn.boardshell.exec0("coninfo")

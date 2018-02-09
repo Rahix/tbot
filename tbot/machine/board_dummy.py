@@ -25,8 +25,9 @@ class MachineBoardDummy(board.MachineBoard):
 
         super().__init__()
 
+    #pylint: disable=arguments-differ
     def _setup(self, tb: 'tbot.TBot') -> None:
-        super()._setup(tb)
+        super()._setup(tb, powerup=self.turn_on)
         self.name = tb.config["board.shell.name", self.name]
 
         self.power_cmd_on = tb.config["board.power.on_command"]
@@ -39,6 +40,7 @@ class MachineBoardDummy(board.MachineBoard):
             self.noenv.exec0(self.power_cmd_on, log_show_stdout=False)
 
     def _destruct(self, tb: 'tbot.TBot') -> None:
+        super()._destruct(tb)
         if isinstance(self.noenv, tbot.machine.Machine):
             self.noenv.exec0(self.power_cmd_off, log_show_stdout=False)
         else:

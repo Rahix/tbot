@@ -157,11 +157,6 @@ class TBot:
         self.log.write_logfile()
         # Destruct all machines that need to be destructed
         for mach in self.destruct_machines:
-            if mach.common_machine_name == "board":
-                self.log.log(logger.CustomLogEvent(
-                    ["boardshell_cleanup"],
-                    "\x1B[1mBOARD CLEANUP\x1B[0m",
-                    logger.Verbosity.INFO))
             #pylint: disable=protected-access
             mach._destruct(self)
 
