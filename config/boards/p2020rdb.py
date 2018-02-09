@@ -1,10 +1,8 @@
 from tbot.config import Config
 
 def config(cfg: Config) -> None:
-    def validate(cfg: Config):
-        if cfg["lab.name"] != "pollux":
-            raise Exception("board p2020rdb: Only availabe in pollux lab!")
-    cfg["_marker.p2020rdb"] = validate
+    if cfg["lab.name"] != "pollux":
+        raise Exception("board p2020rdb: Only availabe in pollux lab!")
 
     cfg["board"] = {
         "name": "p2020rdb",

@@ -2,28 +2,25 @@ from tbot.config import Config
 
 #pylint: disable=line-too-long
 def config(cfg: Config) -> None:
-    def validate(cfg: Config):
-        lab_name = cfg["lab.name"]
-        if lab_name not in ["pollux", "local"]:
-            raise Exception("board corvus: Only pollux and local labs are supported!")
-    cfg["_marker.corvus"] = validate
+    if cfg["lab.name"] not in ["pollux", "local"]:
+        raise Exception("board corvus: Only pollux and local labs are supported!")
 
     cfg["board"] = {
         "name": "at91sam9g45",
         "toolchain": "cortexa8hf-neon",
         "defconfig": "corvus_defconfig",
-        "power": lambda c: {
+        "power": {
             "on_command": "remote_power at91sam9g45 on",
             "off_command": "remote_power at91sam9g45 off",
-        } if c["lab.name"] == "pollux" else {
+        } if cfg["lab.name"] == "pollux" else {
             "on_command": "echo POWER ON; echo ON >/tmp/powerstate",
             "off_command": "echo POWER_OFF; echo OFF >/tmp/powerstate",
         },
-        "shell": lambda c: {
+        "shell": {
             "name": "connect_at91sam9g45",
             "command": "connect at91sam9g45",
             "prompt": "U-Boot> ",
-        } if c["lab.name"] == "pollux" else {
+        } if cfg["lab.name"] == "pollux" else {
             "name": "local-ub",
             # Fake connect. Also contains a read call to simulate autoboot abort
             "command": "sh\nPROMPT_COMMAND=\nPS1='U-Boot> ';read",
@@ -35,15 +32,15 @@ def config(cfg: Config) -> None:
         },
     }
 
-    cfg["uboot"] = lambda c: {
+    cfg["uboot"] = {
         "patchdir": "/home/hws/corvus_patches",
         "test_hooks": "/home/hws/hooks/corvus",
         "test_boardname": "corvus",
-    } if c["lab.name"] == "pollux" else {
+    } if cfg["lab.name"] == "pollux" else {
         "patchdir": "/home/hws/Documents/corvus_patches",
         "env_location": "/home/hws/Documents/tbot2/env/corvus-env.txt",
     }
 
     cfg["tftp"] = {
-        "boarddir": lambda c: "at91sam9g45" if c["lab.name"] == "pollux" else "corvus-local",
+        "boarddir": "at91sam9g45" if cfg["lab.name"] == "pollux" else "corvus-local",
     }

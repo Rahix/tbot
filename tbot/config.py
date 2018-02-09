@@ -11,7 +11,6 @@ class Config(dict):
         self.workdir = pathlib.PurePosixPath("/tmp/tbot-workdir")
 
     def __getitem__(self, keys: typing.Union[str, typing.Tuple[str, typing.Any]]) -> typing.Any:
-        #TODO: Resolve unresolved keys in case resolving order is wrong
         if isinstance(keys, str):
             key = keys
         else:
@@ -62,12 +61,7 @@ class Config(dict):
             else:
                 if key in self and isinstance(super().__getitem__(key), Config):
                     # We are trying to overwrite a subdir, this should not happen
-                    # unless we overwrite with a lambda
-                    if isinstance(value, typing.Callable):
-                        # Write lambda to a marker that we can later use to resolve
-                        super(Config, super().__getitem__(key)).__setitem__(_marker, value)
-                    else:
-                        raise Exception("Trying to overwrite a subdir")
+                    raise Exception(f"Trying to overwrite a subdir: '{key}'")
                 else:
                     super().__setitem__(key, value)
 
@@ -76,20 +70,3 @@ class Config(dict):
 
     def try_get(self, key):
         raise Exception("delet this")
-
-def _resolve(root: Config(), cfg: Config) -> None:
-    rewrite = dict()
-    # If this config is marked for resolving
-    if _marker in cfg:
-        rewrite = super(Config, cfg).__getitem__(_marker)(root)
-    else:
-        for key, val in cfg.items():
-            if isinstance(val, Config):
-                _resolve(root, val)
-            elif isinstance(val, typing.Callable):
-                rewrite[key] = val(root)
-
-    for key, val in rewrite.items():
-        if key in cfg:
-            del cfg[key]
-        cfg[key] = val

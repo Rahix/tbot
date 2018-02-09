@@ -19,9 +19,6 @@ def parse_config(configs: typing.List[pathlib.Path]) -> config.Config:
 
         module.config(cfg)
 
-    # Resolve lambda config entries
-    config._resolve(cfg, cfg) #pylint: disable=protected-access
-
     cfg.workdir = pathlib.PurePosixPath(
         cfg["tbot.workdir",
             f"/tmp/tbot-{cfg['board.name']}-{random.randint(1000, 10000)}"])

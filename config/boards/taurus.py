@@ -2,10 +2,8 @@ from tbot.config import Config
 
 #pylint: disable=line-too-long
 def config(cfg: Config) -> None:
-    def validate(cfg: Config):
-        if cfg["lab.name"] != "pollux":
-            raise Exception("board taurus: Only availabe in pollux lab!")
-    cfg["_marker.taurus"] = validate
+    if cfg["lab.name"] != "pollux":
+        raise Exception("board taurus: Only availabe in pollux lab!")
 
     cfg["board"] = {
         "name": "at91_taurus",
