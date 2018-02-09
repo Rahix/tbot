@@ -31,8 +31,7 @@ returned `{msg['exit_code']}`."""
             else:
                 string += "\n"
             return string
-        elif msg['type'] == ["boardshell_cleanup"]:
-            # TODO: New event name
+        elif msg['type'] == ["board", "poweroff"]:
             return f"""_Boardshell was cleaned up at {msg['time']}_
 """
         elif msg['type'] == ["tbotend"]:
