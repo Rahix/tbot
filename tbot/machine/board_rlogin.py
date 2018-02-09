@@ -28,6 +28,7 @@ class MachineBoardRlogin(board.MachineBoard):
 
         super().__init__()
 
+    #pylint: disable=arguments-differ
     def _setup(self, tb: 'tbot.TBot') -> None:
         super()._setup(tb)
         self.name = tb.config["board.shell.name", self.name]

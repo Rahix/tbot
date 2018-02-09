@@ -7,12 +7,14 @@ import tbot
 from . import machine
 
 
+#pylint: disable=abstract-method
 class MachineBoard(machine.Machine):
     """ Abstract base class for board machines """
     def __init__(self) -> None:
         super().__init__()
         self.boardname = "unknown"
 
+    #pylint: disable=arguments-differ
     def _setup(self, tb, powerup=True):
         super()._setup(tb)
         self.boardname = tb.config["board.name", self.boardname]
