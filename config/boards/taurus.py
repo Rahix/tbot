@@ -1,7 +1,9 @@
+import pathlib
 from tbot.config import Config
 
 #pylint: disable=line-too-long
 def config(cfg: Config) -> None:
+    """ Taurus board config """
     if cfg["lab.name"] != "pollux":
         raise Exception("board taurus: Only availabe in pollux lab!")
 
@@ -21,8 +23,8 @@ def config(cfg: Config) -> None:
     }
 
     cfg["uboot"] = {
-        "patchdir": "/work/hs/tbot/patches/taurus_uboot_patches",
-        "env_location": "/home/hws/env/taurus-env.txt",
+        "patchdir": pathlib.PurePosixPath("/work/hs/tbot/patches/taurus_uboot_patches"),
+        "env_location": pathlib.PurePosixPath("/home/hws/env/taurus-env.txt"),
     }
 
     cfg["tftp"] = {

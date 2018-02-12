@@ -8,7 +8,7 @@ import tbot
 @tbot.testcase
 def uboot_tests(tb: tbot.TBot) -> None:
     """ Run U-Boot tests on real hardware """
-    build_dir = tb.config.workdir / f"u-boot-{tb.config['board.name']}"
+    build_dir = tb.config["uboot.builddir"]
 
 
     tb.log.doc_log("""

@@ -3,47 +3,79 @@
 tbot configuration
 ==================
 
-tbot uses ``toml`` as a configuration format. The configuration is divided
-into 3 parts, with each part overriding values set in the previous ones:
+TBot uses python for it's config. The configuration is divided into
+3 parts, with each part overriding values set in the previous ones:
 
-1. ``config/tbot.toml``: The main configuration file, used as the base
-2. ``config/labs/<lab-name>.toml``: The lab configuration, used to tell tbot about
+1. ``config/tbot.py``: The main configuration file, used as the base
+2. ``config/labs/<lab-name>.py``: The lab configuration, used to tell tbot about
    the lab host, how to login and where to find stuff
-3. ``config/boards/<board-name>.toml``: The board configuration, used to tell tbot
+3. ``config/boards/<board-name>.py``: The board configuration, used to tell tbot
    about the board
 
 Lab configuration
 ------------------
 
+Example:
+^^^^^^^^
+.. automodule:: config.labs.local
+   :members:
+
+Board configuration
+-------------------
+Example:
+^^^^^^^^
+.. automodule:: config.boards.taurus
+   :members:
+
+Available options:
+------------------
+
+Lab
+^^^
+
 ::
 
-    [lab]
-    # Name of the lab, does not need to match file name
-    name = "local"
-    # Hostname that tbot will ssh to
-    hostname = "localhost"
-    # Optional port number
-    # port = 22
-    # Username on that host
-    user = "me"
-    # Keyfile is advised as to not have a cleartext copy
-    # of the password in this file
-    keyfile = "/home/me/.ssh/id_rsa"
-    # Use this, if you need password authentication instead
-    # password = "hunter2"
+    cfg["lab"] = {
+        # Name of the lab, does not need to match file name
+        "name": "local",
+        # Hostname that tbot will ssh to
+        "hostname": "localhost",
+        # Optional port number
+        "port": 22,
+        # Username on that host
+        "user": "me",
+        # Keyfile is advised as to not have a cleartext copy
+        # of the password in this file
+        "keyfile": "/home/me/.ssh/id_rsa",
+        # Use this, if you need password authentication instead
+        "password": "hunter2",
+    }
 
-    [tbot]
-    # Where tbot should store it's files on the lab host
-    workdir = "/home/me/tbotdir"
+TBot
+^^^^
 
-    [tftp]
-    # Path to the tftp folder
-    rootdir = "/tftpboot"
-    # tbot assumes the following tftp folder structure:
-    # <rootdir>/<boarddir>/<tbotsubdir>
-    # rootdir and tbotsubdir are usually set inside the lab
-    # config, boarddir is set in the board config
-    tbotsubdir = "tbot"
+::
+
+    cfg["tbot"] = {
+        # Where tbot should store it's files on the lab host
+        "workdir": "/home/me/tbotdir",
+    }
+
+TFTP
+^^^^
+
+::
+
+    cfg["tftp"] = {
+        # Path to the tftp folder
+        "rootdir": "/tftpboot",
+        "boarddir": "boardname",
+        "tbotsubdir": "tbot",
+        # tbot assumes the following tftp folder structure:
+        # <rootdir>/<boarddir>/<tbotsubdir>
+        # rootdir and tbotsubdir are usually set inside the lab
+        # config, boarddir is set in the board config
+    }
 
     [uboot]
     # Where to fetch U-Boot from. Use a local mirror to reduce
@@ -60,8 +92,6 @@ Lab configuration
     # The env script which will be sourced to enable this toolchain
     env_setup_script = "/path/to/sdk/environment-setup-cortexa8hf-neon-poky-linux-gnueabi"
 
-Board configuration
--------------------
 
 ::
 

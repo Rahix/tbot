@@ -110,9 +110,9 @@ def main() -> None:
         return
 
     if not args.list_testcases:
-        config = config_parser.parse_config([tbot_config_path,
-                                             lab_config_path,
-                                             board_config_path])
+        config = config_parser.parse_config([lab_config_path,
+                                             board_config_path,
+                                             tbot_config_path])
 
     tbotpath = pathlib.Path(__file__).absolute().parent
     tc_paths = [str(path).format(tbotpath=tbotpath) for path in args.tcdir]

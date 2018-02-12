@@ -13,8 +13,7 @@ def setup_tftpdir(tb: tbot.TBot) -> pathlib.PurePosixPath:
 
     :returns: Returns the path to the tftp folder
     """
-    tftpdir = pathlib.PurePosixPath(tb.config["tftp.rootdir"])
-    tftpdir = tftpdir / tb.config["tftp.boarddir"] / tb.config["tftp.tbotsubdir"]
+    tftpdir = tb.config["tftp.directory"]
 
     tb.shell.exec0(f"mkdir -p {tftpdir}", log_show=False)
 
@@ -38,9 +37,8 @@ def cp_to_tftpdir(tb: tbot.TBot,
     """
     assert name is not None, "Trying to copy nothing"
 
-    build_dir = tb.config.workdir / f"u-boot-{tb.config['board.name']}"
-    tftpdir = pathlib.PurePosixPath(tb.config["tftp.rootdir"])
-    tftpdir = tftpdir / tb.config["tftp.boarddir"] / tb.config["tftp.tbotsubdir"]
+    build_dir = tb.config["uboot.builddir"]
+    tftpdir = tb.config["tftp.directory"]
 
     source_path = build_dir / name if from_builddir is True else name
     dest_path = tftpdir / (name if dest_name is None else dest_name)

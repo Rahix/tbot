@@ -1,21 +1,23 @@
+import pathlib
 from tbot.config import Config
 
 #pylint: disable=line-too-long
 def config(cfg: Config) -> None:
+    """ Localhost lab config """
     cfg["lab"] = {
         "name": "local",
         "hostname": "localhost",
         "user": "hws",
-        "keyfile": "/home/hws/.ssh/id_rsa",
+        "keyfile": pathlib.Path("/home/hws/.ssh/id_rsa"),
     }
 
     cfg["tbot"] = {
-        "workdir": "/home/hws/tbotdir",
+        "workdir": pathlib.PurePosixPath("/home/hws/tbotdir"),
     }
 
     cfg["tftp"] = {
-        "rootdir": "/tmp/tftp",
-        "tbotsubdir": "tbot",
+        "rootdir": pathlib.PurePosixPath("/tmp/tftp"),
+        "tbotsubdir": pathlib.PurePosixPath("tbot"),
     }
 
     cfg["uboot"] = {
@@ -24,7 +26,7 @@ def config(cfg: Config) -> None:
     }
 
     cfg["toolchains.cortexa8hf-neon"] = {
-        "path": "/home/hws/Documents/sdk/sysroots/x86_64-pokysdk-linux/usr/bin/arm-poky-linux-gnueabi",
-        "env_setup_script": "/home/hws/Documents/sdk/environment-setup-cortexa8hf-neon-poky-linux-gnueabi",
+        "path": pathlib.PurePosixPath("/home/hws/Documents/sdk/sysroots/x86_64-pokysdk-linux/usr/bin/arm-poky-linux-gnueabi"),
+        "env_setup_script": pathlib.PurePosixPath("/home/hws/Documents/sdk/environment-setup-cortexa8hf-neon-poky-linux-gnueabi"),
         "prefix": "arm-poky-linux-gnueabi-",
     }

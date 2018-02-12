@@ -89,6 +89,9 @@ class MachineManager(dict):
                                  map(lambda arg:
                                      (arg[1], tb.config[arg[0], None]),
                                      KWARGS_LIST)))
+            # Paramiko can't handle pathlib.Path
+            if "key_filename" in kwargs:
+                kwargs["key_filename"] = str(kwargs["key_filename"])
             self.connection.connect(tb.config["lab.hostname"], **kwargs)
 
         super().__init__()

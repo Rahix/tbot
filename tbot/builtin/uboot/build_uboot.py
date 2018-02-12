@@ -13,7 +13,7 @@ def build_uboot(tb: tbot.TBot) -> None:
 ## Build U-Boot ##
 """)
 
-    build_dir = tb.config.workdir / f"u-boot-{tb.config['board.name']}"
+    build_dir = tb.config["uboot.builddir"]
     patchdir = tb.config["uboot.patchdir", None]
 
     repo = tb.config["uboot.repository"]

@@ -1,3 +1,4 @@
+import pathlib
 from tbot.config import Config
 
 #pylint: disable=line-too-long
@@ -33,14 +34,14 @@ def config(cfg: Config) -> None:
     }
 
     cfg["uboot"] = {
-        "patchdir": "/home/hws/corvus_patches",
-        "test_hooks": "/home/hws/hooks/corvus",
+        "patchdir": pathlib.PurePosixPath("/home/hws/corvus_patches"),
+        "test_hooks": pathlib.PurePosixPath("/home/hws/hooks/corvus"),
         "test_boardname": "corvus",
     } if cfg["lab.name"] == "pollux" else {
-        "patchdir": "/home/hws/Documents/corvus_patches",
-        "env_location": "/home/hws/Documents/tbot2/env/corvus-env.txt",
+        "patchdir": pathlib.PurePosixPath("/home/hws/Documents/corvus_patches"),
+        "env_location": pathlib.PurePosixPath("/home/hws/Documents/tbot2/env/corvus-env.txt"),
     }
 
     cfg["tftp"] = {
-        "boarddir": "at91sam9g45" if cfg["lab.name"] == "pollux" else "corvus-local",
+        "boarddir": pathlib.PurePosixPath("at91sam9g45" if cfg["lab.name"] == "pollux" else "corvus-local"),
     }
