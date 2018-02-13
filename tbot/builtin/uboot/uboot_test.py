@@ -9,6 +9,7 @@ import tbot
 def uboot_tests(tb: tbot.TBot) -> None:
     """ Run U-Boot tests on real hardware """
     build_dir = tb.config["uboot.builddir"]
+    toolchain = tb.config["board.toolchain"]
 
 
     tb.log.doc_log("""
@@ -36,6 +37,24 @@ the U-Boot tree:
         tb.log.doc_appendix(f"U-Boot test config: {filename}", f"""```python
 {cfg_file_content}
 ```""")
+
+    def run_tests(tb: tbot.TBot) -> None:
+        assert tb.shell.unique_machine_name == "labhost-env", "Need an env shell!"
+
+        tb.shell.exec0(f"make mrproper", log_show_stdout=False)
+
+        tb.log.doc_log("Install the necessary hooks and start the U-Boot \
+testsuite using the following commands:\n")
+        tb.shell.exec0(f"export PATH={tb.config['uboot.test_hooks']}:$PATH")
+
+        with tb.machine(tbot.machine.MachineBoardDummy(False)) as tbn:
+            tbn.shell.exec0(f"\
+./test/py/test.py --bd {tb.config['uboot.test_boardname']} --build")
+
+            tbn.log.doc_log("The U-Boot testsuite, which has hopefully finished \
+successfully by now, is not capable of turning off the board itself. \
+You have to do that manually:\n")
+
     has_venv = tb.config["uboot.test_use_venv", True]
     tb.log.log_debug(f"Virtualenv availability: {has_venv}")
     if has_venv:
@@ -44,26 +63,15 @@ the U-Boot tree:
         # Setup python
         tb.shell.exec0(f"cd {build_dir}; virtualenv-2.7 venv", log_show_stdout=False)
 
-        with tb.machine(tbot.machine.MachineLabEnv()) as tbn:
-            tbn.shell.exec0(f"cd {build_dir}")
-            tbn.shell.exec0(f"VIRTUAL_ENV_DISABLE_PROMPT=1 source venv/bin/activate",
-                            log_show_stdout=False)
-            tbn.shell.exec0(f"pip install pytest", log_show_stdout=False)
+        @tb.call_then("toolchain_env", toolchain=toolchain)
+        def setup_venv(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
+            """ Actual test run """
+            tb.shell.exec0(f"cd {build_dir}")
+            tb.shell.exec0(f"VIRTUAL_ENV_DISABLE_PROMPT=1 source venv/bin/activate",
+                           log_show_stdout=False)
+            tb.shell.exec0(f"pip install pytest", log_show_stdout=False)
 
-            tbn.log.doc_log("Install the necessary hooks and start the U-Boot \
-testsuite using the following commands:\n")
-            tbn.shell.exec0(f"export PATH={tbn.config['uboot.test_hooks']}:$PATH")
-
-            @tbn.call
-            def run_tests(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
-                """ Actual test run """
-                with tb.machine(tbot.machine.MachineBoardDummy(False)) as tbn:
-                    tbn.shell.exec0(f"\
-./test/py/test.py --bd {tb.config['uboot.test_boardname']}")
-
-                    tb.log.doc_log("The U-Boot testsuite, which has hopefully finished \
-successfully by now, is not capable of turning off the board itself. \
-You have to do that manually:\n")
+            tb.call(run_tests)
 
     else:
         tb.log.doc_log("""Here we do not use virtualenv because our build host \
@@ -71,17 +79,9 @@ does not have it installed, but it is recommended to do so. \
 Install the necessary hooks and start the U-Boot testsuite using the following commands:
 """)
 
-        with tb.machine(tbot.machine.MachineLabEnv()) as tbn:
-            tbn.shell.exec0(f"cd {build_dir}")
-            tbn.shell.exec0(f"export PATH={tbn.config['uboot.test_hooks']}:$PATH")
+        @tb.call_then("toolchain_env", toolchain=toolchain)
+        def setup_no_venv(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
+            """ Actual test run """
+            tb.shell.exec0(f"cd {build_dir}")
 
-            @tbn.call
-            def run_tests_no_venv(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
-                """ Actual test run """
-                with tb.machine(tbot.machine.MachineBoardDummy(False)) as tbn:
-                    tbn.shell.exec0(f"\
-./test/py/test.py --bd {tb.config['uboot.test_boardname']}")
-
-                    tb.log.doc_log("The U-Boot testsuite, which has hopefully finished \
-successfully by now, is not capable of turning off the board itself. \
-You have to do that manually:\n")
+            tb.call(run_tests)

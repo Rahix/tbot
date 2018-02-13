@@ -9,7 +9,8 @@ def config(cfg: Config) -> Config:
     cfg["tbot.workdir"] = cfg["tbot.workdir", pathlib.PurePosixPath(f"/tmp/tbot-{rand}")]
 
     # uboot.builddir: U-Boot's repository clone, used to build U-Boot
-    cfg["uboot.builddir"] = cfg["uboot.builddir", cfg["tbot.workdir"] / f"u-boot-{cfg['board.name']}"]
+    cfg["uboot.builddir"] = \
+        cfg["uboot.builddir", cfg["tbot.workdir"] / f"uboot-{cfg['board.name']}"]
 
     cfg["tftp.directory"] = cfg["tftp.directory", \
         cfg["tftp.rootdir"] / cfg["tftp.boarddir"] / cfg["tftp.tbotsubdir"]]
