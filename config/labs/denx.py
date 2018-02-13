@@ -3,18 +3,19 @@ from tbot.config import Config
 
 #pylint: disable=line-too-long
 def config(cfg: Config) -> None:
+    username = "hws"
     cfg["lab"] = {
         "name": "pollux",
         "hostname": "pollux.denx.de",
-        "user": "hws",
-        "keyfile": pathlib.Path("/home/hws/.ssh/id_rsa"),
+        "user": username,
+        "keyfile": pathlib.Path.home() / ".ssh" / "id_rsa",
     }
 
-    cfg["tbot.workdir"] = pathlib.PurePosixPath("/work/hws/tbot2workdir")
+    cfg["tbot.workdir"] = pathlib.PurePosixPath("/work") / username / "tbot2workdir"
 
     cfg["tftp"] = {
         "rootdir": pathlib.PurePosixPath("/tftpboot"),
-        "tbotsubdir": pathlib.PurePosixPath("tbot-hws"),
+        "tbotsubdir": pathlib.PurePosixPath(f"tbot-{username}"),
     }
 
     cfg["uboot"] = {
