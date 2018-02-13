@@ -14,14 +14,20 @@ TBot uses python for it's config. The configuration is divided into
    based on values that should be set by the previous configs (lab + board). For
    example, the value ``"tbot.builddir"`` will be set differently, depending on
    the name of the board which is currently used. (But only if it was not set by
-   any other config previously, ``tbot.py`` should never override anything. To
+   any other config previously, ``tbot.py`` should never override anything) To
    ensure this, use the following syntax::
 
        cfg["value"] = cfg["value", "default"]
 
 Inside the testcases, the configuration is available as ``tb.config`` and values should
 be accessed like directories in a filesystem but with ``.`` as a separator. For example,
-use ``"tbot.workdir"`` to access the ``workdir`` value in the ``tbot`` sub config.
+use ``"tbot.workdir"`` to access the ``workdir`` value in the ``tbot`` sub config::
+
+    a_dir_inside_workdir = tb.config["tbot.workdir"] / "dir-name"
+
+As this example shows, paths should always be ``pathlib`` paths to increase readability
+of testcases. Use ``pathlib.Path`` for paths on the TBot host (eg ``"lab.keyfile"``) and
+``pathlib.PurePosixPath`` for paths on the Lab host (eg ``"tbot.workdir"``).
 
 Examples:
 ---------
