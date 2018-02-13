@@ -95,42 +95,43 @@ class MachineBoardRlogin(board.MachineBoard):
         if not isinstance(self.channel, paramiko.Channel):
             raise Exception("Channel not initilized")
 
-        try:
-            while True:
-                # Read a lot and hope that this is all there is, so
-                # we don't cut off inside a unicode sequence and fail
-                # TODO: Make this more robust
-                buf_data = self.channel.recv(10000000)
+        while True:
+            # Read a lot and hope that this is all there is, so
+            # we don't cut off inside a unicode sequence and fail
+            # TODO: Make this more robust
+            buf_data = self.channel.recv(10000000)
+            try:
                 buf_data = buf_data.decode("utf-8")
+            except UnicodeDecodeError:
+                print("===> FAILED UNICODE PARSING")
+                print("buf: " + repr(buf))
+                print("buf_data(raw): " + repr(buf_data))
+                # TODO: Falling back to latin_1 is just a workaround as well ...
+                buf_data = buf_data.decode("latin_1")
+                print("buf_data(decoded): " + repr(buf_data))
 
-                # Fix '\r's, replace '\r\n' twice to avoid some glitches
-                buf_data = buf_data.replace('\r\n', '\n') \
-                    .replace('\r\n', '\n') \
-                    .replace('\r', '\n') \
-                    .replace('\0', '')
+            # Fix '\r's, replace '\r\n' twice to avoid some glitches
+            buf_data = buf_data.replace('\r\n', '\n') \
+                .replace('\r\n', '\n') \
+                .replace('\r', '\n') \
+                .replace('\0', '')
 
-                buf += buf_data
+            buf += buf_data
 
-                if log_event is not None:
-                    while "\n" in buf[last_newline:]:
-                        line = buf[last_newline:].split('\n')[0]
-                        if last_newline != 0:
-                            log_event.add_line(line)
-                        last_newline += len(line) + 1
+            if log_event is not None:
+                while "\n" in buf[last_newline:]:
+                    line = buf[last_newline:].split('\n')[0]
+                    if last_newline != 0:
+                        log_event.add_line(line)
+                    last_newline += len(line) + 1
 
-                if buf[-len(self.prompt):] == self.prompt:
-                    # Print rest of last line to make sure nothing gets lost
-                    if log_event is not None and "\n" not in buf[last_newline:]:
-                        line = buf[last_newline:-len(self.prompt)]
-                        if line != "":
-                            log_event.add_line(line)
-                    break
-        except UnicodeDecodeError:
-            print("===> FAILED UNICODE PARSING")
-            print("buf: " + repr(buf))
-            print("buf_data: " + repr(buf_data))
-            raise
-            # return ""
+            if buf[-len(self.prompt):] == self.prompt:
+                # Print rest of last line to make sure nothing gets lost
+                if log_event is not None and "\n" not in buf[last_newline:]:
+                    line = buf[last_newline:-len(self.prompt)]
+                    if line != "":
+                        log_event.add_line(line)
+                break
 
         return buf
 
