@@ -84,3 +84,73 @@ cd {gitdir}; git am -3 {patch}""", log_show_stdout=False)
 {patchfile}
 ```
 """)
+
+@tbot.testcase
+def git_bisect(tb: tbot.TBot,
+               gitdir: typing.Optional[pathlib.PurePosixPath] = None,
+               good: typing.Optional[str] = None,
+               and_then: typing.Union[str, typing.Callable, None] = None,
+               params: typing.Optional[typing.Dict[str, typing.Any]] = None,
+              ) -> typing.Optional[str]:
+    """
+    Perform a git bisect in the git repository at ``gitdir`` between HEAD (as the bad
+    commit) and ``good``. Whether a commit is good or bad is decided by calling
+    the ``and_then`` testcase.
+
+    :param gitdir: The directory containing the git repository to bisect
+    :param good: The good commit
+    :param and_then: A testcase that decides whether a commit is good or bad
+    :param params: Additional parameters for the ``and_then`` testcase
+    :returns: The first bad commit
+    """
+
+    if params is None:
+        params = dict()
+
+    if and_then is None:
+        raise Exception("No test for deciding whether a commit is good or bad was provided")
+
+    assert isinstance(gitdir, pathlib.PurePosixPath)
+    assert isinstance(good, str)
+
+    bad_commit: typing.Optional[str] = None
+    try:
+        tb.shell.exec0(f"cd {gitdir}; git bisect start")
+        tb.shell.exec0(f"cd {gitdir}; git bisect bad")
+        tb.shell.exec0(f"cd {gitdir}; git bisect good {good}")
+
+
+        def try_commit(tb: tbot.TBot,
+                       and_then: typing.Union[str, typing.Callable],
+                       params: typing.Dict[str, typing.Any]) -> bool:
+            """ Try a certain commit by calling the and_then testcase """
+            try:
+                tb.call(and_then, **params)
+                success = True
+            except Exception: #pylint: disable=broad-except
+                success = False
+
+            if success:
+                tb.shell.exec0(f"cd {gitdir}; git bisect good")
+            else:
+                tb.shell.exec0(f"cd {gitdir}; git bisect bad")
+            return success
+
+        while True:
+            current = tb.shell.exec0(f"\
+cd {gitdir}; git show | grep -E '^commit [0-9a-zA-Z]+$'")[len("commit "):].strip()
+            tb.log.log_msg(f"Trying {current} ...")
+            tb.call(try_commit, and_then=and_then, params=params)
+            commits = tb.shell.exec0(f"\
+cd {gitdir}; git bisect visualize | grep -E '^commit [0-9a-zA-Z]+$'") \
+                .split("\n")[:-1]
+            if len(commits) == 1:
+                bad_commit = commits[0][len("commit "):]
+                tb.log.log_msg(f"First bad commit is {bad_commit}")
+                break
+    except Exception:
+        raise
+    finally:
+        # Make sure we ALWAYS reset after bisecting
+        tb.shell.exec0(f"cd {gitdir}; git bisect reset")
+    return bad_commit
