@@ -35,8 +35,10 @@ def config(cfg: Config) -> None:
 
     cfg["uboot"] = {
         "patchdir": pathlib.PurePosixPath("/home/hws/corvus_patches"),
-        "test_hooks": pathlib.PurePosixPath("/home/hws/hooks/corvus"),
-        "test_boardname": "corvus",
+        "test": {
+            "hooks": pathlib.PurePosixPath("/home/hws/hooks/corvus"),
+            "boardname": "corvus",
+        },
     } if cfg["lab.name"] == "pollux" else {
         "patchdir": pathlib.PurePosixPath("/home/hws/Documents/corvus_patches"),
         "env_location": pathlib.PurePosixPath("/home/hws/Documents/tbot2/env/corvus-env.txt"),

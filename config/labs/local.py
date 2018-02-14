@@ -25,7 +25,7 @@ def config(cfg: Config) -> None:
 
     cfg["uboot"] = {
         "repository": "git://git.denx.de/u-boot.git",
-        "test_use_venv": True,
+        "test.use_venv": True,
     }
 
     # Change this to your sdk location

@@ -21,7 +21,7 @@ def config(cfg: Config) -> None:
     cfg["uboot"] = {
         "repository": "/home/git/u-boot.git",
         # Pollux does not have venv installed
-        "test_use_venv": False,
+        "test.use_venv": False,
     }
 
     cfg["toolchains"] = {

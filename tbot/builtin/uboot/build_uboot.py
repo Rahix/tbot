@@ -44,6 +44,8 @@ U-Boot using the `{defconfig}` defconfig.
     if patchdir is not None:
         tb.call("apply_git_patches", gitdir=build_dir, patchdir=patchdir)
 
+    tb.log.doc_log("\n### Setting up the toolchain ###\n")
+
     @tb.call_then("toolchain_env", toolchain=toolchain)
     def build(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
         """ The actual build """

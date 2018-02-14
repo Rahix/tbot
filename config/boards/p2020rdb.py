@@ -21,9 +21,11 @@ def config(cfg: Config) -> None:
     }
 
     cfg["uboot"] = {
-        "test_hooks": pathlib.PurePosixPath("/home/hws/hooks/P2020"),
-        "test_config": pathlib.PurePosixPath("/home/hws/data/u_boot_boardenv_P2020RDB_PC_NAND.py"),
-        "test_boardname": "P2020RDB-PC_NAND",
+        "test": {
+            "hooks": pathlib.PurePosixPath("/home/hws/hooks/P2020"),
+            "config": pathlib.PurePosixPath("/home/hws/data/u_boot_boardenv_P2020RDB_PC_NAND.py"),
+            "boardname": "P2020RDB-PC_NAND",
+        },
     }
 
     cfg["tftp"] = {

@@ -19,7 +19,7 @@ Here we will run it on the target. Make sure all dependencies are met.  Refer to
 <http://git.denx.de/?p=u-boot.git;a=blob;f=test/py/README.md> for a list.
 """)
 
-    config = tb.config["uboot.test_config", None]
+    config = tb.config["uboot.test.config", None]
     if config is not None:
         tb.log.doc_log("""To ensure that the testcases work properly, we need a \
 configuration file for the testsuite. Copy the config file into `test/py` inside \
@@ -41,27 +41,35 @@ the U-Boot tree:
     def run_tests(tb: tbot.TBot) -> None:
         assert tb.shell.unique_machine_name == "labhost-env", "Need an env shell!"
 
+        tb.log.doc_log("""Clean the workdir because the U-Boot testsuite won't \
+recompile if it is dirty.
+""")
+
         tb.shell.exec0(f"make mrproper", log_show_stdout=False)
 
-        tb.log.doc_log("Install the necessary hooks and start the U-Boot \
+        tb.log.doc_log("Install the necessary hooks and start the \
 testsuite using the following commands:\n")
-        tb.shell.exec0(f"export PATH={tb.config['uboot.test_hooks']}:$PATH")
+        tb.shell.exec0(f"export PATH={tb.config['uboot.test.hooks']}:$PATH")
 
         with tb.machine(tbot.machine.MachineBoardDummy(False)) as tbn:
             tbn.shell.exec0(f"\
-./test/py/test.py --bd {tb.config['uboot.test_boardname']} --build")
+./test/py/test.py --bd {tb.config['uboot.test.boardname']} --build")
 
             tbn.log.doc_log("The U-Boot testsuite, which has hopefully finished \
 successfully by now, is not capable of turning off the board itself. \
 You have to do that manually:\n")
 
-    has_venv = tb.config["uboot.test_use_venv", True]
+    has_venv = tb.config["uboot.test.use_venv", True]
     tb.log.log_debug(f"Virtualenv availability: {has_venv}")
     if has_venv:
         tb.log.doc_log("Create a virtualenv and install pytest inside it:\n")
 
         # Setup python
         tb.shell.exec0(f"cd {build_dir}; virtualenv-2.7 venv", log_show_stdout=False)
+
+        tb.log.doc_log("""The testsuite will rebuild the U-Boot binary. For doing so, \
+it needs the correct toolchain enabled.
+""")
 
         @tb.call_then("toolchain_env", toolchain=toolchain)
         def setup_venv(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
@@ -75,8 +83,11 @@ You have to do that manually:\n")
 
     else:
         tb.log.doc_log("""Here we do not use virtualenv because our build host \
-does not have it installed, but it is recommended to do so. \
-Install the necessary hooks and start the U-Boot testsuite using the following commands:
+does not have it installed, but it is recommended to do so.
+""")
+
+        tb.log.doc_log("""The testsuite will rebuild the U-Boot binary. For doing so, \
+it needs the correct toolchain enabled.
 """)
 
         @tb.call_then("toolchain_env", toolchain=toolchain)
