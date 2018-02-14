@@ -112,12 +112,17 @@ U-Boot
         # A directory containing patches to be applied over the U-Boot tree
         "patchdir": pathlib.PurePosixPath("/home/hws/Documents/corvus_patches"),
 
-        # Whether the lab host has virtualenv installed. If it doesn't,
-        # it needs pytest (if you want to run the U-Boot python test suite)
-        "test_use_venv": true,
-        "test_hooks": pathlib.PurePosixPath("/home/hws/hooks/P2020"),
-        "test_config": pathlib.PurePosixPath("/home/hws/data/u_boot_boardenv_P2020RDB_PC_NAND.py"),
-        "test_boardname": "P2020RDB-PC_NAND",
+        "test": {
+            # Whether the lab host has virtualenv installed. If it doesn't,
+            # it needs pytest (if you want to run the U-Boot python test suite)
+            "use_venv": true,
+            # Where to fint board hooks for the U-Boot testsuite
+            "hooks": pathlib.PurePosixPath("/home/hws/hooks/P2020"),
+            # An optional config file for the testsuite
+            "config": pathlib.PurePosixPath("/home/hws/data/u_boot_boardenv_P2020RDB_PC_NAND.py"),
+            # Board name to be passed to test.py (usually the defconfig minus the "_defconfig")
+            "boardname": "P2020RDB-PC_NAND",
+        },
 
         # By default, TBot will attempt to build U-Boot in
         # cfg["tbot.workdir"] / "uboot-<boardname>"
