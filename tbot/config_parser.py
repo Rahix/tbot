@@ -17,7 +17,10 @@ def parse_config(configs: typing.List[pathlib.Path]) -> config.Config:
         else:
             raise Exception(f"Failed to load {cfg_file}")
 
-        module.config(cfg)
+        if "config" in module.__dict__:
+            module.__dict__["config"](cfg)
+        else:
+            raise Exception(f"{cfg_file} is not a valid TBot configuration!")
 
     cfg.workdir = pathlib.PurePosixPath(
         cfg["tbot.workdir",

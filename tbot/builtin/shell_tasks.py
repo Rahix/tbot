@@ -15,6 +15,9 @@ def setup_tftpdir(tb: tbot.TBot) -> pathlib.PurePosixPath:
     """
     tftpdir = tb.config["tftp.directory"]
 
+    if not isinstance(tftpdir, pathlib.PurePosixPath):
+        raise Exception("Configuation error: 'tftp.directory' must be a PurePosixPath!")
+
     tb.shell.exec0(f"mkdir -p {tftpdir}", log_show=False)
 
     tb.log.log_debug(f"tftpdir is '{tftpdir}'")

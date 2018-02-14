@@ -62,5 +62,5 @@ class Config(dict):
                 else:
                     super().__setitem__(key, value)
 
-    def get(self, _key, _default=None):
+    def get(self, _key: str, _default: typing.Any = None) -> None:
         raise Exception("The get method has been removed, please use [indexing]")

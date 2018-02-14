@@ -15,7 +15,7 @@ class MachineBoard(machine.Machine):
         self.boardname = "unknown"
 
     #pylint: disable=arguments-differ
-    def _setup(self, tb, powerup=True):
+    def _setup(self, tb: 'tbot.TBot', powerup: bool = True) -> None:
         super()._setup(tb)
         self.boardname = tb.config["board.name", self.boardname]
 
@@ -28,7 +28,7 @@ class MachineBoard(machine.Machine):
 
             tb.log.log(ev)
 
-    def _destruct(self, tb):
+    def _destruct(self, tb: 'tbot.TBot') -> None:
         super()._destruct(tb)
         ev = tbot.logger.CustomLogEvent(
             ["board", "poweroff"],

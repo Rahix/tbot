@@ -1,9 +1,10 @@
 import pathlib
+import typing
 import argparse
 import argcomplete
 
 #pylint: disable=invalid-name
-def LabCompleter(**_kwargs):
+def LabCompleter(**_kwargs: typing.Any) -> typing.List[str]:
     lst = []
     for lab in pathlib.Path("config/labs").iterdir():
         if lab.suffix == ".py":
@@ -11,7 +12,7 @@ def LabCompleter(**_kwargs):
     return lst
 
 #pylint: disable=invalid-name
-def BoardCompleter(**_kwargs):
+def BoardCompleter(**_kwargs: typing.Any) -> typing.List[str]:
     lst = []
     for board in pathlib.Path("config/boards").iterdir():
         if board.suffix == ".py":
@@ -19,7 +20,7 @@ def BoardCompleter(**_kwargs):
     return lst
 
 #pylint: disable=invalid-name
-def TestcaseCompleter(**_kwargs):
+def TestcaseCompleter(**_kwargs: typing.Any) -> typing.List[str]:
     lst = []
     tbotpath = pathlib.Path(__file__).absolute().parent
 

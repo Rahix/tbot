@@ -2,7 +2,7 @@ import random
 import pathlib
 from tbot.config import Config
 
-def config(cfg: Config) -> Config:
+def config(cfg: Config) -> None:
     # tbot.workdir: All files that a tbot run produces while running should be stored in
     # some subdir of this path. (Except eg. tftp boot files)
     rand = random.randint(1000, 10000)
