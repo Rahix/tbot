@@ -26,8 +26,14 @@ def main():
                              <pre></pre>
                            </div>"""
         elif msg['type'] == ["testcase", "end"]:
-            return f"""    <div class="status-pass">
+            if msg['success']:
+                return f"""<div class="status-pass">
                              <pre>OK, Time: {msg['duration']:.2f}s</pre>
+                           </div>
+                         </div>
+                       </div>"""
+            return f"""    <div class="status-fail">
+                             <pre>FAIL, Time: {msg['duration']:.2f}s</pre>
                            </div>
                          </div>
                        </div>"""

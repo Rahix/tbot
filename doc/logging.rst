@@ -32,7 +32,8 @@ as an ``asctime()``. Other keys may exist, depending on the event type. The foll
 (But you can add your own, of course):
 
 * ``["testcase", "begin"]``: Start of a testcase, contains no further information than the testcase's ``"name"``.
-* ``["testcase", "end"]``: End of a testcase, contains ``"name"`` and ``"duration"`` of the testcase.
+* ``["testcase", "end"]``: End of a testcase, contains ``"name"`` and ``"duration"`` of the testcase and whether
+  it returned with ``"success"`` (= no exception was thrown).
 * ``["shell", ...]``: A shell command was executed. Contains the ``"command"``, its ``"exit_code"`` and
   ``"output"``, a hint, whether documentation generation should include the command (``"show"``) and whether
   the output should be included (``"show_stdout"``). ``["type"][1:]`` is the shelltype.
@@ -45,6 +46,7 @@ as an ``asctime()``. Other keys may exist, depending on the event type. The foll
 * ``["board", "boot"]``: Boot ``"log"`` of powering on the board.
 * ``["board", "poweroff"]``: Marker that the board was powered off at this point. ``"board"`` contains the name of
   the board. Usually followed by a shell event with the command used to do so.
+* ``["msg", verbosity]``: A ``"text"`` message. ``verbosity`` is the Verbosity level.
 * ``["tbotend"]``: The very last event. Only information is, whether the test run was a ``"success"``.
 
 As a demonstration of how this log might be used, take a look at the generate scripts:
