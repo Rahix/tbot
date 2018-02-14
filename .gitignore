@@ -3,3 +3,4 @@ _build/
 *.egg-info/
 log.json
 *.pyc
+.mypy_cache/
