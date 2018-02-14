@@ -94,22 +94,26 @@ class TBot:
         self.layer += 1
         self.log.layer = self.layer
         start_time = time.monotonic()
+
         try:
             if isinstance(tc, str):
                 retval = self.testcases[tc](self, **kwargs)
             else:
                 retval = tc(self, **kwargs)
+        except Exception as e: #pylint: disable=broad-except
+            # Cleanup is done by "with" handler __exit__
+            # TODO: Add the exception to the log
             self.layer -= 1
             self.log.layer = self.layer
             run_duration = time.monotonic() - start_time
-            self.log.log(logger.TestcaseEndLogEvent(name, self.layer, run_duration))
-            return retval
-        except Exception: #pylint: disable=broad-except
-            # Cleanup is done by "with" handler __exit__
-            traceback.print_exc()
-            self.log.log(logger.TBotFinishedLogEvent(False))
-            self.log.write_logfile()
-            sys.exit(1)
+            self.log.log(logger.TestcaseEndLogEvent(name, self.layer, run_duration, False))
+            raise
+
+        self.layer -= 1
+        self.log.layer = self.layer
+        run_duration = time.monotonic() - start_time
+        self.log.log(logger.TestcaseEndLogEvent(name, self.layer, run_duration, True))
+        return retval
 
     def machine(self,
                 mach: tbot.machine.Machine,

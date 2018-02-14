@@ -111,6 +111,8 @@ def main() -> None:
     from tbot import testcase_collector
     from tbot import logger
     import tbot
+    import sys
+    import traceback
 
     tbot_config_path = pathlib.Path(args.confdir) / "tbot.py"
     lab_config_path = pathlib.Path(str(args.labconfdir).format(confdir=args.confdir)) \
@@ -154,11 +156,17 @@ def main() -> None:
 LAB:   {args.lab:10} name="{tb.config["lab.name"]}"
 BOARD: {args.board:10} name="{tb.config["board.name"]}" """)
 
-        if args.testcase is not None:
-            tb.call(args.testcase)
-        else:
-            @tb.call
-            def default(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
-                """ Default testcase is building U-Boot """
-                tb.call("build_uboot")
+        try:
+            if args.testcase is not None:
+                tb.call(args.testcase)
+            else:
+                @tb.call
+                def default(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
+                    """ Default testcase is building U-Boot """
+                    tb.call("build_uboot")
+        except Exception: #pylint: disable=broad-except
+            tb.log.log_msg(traceback.format_exc(), tbot.logger.Verbosity.ERROR)
+            tb.log.log(logger.TBotFinishedLogEvent(False))
+            tb.log.write_logfile()
+            sys.exit(1)
         tb.log.log(logger.TBotFinishedLogEvent(True))

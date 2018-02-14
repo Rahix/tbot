@@ -168,18 +168,28 @@ class TestcaseEndLogEvent(LogEvent):
     :param tc_name: Name of the testcase
     :param layer: Call graph depth
     :param duration: Duration of the testcase in seconds
+    :param success: Whether the testcase succeeded
     """
-    def __init__(self, tc_name: str, layer: int, duration: float) -> None:
+    def __init__(self,
+                 tc_name: str,
+                 layer: int,
+                 duration: float,
+                 success: bool = True) -> None:
         super().__init__()
         self._dict["name"] = tc_name
         self._dict["duration"] = duration
+        self._dict["success"] = success
         self.layer = layer
+        self.success = success
 
     def _init(self) -> None:
         msg = ""
         for _ in range(0, self.layer):
             msg += "│   "
-        msg += "│   └─\x1B[1;32mDone.\x1B[0m"
+        if self.success:
+            msg += "│   └─\x1B[1;32mDone.\x1B[0m"
+        else:
+            msg += "│   └─\x1B[1;31mFail.\x1B[0m"
         self.log_print(msg, False)
 
     @property

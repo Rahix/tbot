@@ -131,3 +131,18 @@ perferendis dolor. Tempore at ipsum eos molestiae nobis error corporis."""
 
         out = tb.call(a_testcase, param="123")
         assert out == 123, "Testcase did not return 123: %r" % out
+
+    @tb.call
+    def test_failures(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
+        """ Test a failing testcase """
+        def a_failing_testcase(_tb: tbot.TBot) -> None:
+            """ A testcase that fails """
+            raise Exception("failure?")
+
+        did_raise = False
+        try:
+            tb.call(a_failing_testcase)
+        except Exception as e: #pylint: disable=broad-except
+            assert e.args[0] == "failure?", "Testcase raised wrong exception"
+            did_raise = True
+        assert did_raise is True, "Testcase did not raise an exception"
