@@ -1,7 +1,23 @@
+"""
+TBot configuration
+"""
 import pathlib
 import typing
 
 class Config(dict):
+    """
+    A TBot configuration
+
+    Access configuaratio items by using a ``.`` separated key-path, eg::
+        hooks = cfg["uboot.test.hooks"]
+
+    By default, this raises an exception if the value was not found. You can
+    supply a default value that will be returned if the value was not found
+    instead::
+        has_venv = cfg["uboot.test.has_venv", True]
+
+    The configuration is available as ``tb.config`` in all testcases.
+    """
     def __init__(self) -> None:
         super().__init__()
 

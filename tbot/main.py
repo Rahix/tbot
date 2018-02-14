@@ -1,3 +1,6 @@
+"""
+TBot main entry point
+"""
 import pathlib
 import typing
 import argparse
@@ -5,6 +8,12 @@ import argcomplete
 
 #pylint: disable=invalid-name
 def LabCompleter(**_kwargs: typing.Any) -> typing.List[str]:
+    """
+    Return a list of all currently available labs for shell completion
+
+    :param _kwargs: Compatibility parameter for argcomplete
+    :returns: List of lab names
+    """
     lst = []
     for lab in pathlib.Path("config/labs").iterdir():
         if lab.suffix == ".py":
@@ -13,6 +22,12 @@ def LabCompleter(**_kwargs: typing.Any) -> typing.List[str]:
 
 #pylint: disable=invalid-name
 def BoardCompleter(**_kwargs: typing.Any) -> typing.List[str]:
+    """
+    Return a list of all currently available boards for shell completion
+
+    :param _kwargs: Compatibility parameter for argcomplete
+    :returns: List of board names
+    """
     lst = []
     for board in pathlib.Path("config/boards").iterdir():
         if board.suffix == ".py":
@@ -21,6 +36,12 @@ def BoardCompleter(**_kwargs: typing.Any) -> typing.List[str]:
 
 #pylint: disable=invalid-name
 def TestcaseCompleter(**_kwargs: typing.Any) -> typing.List[str]:
+    """
+    Return a list of all currently available testcases for shell completion
+
+    :param _kwargs: Compatibility parameter for argcomplete
+    :returns: List of testcase names
+    """
     lst = []
     tbotpath = pathlib.Path(__file__).absolute().parent
 

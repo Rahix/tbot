@@ -1,7 +1,12 @@
 #!/usr/bin/python3
+"""
+Demo backend that prints some
+stats about the U-Boot build
+"""
 import json
 
 def main():
+    """ Main """
     log = json.load(open("log.json"))
 
     testcases = [

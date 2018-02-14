@@ -1,9 +1,14 @@
+"""
+Taurus board config
+
+Available in denx lab
+"""
 import pathlib
 from tbot.config import Config
 
 #pylint: disable=line-too-long
 def config(cfg: Config) -> None:
-    """ Taurus board config """
+    """ Board config """
     if cfg["lab.name"] != "pollux":
         raise Exception("board taurus: Only availabe in pollux lab!")
 

@@ -1,8 +1,14 @@
+"""
+Corvus (at91sam9g45) board config
+
+Available in denx and local labs
+"""
 import pathlib
 from tbot.config import Config
 
 #pylint: disable=line-too-long
 def config(cfg: Config) -> None:
+    """ Board config """
     if cfg["lab.name"] not in ["pollux", "local"]:
         raise Exception("board corvus: Only pollux and local labs are supported!")
 

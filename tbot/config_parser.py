@@ -1,3 +1,6 @@
+"""
+TBot configuration parser
+"""
 import pathlib
 import importlib
 import random
@@ -7,6 +10,13 @@ from tbot import config
 
 
 def parse_config(configs: typing.List[pathlib.Path]) -> config.Config:
+    """
+    Parse a list of configurations and apply them in the order they were
+    given.
+
+    :param configs: List of configuration files
+    :returns: The final configuration
+    """
     cfg = config.Config()
     for cfg_file in configs:
         module_spec = importlib.util.spec_from_file_location("config", str(cfg_file))

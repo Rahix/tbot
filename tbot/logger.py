@@ -297,6 +297,13 @@ class Logger:
         self.log(ev)
 
     def log_msg(self, message: str, verbosity: Verbosity = Verbosity.INFO) -> None:
+        """
+        A shortcut for writing a message to stdout
+
+        :param message: Text to be written to stdout
+        :param verbosity: Minimum verbosity level for this message to be written
+        :returns: Nothing
+        """
         ev = CustomLogEvent(
             ["msg", str(verbosity)],
             verbosity=verbosity,
@@ -305,6 +312,12 @@ class Logger:
         self.log(ev)
 
     def log_debug(self, message: str) -> None:
+        """
+        Shortcut for debug messages
+
+        :param message: Debug message
+        :returns: Nothing
+        """
         self.log_msg(message, Verbosity.DEBUG)
 
     def write_logfile(self, filename: typing.Optional[str] = None) -> None:

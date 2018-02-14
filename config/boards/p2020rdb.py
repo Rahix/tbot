@@ -1,7 +1,13 @@
+"""
+P2020RDB-PCA board config
+
+Available in denx lab
+"""
 import pathlib
 from tbot.config import Config
 
 def config(cfg: Config) -> None:
+    """ Board config """
     if cfg["lab.name"] != "pollux":
         raise Exception("board p2020rdb: Only availabe in pollux lab!")
 

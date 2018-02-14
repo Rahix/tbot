@@ -1,3 +1,6 @@
+"""
+TBot machines framework
+"""
 from .machine import Machine, MachineManager
 from .board import MachineBoard
 

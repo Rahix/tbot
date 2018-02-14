@@ -1,8 +1,12 @@
+"""
+DENX pollux lab config
+"""
 import pathlib
 from tbot.config import Config
 
 #pylint: disable=line-too-long
 def config(cfg: Config) -> None:
+    """ Lab config """
     username = "hws"
     cfg["lab"] = {
         "name": "pollux",

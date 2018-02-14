@@ -1,10 +1,13 @@
+"""
+Localhost lab config
+"""
 import pathlib
 import getpass
 from tbot.config import Config
 
 #pylint: disable=line-too-long
 def config(cfg: Config) -> None:
-    """ Localhost lab config """
+    """ Lab config """
     username = getpass.getuser()
     home = pathlib.Path.home()
     cfg["lab"] = {

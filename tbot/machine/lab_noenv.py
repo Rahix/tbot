@@ -3,18 +3,25 @@ Labhost machine without environment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 """
 import typing
+import paramiko
 import tbot
 from . import machine
 
 class MachineLabNoEnv(machine.Machine):
     """ Labhost machine without environment """
+    def __init__(self) -> None:
+        super().__init__()
+        self.conn: typing.Optional[paramiko.SSHClient] = None
+
     def _setup(self, tb: 'tbot.TBot') -> None:
         self.conn = tb.machines.connection
         super()._setup(tb)
 
     def _exec(self,
               command: str,
-              log_event: tbot.logger.LogEvent) -> typing.Tuple[int, str]:
+              log_event: tbot.logger.ShellCommandLogEvent) -> typing.Tuple[int, str]:
+        assert isinstance(self.conn, paramiko.SSHClient), \
+            "Machine was not initialized correctly!"
         channel = self.conn.get_transport().open_session()
         channel.set_combine_stderr(True)
         channel.exec_command(command)
