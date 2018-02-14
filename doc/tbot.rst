@@ -50,7 +50,7 @@ Dummy board machine
 Utils
 -----
 
-.. automodule:: tbot.config_parser
+.. automodule:: tbot.config
    :members:
 
 .. automodule:: tbot.logger
