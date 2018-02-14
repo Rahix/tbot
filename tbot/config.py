@@ -1,9 +1,6 @@
 import pathlib
 import typing
 
-def _marker():
-    pass
-
 class Config(dict):
     def __init__(self) -> None:
         super().__init__()

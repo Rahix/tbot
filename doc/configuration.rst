@@ -25,7 +25,14 @@ use ``"tbot.workdir"`` to access the ``workdir`` value in the ``tbot`` sub confi
 
     a_dir_inside_workdir = tb.config["tbot.workdir"] / "dir-name"
 
-As this example shows, paths should always be ``pathlib`` paths to increase readability
+By default, something like ``tb.config["..."]`` will raise an exception if the value was not
+set in the config. If it is a value with a sane default, access it using::
+
+    val = tb.config["...", "default"]
+
+This will return the default value if the key does not exist in the configuration.
+
+Another thing about configs is, that paths should always be ``pathlib`` paths to increase readability
 of testcases. Use ``pathlib.Path`` for paths on the TBot host (eg ``"lab.keyfile"``) and
 ``pathlib.PurePosixPath`` for paths on the Lab host (eg ``"tbot.workdir"``).
 
@@ -116,7 +123,7 @@ U-Boot
             # Whether the lab host has virtualenv installed. If it doesn't,
             # it needs pytest (if you want to run the U-Boot python test suite)
             "use_venv": true,
-            # Where to fint board hooks for the U-Boot testsuite
+            # Where to find board hooks for the U-Boot testsuite
             "hooks": pathlib.PurePosixPath("/home/hws/hooks/P2020"),
             # An optional config file for the testsuite
             "config": pathlib.PurePosixPath("/home/hws/data/u_boot_boardenv_P2020RDB_PC_NAND.py"),

@@ -28,7 +28,7 @@ class TBot:
     :param log: The logger that TBot should use
     :param new: Whether this is a new instance that should create a noenv machine.
         Always ``True`` unless you know what you are doing.
-    :ivar config: :class:`tbot.config_parser.Config()`
+    :ivar config: :class:`tbot.config.Config()`
     :ivar testcases: All available testcases
     :ivar log: :class:`tbot.logger.Logger()`
     :ivar machines: All available machines :class:`tbot.machine.machine.MachineManager()`

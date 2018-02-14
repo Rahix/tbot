@@ -23,12 +23,13 @@ or this::
 
     {
         "success": true,
-        "type": "tbotend",
+        "type": ["tbotend"],
         "time": "Thu Jan 25 09:49:39 2018"
     }
 
-Each event has at least a ``"type"`` being either a string or an array of strings and a ``"time"``,
-as an ``asctime()``. Other keys may exist, depending on the event type. The following event types exist:
+Each event has at least a ``"type"`` being an array of strings and a ``"time"``,
+as an ``asctime()``. Other keys may exist, depending on the event type. The following event types exist
+(But you can add your own, of course):
 
 * ``["testcase", "begin"]``: Start of a testcase, contains no further information than the testcase's ``"name"``.
 * ``["testcase", "end"]``: End of a testcase, contains ``"name"`` and ``"duration"`` of the testcase.
@@ -39,9 +40,12 @@ as an ``asctime()``. Other keys may exist, depending on the event type. The foll
   Markdown. ``"text"`` contains the actual message.
 * ``["doc", "appendix"]``: An appendix to be added to the end of a documentation. For example a file needed for
   repeating the test run. Has a ``"title"`` and a ``"text"``.
-* ``"boardshell_cleanup"``: Marker that the boardshell powered off the board at this point. Usually followed by
-  a shell event with the command used to do so.
-* ``"tbotend"``: The very last event. Only information is, whether the test run was a ``"success"``.
+* ``["board", "powerup"]``: Marker that the board was powered on at this point, ``"board"`` contains the name of
+  the board. Usually followed by a shell event with the command used to do so.
+* ``["board", "boot"]``: Boot ``"log"`` of powering on the board.
+* ``["board", "poweroff"]``: Marker that the board was powered off at this point. ``"board"`` contains the name of
+  the board. Usually followed by a shell event with the command used to do so.
+* ``["tbotend"]``: The very last event. Only information is, whether the test run was a ``"success"``.
 
 As a demonstration of how this log might be used, take a look at the generate scripts:
 
