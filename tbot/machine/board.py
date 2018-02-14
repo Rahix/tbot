@@ -13,13 +13,13 @@ class MachineBoard(machine.Machine):
     def __init__(self) -> None:
         super().__init__()
         self.boardname = "unknown"
+        self.powerup = True
 
-    #pylint: disable=arguments-differ
-    def _setup(self, tb: 'tbot.TBot', powerup: bool = True) -> None:
+    def _setup(self, tb: 'tbot.TBot') -> None:
         super()._setup(tb)
         self.boardname = tb.config["board.name", self.boardname]
 
-        if powerup:
+        if self.powerup:
             ev = tbot.logger.CustomLogEvent(
                 ["board", "powerup"],
                 stdout=f"\x1B[1mBOARD POWERUP\x1B[0m ({self.boardname})",
