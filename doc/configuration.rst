@@ -1,6 +1,6 @@
-.. tbot configuration guide
+.. TBot configuration guide
 
-tbot configuration
+TBot configuration
 ==================
 
 TBot uses python for it's config. The configuration is divided into

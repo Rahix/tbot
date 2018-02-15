@@ -1,6 +1,6 @@
 .. tbot getting started guide
 
-Getting Started with tbot
+Getting Started with TBot
 =========================
 
 The main concept of tbot is, that everything is a testcase. Testcases

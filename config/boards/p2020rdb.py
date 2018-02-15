@@ -1,7 +1,7 @@
 """
 P2020RDB-PCA board config
 
-Available in denx lab
+Available in ``denx`` lab
 """
 import pathlib
 from tbot.config import Config

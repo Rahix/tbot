@@ -21,7 +21,7 @@ from tbot.testcase_collector import testcase
 #pylint: disable=too-many-instance-attributes
 class TBot:
     """
-    Main class of TBOT
+    Main class of TBot
 
     :param config: A configuration to be used
     :param testcase: Testcases available to this instance

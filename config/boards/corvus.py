@@ -1,7 +1,7 @@
 """
 Corvus (at91sam9g45) board config
 
-Available in denx and local labs
+Available in ``denx`` and ``local`` labs
 """
 import pathlib
 from tbot.config import Config
