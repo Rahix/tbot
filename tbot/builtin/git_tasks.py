@@ -8,9 +8,9 @@ import tbot
 
 
 @tbot.testcase
-def clean_repo_checkout(tb: tbot.TBot, *,
-                        target: pathlib.PurePosixPath,
-                        repo: str) -> None:
+def git_clean_checkout(tb: tbot.TBot, *,
+                       target: pathlib.PurePosixPath,
+                       repo: str) -> None:
     """
     Checkout a git repo if it does not exist yet and make sure there are
     no artifacts left from previous builds.
@@ -28,6 +28,7 @@ test -d {target / '.git'}""", log_show=False)[0] == 0:
         tb.shell.exec0(f"""\
 git clone {repo} {target}""")
     else:
+        tb.log.log_debug("Repository already checked out, cleaning ...")
         tb.shell.exec0(f"""\
 cd {target}; git reset --hard; git clean -f -d""", log_show=False)
         tb.shell.exec0(f"""\
@@ -41,7 +42,7 @@ git clone {repo} {target}""", log_show=True)
 
 
 @tbot.testcase
-def apply_git_patches(tb: tbot.TBot, *,
+def git_apply_patches(tb: tbot.TBot, *,
                       gitdir: pathlib.PurePosixPath,
                       patchdir: pathlib.PurePosixPath) -> None:
     """

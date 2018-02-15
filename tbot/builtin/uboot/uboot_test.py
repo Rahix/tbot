@@ -75,7 +75,7 @@ recompile if it is dirty.
 testsuite using the following commands:\n")
         tb.shell.exec0(f"export PATH={test_hooks}:$PATH")
 
-        with tb.machine(tbot.machine.MachineBoardDummy(False)) as tbn:
+        with tb.machine(tbot.machine.MachineBoardDummy(turn_on=False)) as tbn:
             tbn.shell.exec0(f"\
 ./test/py/test.py --bd {test_boardname} --build")
 

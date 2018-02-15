@@ -13,25 +13,34 @@ class MachineBoardDummy(board.MachineBoard):
     :param turn_on: Whether to turn on the board or just turn it off in the end.
         Useful for example for the U-Boot test suite which expects the board to
         be off in the beginning but still needs a manual poweroff once it's done.
+    :param power_cmd_on: The command for turning on the board, defaults to
+                         ``tb.config["board.power.on_command"]``
+    :param power_cmd_off: The command for turning off the board, defaults to
+                          ``tb.config["board.power.off_command"]``
     """
-    def __init__(self, turn_on: bool = True) -> None:
+    def __init__(self, *,
+                 name: typing.Optional[str] = None,
+                 turn_on: bool = True,
+                 power_cmd_on: typing.Optional[str] = None,
+                 power_cmd_off: typing.Optional[str] = None,
+                ) -> None:
         super().__init__()
-        self.name = "unknown"
+        self.name = name
         self.powerup = turn_on
 
-        self.power_cmd_on = ""
-        self.power_cmd_off = ""
+        self.power_cmd_on = power_cmd_on
+        self.power_cmd_off = power_cmd_off
 
         self.noenv: typing.Optional[tbot.machine.Machine] = None
 
 
-    #pylint: disable=arguments-differ
     def _setup(self, tb: 'tbot.TBot') -> None:
+        self.name = self.name or tb.config["board.name", "unknown"]
+        self.boardname = self.name
         super()._setup(tb)
-        self.name = tb.config["board.shell.name", self.name]
 
-        self.power_cmd_on = tb.config["board.power.on_command"]
-        self.power_cmd_off = tb.config["board.power.off_command"]
+        self.power_cmd_on = self.power_cmd_on or tb.config["board.power.on_command"]
+        self.power_cmd_off = self.power_cmd_off or tb.config["board.power.off_command"]
 
         # Save the noenv shell to have it accessible later
         self.noenv = tb.machines["labhost-noenv"]

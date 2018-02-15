@@ -7,6 +7,7 @@ import tbot
 
 
 class UnknownToolchainException(Exception):
+    """ The toolchain provided was not found in the config """
     pass
 
 @tbot.testcase
