@@ -46,7 +46,7 @@ Here we will run it on the host. Make sure all dependencies are met.  Refer to
 <http://git.denx.de/?p=u-boot.git;a=blob;f=test/py/README.md> for a list.
 """)
 
-    if tb.config["uboot.test_use_venv", True]:
+    if tb.config["uboot.test.use_venv", True]:
         tb.log.doc_log("""Create a virtualenv and install pytest inside it:
 """)
 
