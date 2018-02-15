@@ -19,7 +19,8 @@ def board_p2020rdb(tb: tbot.TBot) -> None:
     tb.call("p2020rdb_install_uboot")
 
     with tb.with_boardshell() as tbn:
-        tbn.call("check_uboot_version", uboot_bin="{builddir}/u-boot-with-spl.bin")
+        tbn.call("check_uboot_version", uboot_binary=\
+            tbn.config["uboot.builddir"] / "u-boot-with-spl.bin")
 
         env = tbn.boardshell.exec0("printenv", log_show=False)
         tbn.log.doc_appendix("U-Boot environment", f"""```sh
