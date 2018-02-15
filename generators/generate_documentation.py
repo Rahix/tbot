@@ -17,7 +17,7 @@ def main():
     # TODO: implement a cli
     log = json.load(open("log.json"))
 
-    appendices = []
+    appendices = {}
 
     def gen_md(msg):
         """ Generate markdown for a log message """
@@ -51,13 +51,13 @@ def main():
             if msg['type'][1] == "text":
                 return msg['text']
             elif msg['type'][1] == "appendix":
-                appendices.append((msg['title'], msg['text']))
+                appendices[msg['title']] = msg['text']
         return ""
 
     print("".join(map(gen_md, log)))
-    if appendices != []:
+    if appendices != {}:
         print("\n# Appendix #\n\n")
-        for title, text in appendices:
+        for title, text in appendices.items():
             print(f"## {title} ##\n{text}\n")
     print("""
 # Disclaimer #
