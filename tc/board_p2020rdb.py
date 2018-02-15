@@ -11,10 +11,12 @@ def board_p2020rdb(tb: tbot.TBot) -> None:
     P2020RDB-PCA board specific testcase to build U-Boot, flash it into
     NAND and run the U-Boot test suite
     """
-    tb.log.doc_log("""U-Boot on the P2020RDB-PCA board
-============
+    tb.log.doc_log("""\
+U-Boot on the P2020RDB-PCA board
+================================
 """)
-    tb.call("build_uboot")
+
+    tb.call("uboot_checkout_and_build")
 
     tb.call("p2020rdb_install_uboot")
 

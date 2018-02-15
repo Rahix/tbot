@@ -28,14 +28,19 @@ def uboot_sandbox(tb: tbot.TBot, *,
     builddir = builddir or tb.config["tbot.workdir"] / "uboot-sandbox"
     patchdir = patchdir or tb.config["uboot.patchdir", None]
 
-    tb.call("clean_repo_checkout",
-            repo=repo or tb.config["uboot.repository"],
-            target=builddir)
-    if patchdir is not None:
-        tb.call("apply_git_patches", gitdir=builddir, patchdir=patchdir)
-
     tb.log.doc_log("""
 ## Run U-Boot tests inside sandbox on host (optional) ##
+
+### U-Boot checkout for the sandbox ###
+""")
+
+    tb.call("uboot_checkout",
+            repo=repo or tb.config["uboot.repository"],
+            builddir=builddir,
+            patchdir=patchdir)
+
+    tb.log.doc_log("""
+### Run sandbox tests ###
 U-Boot contains a python test suite that can be run on the host and on the target.
 Here we will run it on the host. Make sure all dependencies are met.  Refer to
 <http://git.denx.de/?p=u-boot.git;a=blob;f=test/py/README.md> for a list.
