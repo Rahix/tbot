@@ -22,7 +22,7 @@ def uboot_sandbox(tb: tbot.TBot, *,
     :param patchdir: Optional directory of patches to be applied. If this
                      parameter is not given, ``tb.config["uboot.patchdir"]``
                      will be used (If this is also empty, no patches will be
-                     applied). Pass a nonexistant directory to force building
+                     applied). Supply a nonexistent directory to force building
                      without patches.
     """
     builddir = builddir or tb.config["tbot.workdir"] / "uboot-sandbox"

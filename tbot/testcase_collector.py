@@ -33,7 +33,7 @@ def get_testcases(paths: typing.Union[typing.List[str], typing.List[pathlib.Path
         paths = [pathlib.Path("tc")]
     sources: typing.List[pathlib.Path] = list()
     for path in paths:
-        # skip nonexistant paths
+        # skip nonexistent paths
         path = pathlib.Path(path) if not isinstance(path, pathlib.Path) else path
         if path.is_dir():
             sources += [p for p in path.iterdir()

@@ -193,7 +193,7 @@ def selftest_builtin_errors(tb: tbot.TBot) -> None:
         """ A dummy testcase """
         pass
 
-    tb.log.log_debug("Testing toolchain_env with nonexistant toolchain name ...")
+    tb.log.log_debug("Testing toolchain_env with nonexistent toolchain name ...")
     try:
         tb.call("toolchain_env", toolchain="a-toolchain-that-will-never-exist", and_then=dummy)
     except Exception as e: #pylint: disable=broad-except

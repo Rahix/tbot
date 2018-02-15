@@ -21,7 +21,7 @@ def build_uboot(tb: tbot.TBot, *,
     :param builddir: Where to build U-Boot, defaults to ``tb.config["uboot.builddir"]``
     :param patchdir: Optional U-Boot patches to be applied
         ontop of the tree, defaults to ``tb.config["uboot.patchdir"]``, supply a
-        nonexistant path to force building without patches
+        nonexistent path to force building without patches
     :param repo: Where to get U-Boot from, defaults to ``tb.config["uboot.repository"]``
     :param toolchain: What toolchain to use, defaults to ``tb.config["board.toolchain"]``
     :param defconfig: What U-Boot defconfig to use, defaults to ``tb.config["board.defconfig"]``
