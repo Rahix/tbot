@@ -30,7 +30,7 @@ def setup_tftpdir(tb: tbot.TBot, *,
     return tftpdir
 
 @tbot.testcase
-def cp_to_tftpdir(tb: tbot.TBot,
+def cp_to_tftpdir(tb: tbot.TBot, *,
                   name: typing.Union[str, pathlib.PurePosixPath],
                   dest_name: typing.Optional[str] = None,
                   builddir: typing.Optional[pathlib.PurePosixPath] = None,
@@ -42,6 +42,9 @@ def cp_to_tftpdir(tb: tbot.TBot,
     :param name: Name of the file or path to the file
     :param dest_name: Name of the file inside the tftp folder, defaults to
                       the filename of ``name``
+    :param builddir: Where to find files if no full path is supplied, defaults to
+                     ``tb.config["uboot.builddir"]``
+    :param tftpdir: Where to put files, defaults to ``tb.config["tftp.directory"]``
     """
     builddir = builddir or tb.config["uboot.builddir"]
     tftpdir = tftpdir or tb.config["tftp.directory"]
