@@ -5,6 +5,7 @@ Tescase collector
 import pathlib
 import typing
 import importlib.util
+import enforce
 
 TBOT_TESTCASES: typing.Dict[str, typing.Callable] = dict()
 
@@ -15,7 +16,7 @@ def testcase(f: typing.Callable) -> typing.Callable:
     global TBOT_TESTCASES
     if f.__name__ in TBOT_TESTCASES:
         raise Exception(f"Duplicate testcase: {f.__name__}")
-    TBOT_TESTCASES[f.__name__] = f
+    TBOT_TESTCASES[f.__name__] = enforce.runtime_validation(f)
     return f
 
 
