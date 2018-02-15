@@ -11,30 +11,53 @@ from . import board
 
 #pylint: disable=too-many-instance-attributes
 class MachineBoardRlogin(board.MachineBoard):
-    """ Board machine for rlogin like interfaces """
-    def __init__(self) -> None:
-        self.name = "unknown"
+    """ Board machine for rlogin like interfaces
 
-        self.power_cmd_on = ""
-        self.power_cmd_off = ""
-        self.connect_command = ""
+    :param name: Name of the shell (eg ``someboard-uboot``), defaults to
+                 ``tb.config["board.shell.name"]``
+    :param boardname: Name of the board, defaults to ``tb.config["board.name"]``
+    :param power_cmd_on: Command to poweron the board, defaults to
+                         ``tb.config["board.power.on_command"]``
+    :param power_cmd_off: Command to poweroff the board, defaults to
+                          ``tb.config["board.power.off_command"]``
+    :param connect_command: Command to connect to the board with a tool that behaves similar
+                            to rlogin, defaults to ``tb.config["board.shell.command"]``
+    :param prompt: The U-Boot prompt that is expected on the board, defaults to
+                   ``tb.config["board.shell.prompt"]`` or ``"U-Boot> "``
+    :param timeout: Time to wait before aborting autoboot (in seconds), defaults to
+                    ``tb.config["board.shell.timeout"]`` or ``2`` seconds.
+    """
+    #pylint: disable=too-many-arguments
+    def __init__(self, *,
+                 name: typing.Optional[str] = None,
+                 boardname: typing.Optional[str] = None,
+                 power_cmd_on: typing.Optional[str] = None,
+                 power_cmd_off: typing.Optional[str] = None,
+                 connect_command: typing.Optional[str] = None,
+                 prompt: typing.Optional[str] = None,
+                 timeout: typing.Optional[float] = None,
+                ) -> None:
+        super().__init__()
+        self.name = name
+        self.boardname = boardname
+
+        self.power_cmd_on = power_cmd_on
+        self.power_cmd_off = power_cmd_off
+        self.connect_command = connect_command
 
         self.prompt = f"TBOT-BS-START-{random.randint(11111,99999)}>"
-        self.uboot_prompt = "U-Boot> "
-        self.uboot_timeout = 2
+        self.uboot_prompt = prompt
+        self.uboot_timeout = timeout
 
         self.channel: typing.Optional[paramiko.Channel] = None
         self.noenv: typing.Optional[tbot.machine.Machine] = None
 
-        super().__init__()
-
-    #pylint: disable=arguments-differ
     def _setup(self, tb: 'tbot.TBot') -> None:
         super()._setup(tb)
-        self.name = tb.config["board.shell.name", self.name]
+        self.name = self.name or tb.config["board.shell.name", "unknown"]
 
-        self.power_cmd_on = tb.config["board.power.on_command"]
-        self.power_cmd_off = tb.config["board.power.off_command"]
+        self.power_cmd_on = self.power_cmd_on or tb.config["board.power.on_command"]
+        self.power_cmd_off = self.power_cmd_off or tb.config["board.power.off_command"]
 
         conn = tb.machines.connection
         self.channel = conn.get_transport().open_session()
@@ -45,9 +68,9 @@ class MachineBoardRlogin(board.MachineBoard):
         self.channel.resize_pty(200, 200, 1000, 1000)
         self.channel.invoke_shell()
 
-        self.connect_command = tb.config["board.shell.command"]
-        self.uboot_prompt = tb.config["board.shell.prompt", self.uboot_prompt]
-        self.uboot_timeout = tb.config["board.shell.timeout", self.uboot_timeout]
+        self.connect_command = self.connect_command or tb.config["board.shell.command"]
+        self.uboot_prompt = self.uboot_prompt or tb.config["board.shell.prompt", "U-Boot> "]
+        self.uboot_timeout = self.uboot_timeout or tb.config["board.shell.timeout", 2]
 
         # Save the noenv shell to have it accessible later
         self.noenv = tb.machines["labhost-noenv"]

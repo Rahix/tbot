@@ -18,7 +18,7 @@ class MachineBoardDummy(board.MachineBoard):
     :param power_cmd_off: The command for turning off the board, defaults to
                           ``tb.config["board.power.off_command"]``
     """
-    def __init__(self,
+    def __init__(self, *,
                  name: typing.Optional[str] = None,
                  turn_on: bool = True,
                  power_cmd_on: typing.Optional[str] = None,
@@ -34,11 +34,9 @@ class MachineBoardDummy(board.MachineBoard):
         self.noenv: typing.Optional[tbot.machine.Machine] = None
 
 
-    #pylint: disable=arguments-differ
     def _setup(self, tb: 'tbot.TBot') -> None:
-        self.name = self.name or tb.config["board.shell.name", "unknown"]
+        self.name = self.name or tb.config["board.name", "unknown"]
         self.boardname = self.name
-
         super()._setup(tb)
 
         self.power_cmd_on = self.power_cmd_on or tb.config["board.power.on_command"]
