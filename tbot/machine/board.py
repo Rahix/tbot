@@ -12,12 +12,12 @@ class MachineBoard(machine.Machine):
     """ Abstract base class for board machines """
     def __init__(self) -> None:
         super().__init__()
-        self.boardname = "unknown"
+        self.boardname = None
         self.powerup = True
 
     def _setup(self, tb: 'tbot.TBot') -> None:
         super()._setup(tb)
-        self.boardname = tb.config["board.name", self.boardname]
+        self.boardname = self.boardname or tb.config["board.name", "unknown"]
 
         if self.powerup:
             ev = tbot.logger.CustomLogEvent(
