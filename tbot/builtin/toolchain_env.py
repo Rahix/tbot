@@ -6,10 +6,13 @@ import typing
 import tbot
 
 
+class UnknownToolchainException(Exception):
+    pass
+
 @tbot.testcase
-def toolchain_env(tb: tbot.TBot,
-                  toolchain: typing.Optional[str] = None,
-                  and_then: typing.Union[str, typing.Callable, None] = None,
+def toolchain_env(tb: tbot.TBot, *,
+                  toolchain: str,
+                  and_then: typing.Union[str, typing.Callable],
                   params: typing.Optional[typing.Dict[str, typing.Any]] = None) -> None:
     """
     Setup a toolchain environment and call a testcase inside
@@ -21,12 +24,9 @@ def toolchain_env(tb: tbot.TBot,
     if params is None:
         params = dict()
 
-    assert toolchain is not None, "Empty toolchain parameter provided"
-
-    # If no code will be executed with the toolchain env,
-    # why bother setting it up in the first place?
-    if and_then is None:
-        return
+    # Check if the toolchain exists
+    if tb.config[f"toolchains.{toolchain}", None] is None:
+        raise UnknownToolchainException(repr(toolchain))
 
     toolchain_script = tb.config[f"toolchains.{toolchain}.env_setup_script"]
 

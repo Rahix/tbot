@@ -7,13 +7,18 @@ import typing
 import tbot
 
 @tbot.testcase
-def setup_tftpdir(tb: tbot.TBot) -> pathlib.PurePosixPath:
+def setup_tftpdir(tb: tbot.TBot, *,
+                  tftpdir: typing.Optional[pathlib.PurePosixPath] = None,
+                 ) -> pathlib.PurePosixPath:
     """
     Setup the tftp directory
 
-    :returns: Returns the path to the tftp folder
+    :param tftpdir: Optional path to the tftpdir, defaults to
+                    ``tb.config["tftp.directory"]`` (which has a default value
+                    in ``config/tbot.py``
+    :returns: The tftpdir
     """
-    tftpdir = tb.config["tftp.directory"]
+    tftpdir = tftpdir or tb.config["tftp.directory"]
 
     if not isinstance(tftpdir, pathlib.PurePosixPath):
         raise Exception("Configuation error: 'tftp.directory' must be a PurePosixPath!")
@@ -25,25 +30,26 @@ def setup_tftpdir(tb: tbot.TBot) -> pathlib.PurePosixPath:
     return tftpdir
 
 @tbot.testcase
-def cp_to_tftpdir(tb: tbot.TBot,
-                  name: typing.Optional[str] = None,
+def cp_to_tftpdir(tb: tbot.TBot, *,
+                  name: typing.Union[str, pathlib.PurePosixPath],
                   dest_name: typing.Optional[str] = None,
-                  from_builddir: bool = True) -> None:
+                  builddir: typing.Optional[pathlib.PurePosixPath] = None,
+                  tftpdir: typing.Optional[pathlib.PurePosixPath] = None,
+                 ) -> None:
     """
     Copy a file into the tftp folder
 
-    :param name: Name of the file if from_builddir is True, else path to the file
-    :param dest_name: Name of the file inside the tftp folder
-    :param from_builddir: Wether name is a file inside the builddir or the path to
-        an external file
-    :returns: Nothing
+    :param name: Name of the file or path to the file
+    :param dest_name: Name of the file inside the tftp folder, defaults to
+                      the filename of ``name``
+    :param builddir: Where to find files if no full path is supplied, defaults to
+                     ``tb.config["uboot.builddir"]``
+    :param tftpdir: Where to put files, defaults to ``tb.config["tftp.directory"]``
     """
-    assert name is not None, "Trying to copy nothing"
+    builddir = builddir or tb.config["uboot.builddir"]
+    tftpdir = tftpdir or tb.config["tftp.directory"]
 
-    build_dir = tb.config["uboot.builddir"]
-    tftpdir = tb.config["tftp.directory"]
-
-    source_path = build_dir / name if from_builddir is True else name
+    source_path = builddir / name if isinstance(name, str) else name
     dest_path = tftpdir / (name if dest_name is None else dest_name)
 
     tb.log.log_debug(f"Copying '{source_path}' to '{dest_path}'")

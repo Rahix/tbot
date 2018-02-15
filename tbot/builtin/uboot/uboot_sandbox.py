@@ -2,19 +2,37 @@
 Run U-Boot tests inside the sandbox
 -----------------------------------
 """
+import typing
+import pathlib
 import tbot
 
 @tbot.testcase
-def uboot_sandbox(tb: tbot.TBot) -> None:
-    """ Run U-Boot tests inside the sandbox """
-    build_dir = tb.config.workdir / "u-boot-sandbox"
-    patchdir = tb.config["uboot.patchdir"]
+def uboot_sandbox(tb: tbot.TBot, *,
+                  repo: typing.Optional[str] = None,
+                  builddir: typing.Optional[pathlib.PurePosixPath] = None,
+                  patchdir: typing.Optional[pathlib.PurePosixPath] = None,
+                 ) -> None:
+    """
+    Run U-Boot tests inside the sandbox
+
+    :param repo: URI of the U-Boot repository, defaults to
+                 ``tb.config["uboot.repository"]``
+    :param builddir: Where to build U-Boot, defaults to
+                     ``tb.config["tbot.workdir"] / "uboot-sandbox"``
+    :param patchdir: Optional directory of patches to be applied. If this
+                     parameter is not given, ``tb.config["uboot.patchdir"]``
+                     will be used (If this is also empty, no patches will be
+                     applied). Supply a nonexistent directory to force building
+                     without patches.
+    """
+    builddir = builddir or tb.config["tbot.workdir"] / "uboot-sandbox"
+    patchdir = patchdir or tb.config["uboot.patchdir", None]
 
     tb.call("clean_repo_checkout",
-            repo=tb.config["uboot.repository"],
-            target=build_dir)
+            repo=repo or tb.config["uboot.repository"],
+            target=builddir)
     if patchdir is not None:
-        tb.call("apply_git_patches", gitdir=build_dir, patchdir=patchdir)
+        tb.call("apply_git_patches", gitdir=builddir, patchdir=patchdir)
 
     tb.log.doc_log("""
 ## Run U-Boot tests inside sandbox on host (optional) ##
@@ -28,10 +46,10 @@ Here we will run it on the host. Make sure all dependencies are met.  Refer to
 """)
 
         # Setup python
-        tb.shell.exec0(f"cd {build_dir}; virtualenv-2.7 venv", log_show_stdout=False)
+        tb.shell.exec0(f"cd {builddir}; virtualenv-2.7 venv", log_show_stdout=False)
 
         with tb.machine(tbot.machine.MachineLabEnv()) as tbn:
-            tbn.shell.exec0(f"cd {build_dir}")
+            tbn.shell.exec0(f"cd {builddir}")
             tbn.shell.exec0(f"VIRTUAL_ENV_DISABLE_PROMPT=1 source venv/bin/activate",
                             log_show_stdout=False)
             tbn.shell.exec0(f"pip install pytest", log_show_stdout=False)
@@ -51,7 +69,7 @@ Clean the U-Boot repository and start the sandbox testsuite:
 """)
 
         with tb.machine(tbot.machine.MachineLabEnv()) as tbn:
-            tbn.shell.exec0(f"cd {build_dir}")
+            tbn.shell.exec0(f"cd {builddir}")
             tbn.shell.exec0(f"make mrproper", log_show_stdout=False)
 
             @tbn.call

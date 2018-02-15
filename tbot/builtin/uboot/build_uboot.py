@@ -2,21 +2,40 @@
 Testcase to build U-Boot
 ------------------------
 """
+import typing
+import pathlib
 import tbot
 
 
 @tbot.testcase
-def build_uboot(tb: tbot.TBot) -> None:
-    """ Build U-Boot for the selected board """
+def build_uboot(tb: tbot.TBot, *,
+                builddir: typing.Optional[pathlib.PurePosixPath] = None,
+                patchdir: typing.Optional[pathlib.PurePosixPath] = None,
+                repo: typing.Optional[str] = None,
+                toolchain: typing.Optional[str] = None,
+                defconfig: typing.Optional[str] = None,
+               ) -> None:
+    """
+    Build U-Boot
+
+    :param builddir: Where to build U-Boot, defaults to ``tb.config["uboot.builddir"]``
+    :param patchdir: Optional U-Boot patches to be applied
+        ontop of the tree, defaults to ``tb.config["uboot.patchdir"]``, supply a
+        nonexistent path to force building without patches
+    :param repo: Where to get U-Boot from, defaults to ``tb.config["uboot.repository"]``
+    :param toolchain: What toolchain to use, defaults to ``tb.config["board.toolchain"]``
+    :param defconfig: What U-Boot defconfig to use, defaults to ``tb.config["board.defconfig"]``
+    """
 
     tb.log.doc_log("""
 ## Build U-Boot ##
 """)
 
-    build_dir = tb.config["uboot.builddir"]
-    patchdir = tb.config["uboot.patchdir", None]
-
-    repo = tb.config["uboot.repository"]
+    build_dir = builddir or tb.config["uboot.builddir"]
+    patchdir = patchdir or tb.config["uboot.patchdir", None]
+    repo = repo or tb.config["uboot.repository"]
+    toolchain = toolchain or tb.config["board.toolchain"]
+    defconfig = defconfig or tb.config["board.defconfig"]
 
     docstr = f"""In this document, we assume the following file locations:
 
@@ -30,8 +49,6 @@ def build_uboot(tb: tbot.TBot) -> None:
 
     tb.log.doc_log(docstr)
 
-    toolchain = tb.config["board.toolchain"]
-    defconfig = tb.config["board.defconfig"]
 
     tb.log.doc_log(f"""
 We are using the `{toolchain}` toolchain and will compile \
