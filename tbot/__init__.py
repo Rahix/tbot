@@ -10,6 +10,7 @@ import traceback
 import sys
 import paramiko
 import argcomplete
+import enforce
 from tbot import config_parser
 from tbot import logger
 from tbot import testcase_collector
@@ -99,7 +100,7 @@ class TBot:
             if isinstance(tc, str):
                 retval = self.testcases[tc](self, **kwargs)
             else:
-                retval = tc(self, **kwargs)
+                retval = enforce.runtime_validation(tc)(self, **kwargs)
         except Exception as e: #pylint: disable=broad-except
             # Cleanup is done by "with" handler __exit__
             # TODO: Add the exception to the log

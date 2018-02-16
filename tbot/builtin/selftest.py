@@ -166,22 +166,42 @@ def selftest_test_failures(tb: tbot.TBot) -> None:
     assert did_raise is True, "Testcase did not raise an exception"
 
 @tbot.testcase
+def selftest_standalone_int_param(_tb: tbot.TBot, *, param: int) -> str:
+    """ A testcase with an int parameter """
+    return str(param)
+
+@tbot.testcase
 def selftest_wrong_parameter_type(tb: tbot.TBot) -> None:
     """ Test whether TBot detects wrong parameter types """
 
-    def testcase_with_int_param(_tb: tbot.TBot, *, param: int) -> int:
-        """ A testcase with an int parameter """
-        return param + 10
+    import enforce
 
-    tb.log.log_debug("Testing with correct parameter type ...")
-    out = tb.call(testcase_with_int_param, param=20)
-    assert out == 30, "Testcase returned wrong result"
+    def testcase_with_int_param(_tb: tbot.TBot, *, param: int) -> str:
+        """ A testcase with an int parameter """
+        return str(param)
+
+    tb.log.log_debug("Testing with correct parameter type (standalone) ...")
+    out = tb.call("selftest_standalone_int_param", param=20)
+    assert out == "20", "Testcase returned wrong result"
 
     failed = False
     try:
-        tb.log.log_debug("Testing with wrong parameter type ...")
+        tb.log.log_debug("Testing with wrong parameter type (standalone) ...")
+        out2 = tb.call("selftest_standalone_int_param", param="string_param")
+    except enforce.exceptions.RuntimeTypeError:
+        failed = True
+
+    assert failed is True, "TBot did not detect a wrong parameter type (result: %r)" % (out2,)
+
+    tb.log.log_debug("Testing with correct parameter type (implicit) ...")
+    out = tb.call(testcase_with_int_param, param=20)
+    assert out == "20", "Testcase returned wrong result"
+
+    failed = False
+    try:
+        tb.log.log_debug("Testing with wrong parameter type (implicit) ...")
         out2 = tb.call(testcase_with_int_param, param="string_param")
-    except TypeError:
+    except enforce.exceptions.RuntimeTypeError:
         failed = True
 
     assert failed is True, "TBot did not detect a wrong parameter type (result: %r)" % (out2,)
