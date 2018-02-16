@@ -166,7 +166,7 @@ def selftest_test_failures(tb: tbot.TBot) -> None:
     assert did_raise is True, "Testcase did not raise an exception"
 
 @tbot.testcase
-def selfttest_standalone_int_param(_tb: tbot.TBot, *, param: int) -> str:
+def selftest_standalone_int_param(_tb: tbot.TBot, *, param: int) -> str:
     """ A testcase with an int parameter """
     return str(param)
 
@@ -181,13 +181,13 @@ def selftest_wrong_parameter_type(tb: tbot.TBot) -> None:
         return str(param)
 
     tb.log.log_debug("Testing with correct parameter type (standalone) ...")
-    out = tb.call("selfttest_standalone_int_param", param=20)
+    out = tb.call("selftest_standalone_int_param", param=20)
     assert out == "20", "Testcase returned wrong result"
 
     failed = False
     try:
         tb.log.log_debug("Testing with wrong parameter type (standalone) ...")
-        out2 = tb.call("selfttest_standalone_int_param", param="string_param")
+        out2 = tb.call("selftest_standalone_int_param", param="string_param")
     except enforce.exceptions.RuntimeTypeError:
         failed = True
 

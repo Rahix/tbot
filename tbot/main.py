@@ -163,7 +163,7 @@ BOARD: {args.board:10} name="{tb.config["board.name"]}" """)
                 @tb.call
                 def default(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
                     """ Default testcase is building U-Boot """
-                    tb.call("build_uboot")
+                    tb.call("uboot_checkout_and_build")
         except Exception: #pylint: disable=broad-except
             tb.log.log_msg(traceback.format_exc(), tbot.logger.Verbosity.ERROR)
             tb.log.log(logger.TBotFinishedLogEvent(False))
