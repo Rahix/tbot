@@ -129,6 +129,8 @@ U-Boot
             "config": pathlib.PurePosixPath("/home/hws/data/u_boot_boardenv_P2020RDB_PC_NAND.py"),
             # Board name to be passed to test.py (usually the defconfig minus the "_defconfig")
             "boardname": "P2020RDB-PC_NAND",
+            # Maximum number of fails before aborting, don't specify this if all test should be attempted
+            "maxfail": 1,
         },
 
         # By default, TBot will attempt to build U-Boot in
