@@ -137,7 +137,7 @@ U-Boot
         # cfg["tbot.workdir"] / "uboot-<boardname>"
         # This can be overridden by setting the following config option:
         # (Do not set this if you don't need it!)
-        "builddir: pathlib.PurePosixPath("/path/to/build/dir"),
+        "builddir": pathlib.PurePosixPath("/path/to/build/dir"),
     }
 
 Toolchains
