@@ -13,6 +13,7 @@ def uboot_tests(tb: tbot.TBot, *,
                 test_config: typing.Optional[pathlib.PurePosixPath] = None,
                 test_hooks: typing.Optional[pathlib.PurePosixPath] = None,
                 test_boardname: typing.Optional[str] = None,
+                test_maxfail: typing.Optional[int] = None,
                ) -> None:
     """
     Run U-Boot tests on real hardware
@@ -29,12 +30,15 @@ def uboot_tests(tb: tbot.TBot, *,
     :param test_boardname: Name of the board, usually the name of the defconfig minus
                            the ``"_defconfig"``, defaults to
                            ``tb.config["uboot.test.boardname"]``
+    :param test_maxfail: Maximum number of failed tests before aborting, defaults
+                         to ``tb.config["uboot.test.maxfail"]``
     """
     builddir = builddir or tb.config["uboot.builddir"]
     toolchain = toolchain or tb.config["board.toolchain"]
     test_config = test_config or tb.config["uboot.test.config", None]
-    test_hooks = test_hooks or tb.config['uboot.test.hooks']
-    test_boardname = test_boardname or tb.config['uboot.test.boardname']
+    test_hooks = test_hooks or tb.config["uboot.test.hooks"]
+    test_boardname = test_boardname or tb.config["uboot.test.boardname"]
+    test_maxfail = test_maxfail or tb.config["uboot.test.maxfail", None]
 
 
     tb.log.doc_log("""
@@ -76,8 +80,9 @@ testsuite using the following commands:\n")
         tb.shell.exec0(f"export PATH={test_hooks}:$PATH")
 
         with tb.machine(tbot.machine.MachineBoardDummy(turn_on=False)) as tbn:
+            max_fail_param = f"--maxfail={test_maxfail}" if test_maxfail is not None else ""
             tbn.shell.exec0(f"\
-./test/py/test.py --bd {test_boardname} --build")
+./test/py/test.py --bd {test_boardname} --build {max_fail_param}")
 
             tbn.log.doc_log("The U-Boot testsuite, which has hopefully finished \
 successfully by now, is not capable of turning off the board itself. \
