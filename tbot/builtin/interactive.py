@@ -11,12 +11,75 @@ import tty
 import select
 import typing
 import pathlib
+import paramiko
 import tbot
 
 #TODO: Credit paramiko example
 
+#pylint: disable=too-many-branches, too-many-nested-blocks
+def ishell(channel: paramiko.Channel, *,
+           setup: typing.Optional[typing.Callable[[paramiko.Channel], None]] = None,
+           abort: typing.Optional[str] = None,
+          ) -> None:
+    """
+    An interactive shell
+
+    :param setup: An additional setup procedure to eg set a custom prompt
+    :param abort: A character that should not be sent to the remote but instead trigger
+                  closing the interactive session
+    """
+    size = shutil.get_terminal_size()
+    channel.resize_pty(size.columns, size.lines, 1000, 1000)
+    if setup is not None:
+        setup(channel)
+    channel.send("\n")
+    time.sleep(0.1)
+    channel.recv(2)
+
+    oldtty = termios.tcgetattr(sys.stdin)
+    try:
+        tty.setraw(sys.stdin.fileno())
+        tty.setcbreak(sys.stdin.fileno())
+        channel.settimeout(0.0)
+
+        while True:
+            r, _, _ = select.select([channel, sys.stdin], [], [])
+            if channel in r:
+                try:
+                    data = b""
+                    fail_decode = True
+                    while fail_decode:
+                        data = data + channel.recv(1024)
+                        try:
+                            data_string = data.decode("utf-8")
+                            fail_decode = False
+                        except UnicodeDecodeError:
+                            time.sleep(0.1)
+                    if data == b"":
+                        sys.stdout.write('\r\n*** Shell finished\r\n')
+                        break
+                    sys.stdout.write(data_string)
+                    sys.stdout.flush()
+                except socket.timeout:
+                    pass
+            if sys.stdin in r:
+                data_string = sys.stdin.read(1)
+                if abort is not None and data_string == abort:
+                    break
+                if data_string == "":
+                    break
+                channel.send(data_string)
+                # TODO: Fix other data not being sent all at once
+                # Send escape sequences all at once (fixes arrow keys)
+                if data_string == "\x1B":
+                    data_string = sys.stdin.read(2)
+                    if data_string == "":
+                        break
+                    channel.send(data_string)
+    finally:
+        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, oldtty)
+
 @tbot.testcase
-#pylint: disable=too-many-nested-blocks
 def interactive_build(tb: tbot.TBot, *,
                       builddir: typing.Optional[pathlib.PurePosixPath] = None,
                       toolchain: typing.Optional[str] = None,
@@ -38,53 +101,22 @@ def interactive_build(tb: tbot.TBot, *,
         tb.shell.exec0(f"cd {builddir}")
 
         channel = tb.machines["labhost-env"].channel
-        size = shutil.get_terminal_size()
-        channel.resize_pty(size.columns, size.lines, 1000, 1000)
-        channel.send("PS1=\"\\[\\033[36m\\]U-Boot Build: \\[\\033[32m\\]\\w\\[\\033[0m\\]> \"\n")
-        # Read back what we just sent
-        time.sleep(0.1)
-        channel.recv(1024)
-        channel.send("\n")
-        time.sleep(0.1)
-        channel.recv(2)
+        def setup(ch: paramiko.Channel) -> None:
+            """ Setup a custom prompt """
+            # Set custom prompt
+            ch.send("PS1=\"\\[\\033[36m\\]U-Boot Build: \\[\\033[32m\\]\\w\\[\\033[0m\\]> \"\n")
+            # Read back what we just sent
+            time.sleep(0.1)
+            ch.recv(1024)
+        ishell(channel, setup=setup)
 
-        oldtty = termios.tcgetattr(sys.stdin)
-        try:
-            tty.setraw(sys.stdin.fileno())
-            tty.setcbreak(sys.stdin.fileno())
-            channel.settimeout(0.0)
+@tbot.testcase
+def interactive_uboot(tb: tbot.TBot) -> None:
+    """
+    Open an interactive U-Boot prompt on the board
+    """
 
-            while True:
-                r, _, _ = select.select([channel, sys.stdin], [], [])
-                if channel in r:
-                    try:
-                        data = b""
-                        fail_decode = True
-                        while fail_decode:
-                            data = data + channel.recv(1024)
-                            try:
-                                data_string = data.decode("utf-8")
-                                fail_decode = False
-                            except UnicodeDecodeError:
-                                time.sleep(0.1)
-                        if data == b"":
-                            sys.stdout.write('\r\n*** Shell finished\r\n')
-                            break
-                        sys.stdout.write(data_string)
-                        sys.stdout.flush()
-                    except socket.timeout:
-                        pass
-                if sys.stdin in r:
-                    data_string = sys.stdin.read(1)
-                    if data_string == "":
-                        break
-                    channel.send(data_string)
-                    # TODO: Fix other data not being sent all at once
-                    # Send escape sequences all at once (fixes arrow keys)
-                    if data_string == "\x1B":
-                        data_string = sys.stdin.read(2)
-                        if data_string == "":
-                            break
-                        channel.send(data_string)
-        finally:
-            termios.tcsetattr(sys.stdin, termios.TCSADRAIN, oldtty)
+    with tb.with_boardshell() as tbn:
+        channel = tbn.boardshell.channel
+        ishell(channel, abort="\x04")
+        print("\r")
