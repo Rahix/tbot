@@ -1,3 +1,7 @@
+"""
+Interactive testcases for debugging
+-----------------------------------
+"""
 import sys
 import shutil
 import time
@@ -5,23 +9,32 @@ import socket
 import termios
 import tty
 import select
-import paramiko
+import typing
+import pathlib
 import tbot
 
 #TODO: Credit paramiko example
 
 @tbot.testcase
+#pylint: disable=too-many-nested-blocks
 def interactive_build(tb: tbot.TBot, *,
-                      builddir = None,
-                      toolchain = None,
-                      defconfig = None,
-                     ):
+                      builddir: typing.Optional[pathlib.PurePosixPath] = None,
+                      toolchain: typing.Optional[str] = None,
+                     ) -> None:
+    """
+    Open an interactive shell in the U-Boot build directory with the toolchain
+    enabled.
+
+    :param builddir: Where U-Boot is located, defaults to ``tb.config["uboot.builddir"]``
+    :param toolchain: Which toolchain to use, defaults to ``tb.config["board.toolchain"]``
+    """
+
     builddir = builddir or tb.config["uboot.builddir"]
     toolchain = toolchain or tb.config["board.toolchain"]
-    defconfig = defconfig or tb.config["board.defconfig"]
 
     @tb.call_then("toolchain_env", toolchain=toolchain)
     def interactive_shell(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
+        """ Actual interactive shell """
         tb.shell.exec0(f"cd {builddir}")
 
         channel = tb.machines["labhost-env"].channel
@@ -42,7 +55,7 @@ def interactive_build(tb: tbot.TBot, *,
             channel.settimeout(0.0)
 
             while True:
-                r, w, e = select.select([channel, sys.stdin], [], [])
+                r, _, _ = select.select([channel, sys.stdin], [], [])
                 if channel in r:
                     try:
                         data = b""
@@ -54,7 +67,7 @@ def interactive_build(tb: tbot.TBot, *,
                                 fail_decode = False
                             except UnicodeDecodeError:
                                 time.sleep(0.1)
-                        if len(data) == 0:
+                        if data == b"":
                             sys.stdout.write('\r\n*** Shell finished\r\n')
                             break
                         sys.stdout.write(data_string)
@@ -62,16 +75,16 @@ def interactive_build(tb: tbot.TBot, *,
                     except socket.timeout:
                         pass
                 if sys.stdin in r:
-                    data = sys.stdin.read(1)
-                    if len(data) == 0:
+                    data_string = sys.stdin.read(1)
+                    if data_string == "":
                         break
-                    channel.send(data)
+                    channel.send(data_string)
                     # TODO: Fix other data not being sent all at once
                     # Send escape sequences all at once (fixes arrow keys)
-                    if data == "\x1B":
-                        data = sys.stdin.read(2)
-                        if len(data) == 0:
+                    if data_string == "\x1B":
+                        data_string = sys.stdin.read(2)
+                        if data_string == "":
                             break
-                        channel.send(data)
+                        channel.send(data_string)
         finally:
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, oldtty)
