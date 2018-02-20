@@ -57,7 +57,7 @@ def TestcaseCompleter(**_kwargs: typing.Any) -> typing.List[str]:
         lst.append(tc)
     return lst
 
-#pylint: disable=too-many-locals
+#pylint: disable=too-many-locals, too-many-branches
 def main() -> None:
     """ Main entry point of tbot """
     parser = argparse.ArgumentParser(
@@ -65,13 +65,11 @@ def main() -> None:
         description="A test tool for embedded linux development",
         )
 
-    parser.add_argument("lab", type=str, nargs="?", default="local",
-                        help="name of the lab to connect to") \
+    parser.add_argument("lab", type=str, help="name of the lab to connect to") \
         .completer = LabCompleter
-    parser.add_argument("board", type=str, nargs="?", default="corvus",
-                        help="name of the board to test on") \
+    parser.add_argument("board", type=str, help="name of the board to test on") \
         .completer = BoardCompleter
-    parser.add_argument("testcase", type=str, nargs="?", default=None,
+    parser.add_argument("testcase", type=str, nargs="*", default=None,
                         help="name of the testcase to run") \
         .completer = TestcaseCompleter
 
@@ -157,8 +155,9 @@ LAB:   {args.lab:10} name="{tb.config["lab.name"]}"
 BOARD: {args.board:10} name="{tb.config["board.name"]}" """)
 
         try:
-            if args.testcase is not None:
-                tb.call(args.testcase)
+            if args.testcase != []:
+                for tc in args.testcase:
+                    tb.call(tc)
             else:
                 @tb.call
                 def default(tb: tbot.TBot) -> None: #pylint: disable=unused-variable

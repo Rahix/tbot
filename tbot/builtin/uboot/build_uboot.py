@@ -17,7 +17,7 @@ def uboot_build(tb: tbot.TBot, *,
     Build U-Boot
 
     :param builddir: Where to build U-Boot, defaults to ``tb.config["uboot.builddir"]``
-    :param toolchain: What toolchain to use, defaults to ``tb.config["board.toolchain"]``
+    :param toolchain: Which toolchain to use, defaults to ``tb.config["board.toolchain"]``
     :param defconfig: What U-Boot defconfig to use, defaults to ``tb.config["board.defconfig"]``
     """
 

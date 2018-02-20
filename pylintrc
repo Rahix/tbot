@@ -227,6 +227,8 @@ good-names=i,
            j,
            k,
            e,
+           r,
+           w,
            ex,
            Run,
            _,
@@ -236,7 +238,8 @@ good-names=i,
            ev,
            ty,
            sh,
-           st
+           st,
+           ch
 
 # Include a hint for the correct naming format with invalid-name
 include-naming-hint=no

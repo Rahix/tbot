@@ -24,7 +24,7 @@ class MachineLabEnv(machine.Machine):
     def _setup(self, tb: 'tbot.TBot') -> None:
         conn = tb.machines.connection
         self.channel = conn.get_transport().open_session()
-        self.channel.get_pty()
+        self.channel.get_pty("xterm-256color")
         # Resize the pty to ensure we do not get escape sequences from the terminal
         # trying to wrap to the next line
         self.channel.resize_pty(200, 200, 1000, 1000)
