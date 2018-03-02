@@ -90,8 +90,11 @@ def interactive_build(tb: tbot.TBot, *,
     enabled.
 
     :param builddir: Where U-Boot is located, defaults to ``tb.config["uboot.builddir"]``
+    :type builddir: pathlib.PurePosixPath
     :param toolchain: Which toolchain to use, defaults to ``tb.config["board.toolchain"]``
+    :type toolchain: str
     """
+    # TODO: Proper toolchain type
 
     builddir = builddir or tb.config["uboot.builddir"]
     toolchain = tb.call("toolchain_get", name=toolchain)

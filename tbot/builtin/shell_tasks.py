@@ -9,7 +9,10 @@ import tbot
 EXPORT = ["TftpDirectory"]
 
 class TftpDirectory(pathlib.PurePosixPath):
-    """ A meta object to represent the tftp directory """
+    """
+    A meta object to represent the tftp directory.
+    Can be created with :func:`setup_tftpdir`
+    """
     pass
 
 @tbot.testcase
@@ -22,7 +25,9 @@ def setup_tftpdir(tb: tbot.TBot, *,
     :param tftpdir: Optional path to the tftpdir, defaults to
                     ``tb.config["tftp.directory"]`` (which has a default value
                     in ``config/tbot.py``
-    :returns: The tftpdir
+    :type tftpdir: pathlib.PurePosixPath
+    :returns: The TFTP directory as a meta object
+    :rtype: TftpDirectory
     """
     tftpdir = tftpdir or tb.config["tftp.directory"]
 
@@ -46,11 +51,15 @@ def cp_to_tftpdir(tb: tbot.TBot, *,
     Copy a file into the tftp folder
 
     :param name: Name of the file or path to the file
+    :type name: str, pathlib.PurePosixPath
     :param dest_name: Name of the file inside the tftp folder, defaults to
                       the filename of ``name``
+    :type dest_name: str
     :param builddir: Where to find files if no full path is supplied, defaults to
                      ``tb.config["uboot.builddir"]``
+    :type builddir: pathlib.PurePosixPath
     :param tftpdir: Where to put the file
+    :type tftpdir: TftpDirectory
     """
     builddir = builddir or tb.config["uboot.builddir"]
 

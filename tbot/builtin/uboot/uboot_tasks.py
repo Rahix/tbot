@@ -10,7 +10,10 @@ from tbot import tc
 EXPORT = ["UBootRepository"]
 
 class UBootRepository(tc.GitRepository):
-    """ A meta object to represent a checked out version of U-Boot """
+    """
+    A meta object to represent a checked out version of U-Boot.
+    Can be created with :func:`uboot_checkout` or :func:`uboot_checkout_and_build`
+    """
     pass
 
 @tbot.testcase
@@ -22,6 +25,7 @@ def check_uboot_version(tb: tbot.TBot, *,
     as the one supplied as a binary file in uboot_bin.
 
     :param uboot_binary: Path to the U-Boot binary
+    :type uboot_binary: pathlib.PurePosixPath
     """
     with tb.with_boardshell() as tbn:
         strings = tbn.shell.exec0(f"strings {uboot_binary} | grep U-Boot", log_show=False)
@@ -41,12 +45,17 @@ def uboot_checkout(tb: tbot.TBot, *,
     Create a checkout of U-Boot
 
     :param clean: Whether an existing repository should be cleaned
+    :type clean: bool
     :param builddir: Where to checkout U-Boot to, defaults to ``tb.config["uboot.builddir"]``
+    :type builddir: pathlib.PurePosixPath
     :param patchdir: Optional U-Boot patches to be applied
         ontop of the tree, defaults to ``tb.config["uboot.patchdir"]``, supply a
         nonexistent path to force ignoring the patches
+    :type patchdir: pathlib.PurePosixPath
     :param repo: Where to get U-Boot from, defaults to ``tb.config["uboot.repository"]``
+    :type repo: str
     :returns: The U-Boot checkout as a meta object for other testcases
+    :rtype: UBootRepository
     """
 
     builddir = builddir or tb.config["uboot.builddir"]
@@ -87,14 +96,21 @@ def uboot_checkout_and_build(tb: tbot.TBot, *,
     Checkout U-Boot and build it
 
     :param builddir: Where to checkout U-Boot to, defaults to ``tb.config["uboot.builddir"]``
+    :type builddir: pathlib.PurePosixPath
     :param patchdir: Optional U-Boot patches to be applied
         ontop of the tree, defaults to ``tb.config["uboot.patchdir"]``, supply a
         nonexistent path to force building without patches
+    :type patchdir: pathlib.PurePosixPath
     :param repo: Where to get U-Boot from, defaults to ``tb.config["uboot.repository"]``
+    :type repo: str
     :param toolchain: What toolchain to use, defaults to ``tb.config["board.toolchain"]``
+    :type toolchain: str
     :param defconfig: What U-Boot defconfig to use, defaults to ``tb.config["board.defconfig"]``
+    :type defconfig: str
     :returns: The U-Boot checkout as a meta object for other testcases
+    :rtype: UBootRepository
     """
+    # TODO: toolchain should be a Toolchain
 
     tb.log.doc_log("""
 ## U-Boot checkout ##

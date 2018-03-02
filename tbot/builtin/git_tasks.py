@@ -9,7 +9,10 @@ import tbot
 EXPORT = ["GitRepository"]
 
 class GitRepository(pathlib.PurePosixPath):
-    """ A meta object representing a git repository """
+    """
+    A meta object representing a git repository.
+    Can be created with :func:`git_clean_checkout` or :func:`git_dirty_checkout`
+    """
     pass
 
 @tbot.testcase
@@ -21,9 +24,12 @@ def git_dirty_checkout(tb: tbot.TBot, *,
     if it already exists
 
     :param target: Where to clone the repository to
+    :type target: pathlib.PurePosixPath
     :param repo: Where the git repository can be found
+    :type repo: str
     :returns: The git repository as a meta object for testcases that need a git
               repository
+    :rtype: GitRepository
     """
     tb.shell.exec0(f"mkdir -p {target}")
     if not tb.shell.exec(f"""\
@@ -50,9 +56,12 @@ def git_clean_checkout(tb: tbot.TBot, *,
     no artifacts left from previous builds.
 
     :param target: Where to clone the repository to
+    :type target: pathlib.PurePosixPath
     :param repo: Where the git repository can be found
+    :type repo: str
     :returns: The git repository as a meta object for testcases that need a git
               repository
+    :rtype: GitRepository
     """
     tb.log.log_debug(f"Git checkout '{repo}' to '{target}'")
 
@@ -87,7 +96,9 @@ def git_apply_patches(tb: tbot.TBot, *,
     Apply patchfiles inside patchdir onto the git repository in gitdir.
 
     :param gitdir: The git repositories meta object
+    :type gitdir: GitRepository
     :param patchdir: Path to the folder containing the patches
+    :type patchdir: pathlib.PurePosixPath
     """
 
     tb.log.log_debug(f"Applying patches in '{patchdir}' to '{gitdir}'")
@@ -126,10 +137,15 @@ def git_bisect(tb: tbot.TBot,
     the ``and_then`` testcase.
 
     :param gitdir: Meta object of the git repository that is supposed to be bisected
+    :type gitdir: GitRepository
     :param good: The good commit
+    :type good: str
     :param and_then: A testcase that decides whether a commit is good or bad
+    :type and_then: str, typing.Callable
     :param params: Additional parameters for the ``and_then`` testcase
+    :type params: dict
     :returns: The first bad commit
+    :rtype: str
     """
 
     if params is None:

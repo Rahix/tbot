@@ -31,21 +31,25 @@ def uboot_tests(tb: tbot.TBot, *,
 
     :param builddir: The U-Boot checkout that should be tested. Must be a
                      UBootRepository meta object
+    :type builddir: UBootRepository
     :param toolchain: What toolchain to use (The testsuite rebuilds the
                       U-Boot binary)
+    :type toolchain: Toolchain
     :param test_config: An optional config file for the testsuite,
                         defaults to ``tb.config["uboot.test.config"]``
+    :type test_config: pathlib.PurePosixPath
     :param test_hooks: Path to the U-Boot python testsuite hooks for the
                        currently selected board, defaults to
                        ``tb.config["uboot.test.hooks"]``
+    :type test_hooks: pathlib.PurePosixPath
     :param test_boardname: Name of the board, usually the name of the defconfig minus
                            the ``"_defconfig"``, defaults to
                            ``tb.config["uboot.test.boardname"]``
+    :type test_boardname: str
     :param test_maxfail: Maximum number of failed tests before aborting, defaults
                          to ``tb.config["uboot.test.maxfail"]``
+    :type test_maxfail: int
     """
-    builddir = builddir or tb.config["uboot.builddir"]
-    toolchain = toolchain or tb.config["board.toolchain"]
     test_config = test_config or tb.config["uboot.test.config", None]
     test_hooks = test_hooks or tb.config["uboot.test.hooks"]
     test_boardname = test_boardname or tb.config["uboot.test.boardname"]

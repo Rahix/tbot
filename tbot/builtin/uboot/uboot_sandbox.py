@@ -18,13 +18,16 @@ def uboot_sandbox(tb: tbot.TBot, *,
 
     :param repo: URI of the U-Boot repository, defaults to
                  ``tb.config["uboot.repository"]``
+    :type repo: str
     :param builddir: Where to build U-Boot, defaults to
                      ``tb.config["tbot.workdir"] / "uboot-sandbox"``
+    :type builddir: pathlib.PurePosixPath
     :param patchdir: Optional directory of patches to be applied. If this
                      parameter is not given, ``tb.config["uboot.patchdir"]``
                      will be used (If this is also empty, no patches will be
                      applied). Supply a nonexistent directory to force building
                      without patches.
+    :type patchdir: pathlib.PurePosixPath
     """
     builddir = builddir or tb.config["tbot.workdir"] / "uboot-sandbox"
     patchdir = patchdir or tb.config["uboot.patchdir", None]
