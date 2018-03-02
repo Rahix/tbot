@@ -7,6 +7,7 @@ import pathlib
 import tbot
 
 @tbot.testcase
+@tbot.cmdline
 def uboot_sandbox(tb: tbot.TBot, *,
                   repo: typing.Optional[str] = None,
                   builddir: typing.Optional[pathlib.PurePosixPath] = None,

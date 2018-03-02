@@ -51,7 +51,7 @@ def TestcaseCompleter(**_kwargs: typing.Any) -> typing.List[str]:
                "tc"]
     tc_paths = [str(path).format(tbotpath=tbotpath) for path in default]
     from tbot import testcase_collector
-    testcases = testcase_collector.get_testcases(tc_paths)
+    _, testcases = testcase_collector.get_testcases(tc_paths)
 
     for tc in testcases:
         lst.append(tc)
@@ -138,7 +138,7 @@ def main() -> None:
 
     tbotpath = pathlib.Path(__file__).absolute().parent
     tc_paths = [str(path).format(tbotpath=tbotpath) for path in args.tcdir]
-    testcases = testcase_collector.get_testcases(tc_paths)
+    testcases, cmdline_testcases = testcase_collector.get_testcases(tc_paths)
 
     if args.list_testcases:
         for tc in testcases:
@@ -157,7 +157,11 @@ BOARD: {args.board:10} name="{tb.config["board.name"]}" """)
         try:
             if args.testcase != []:
                 for tc in args.testcase:
-                    tb.call(tc)
+                    if tc in cmdline_testcases:
+                        tb.call(tc)
+                    else:
+                        raise Exception(\
+"Testcase not found or not suitable for commandline use")
             else:
                 @tb.call
                 def default(tb: tbot.TBot) -> None: #pylint: disable=unused-variable

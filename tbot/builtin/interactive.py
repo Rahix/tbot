@@ -80,6 +80,7 @@ def ishell(channel: paramiko.Channel, *,
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, oldtty)
 
 @tbot.testcase
+@tbot.cmdline
 def interactive_build(tb: tbot.TBot, *,
                       builddir: typing.Optional[pathlib.PurePosixPath] = None,
                       toolchain: typing.Optional[str] = None,
@@ -111,6 +112,7 @@ def interactive_build(tb: tbot.TBot, *,
         ishell(channel, setup=setup)
 
 @tbot.testcase
+@tbot.cmdline
 def interactive_uboot(tb: tbot.TBot) -> None:
     """
     Open an interactive U-Boot prompt on the board

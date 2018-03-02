@@ -8,6 +8,7 @@ import tbot
 from tbot import tc
 
 @tbot.testcase
+@tbot.cmdline
 def just_uboot_tests(tb: tbot.TBot) -> None:
     uboot_dir = tb.call("uboot_checkout", clean=False)
     toolchain = tb.call("toolchain_get")

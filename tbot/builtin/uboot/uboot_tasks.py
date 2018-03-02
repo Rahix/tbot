@@ -29,6 +29,7 @@ def check_uboot_version(tb: tbot.TBot, *,
         assert version in strings, "U-Boot version does not seem to match"
 
 @tbot.testcase
+@tbot.cmdline
 def uboot_checkout(tb: tbot.TBot, *,
                    clean: bool = True,
                    builddir: typing.Optional[pathlib.PurePosixPath] = None,
@@ -71,13 +72,14 @@ def uboot_checkout(tb: tbot.TBot, *,
     return UBootRepository(gitdir)
 
 @tbot.testcase
+@tbot.cmdline
 def uboot_checkout_and_build(tb: tbot.TBot, *,
                              builddir: typing.Optional[pathlib.PurePosixPath] = None,
                              patchdir: typing.Optional[pathlib.PurePosixPath] = None,
                              repo: typing.Optional[str] = None,
                              toolchain: typing.Optional[str] = None,
                              defconfig: typing.Optional[str] = None,
-                            ) -> None:
+                            ) -> UBootRepository:
     """
     Checkout U-Boot and build it
 
@@ -94,10 +96,10 @@ def uboot_checkout_and_build(tb: tbot.TBot, *,
 ## U-Boot checkout ##
 """)
 
-    gitdir = tb.call("uboot_checkout",
-                     builddir=builddir,
-                     patchdir=patchdir,
-                     repo=repo)
+    uboot_dir = tb.call("uboot_checkout",
+                        builddir=builddir,
+                        patchdir=patchdir,
+                        repo=repo)
 
     toolchain = tb.call("toolchain_get", name=toolchain)
 
@@ -106,6 +108,8 @@ def uboot_checkout_and_build(tb: tbot.TBot, *,
 """)
 
     tb.call("uboot_build",
-            builddir=gitdir,
+            builddir=uboot_dir,
             toolchain=toolchain,
             defconfig=defconfig)
+
+    return uboot_dir
