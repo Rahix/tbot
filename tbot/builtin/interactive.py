@@ -93,7 +93,7 @@ def interactive_build(tb: tbot.TBot, *,
     """
 
     builddir = builddir or tb.config["uboot.builddir"]
-    toolchain = toolchain or tb.config["board.toolchain"]
+    toolchain = tb.call("toolchain_get", name=toolchain)
 
     @tb.call_then("toolchain_env", toolchain=toolchain)
     def interactive_shell(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
