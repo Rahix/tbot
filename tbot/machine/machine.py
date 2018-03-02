@@ -49,10 +49,14 @@ class Machine(abc.ABC):
         Execute a command on this machine
 
         :param command: The command to be executed, no newline at the end
+        :type command: str
         :param log_show: Whether documentation backends should include this command
+        :type log_show: bool
         :param log_show_stdout: Whether documentation backends should include the stdout
             of this command
+        :type log_show_stdout: bool
         :returns: A tuple of the return code and the output (stdout and stderr are merged)
+        :rtype: (int, str)
         """
         log_event = tbot.logger.ShellCommandLogEvent(self.unique_machine_name.split('-'),
                                                      command,
@@ -69,8 +73,10 @@ class Machine(abc.ABC):
         Execute a command and expect it to return with 0
 
         :param command: The command to be executed, no newline at the end
+        :type command: str
         :param kwargs: Passed through to Machine.exec
         :returns: The output (stdout and stderr are merged)
+        :rtype: str
         """
         ret = self.exec(command, **kwargs)
         assert ret[0] == 0, f"Command \"{command}\" failed:\n{ret[1]}"
