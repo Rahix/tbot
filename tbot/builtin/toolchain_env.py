@@ -5,6 +5,7 @@ Testcase to setup a toolchain environment
 import typing
 import tbot
 
+EXPORT = ["UnknownToolchainException"]
 
 class UnknownToolchainException(Exception):
     """ The toolchain provided was not found in the config """

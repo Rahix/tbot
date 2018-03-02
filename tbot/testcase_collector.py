@@ -6,8 +6,13 @@ import pathlib
 import typing
 import importlib.util
 import enforce
+import tbot
 
 TBOT_TESTCASES: typing.Dict[str, typing.Callable] = dict()
+
+def dummy() -> None:
+    """ Do not call testcases directly! """
+    pass
 
 
 def testcase(f: typing.Callable) -> typing.Callable:
@@ -17,7 +22,9 @@ def testcase(f: typing.Callable) -> typing.Callable:
     if f.__name__ in TBOT_TESTCASES:
         raise Exception(f"Duplicate testcase: {f.__name__}")
     TBOT_TESTCASES[f.__name__] = enforce.runtime_validation(f)
-    return f
+    # Return a dummy to ensure nobody calls testcases without going through
+    # tb.call
+    return dummy
 
 
 def get_testcases(paths: typing.Union[typing.List[str], typing.List[pathlib.Path], None] = None) \
@@ -40,10 +47,14 @@ def get_testcases(paths: typing.Union[typing.List[str], typing.List[pathlib.Path
                         if p.suffix == ".py"]
 
     for source in sources:
+        # TODO: Proper name
         module_spec = importlib.util.spec_from_file_location("tc", str(source))
         module = importlib.util.module_from_spec(module_spec)
         if isinstance(module_spec.loader, importlib.abc.Loader):
             module_spec.loader.exec_module(module)
+            if "EXPORT" in module.__dict__:
+                for k in module.__dict__["EXPORT"]:
+                    tbot.tc.__dict__[k] = module.__dict__[k]
         else:
             raise Exception(f"Failed to load {source}")
 

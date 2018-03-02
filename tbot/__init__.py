@@ -14,6 +14,7 @@ import enforce
 from tbot import config_parser
 from tbot import logger
 from tbot import testcase_collector
+from tbot import tc
 import tbot.machine
 import tbot.config
 
