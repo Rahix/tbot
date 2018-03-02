@@ -16,6 +16,7 @@ def dummy() -> None:
     pass
 
 def cmdline(f: typing.Callable) -> typing.Callable:
+    """ Decorator for testcases that can be called from the commandline as well """
     #pylint: disable=global-statement
     global TBOT_TESTCASES_CMDLINE
     TBOT_TESTCASES_CMDLINE[f.__name__] = f
@@ -30,10 +31,9 @@ def testcase(f: typing.Callable) -> typing.Callable:
     enforce.config({
         "mode": "covariant",
     })
-    TBOT_TESTCASES[f.__name__] = enforce.runtime_validation(f)
-    # Return a dummy to ensure nobody calls testcases without going through
-    # tb.call
-    return dummy
+    wrapped = enforce.runtime_validation(f)
+    TBOT_TESTCASES[f.__name__] = wrapped
+    return wrapped
 
 
 def get_testcases(paths: typing.Union[typing.List[str], typing.List[pathlib.Path], None] = None) \
