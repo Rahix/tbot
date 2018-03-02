@@ -9,12 +9,22 @@ import tbot
 EXPORT = ["GitRepository"]
 
 class GitRepository(pathlib.PurePosixPath):
+    """ A meta object representing a git repository """
     pass
 
 @tbot.testcase
 def git_dirty_checkout(tb: tbot.TBot, *,
                        target: pathlib.PurePosixPath,
                        repo: str) -> GitRepository:
+    """
+    Checkout a git repo if it does not exist yet, but do not touch it
+    if it already exists
+
+    :param target: Where to clone the repository to
+    :param repo: Where the git repository can be found
+    :returns: The git repository as a meta object for testcases that need a git
+              repository
+    """
     tb.shell.exec0(f"mkdir -p {target}")
     if not tb.shell.exec(f"""\
 test -d {target / '.git'}""", log_show=False)[0] == 0:
@@ -41,6 +51,8 @@ def git_clean_checkout(tb: tbot.TBot, *,
 
     :param target: Where to clone the repository to
     :param repo: Where the git repository can be found
+    :returns: The git repository as a meta object for testcases that need a git
+              repository
     """
     tb.log.log_debug(f"Git checkout '{repo}' to '{target}'")
 
@@ -74,7 +86,7 @@ def git_apply_patches(tb: tbot.TBot, *,
     """
     Apply patchfiles inside patchdir onto the git repository in gitdir.
 
-    :param gitdir: Path to the git repository
+    :param gitdir: The git repositories meta object
     :param patchdir: Path to the folder containing the patches
     """
 
@@ -113,7 +125,7 @@ def git_bisect(tb: tbot.TBot,
     commit) and ``good``. Whether a commit is good or bad is decided by calling
     the ``and_then`` testcase.
 
-    :param gitdir: The directory containing the git repository to bisect
+    :param gitdir: Meta object of the git repository that is supposed to be bisected
     :param good: The good commit
     :param and_then: A testcase that decides whether a commit is good or bad
     :param params: Additional parameters for the ``and_then`` testcase

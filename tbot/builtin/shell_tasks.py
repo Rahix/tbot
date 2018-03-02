@@ -9,6 +9,7 @@ import tbot
 EXPORT = ["TftpDirectory"]
 
 class TftpDirectory(pathlib.PurePosixPath):
+    """ A meta object to represent the tftp directory """
     pass
 
 @tbot.testcase
@@ -49,7 +50,7 @@ def cp_to_tftpdir(tb: tbot.TBot, *,
                       the filename of ``name``
     :param builddir: Where to find files if no full path is supplied, defaults to
                      ``tb.config["uboot.builddir"]``
-    :param tftpdir: Where to put files, defaults to ``tb.config["tftp.directory"]``
+    :param tftpdir: Where to put the file
     """
     builddir = builddir or tb.config["uboot.builddir"]
 

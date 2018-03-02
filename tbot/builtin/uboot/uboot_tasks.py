@@ -10,6 +10,7 @@ from tbot import tc
 EXPORT = ["UBootRepository"]
 
 class UBootRepository(tc.GitRepository):
+    """ A meta object to represent a checked out version of U-Boot """
     pass
 
 @tbot.testcase
@@ -39,11 +40,13 @@ def uboot_checkout(tb: tbot.TBot, *,
     """
     Create a checkout of U-Boot
 
+    :param clean: Whether an existing repository should be cleaned
     :param builddir: Where to checkout U-Boot to, defaults to ``tb.config["uboot.builddir"]``
     :param patchdir: Optional U-Boot patches to be applied
         ontop of the tree, defaults to ``tb.config["uboot.patchdir"]``, supply a
         nonexistent path to force ignoring the patches
     :param repo: Where to get U-Boot from, defaults to ``tb.config["uboot.repository"]``
+    :returns: The U-Boot checkout as a meta object for other testcases
     """
 
     builddir = builddir or tb.config["uboot.builddir"]
@@ -90,16 +93,17 @@ def uboot_checkout_and_build(tb: tbot.TBot, *,
     :param repo: Where to get U-Boot from, defaults to ``tb.config["uboot.repository"]``
     :param toolchain: What toolchain to use, defaults to ``tb.config["board.toolchain"]``
     :param defconfig: What U-Boot defconfig to use, defaults to ``tb.config["board.defconfig"]``
+    :returns: The U-Boot checkout as a meta object for other testcases
     """
 
     tb.log.doc_log("""
 ## U-Boot checkout ##
 """)
 
-    uboot_dir = tb.call("uboot_checkout",
-                        builddir=builddir,
-                        patchdir=patchdir,
-                        repo=repo)
+    ubootdir = tb.call("uboot_checkout",
+                       builddir=builddir,
+                       patchdir=patchdir,
+                       repo=repo)
 
     toolchain = tb.call("toolchain_get", name=toolchain)
 
@@ -108,8 +112,8 @@ def uboot_checkout_and_build(tb: tbot.TBot, *,
 """)
 
     tb.call("uboot_build",
-            builddir=uboot_dir,
+            builddir=ubootdir,
             toolchain=toolchain,
             defconfig=defconfig)
 
-    return uboot_dir
+    return ubootdir

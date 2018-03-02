@@ -12,10 +12,17 @@ class UnknownToolchainException(Exception):
     pass
 
 class Toolchain(str):
+    """ A meta object to represent a toolchain """
     pass
 
 @tbot.testcase
 def toolchain_get(tb: tbot.TBot, *, name: typing.Optional[str] = None) -> Toolchain:
+    """
+    Get a toolchain and ensure it exists
+
+    :param name: Name of the toolchain, defaults to ``tb.config["board.toolchain"]``
+    :returns: The toolchain meta object to be passed to testcases that need a toolchain
+    """
     name = name or tb.config["board.toolchain"]
     if tb.config[f"toolchains.{name}", None] is None:
         raise UnknownToolchainException(repr(name))

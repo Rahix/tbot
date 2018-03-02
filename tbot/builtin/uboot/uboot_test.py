@@ -10,6 +10,9 @@ from tbot import tc
 @tbot.testcase
 @tbot.cmdline
 def just_uboot_tests(tb: tbot.TBot) -> None:
+    """
+    Run U-Boot tests on the currently existing (possibly dirty) U-Boot tree.
+    """
     uboot_dir = tb.call("uboot_checkout", clean=False)
     toolchain = tb.call("toolchain_get")
     tb.call("uboot_tests", builddir=uboot_dir, toolchain=toolchain)
@@ -26,10 +29,10 @@ def uboot_tests(tb: tbot.TBot, *,
     """
     Run U-Boot tests on real hardware
 
-    :param builddir: Where the U-Boot tree is found on the lab host,
-                     defaults to ``tb.config["uboot.builddir"]``
+    :param builddir: The U-Boot checkout that should be tested. Must be a
+                     UBootRepository meta object
     :param toolchain: What toolchain to use (The testsuite rebuilds the
-                      U-Boot binary), defaults to ``tb.config["board.toolchain"]``
+                      U-Boot binary)
     :param test_config: An optional config file for the testsuite,
                         defaults to ``tb.config["uboot.test.config"]``
     :param test_hooks: Path to the U-Boot python testsuite hooks for the
