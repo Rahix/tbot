@@ -10,7 +10,7 @@ from tbot import tc
 @tbot.testcase
 def uboot_build(tb: tbot.TBot, *,
                 builddir: tc.UBootRepository,
-                toolchain: typing.Optional[str] = None,
+                toolchain: tc.Toolchain,
                 defconfig: typing.Optional[str] = None,
                ) -> None:
     """

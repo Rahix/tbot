@@ -96,6 +96,8 @@ def uboot_checkout_and_build(tb: tbot.TBot, *,
                      patchdir=patchdir,
                      repo=repo)
 
+    toolchain = tb.call("toolchain_get", name=toolchain)
+
     tb.log.doc_log("""
 ## U-Boot build ##
 """)

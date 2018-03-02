@@ -5,15 +5,26 @@ Testcase to setup a toolchain environment
 import typing
 import tbot
 
-EXPORT = ["UnknownToolchainException"]
+EXPORT = ["Toolchain", "UnknownToolchainException"]
 
 class UnknownToolchainException(Exception):
     """ The toolchain provided was not found in the config """
     pass
 
+class Toolchain(str):
+    pass
+
+@tbot.testcase
+def toolchain_get(tb: tbot.TBot, *, name: typing.Optional[str]) -> Toolchain:
+    name = name or tb.config["board.toolchain"]
+    if tb.config[f"toolchains.{name}", None] is None:
+        raise UnknownToolchainException(repr(name))
+    tb.log.log_debug(f"Toolchain '{name}' exists")
+    return Toolchain(name)
+
 @tbot.testcase
 def toolchain_env(tb: tbot.TBot, *,
-                  toolchain: str,
+                  toolchain: Toolchain,
                   and_then: typing.Union[str, typing.Callable],
                   params: typing.Optional[typing.Dict[str, typing.Any]] = None) -> None:
     """
@@ -26,9 +37,8 @@ def toolchain_env(tb: tbot.TBot, *,
     if params is None:
         params = dict()
 
-    # Check if the toolchain exists
-    if tb.config[f"toolchains.{toolchain}", None] is None:
-        raise UnknownToolchainException(repr(toolchain))
+    # We don't need to check if the toolchain exists because it has to
+    # (You can't create a Toolchain() object without it existing)
 
     toolchain_script = tb.config[f"toolchains.{toolchain}.env_setup_script"]
 
