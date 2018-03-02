@@ -5,6 +5,12 @@ Collection of U-Boot tasks
 import pathlib
 import typing
 import tbot
+from tbot import tc
+
+EXPORT = ["UBootRepository"]
+
+class UBootRepository(tc.GitRepository):
+    pass
 
 @tbot.testcase
 def check_uboot_version(tb: tbot.TBot, *,
@@ -27,7 +33,7 @@ def uboot_checkout(tb: tbot.TBot, *,
                    builddir: typing.Optional[pathlib.PurePosixPath] = None,
                    patchdir: typing.Optional[pathlib.PurePosixPath] = None,
                    repo: typing.Optional[str] = None,
-                  ) -> None:
+                  ) -> UBootRepository:
     """
     Create a checkout of U-Boot
 
@@ -54,11 +60,12 @@ def uboot_checkout(tb: tbot.TBot, *,
 
     tb.log.doc_log(docstr + "\n")
 
-    tb.call("git_clean_checkout",
-            repo=repo,
-            target=builddir)
+    gitdir = tb.call("git_clean_checkout",
+                     repo=repo,
+                     target=builddir)
     if patchdir is not None:
-        tb.call("git_apply_patches", gitdir=builddir, patchdir=patchdir)
+        tb.call("git_apply_patches", gitdir=gitdir, patchdir=patchdir)
+    return UBootRepository(gitdir)
 
 @tbot.testcase
 def uboot_checkout_and_build(tb: tbot.TBot, *,
@@ -84,16 +91,16 @@ def uboot_checkout_and_build(tb: tbot.TBot, *,
 ## U-Boot checkout ##
 """)
 
-    tb.call("uboot_checkout",
-            builddir=builddir,
-            patchdir=patchdir,
-            repo=repo)
+    gitdir = tb.call("uboot_checkout",
+                     builddir=builddir,
+                     patchdir=patchdir,
+                     repo=repo)
 
     tb.log.doc_log("""
 ## U-Boot build ##
 """)
 
     tb.call("uboot_build",
-            builddir=builddir,
+            builddir=gitdir,
             toolchain=toolchain,
             defconfig=defconfig)

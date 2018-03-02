@@ -5,10 +5,11 @@ Run U-Boot tests on real hardware
 import pathlib
 import typing
 import tbot
+from tbot import tc
 
 @tbot.testcase
 def uboot_tests(tb: tbot.TBot, *,
-                builddir: typing.Optional[pathlib.PurePosixPath] = None,
+                builddir: tc.GitRepository,
                 toolchain: typing.Optional[str] = None,
                 test_config: typing.Optional[pathlib.PurePosixPath] = None,
                 test_hooks: typing.Optional[pathlib.PurePosixPath] = None,

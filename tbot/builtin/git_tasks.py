@@ -6,11 +6,35 @@ import typing
 import pathlib
 import tbot
 
+EXPORT = ["GitRepository"]
+
+class GitRepository(pathlib.PurePosixPath):
+    pass
+
+@tbot.testcase
+def git_dirty_checkout(tb: tbot.TBot, *,
+                       target: pathlib.PurePosixPath,
+                       repo: str) -> GitRepository:
+    tb.shell.exec0(f"mkdir -p {target}")
+    if not tb.shell.exec(f"""\
+test -d {target / '.git'}""", log_show=False)[0] == 0:
+        tb.shell.exec0(f"""\
+git clone {repo} {target}""")
+    else:
+        tb.log.log_debug("Repository already checked out ...")
+
+        # Log a git clone for documentation generation
+        event = tbot.logger.ShellCommandLogEvent(['sh', 'noenv'], f"""\
+git clone {repo} {target}""", log_show=True)
+        tb.log.log(event)
+        event.finished(0)
+
+    return GitRepository(target)
 
 @tbot.testcase
 def git_clean_checkout(tb: tbot.TBot, *,
                        target: pathlib.PurePosixPath,
-                       repo: str) -> None:
+                       repo: str) -> GitRepository:
     """
     Checkout a git repo if it does not exist yet and make sure there are
     no artifacts left from previous builds.
@@ -40,10 +64,12 @@ git clone {repo} {target}""", log_show=True)
         tb.log.log(event)
         event.finished(0)
 
+    return GitRepository(target)
+
 
 @tbot.testcase
 def git_apply_patches(tb: tbot.TBot, *,
-                      gitdir: pathlib.PurePosixPath,
+                      gitdir: GitRepository,
                       patchdir: pathlib.PurePosixPath) -> None:
     """
     Apply patchfiles inside patchdir onto the git repository in gitdir.
@@ -77,7 +103,7 @@ cd {gitdir}; git am -3 {patch}""", log_show_stdout=False)
 
 @tbot.testcase
 def git_bisect(tb: tbot.TBot,
-               gitdir: pathlib.PurePosixPath,
+               gitdir: GitRepository,
                good: str,
                and_then: typing.Union[str, typing.Callable],
                params: typing.Optional[typing.Dict[str, typing.Any]] = None,

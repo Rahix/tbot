@@ -5,11 +5,11 @@ Testcase to build U-Boot
 import typing
 import pathlib
 import tbot
-
+from tbot import tc
 
 @tbot.testcase
 def uboot_build(tb: tbot.TBot, *,
-                builddir: typing.Optional[pathlib.PurePosixPath] = None,
+                builddir: tc.UBootRepository,
                 toolchain: typing.Optional[str] = None,
                 defconfig: typing.Optional[str] = None,
                ) -> None:
