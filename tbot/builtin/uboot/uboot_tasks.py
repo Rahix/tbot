@@ -89,7 +89,7 @@ def uboot_checkout_and_build(tb: tbot.TBot, *,
                              builddir: typing.Optional[pathlib.PurePosixPath] = None,
                              patchdir: typing.Optional[pathlib.PurePosixPath] = None,
                              repo: typing.Optional[str] = None,
-                             toolchain: typing.Optional[str] = None,
+                             toolchain: typing.Optional[tc.Toolchain] = None,
                              defconfig: typing.Optional[str] = None,
                             ) -> UBootRepository:
     """
@@ -104,13 +104,12 @@ def uboot_checkout_and_build(tb: tbot.TBot, *,
     :param repo: Where to get U-Boot from, defaults to ``tb.config["uboot.repository"]``
     :type repo: str
     :param toolchain: What toolchain to use, defaults to ``tb.config["board.toolchain"]``
-    :type toolchain: str
+    :type toolchain: Toolchain
     :param defconfig: What U-Boot defconfig to use, defaults to ``tb.config["board.defconfig"]``
     :type defconfig: str
     :returns: The U-Boot checkout as a meta object for other testcases
     :rtype: UBootRepository
     """
-    # TODO: toolchain should be a Toolchain
 
     tb.log.doc_log("""
 ## U-Boot checkout ##
@@ -121,7 +120,7 @@ def uboot_checkout_and_build(tb: tbot.TBot, *,
                        patchdir=patchdir,
                        repo=repo)
 
-    toolchain = tb.call("toolchain_get", name=toolchain)
+    toolchain = toolchain or tb.call("toolchain_get")
 
     tb.log.doc_log("""
 ## U-Boot build ##
