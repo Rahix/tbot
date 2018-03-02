@@ -8,9 +8,15 @@ import tbot
 from tbot import tc
 
 @tbot.testcase
+def just_uboot_tests(tb: tbot.TBot) -> None:
+    uboot_dir = tb.call("uboot_checkout", clean=False)
+    toolchain = tb.call("toolchain_get")
+    tb.call("uboot_tests", builddir=uboot_dir, toolchain=toolchain)
+
+@tbot.testcase
 def uboot_tests(tb: tbot.TBot, *,
-                builddir: tc.GitRepository,
-                toolchain: typing.Optional[str] = None,
+                builddir: tc.UBootRepository,
+                toolchain: tc.Toolchain,
                 test_config: typing.Optional[pathlib.PurePosixPath] = None,
                 test_hooks: typing.Optional[pathlib.PurePosixPath] = None,
                 test_boardname: typing.Optional[str] = None,

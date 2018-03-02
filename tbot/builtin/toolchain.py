@@ -15,7 +15,7 @@ class Toolchain(str):
     pass
 
 @tbot.testcase
-def toolchain_get(tb: tbot.TBot, *, name: typing.Optional[str]) -> Toolchain:
+def toolchain_get(tb: tbot.TBot, *, name: typing.Optional[str] = None) -> Toolchain:
     name = name or tb.config["board.toolchain"]
     if tb.config[f"toolchains.{name}", None] is None:
         raise UnknownToolchainException(repr(name))

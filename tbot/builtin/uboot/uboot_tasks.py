@@ -30,6 +30,7 @@ def check_uboot_version(tb: tbot.TBot, *,
 
 @tbot.testcase
 def uboot_checkout(tb: tbot.TBot, *,
+                   clean: bool = True,
                    builddir: typing.Optional[pathlib.PurePosixPath] = None,
                    patchdir: typing.Optional[pathlib.PurePosixPath] = None,
                    repo: typing.Optional[str] = None,
@@ -60,10 +61,12 @@ def uboot_checkout(tb: tbot.TBot, *,
 
     tb.log.doc_log(docstr + "\n")
 
-    gitdir = tb.call("git_clean_checkout",
+    git_testcase = "git_clean_checkout" if clean else "git_dirty_checkout"
+
+    gitdir = tb.call(git_testcase,
                      repo=repo,
                      target=builddir)
-    if patchdir is not None:
+    if patchdir is not None and clean is True:
         tb.call("git_apply_patches", gitdir=gitdir, patchdir=patchdir)
     return UBootRepository(gitdir)
 
