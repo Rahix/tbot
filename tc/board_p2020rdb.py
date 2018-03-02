@@ -44,7 +44,7 @@ Copy U-Boot into your tftp directory:
 """)
 
     tftpdir = tb.call("setup_tftpdir")
-    tb.call("cp_to_tftpdir", name="u-boot-with-spl.bin")
+    tb.call("cp_to_tftpdir", name="u-boot-with-spl.bin", tftpdir=tftpdir)
 
     tb.log.doc_log("Find out the size of the U-Boot binary, as we will need it later:\n")
 

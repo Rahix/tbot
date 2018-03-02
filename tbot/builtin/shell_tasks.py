@@ -6,10 +6,15 @@ import pathlib
 import typing
 import tbot
 
+EXPORT = ["TftpDirectory"]
+
+class TftpDirectory(pathlib.PurePosixPath):
+    pass
+
 @tbot.testcase
 def setup_tftpdir(tb: tbot.TBot, *,
                   tftpdir: typing.Optional[pathlib.PurePosixPath] = None,
-                 ) -> pathlib.PurePosixPath:
+                 ) -> TftpDirectory:
     """
     Setup the tftp directory
 
@@ -27,14 +32,14 @@ def setup_tftpdir(tb: tbot.TBot, *,
 
     tb.log.log_debug(f"tftpdir is '{tftpdir}'")
 
-    return tftpdir
+    return TftpDirectory(tftpdir)
 
 @tbot.testcase
 def cp_to_tftpdir(tb: tbot.TBot, *,
                   name: typing.Union[str, pathlib.PurePosixPath],
                   dest_name: typing.Optional[str] = None,
                   builddir: typing.Optional[pathlib.PurePosixPath] = None,
-                  tftpdir: typing.Optional[pathlib.PurePosixPath] = None,
+                  tftpdir: TftpDirectory,
                  ) -> None:
     """
     Copy a file into the tftp folder
@@ -47,7 +52,6 @@ def cp_to_tftpdir(tb: tbot.TBot, *,
     :param tftpdir: Where to put files, defaults to ``tb.config["tftp.directory"]``
     """
     builddir = builddir or tb.config["uboot.builddir"]
-    tftpdir = tftpdir or tb.config["tftp.directory"]
 
     source_path = builddir / name if isinstance(name, str) else name
     dest_path = tftpdir / (name if dest_name is None else dest_name)
