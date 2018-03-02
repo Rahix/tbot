@@ -4,6 +4,7 @@ Demonstration of a git bisect
 import tbot
 
 @tbot.testcase
+@tbot.cmdline
 def demo_bisect(tb: tbot.TBot) -> None:
     """ Demonstrate git bisecting """
     repo = tb.config["tbot.workdir"] / "uboot-bisect-demo"

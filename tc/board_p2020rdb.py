@@ -71,8 +71,8 @@ Copy U-Boot into your tftp directory:
 
             tbn.log.doc_log("Write it into flash:\n")
 
-            # tbn.boardshell.exec0(f"nand device 0", log_show_stdout=False)
-            # tbn.boardshell.exec0(f"nand erase.spread 0 {size}")
-            # tbn.boardshell.exec0(f"nand write 10000000 0 {size}")
+            tbn.boardshell.exec0(f"nand device 0", log_show_stdout=False)
+            tbn.boardshell.exec0(f"nand erase.spread 0 {size}")
+            tbn.boardshell.exec0(f"nand write 10000000 0 {size}")
 
             tb.log.doc_log("Powercycle the board and check the U-Boot version:\n")
