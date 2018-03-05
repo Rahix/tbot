@@ -11,10 +11,6 @@ import tbot
 TBOT_TESTCASES: typing.Dict[str, typing.Callable] = dict()
 TBOT_TESTCASES_CMDLINE: typing.Dict[str, typing.Callable] = dict()
 
-def dummy() -> None:
-    """ Do not call testcases directly! """
-    pass
-
 def cmdline(f: typing.Callable) -> typing.Callable:
     """ Decorator for testcases that can be called from the commandline as well """
     #pylint: disable=global-statement
