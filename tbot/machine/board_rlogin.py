@@ -15,17 +15,24 @@ class MachineBoardRlogin(board.MachineBoard):
 
     :param name: Name of the shell (eg ``someboard-uboot``), defaults to
                  ``tb.config["board.shell.name"]``
+    :type name: str
     :param boardname: Name of the board, defaults to ``tb.config["board.name"]``
+    :type boardname: str
     :param power_cmd_on: Command to poweron the board, defaults to
                          ``tb.config["board.power.on_command"]``
+    :type power_cmd_on: str
     :param power_cmd_off: Command to poweroff the board, defaults to
                           ``tb.config["board.power.off_command"]``
+    :type power_cmd_off: str
     :param connect_command: Command to connect to the board with a tool that behaves similar
                             to rlogin, defaults to ``tb.config["board.shell.command"]``
+    :type connect_command: str
     :param prompt: The U-Boot prompt that is expected on the board, defaults to
                    ``tb.config["board.shell.prompt"]`` or ``"U-Boot> "``
+    :type prompt: str
     :param timeout: Time to wait before aborting autoboot (in seconds), defaults to
                     ``tb.config["board.shell.timeout"]`` or ``2`` seconds.
+    :type timeout: float
     """
     #pylint: disable=too-many-arguments
     def __init__(self, *,
