@@ -65,11 +65,16 @@ class ShellCommandLogEvent(LogEvent):
     Log event for shell commands
 
     :param sh: Shell/Machine type
+    :type sh: list(str)
     :param command: The command that was executed
+    :type command: str
     :param prefix: An optional prefix to print before output lines
+    :type prefix: str
     :param log_show: Whether documentation backends should include this command
+    :type log_show: bool
     :param log_show_stdout: Whether documentation backends should include this
         commands output
+    :type log_show_stdout: bool
     """
     #pylint: disable=too-many-arguments
     def __init__(self,
@@ -100,6 +105,7 @@ class ShellCommandLogEvent(LogEvent):
         Add a line of stdout to this log event
 
         :param line: The line to be added
+        :type line: str
         """
         if not line == "":
             self.output += line + ('' if line[-1] == '\n' else '\n')
@@ -116,6 +122,7 @@ class ShellCommandLogEvent(LogEvent):
         Tell the log event that the command is done
 
         :param exit_code: The commands exit code
+        :type exit_code: int
         """
         self._dict["output"] = self.output
         self._dict["exit_code"] = exit_code
@@ -137,7 +144,9 @@ class TestcaseBeginLogEvent(LogEvent):
     Log event for the start of a testcase
 
     :param tc_name: Name of the testcase
+    :type tc_name: str
     :param layer: Call graph depth
+    :type layer: int
     """
     def __init__(self, tc_name: str, layer: int) -> None:
         super().__init__()
@@ -166,9 +175,13 @@ class TestcaseEndLogEvent(LogEvent):
     Log event for the end of testcase
 
     :param tc_name: Name of the testcase
+    :type tc_name: str
     :param layer: Call graph depth
+    :type layer: int
     :param duration: Duration of the testcase in seconds
+    :type duration: float
     :param success: Whether the testcase succeeded
+    :type success: bool
     """
     def __init__(self,
                  tc_name: str,
@@ -206,6 +219,7 @@ class TBotFinishedLogEvent(LogEvent):
     Log event for the end of a TBot run
 
     :param success: Whether this run was successful
+    :type success: bool
     """
     def __init__(self, success: bool) -> None:
         super().__init__()
