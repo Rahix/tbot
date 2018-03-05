@@ -65,11 +65,16 @@ class ShellCommandLogEvent(LogEvent):
     Log event for shell commands
 
     :param sh: Shell/Machine type
+    :type sh: list(str)
     :param command: The command that was executed
+    :type command: str
     :param prefix: An optional prefix to print before output lines
+    :type prefix: str
     :param log_show: Whether documentation backends should include this command
+    :type log_show: bool
     :param log_show_stdout: Whether documentation backends should include this
         commands output
+    :type log_show_stdout: bool
     """
     #pylint: disable=too-many-arguments
     def __init__(self,
@@ -100,6 +105,7 @@ class ShellCommandLogEvent(LogEvent):
         Add a line of stdout to this log event
 
         :param line: The line to be added
+        :type line: str
         """
         if not line == "":
             self.output += line + ('' if line[-1] == '\n' else '\n')
@@ -116,6 +122,7 @@ class ShellCommandLogEvent(LogEvent):
         Tell the log event that the command is done
 
         :param exit_code: The commands exit code
+        :type exit_code: int
         """
         self._dict["output"] = self.output
         self._dict["exit_code"] = exit_code
@@ -137,7 +144,9 @@ class TestcaseBeginLogEvent(LogEvent):
     Log event for the start of a testcase
 
     :param tc_name: Name of the testcase
+    :type tc_name: str
     :param layer: Call graph depth
+    :type layer: int
     """
     def __init__(self, tc_name: str, layer: int) -> None:
         super().__init__()
@@ -166,9 +175,13 @@ class TestcaseEndLogEvent(LogEvent):
     Log event for the end of testcase
 
     :param tc_name: Name of the testcase
+    :type tc_name: str
     :param layer: Call graph depth
+    :type layer: int
     :param duration: Duration of the testcase in seconds
+    :type duration: float
     :param success: Whether the testcase succeeded
+    :type success: bool
     """
     def __init__(self,
                  tc_name: str,
@@ -206,6 +219,7 @@ class TBotFinishedLogEvent(LogEvent):
     Log event for the end of a TBot run
 
     :param success: Whether this run was successful
+    :type success: bool
     """
     def __init__(self, success: bool) -> None:
         super().__init__()
@@ -232,9 +246,13 @@ class CustomLogEvent(LogEvent):
     Custom Log Event
 
     :param ty: Type of the log event
+    :type ty: list(str)
     :param stdout: Optional text to be printed to TBot's stdout
+    :type stdout: str
     :param verbosity: Verbosity of this log event
+    :type verbosity: tbot.logger.Verbosity
     :param dict_values: Additional dict values to be added to the log
+    :type dict_values: dict
     """
     def __init__(self,
                  ty: typing.List[str],
@@ -266,8 +284,11 @@ class Logger:
     TBot Logger
 
     :param verbosity: Minimum verbosity level for printing to stdout
+    :type verbosity: tbot.logger.Verbosity
     :param logfile: Where to store the ``json.log``
+    :type logfile: str
     """
+    #TODO: Make logfile a pathlib path
     def __init__(self, verbosity: Verbosity, logfile: str) -> None:
         self.logevents: typing.List[LogEvent] = list()
         self.verbosity = verbosity
@@ -289,6 +310,7 @@ class Logger:
         text to be added
 
         :param text: The text
+        :type text: str
         """
         ev = CustomLogEvent(["doc", "text"], dict_values={"text": text})
         self.log(ev)
@@ -299,7 +321,9 @@ class Logger:
         for an appendix to be created
 
         :param title: Title of the appendix
+        :type title: str
         :param text: Text of the appendix
+        :type text: str
         """
         ev = CustomLogEvent(
             ["doc", "appendix"],
@@ -311,7 +335,9 @@ class Logger:
         A shortcut for writing a message to stdout
 
         :param message: Text to be written to stdout
+        :type message: str
         :param verbosity: Minimum verbosity level for this message to be written
+        :type verbosity: tbot.logger.Verbosity
         :returns: Nothing
         """
         ev = CustomLogEvent(
@@ -326,6 +352,7 @@ class Logger:
         Shortcut for debug messages
 
         :param message: Debug message
+        :type message: str
         :returns: Nothing
         """
         self.log_msg(message, Verbosity.DEBUG)
@@ -336,7 +363,9 @@ class Logger:
 
         :param filename: Optional alternative log file. If this is None,
             the logfile supplied on init will be used.
+        :type filename: str
         """
+        #TODO: Make filename a pathlib path
         #pylint: disable=protected-access
         json.dump([ev._dict for ev in self.logevents],
                   open(self.logfile if filename is None else filename, "w"),
@@ -352,10 +381,14 @@ class Logger:
         verbosity level of the LogEvent.
 
         :param msg: The text to be printed.
+        :type msg: str
         :param ev: The :class:`~tbot.logger.LogEvent` this print call originated
             from
+        :type ev: tbot.logger.LogEvent
         :param prefix: Whether to add a prefix to match other outputs indent
+        :type prefix: bool
         :param prefix_dash: Whether this prefix is supposed to contain a dash
+        :type prefix_dash: bool
         """
 
         #pylint: disable=protected-access

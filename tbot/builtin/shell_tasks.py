@@ -6,17 +6,28 @@ import pathlib
 import typing
 import tbot
 
+EXPORT = ["TftpDirectory"]
+
+class TftpDirectory(pathlib.PurePosixPath):
+    """
+    A meta object to represent the tftp directory.
+    Can be created with :func:`setup_tftpdir`
+    """
+    pass
+
 @tbot.testcase
 def setup_tftpdir(tb: tbot.TBot, *,
                   tftpdir: typing.Optional[pathlib.PurePosixPath] = None,
-                 ) -> pathlib.PurePosixPath:
+                 ) -> TftpDirectory:
     """
     Setup the tftp directory
 
     :param tftpdir: Optional path to the tftpdir, defaults to
                     ``tb.config["tftp.directory"]`` (which has a default value
                     in ``config/tbot.py``
-    :returns: The tftpdir
+    :type tftpdir: pathlib.PurePosixPath
+    :returns: The TFTP directory as a meta object
+    :rtype: TftpDirectory
     """
     tftpdir = tftpdir or tb.config["tftp.directory"]
 
@@ -27,27 +38,30 @@ def setup_tftpdir(tb: tbot.TBot, *,
 
     tb.log.log_debug(f"tftpdir is '{tftpdir}'")
 
-    return tftpdir
+    return TftpDirectory(tftpdir)
 
 @tbot.testcase
 def cp_to_tftpdir(tb: tbot.TBot, *,
                   name: typing.Union[str, pathlib.PurePosixPath],
                   dest_name: typing.Optional[str] = None,
                   builddir: typing.Optional[pathlib.PurePosixPath] = None,
-                  tftpdir: typing.Optional[pathlib.PurePosixPath] = None,
+                  tftpdir: TftpDirectory,
                  ) -> None:
     """
     Copy a file into the tftp folder
 
     :param name: Name of the file or path to the file
+    :type name: str, pathlib.PurePosixPath
     :param dest_name: Name of the file inside the tftp folder, defaults to
                       the filename of ``name``
+    :type dest_name: str
     :param builddir: Where to find files if no full path is supplied, defaults to
                      ``tb.config["uboot.builddir"]``
-    :param tftpdir: Where to put files, defaults to ``tb.config["tftp.directory"]``
+    :type builddir: pathlib.PurePosixPath
+    :param tftpdir: Where to put the file
+    :type tftpdir: TftpDirectory
     """
     builddir = builddir or tb.config["uboot.builddir"]
-    tftpdir = tftpdir or tb.config["tftp.directory"]
 
     source_path = builddir / name if isinstance(name, str) else name
     dest_path = tftpdir / (name if dest_name is None else dest_name)

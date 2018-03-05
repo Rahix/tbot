@@ -3,6 +3,7 @@ TBOT self test
 --------------
 """
 import tbot
+from tbot import tc
 
 @tbot.testcase
 def selftest(tb: tbot.TBot) -> None:
@@ -217,9 +218,8 @@ def selftest_builtin_errors(tb: tbot.TBot) -> None:
     tb.log.log_debug("Testing toolchain_env with nonexistent toolchain name ...")
     try:
         tb.call("toolchain_env", toolchain="a-toolchain-that-will-never-exist", and_then=dummy)
-    except Exception as e: #pylint: disable=broad-except
-        if e.__class__.__name__ != "UnknownToolchainException":
-            raise
+    except tc.UnknownToolchainException:
+        tb.log.log_debug("Catched unknown toolchain exception")
     else:
         raise Exception("toolchain_env did not raise an UnknownToolchainException")
 

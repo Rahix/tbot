@@ -14,21 +14,27 @@ import enforce
 from tbot import config_parser
 from tbot import logger
 from tbot import testcase_collector
+from tbot import tc
 import tbot.machine
 import tbot.config
 
 from tbot.testcase_collector import testcase
+from tbot.testcase_collector import cmdline
 
 #pylint: disable=too-many-instance-attributes
 class TBot:
     """
-    Main class of TBot
+    Main class of TBot, you usually do not need to instanciate this yourself
 
     :param config: A configuration to be used
-    :param testcase: Testcases available to this instance
+    :type config: tbot.config.Config
+    :param testcases: Testcases available to this instance
+    :type testcases: dict
     :param log: The logger that TBot should use
+    :type log: logger.Logger
     :param new: Whether this is a new instance that should create a noenv machine.
         Always ``True`` unless you know what you are doing.
+    :type new: bool
     :ivar config: :class:`tbot.config.Config()`
     :ivar testcases: All available testcases
     :ivar log: :class:`tbot.logger.Logger()`
@@ -72,8 +78,11 @@ class TBot:
         Decorator to call a testcase with a function as a payload ("and_then" argument)
 
         :param tc: The testcase to call
+        :type tc: str, typing.Callable
         :param kwargs: Additional arguments for the testcase
+        :type kwargs: dict
         :returns: The decorated function
+        :rtype: typing.Callable
         """
         def _decorator(f: typing.Callable) -> typing.Any:
             kwargs["and_then"] = f
@@ -87,7 +96,9 @@ class TBot:
         Call a testcase
 
         :param tc: The testcase to be called. Can either be a string or a callable
+        :type tc: str, typing.Callable
         :param kwargs: Additional arguments for the testcase
+        :type kwargs: dict
         :returns: The return value from the testcase
         """
         name = tc if isinstance(tc, str) else f"@{tc.__name__}"
@@ -123,9 +134,12 @@ class TBot:
         Create a new TBot instance with a new machine
 
         :param mach: The machine to be added in the new instance
+        :type mach: tbot.machine.machine.Machine
         :param overwrite: Whether overwriting an existing machine is allowed
+        :type overwrite: bool
         :returns: The new TBot instance, which has to be used inside a with
             statement
+        :rtype: TBot
         """
         new_inst = TBot(self.config, self.testcases, self.log, False)
         new_inst.layer = self.layer
@@ -147,6 +161,7 @@ class TBot:
 
         :returns: The new TBot instance, which has to be used inside a with
             statement
+        :rtype: TBot
         """
         return self.machine(tbot.machine.MachineBoardRlogin(), overwrite=False)
 

@@ -3,6 +3,7 @@ import tbot
 
 
 @tbot.testcase
+@tbot.cmdline
 def board_corvus(tb: tbot.TBot) -> None:
     """ Corvus board specific testcase """
 

@@ -5,6 +5,7 @@ Common TBot tasks
 import tbot
 
 @tbot.testcase
+@tbot.cmdline
 def tbot_clean_workdir(tb: tbot.TBot) -> None:
     """
     Clean TBot's workdir, utility testcase to remove

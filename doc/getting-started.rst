@@ -5,12 +5,12 @@ Getting Started with TBot
 
 The main concept of tbot is, that everything is a testcase. Testcases
 can call other testcases like you would call a function to do a certain
-task. For example the :py:func:`tbot.builtin.uboot.build_uboot.build_uboot`
+task. For example the :func:`uboot_checkout_and_build`
 testcase builds a version of U-Boot for your currently selected board.
 
 You could do so, by calling tbot like this::
 
-    $ tbot <lab-name> <board-name> build_uboot
+    $ tbot <lab-name> <board-name> uboot_checkout_and_build
 
 where ``lab-name`` is the name of the config for your lab host (more on that later)
 and ``board-name`` is the name of the config for your board.
@@ -21,12 +21,18 @@ it would look like this::
     import tbot
 
     @tbot.testcase
+    @tbot.cmdline
     def an_example_testcase(tb):
         tb.call("build_uboot")
 
 Now you can call your testcase like this::
 
     $ tbot <lab-name> <board-name> an_example_testcase
+
+Note the 2 decorators for this function ``tbot.testcase`` makes a function a testcase
+that can be called by other testcases and ``tbot.cmdline`` allows the testcase to be
+called from the command line (like the command above). Only use ``tbot.cmdline`` if your
+testcase does not have any mandatory parameters, else calling it will not work.
 
 Lab host shell interaction
 --------------------------
@@ -37,6 +43,7 @@ following::
     import tbot
 
     @tbot.testcase
+    @tbot.cmdline
     def shell_interaction(tb: tbot.TBot) -> None:
         # exec0 executes a command and expects a return code of 0
         # and will raise an exception otherwise
@@ -60,6 +67,7 @@ directory. For that, tbot has an ``env`` machine. You can use it like this::
     import tbot
 
     @tbot.testcase
+    @tbot.cmdline
     def envshell_demo(tb):
         with tb.machine(tbot.machine.MachineLabEnv()) as tbn:
             tbn.shell.exec0("FOO='bar'")
@@ -78,6 +86,7 @@ your testcase is done. It might be looking like the following::
     import tbot
 
     @tbot.testcase
+    @tbot.cmdline
     def boardshell_demo(tb):
         with tb.with_boardshell() as tbn:
             tbn.boardshell.exec0("version")

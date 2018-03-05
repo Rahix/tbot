@@ -13,8 +13,9 @@ import typing
 import pathlib
 import paramiko
 import tbot
+from tbot import tc
 
-#TODO: Credit paramiko example
+# Based on https://github.com/paramiko/paramiko/blob/master/demos/interactive.py
 
 #pylint: disable=too-many-branches, too-many-nested-blocks
 def ishell(channel: paramiko.Channel, *,
@@ -27,6 +28,7 @@ def ishell(channel: paramiko.Channel, *,
     :param setup: An additional setup procedure to eg set a custom prompt
     :param abort: A character that should not be sent to the remote but instead trigger
                   closing the interactive session
+    :type abort: str
     """
     size = shutil.get_terminal_size()
     channel.resize_pty(size.columns, size.lines, 1000, 1000)
@@ -80,20 +82,23 @@ def ishell(channel: paramiko.Channel, *,
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, oldtty)
 
 @tbot.testcase
+@tbot.cmdline
 def interactive_build(tb: tbot.TBot, *,
                       builddir: typing.Optional[pathlib.PurePosixPath] = None,
-                      toolchain: typing.Optional[str] = None,
+                      toolchain: typing.Optional[tc.Toolchain] = None,
                      ) -> None:
     """
     Open an interactive shell in the U-Boot build directory with the toolchain
     enabled.
 
     :param builddir: Where U-Boot is located, defaults to ``tb.config["uboot.builddir"]``
+    :type builddir: pathlib.PurePosixPath
     :param toolchain: Which toolchain to use, defaults to ``tb.config["board.toolchain"]``
+    :type toolchain: Toolchain
     """
 
     builddir = builddir or tb.config["uboot.builddir"]
-    toolchain = toolchain or tb.config["board.toolchain"]
+    toolchain = toolchain or tb.call("toolchain_get")
 
     @tb.call_then("toolchain_env", toolchain=toolchain)
     def interactive_shell(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
@@ -111,6 +116,7 @@ def interactive_build(tb: tbot.TBot, *,
         ishell(channel, setup=setup)
 
 @tbot.testcase
+@tbot.cmdline
 def interactive_uboot(tb: tbot.TBot) -> None:
     """
     Open an interactive U-Boot prompt on the board
@@ -118,5 +124,6 @@ def interactive_uboot(tb: tbot.TBot) -> None:
 
     with tb.with_boardshell() as tbn:
         channel = tbn.boardshell.channel
+        print("U-Boot Shell (CTRL-D to exit):")
         ishell(channel, abort="\x04")
         print("\r")

@@ -3,26 +3,26 @@ Testcase to build U-Boot
 ------------------------
 """
 import typing
-import pathlib
 import tbot
-
+from tbot import tc
 
 @tbot.testcase
 def uboot_build(tb: tbot.TBot, *,
-                builddir: typing.Optional[pathlib.PurePosixPath] = None,
-                toolchain: typing.Optional[str] = None,
+                builddir: tc.UBootRepository,
+                toolchain: tc.Toolchain,
                 defconfig: typing.Optional[str] = None,
                ) -> None:
     """
     Build U-Boot
 
-    :param builddir: Where to build U-Boot, defaults to ``tb.config["uboot.builddir"]``
-    :param toolchain: Which toolchain to use, defaults to ``tb.config["board.toolchain"]``
+    :param builddir: Where to build U-Boot
+    :type builddir: UBootRepository
+    :param toolchain: Which toolchain to use
+    :type toolchain: Toolchain
     :param defconfig: What U-Boot defconfig to use, defaults to ``tb.config["board.defconfig"]``
+    :type defconfig: str
     """
 
-    builddir = builddir or tb.config["uboot.builddir"]
-    toolchain = toolchain or tb.config["board.toolchain"]
     defconfig = defconfig or tb.config["board.defconfig"]
 
     tb.log.doc_log(f"""

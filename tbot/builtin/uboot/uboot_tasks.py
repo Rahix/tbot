@@ -5,6 +5,16 @@ Collection of U-Boot tasks
 import pathlib
 import typing
 import tbot
+from tbot import tc
+
+EXPORT = ["UBootRepository"]
+
+class UBootRepository(tc.GitRepository):
+    """
+    A meta object to represent a checked out version of U-Boot.
+    Can be created with :func:`uboot_checkout` or :func:`uboot_checkout_and_build`
+    """
+    pass
 
 @tbot.testcase
 def check_uboot_version(tb: tbot.TBot, *,
@@ -15,6 +25,7 @@ def check_uboot_version(tb: tbot.TBot, *,
     as the one supplied as a binary file in uboot_bin.
 
     :param uboot_binary: Path to the U-Boot binary
+    :type uboot_binary: pathlib.PurePosixPath
     """
     with tb.with_boardshell() as tbn:
         strings = tbn.shell.exec0(f"strings {uboot_binary} | grep U-Boot", log_show=False)
@@ -23,19 +34,28 @@ def check_uboot_version(tb: tbot.TBot, *,
         assert version in strings, "U-Boot version does not seem to match"
 
 @tbot.testcase
+@tbot.cmdline
 def uboot_checkout(tb: tbot.TBot, *,
+                   clean: bool = True,
                    builddir: typing.Optional[pathlib.PurePosixPath] = None,
                    patchdir: typing.Optional[pathlib.PurePosixPath] = None,
                    repo: typing.Optional[str] = None,
-                  ) -> None:
+                  ) -> UBootRepository:
     """
     Create a checkout of U-Boot
 
+    :param clean: Whether an existing repository should be cleaned
+    :type clean: bool
     :param builddir: Where to checkout U-Boot to, defaults to ``tb.config["uboot.builddir"]``
+    :type builddir: pathlib.PurePosixPath
     :param patchdir: Optional U-Boot patches to be applied
         ontop of the tree, defaults to ``tb.config["uboot.patchdir"]``, supply a
         nonexistent path to force ignoring the patches
+    :type patchdir: pathlib.PurePosixPath
     :param repo: Where to get U-Boot from, defaults to ``tb.config["uboot.repository"]``
+    :type repo: str
+    :returns: The U-Boot checkout as a meta object for other testcases
+    :rtype: UBootRepository
     """
 
     builddir = builddir or tb.config["uboot.builddir"]
@@ -54,46 +74,61 @@ def uboot_checkout(tb: tbot.TBot, *,
 
     tb.log.doc_log(docstr + "\n")
 
-    tb.call("git_clean_checkout",
-            repo=repo,
-            target=builddir)
-    if patchdir is not None:
-        tb.call("git_apply_patches", gitdir=builddir, patchdir=patchdir)
+    git_testcase = "git_clean_checkout" if clean else "git_dirty_checkout"
+
+    gitdir = tb.call(git_testcase,
+                     repo=repo,
+                     target=builddir)
+    if patchdir is not None and clean is True:
+        tb.call("git_apply_patches", gitdir=gitdir, patchdir=patchdir)
+    return UBootRepository(gitdir)
 
 @tbot.testcase
+@tbot.cmdline
 def uboot_checkout_and_build(tb: tbot.TBot, *,
                              builddir: typing.Optional[pathlib.PurePosixPath] = None,
                              patchdir: typing.Optional[pathlib.PurePosixPath] = None,
                              repo: typing.Optional[str] = None,
-                             toolchain: typing.Optional[str] = None,
+                             toolchain: typing.Optional[tc.Toolchain] = None,
                              defconfig: typing.Optional[str] = None,
-                            ) -> None:
+                            ) -> UBootRepository:
     """
     Checkout U-Boot and build it
 
     :param builddir: Where to checkout U-Boot to, defaults to ``tb.config["uboot.builddir"]``
+    :type builddir: pathlib.PurePosixPath
     :param patchdir: Optional U-Boot patches to be applied
         ontop of the tree, defaults to ``tb.config["uboot.patchdir"]``, supply a
         nonexistent path to force building without patches
+    :type patchdir: pathlib.PurePosixPath
     :param repo: Where to get U-Boot from, defaults to ``tb.config["uboot.repository"]``
+    :type repo: str
     :param toolchain: What toolchain to use, defaults to ``tb.config["board.toolchain"]``
+    :type toolchain: Toolchain
     :param defconfig: What U-Boot defconfig to use, defaults to ``tb.config["board.defconfig"]``
+    :type defconfig: str
+    :returns: The U-Boot checkout as a meta object for other testcases
+    :rtype: UBootRepository
     """
 
     tb.log.doc_log("""
 ## U-Boot checkout ##
 """)
 
-    tb.call("uboot_checkout",
-            builddir=builddir,
-            patchdir=patchdir,
-            repo=repo)
+    ubootdir = tb.call("uboot_checkout",
+                       builddir=builddir,
+                       patchdir=patchdir,
+                       repo=repo)
+
+    toolchain = toolchain or tb.call("toolchain_get")
 
     tb.log.doc_log("""
 ## U-Boot build ##
 """)
 
     tb.call("uboot_build",
-            builddir=builddir,
+            builddir=ubootdir,
             toolchain=toolchain,
             defconfig=defconfig)
+
+    return ubootdir

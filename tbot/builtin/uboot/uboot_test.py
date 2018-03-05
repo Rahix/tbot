@@ -5,11 +5,22 @@ Run U-Boot tests on real hardware
 import pathlib
 import typing
 import tbot
+from tbot import tc
+
+@tbot.testcase
+@tbot.cmdline
+def just_uboot_tests(tb: tbot.TBot) -> None:
+    """
+    Run U-Boot tests on the currently existing (possibly dirty) U-Boot tree.
+    """
+    uboot_dir = tb.call("uboot_checkout", clean=False)
+    toolchain = tb.call("toolchain_get")
+    tb.call("uboot_tests", builddir=uboot_dir, toolchain=toolchain)
 
 @tbot.testcase
 def uboot_tests(tb: tbot.TBot, *,
-                builddir: typing.Optional[pathlib.PurePosixPath] = None,
-                toolchain: typing.Optional[str] = None,
+                builddir: tc.UBootRepository,
+                toolchain: tc.Toolchain,
                 test_config: typing.Optional[pathlib.PurePosixPath] = None,
                 test_hooks: typing.Optional[pathlib.PurePosixPath] = None,
                 test_boardname: typing.Optional[str] = None,
@@ -18,23 +29,27 @@ def uboot_tests(tb: tbot.TBot, *,
     """
     Run U-Boot tests on real hardware
 
-    :param builddir: Where the U-Boot tree is found on the lab host,
-                     defaults to ``tb.config["uboot.builddir"]``
+    :param builddir: The U-Boot checkout that should be tested. Must be a
+                     UBootRepository meta object
+    :type builddir: UBootRepository
     :param toolchain: What toolchain to use (The testsuite rebuilds the
-                      U-Boot binary), defaults to ``tb.config["board.toolchain"]``
+                      U-Boot binary)
+    :type toolchain: Toolchain
     :param test_config: An optional config file for the testsuite,
                         defaults to ``tb.config["uboot.test.config"]``
+    :type test_config: pathlib.PurePosixPath
     :param test_hooks: Path to the U-Boot python testsuite hooks for the
                        currently selected board, defaults to
                        ``tb.config["uboot.test.hooks"]``
+    :type test_hooks: pathlib.PurePosixPath
     :param test_boardname: Name of the board, usually the name of the defconfig minus
                            the ``"_defconfig"``, defaults to
                            ``tb.config["uboot.test.boardname"]``
+    :type test_boardname: str
     :param test_maxfail: Maximum number of failed tests before aborting, defaults
                          to ``tb.config["uboot.test.maxfail"]``
+    :type test_maxfail: int
     """
-    builddir = builddir or tb.config["uboot.builddir"]
-    toolchain = toolchain or tb.config["board.toolchain"]
     test_config = test_config or tb.config["uboot.test.config", None]
     test_hooks = test_hooks or tb.config["uboot.test.hooks"]
     test_boardname = test_boardname or tb.config["uboot.test.boardname"]

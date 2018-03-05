@@ -6,6 +6,7 @@ import pathlib
 import tbot
 
 @tbot.testcase
+@tbot.cmdline
 def board_p2020rdb(tb: tbot.TBot) -> None:
     """
     P2020RDB-PCA board specific testcase to build U-Boot, flash it into
@@ -16,20 +17,24 @@ U-Boot on the P2020RDB-PCA board
 ================================
 """)
 
-    tb.call("uboot_checkout_and_build")
+    ubootdir = tb.call("uboot_checkout_and_build")
 
     tb.call("p2020rdb_install_uboot")
 
     with tb.with_boardshell() as tbn:
-        tbn.call("check_uboot_version", uboot_binary=\
-            tbn.config["uboot.builddir"] / "u-boot-with-spl.bin")
+        try:
+            tbn.call("check_uboot_version", uboot_binary=\
+                ubootdir / "u-boot-with-spl.bin")
+        except AssertionError:
+            pass
 
         env = tbn.boardshell.exec0("printenv", log_show=False)
         tbn.log.doc_appendix("U-Boot environment", f"""```sh
 {env}
 ```""")
 
-    tb.call("uboot_tests")
+    toolchain = tb.call("toolchain_get")
+    tb.call("uboot_tests", builddir=ubootdir, toolchain=toolchain)
 
 @tbot.testcase
 def p2020rdb_install_uboot(tb: tbot.TBot) -> None:
@@ -44,7 +49,7 @@ Copy U-Boot into your tftp directory:
 """)
 
     tftpdir = tb.call("setup_tftpdir")
-    tb.call("cp_to_tftpdir", name="u-boot-with-spl.bin")
+    tb.call("cp_to_tftpdir", name="u-boot-with-spl.bin", tftpdir=tftpdir)
 
     tb.log.doc_log("Find out the size of the U-Boot binary, as we will need it later:\n")
 
