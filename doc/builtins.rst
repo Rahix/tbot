@@ -24,3 +24,5 @@ TBot builtin testcases
 .. automodule:: tbot.builtin.uboot.uboot_test
    :members:
 
+.. automodule:: tbot.builtin.interactive
+   :members:
