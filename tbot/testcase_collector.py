@@ -52,8 +52,7 @@ def get_testcases(paths: typing.Union[typing.List[str], typing.List[pathlib.Path
                         if p.suffix == ".py"]
 
     for source in sources:
-        # TODO: Proper name
-        module_spec = importlib.util.spec_from_file_location("tc", str(source))
+        module_spec = importlib.util.spec_from_file_location(source.stem, str(source))
         module = importlib.util.module_from_spec(module_spec)
         if isinstance(module_spec.loader, importlib.abc.Loader):
             module_spec.loader.exec_module(module)
