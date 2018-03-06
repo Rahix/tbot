@@ -6,6 +6,7 @@ import tbot
 from tbot import tc
 
 @tbot.testcase
+@tbot.cmdline
 def selftest(tb: tbot.TBot) -> None:
     """ TBot self test """
     tb.log.log_msg("Testing shell functionality ...")
@@ -67,6 +68,7 @@ windows line ending\n", "%r does not match" % out
 
 
 @tbot.testcase
+@tbot.cmdline
 def selftest_noenv_shell(tb: tbot.TBot) -> None:
     """ Test noenv shell functionality """
     with tb.machine(tbot.machine.MachineLabNoEnv()) as tbn:
@@ -78,6 +80,7 @@ def selftest_noenv_shell(tb: tbot.TBot) -> None:
         assert out == "\n", f"Environment variable was set when it shouldn't: {repr(out)}"
 
 @tbot.testcase
+@tbot.cmdline
 def selftest_env_shell(tb: tbot.TBot) -> None:
     """ Test env shell functionality """
     with tb.machine(tbot.machine.MachineLabEnv()) as tbn:
@@ -89,6 +92,7 @@ def selftest_env_shell(tb: tbot.TBot) -> None:
         assert out == "avalue\n", f"Environment variable was not set correctly: {repr(out)}"
 
 @tbot.testcase
+@tbot.cmdline
 def selftest_board_shell(tb: tbot.TBot) -> None:
     """ Test board shell functionality """
     with tb.with_boardshell() as tbn:
@@ -97,6 +101,7 @@ def selftest_board_shell(tb: tbot.TBot) -> None:
                    tbn.config["board.shell.support_echo_e", False])
 
 @tbot.testcase
+@tbot.cmdline
 def selftest_nested_boardshells(tb: tbot.TBot) -> None:
     """ Test if tbot handles nested boardshells correctly """
     with tb.with_boardshell() as tb1:
@@ -117,6 +122,7 @@ def selftest_nested_boardshells(tb: tbot.TBot) -> None:
                 assert bs1 is bs2, "%r is not %r" % (bs1, bs2)
 
 @tbot.testcase
+@tbot.cmdline
 def selftest_logger(tb: tbot.TBot) -> None:
     """ Test logger """
     text = """\
@@ -142,6 +148,7 @@ perferendis dolor. Tempore at ipsum eos molestiae nobis error corporis."""
     tb.log.log(custom_ev)
 
 @tbot.testcase
+@tbot.cmdline
 def selftest_testcase_calling(tb: tbot.TBot) -> None:
     """ Test calling testcases """
     def a_testcase(_tb: tbot.TBot, param: str) -> int:
@@ -152,6 +159,7 @@ def selftest_testcase_calling(tb: tbot.TBot) -> None:
     assert out == 123, "Testcase did not return 123: %r" % out
 
 @tbot.testcase
+@tbot.cmdline
 def selftest_test_failures(tb: tbot.TBot) -> None:
     """ Test a failing testcase """
     def a_failing_testcase(_tb: tbot.TBot) -> None:
@@ -172,6 +180,7 @@ def selftest_standalone_int_param(_tb: tbot.TBot, *, param: int) -> str:
     return str(param)
 
 @tbot.testcase
+@tbot.cmdline
 def selftest_wrong_parameter_type(tb: tbot.TBot) -> None:
     """ Test whether TBot detects wrong parameter types """
 
@@ -208,22 +217,20 @@ def selftest_wrong_parameter_type(tb: tbot.TBot) -> None:
     assert failed is True, "TBot did not detect a wrong parameter type (result: %r)" % (out2,)
 
 @tbot.testcase
+@tbot.cmdline
 def selftest_builtin_errors(tb: tbot.TBot) -> None:
     """ Test whether builtin testcases properly error on invalid input """
 
-    def dummy(_tb: tbot.TBot) -> None:
-        """ A dummy testcase """
-        pass
-
     tb.log.log_debug("Testing toolchain_env with nonexistent toolchain name ...")
     try:
-        tb.call("toolchain_env", toolchain="a-toolchain-that-will-never-exist", and_then=dummy)
+        tb.call("toolchain_get", name="a-toolchain-that-will-never-exist")
     except tc.UnknownToolchainException:
         tb.log.log_debug("Catched unknown toolchain exception")
     else:
         raise Exception("toolchain_env did not raise an UnknownToolchainException")
 
 @tbot.testcase
+@tbot.cmdline
 def selftest_builtin_tests(tb: tbot.TBot) -> None:
     """ Test a few things to validate the builtin testcases """
 
