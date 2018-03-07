@@ -4,7 +4,7 @@ class GitRepository:
 class UBootRepository:
     pass
 
-class UnknownToolchainException:
+class UnknownToolchainException(Exception):
     pass
 
 class Toolchain:

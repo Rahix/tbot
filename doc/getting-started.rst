@@ -88,7 +88,7 @@ your testcase is done. It might be looking like the following::
     @tbot.testcase
     @tbot.cmdline
     def boardshell_demo(tb):
-        with tb.with_boardshell() as tbn:
+        with tb.with_board_uboot() as tbn:
             tbn.boardshell.exec0("version")
 
         # Board is powered off after the end of the with statement

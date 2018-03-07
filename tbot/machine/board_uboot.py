@@ -1,6 +1,6 @@
 """
-Board machine for rlogin like interfaces
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Board machine for U-Boot interaction
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 """
 import random
 import time
@@ -10,8 +10,8 @@ import tbot
 from . import board
 
 #pylint: disable=too-many-instance-attributes
-class MachineBoardRlogin(board.MachineBoard):
-    """ Board machine for rlogin like interfaces
+class MachineBoardUBoot(board.MachineBoard):
+    """ Board machine for U-Boot interaction
 
     :param name: Name of the shell (eg ``someboard-uboot``), defaults to
                  ``tb.config["board.shell.name"]``
@@ -189,5 +189,5 @@ class MachineBoardRlogin(board.MachineBoard):
 
     @property
     def unique_machine_name(self) -> str:
-        """ Unique name of this machine, ``"board-rlogin-<boardshell-name>"`` """
-        return f"board-rlogin-{self.name}"
+        """ Unique name of this machine, ``"board-uboot-<boardshell-name>"`` """
+        return f"board-uboot-{self.name}"

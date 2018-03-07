@@ -155,7 +155,7 @@ class TBot:
             new_inst.destruct_machines.append(mach)
         return new_inst
 
-    def with_boardshell(self) -> 'TBot':
+    def with_board_uboot(self) -> 'TBot':
         """
         Shortcut to create a new TBot instance with a boardmachine
 
@@ -163,7 +163,7 @@ class TBot:
             statement
         :rtype: TBot
         """
-        return self.machine(tbot.machine.MachineBoardRlogin(), overwrite=False)
+        return self.machine(tbot.machine.MachineBoardUBoot(), overwrite=False)
 
     def __enter__(self) -> 'TBot':
         return self

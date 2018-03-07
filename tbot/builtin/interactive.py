@@ -122,7 +122,7 @@ def interactive_uboot(tb: tbot.TBot) -> None:
     Open an interactive U-Boot prompt on the board
     """
 
-    with tb.with_boardshell() as tbn:
+    with tb.with_board_uboot() as tbn:
         channel = tbn.boardshell.channel
         print("U-Boot Shell (CTRL-D to exit):")
         ishell(channel, abort="\x04")

@@ -95,7 +95,7 @@ def selftest_env_shell(tb: tbot.TBot) -> None:
 @tbot.cmdline
 def selftest_board_shell(tb: tbot.TBot) -> None:
     """ Test board shell functionality """
-    with tb.with_boardshell() as tbn:
+    with tb.with_board_uboot() as tbn:
         test_shell(tbn.boardshell,
                    tbn.config["board.shell.support_printf", False],
                    tbn.config["board.shell.support_echo_e", False])
@@ -104,7 +104,7 @@ def selftest_board_shell(tb: tbot.TBot) -> None:
 @tbot.cmdline
 def selftest_nested_boardshells(tb: tbot.TBot) -> None:
     """ Test if tbot handles nested boardshells correctly """
-    with tb.with_boardshell() as tb1:
+    with tb.with_board_uboot() as tb1:
         out = tb1.boardshell.exec0("echo Hello World")
         assert out == "Hello World\n", "%r != 'Hello World'" % out
 
@@ -113,7 +113,7 @@ def selftest_nested_boardshells(tb: tbot.TBot) -> None:
         @tb1.call
         def inner(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
             """ Second attempt of starting a boardshell """
-            with tb.with_boardshell() as tb2:
+            with tb.with_board_uboot() as tb2:
                 out = tb2.boardshell.exec0("echo Hello World")
                 assert out == "Hello World\n", "%r != 'Hello World'" % out
 

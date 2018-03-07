@@ -21,7 +21,7 @@ U-Boot on the P2020RDB-PCA board
 
     tb.call("p2020rdb_install_uboot")
 
-    with tb.with_boardshell() as tbn:
+    with tb.with_board_uboot() as tbn:
         try:
             tbn.call("check_uboot_version", uboot_binary=\
                 ubootdir / "u-boot-with-spl.bin")
@@ -64,7 +64,7 @@ Copy U-Boot into your tftp directory:
 
         tb.log.doc_log("Power on the board and download U-Boot via TFTP:\n")
 
-        with tb.with_boardshell() as tbn:
+        with tb.with_board_uboot() as tbn:
             filename = pathlib.PurePosixPath(tb.config["tftp.boarddir"])
             filename = filename / tb.config["tftp.tbotsubdir"] / "u-boot-with-spl.bin"
             tbn.boardshell.exec0(f"tftp 10000000 {filename}", log_show_stdout=False)
