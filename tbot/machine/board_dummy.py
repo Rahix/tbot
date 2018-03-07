@@ -37,10 +37,13 @@ class MachineBoardDummy(board.MachineBoard):
         self.noenv: typing.Optional[tbot.machine.Machine] = None
 
 
-    def _setup(self, tb: 'tbot.TBot') -> None:
+    def _setup(self,
+               tb: 'tbot.TBot',
+               previous: 'typing.Optional[Machine]' = None,
+              ) -> None:
         self.name = self.name or tb.config["board.name", "unknown"]
         self.boardname = self.name
-        super()._setup(tb)
+        super()._setup(tb, previous)
 
         self.power_cmd_on = self.power_cmd_on or tb.config["board.power.on_command"]
         self.power_cmd_off = self.power_cmd_off or tb.config["board.power.off_command"]

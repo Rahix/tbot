@@ -19,7 +19,11 @@ class Machine(abc.ABC):
     def __init__(self) -> None:
         self._log: typing.Optional[tbot.logger.Logger] = None
 
-    def _setup(self, tb: 'tbot.TBot') -> None:
+    def _setup(self,
+               tb: 'tbot.TBot',
+               #pylint: disable=unused-argument
+               previous: 'typing.Optional[Machine]' = None,
+              ) -> None:
         self._log = tb.log
 
     def _destruct(self, tb: 'tbot.TBot') -> None:

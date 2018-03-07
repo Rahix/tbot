@@ -59,8 +59,11 @@ class MachineBoardUBoot(board.MachineBoard):
         self.channel: typing.Optional[paramiko.Channel] = None
         self.noenv: typing.Optional[tbot.machine.Machine] = None
 
-    def _setup(self, tb: 'tbot.TBot') -> None:
-        super()._setup(tb)
+    def _setup(self,
+               tb: 'tbot.TBot',
+               previous: 'typing.Optional[Machine]' = None,
+              ) -> None:
+        super()._setup(tb, previous)
         self.name = self.name or tb.config["board.shell.name", "unknown"]
 
         self.power_cmd_on = self.power_cmd_on or tb.config["board.power.on_command"]

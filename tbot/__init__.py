@@ -149,7 +149,10 @@ class TBot:
             new_inst.machines[machine_name] = self.machines[machine_name]
 
         if overwrite or not mach.common_machine_name in new_inst.machines:
-            mach._setup(new_inst) #pylint: disable=protected-access
+            old_mach = new_inst.machines[mach.common_machine_name] \
+                if mach.common_machine_name in new_inst.machines else \
+                None
+            mach._setup(new_inst, old_mach) #pylint: disable=protected-access
             new_inst.machines[mach.common_machine_name] = mach
             new_inst.machines[mach.unique_machine_name] = mach
             new_inst.destruct_machines.append(mach)

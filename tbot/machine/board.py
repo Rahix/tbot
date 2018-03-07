@@ -15,8 +15,11 @@ class MachineBoard(machine.Machine):
         self.boardname = None
         self.powerup = True
 
-    def _setup(self, tb: 'tbot.TBot') -> None:
-        super()._setup(tb)
+    def _setup(self,
+               tb: 'tbot.TBot',
+               previous: 'typing.Optional[Machine]' = None,
+              ) -> None:
+        super()._setup(tb, previous)
         self.boardname = self.boardname or tb.config["board.name", "unknown"]
 
         if self.powerup:

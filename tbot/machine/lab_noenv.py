@@ -13,9 +13,12 @@ class MachineLabNoEnv(machine.Machine):
         super().__init__()
         self.conn: typing.Optional[paramiko.SSHClient] = None
 
-    def _setup(self, tb: 'tbot.TBot') -> None:
+    def _setup(self,
+               tb: 'tbot.TBot',
+               previous: 'typing.Optional[Machine]' = None,
+              ) -> None:
         self.conn = tb.machines.connection
-        super()._setup(tb)
+        super()._setup(tb, previous)
 
     def _exec(self,
               command: str,

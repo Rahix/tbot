@@ -242,8 +242,8 @@ def selftest_builtin_tests(tb: tbot.TBot) -> None:
         out = tbn.shell.exec0("cat /tmp/dummy-machine-test-custom")
         assert out == "ON\n"
 
-    tb.log.log_debug("Create a custom rlogin shell")
-    with tb.machine(tbot.machine.MachineBoardRlogin(
+    tb.log.log_debug("Create a custom U-Boot shell")
+    with tb.machine(tbot.machine.MachineBoardUBoot(
         name="custom",
         boardname="custom-machine",
         power_cmd_on="",
