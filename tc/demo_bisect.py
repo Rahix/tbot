@@ -22,7 +22,7 @@ def demo_bisect(tb: tbot.TBot) -> None:
 
     bad = tb.call("git_bisect",
                   gitdir=ubootdir,
-                  good="HEAD~10",
+                  good="HEAD~20",
                   and_then="uboot_build",
                   params={"builddir": ubootdir, "toolchain": toolchain},
                  )
