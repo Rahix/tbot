@@ -57,19 +57,28 @@ class MachineBoardUBoot(board.MachineBoard):
         self.uboot_timeout = timeout
 
         self.channel: typing.Optional[paramiko.Channel] = None
+        self.conn: typing.Optional[paramiko.SSHClient] = None
         self.noenv: typing.Optional[tbot.machine.Machine] = None
 
     def _setup(self,
                tb: 'tbot.TBot',
                previous: 'typing.Optional[Machine]' = None,
-              ) -> None:
-        super()._setup(tb, previous)
+              ) -> 'MachineBoardUBoot':
         self.name = self.name or tb.config["board.shell.name", "unknown"]
+        # Check if the previous machine is also a MachineBoardUBoot,
+        # if this is the case, prevent reinitialisation
+        if previous is not self and \
+            isinstance(previous, MachineBoardUBoot) and \
+            previous.unique_machine_name == self.unique_machine_name:
+            return previous
+
+        super()._setup(tb, previous)
 
         self.power_cmd_on = self.power_cmd_on or tb.config["board.power.on_command"]
         self.power_cmd_off = self.power_cmd_off or tb.config["board.power.off_command"]
 
         conn = tb.machines.connection
+        self.conn = conn
         self.channel = conn.get_transport().open_session()
         self.channel.get_pty("xterm-256color")
 
@@ -108,6 +117,8 @@ class MachineBoardUBoot(board.MachineBoard):
         except: # If anything goes wrong, turn off again
             self._destruct(tb)
             raise
+
+        return self
 
     def _destruct(self, tb: 'tbot.TBot') -> None:
         super()._destruct(tb)

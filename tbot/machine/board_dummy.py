@@ -36,11 +36,10 @@ class MachineBoardDummy(board.MachineBoard):
 
         self.noenv: typing.Optional[tbot.machine.Machine] = None
 
-
     def _setup(self,
                tb: 'tbot.TBot',
                previous: 'typing.Optional[Machine]' = None,
-              ) -> None:
+              ) -> 'MachineBoardDummy':
         self.name = self.name or tb.config["board.name", "unknown"]
         self.boardname = self.name
         super()._setup(tb, previous)
@@ -53,6 +52,8 @@ class MachineBoardDummy(board.MachineBoard):
 
         if self.powerup:
             self.noenv.exec0(self.power_cmd_on, log_show_stdout=False)
+
+        return self
 
     def _destruct(self, tb: 'tbot.TBot') -> None:
         super()._destruct(tb)

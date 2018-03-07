@@ -23,8 +23,9 @@ class Machine(abc.ABC):
                tb: 'tbot.TBot',
                #pylint: disable=unused-argument
                previous: 'typing.Optional[Machine]' = None,
-              ) -> None:
+              ) -> 'Machine':
         self._log = tb.log
+        return self
 
     def _destruct(self, tb: 'tbot.TBot') -> None:
         pass

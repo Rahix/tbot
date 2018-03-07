@@ -16,9 +16,10 @@ class MachineLabNoEnv(machine.Machine):
     def _setup(self,
                tb: 'tbot.TBot',
                previous: 'typing.Optional[Machine]' = None,
-              ) -> None:
+              ) -> 'MachineLabNoEnv':
         self.conn = tb.machines.connection
         super()._setup(tb, previous)
+        return self
 
     def _exec(self,
               command: str,

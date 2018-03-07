@@ -14,13 +14,15 @@ class MachineBoard(machine.Machine):
         super().__init__()
         self.boardname = None
         self.powerup = True
+        self._tb = None
 
     def _setup(self,
                tb: 'tbot.TBot',
                previous: 'typing.Optional[Machine]' = None,
-              ) -> None:
+              ) -> 'MachineBoard':
         super()._setup(tb, previous)
         self.boardname = self.boardname or tb.config["board.name", "unknown"]
+        self._tb = tb
 
         if self.powerup:
             ev = tbot.logger.CustomLogEvent(
@@ -39,6 +41,11 @@ class MachineBoard(machine.Machine):
             verbosity=tbot.logger.Verbosity.INFO,
             dict_values={"board": self.boardname})
         tb.log.log(ev)
+
+    def powercycle(self) -> None:
+        """ Powercycle the board """
+        self._destruct(self._tb)
+        self._setup(self._tb, self)
 
     @property
     def common_machine_name(self) -> str:

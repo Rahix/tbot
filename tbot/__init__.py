@@ -128,15 +128,12 @@ class TBot:
         return retval
 
     def machine(self,
-                mach: tbot.machine.Machine,
-                overwrite: bool = True) -> 'TBot':
+                mach: tbot.machine.Machine) -> 'TBot':
         """
         Create a new TBot instance with a new machine
 
         :param mach: The machine to be added in the new instance
         :type mach: tbot.machine.machine.Machine
-        :param overwrite: Whether overwriting an existing machine is allowed
-        :type overwrite: bool
         :returns: The new TBot instance, which has to be used inside a with
             statement
         :rtype: TBot
@@ -148,14 +145,14 @@ class TBot:
         for machine_name in self.machines.keys():
             new_inst.machines[machine_name] = self.machines[machine_name]
 
-        if overwrite or not mach.common_machine_name in new_inst.machines:
-            old_mach = new_inst.machines[mach.common_machine_name] \
-                if mach.common_machine_name in new_inst.machines else \
-                None
-            mach._setup(new_inst, old_mach) #pylint: disable=protected-access
-            new_inst.machines[mach.common_machine_name] = mach
-            new_inst.machines[mach.unique_machine_name] = mach
-            new_inst.destruct_machines.append(mach)
+        old_mach = new_inst.machines[mach.common_machine_name] \
+            if mach.common_machine_name in new_inst.machines else \
+            None
+        new_mach = mach._setup(new_inst, old_mach) #pylint: disable=protected-access
+        new_inst.machines[mach.common_machine_name] = new_mach
+        new_inst.machines[mach.unique_machine_name] = new_mach
+        if new_mach is not old_mach:
+            new_inst.destruct_machines.append(new_mach)
         return new_inst
 
     def with_board_uboot(self) -> 'TBot':
@@ -166,7 +163,7 @@ class TBot:
             statement
         :rtype: TBot
         """
-        return self.machine(tbot.machine.MachineBoardUBoot(), overwrite=False)
+        return self.machine(tbot.machine.MachineBoardUBoot())
 
     def __enter__(self) -> 'TBot':
         return self

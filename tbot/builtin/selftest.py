@@ -13,6 +13,7 @@ def selftest(tb: tbot.TBot) -> None:
     tb.call("selftest_noenv_shell")
     tb.call("selftest_env_shell")
     tb.call("selftest_board_shell")
+    tb.call("selftest_powercycle")
     tb.call("selftest_nested_boardshells")
 
     tb.log.log_msg("Testing testcase functionality ...")
@@ -99,6 +100,15 @@ def selftest_board_shell(tb: tbot.TBot) -> None:
         test_shell(tbn.boardshell,
                    tbn.config["board.shell.support_printf", False],
                    tbn.config["board.shell.support_echo_e", False])
+
+@tbot.testcase
+@tbot.cmdline
+def selftest_powercycle(tb: tbot.TBot) -> None:
+    """ Test powercycling a board """
+    with tb.with_board_uboot() as tbn:
+        tbn.call("selftest_board_shell")
+        tbn.boardshell.powercycle()
+        tbn.call("selftest_board_shell")
 
 @tbot.testcase
 @tbot.cmdline
