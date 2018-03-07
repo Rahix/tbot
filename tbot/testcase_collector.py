@@ -41,6 +41,15 @@ def get_testcases(paths: typing.Union[typing.List[str], typing.List[pathlib.Path
     :param paths: List of directories to search
     :returns: Collection of testcases
     """
+    def walkdir(path):
+        """ List all python files in a directory recusively """
+        for f in path.iterdir():
+            if f.suffix == ".py":
+                yield f
+            elif f.is_dir() and f.name != "__pycache__":
+                for subfile in walkdir(f):
+                    yield subfile
+
     if paths is None:
         paths = [pathlib.Path("tc")]
     sources: typing.List[pathlib.Path] = list()
@@ -48,8 +57,7 @@ def get_testcases(paths: typing.Union[typing.List[str], typing.List[pathlib.Path
         # skip nonexistent paths
         path = pathlib.Path(path) if not isinstance(path, pathlib.Path) else path
         if path.is_dir():
-            sources += [p for p in path.iterdir()
-                        if p.suffix == ".py"]
+            sources += list(walkdir(path))
 
     for source in sources:
         module_spec = importlib.util.spec_from_file_location(source.stem, str(source))
