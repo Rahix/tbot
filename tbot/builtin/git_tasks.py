@@ -75,7 +75,7 @@ git clone {repo} {target}""")
     else:
         tb.log.log_debug("Repository already checked out, cleaning ...")
         tb.shell.exec0(f"""\
-cd {target}; git reset --hard; git clean -f -d""", log_show=False)
+cd {target}; git reset --hard origin; git clean -fdx""", log_show=False)
         tb.shell.exec0(f"""\
 cd {target}; git pull""", log_show=False)
 
