@@ -19,6 +19,7 @@ def parse_config(configs: typing.List[pathlib.Path]) -> config.Config:
     """
     cfg = config.Config()
     for cfg_file in configs:
+        #TODO: Proper name
         module_spec = importlib.util.spec_from_file_location("config", str(cfg_file))
 
         if hasattr(module_spec, "loader") and isinstance(module_spec.loader, importlib.abc.Loader):
@@ -32,7 +33,4 @@ def parse_config(configs: typing.List[pathlib.Path]) -> config.Config:
         else:
             raise Exception(f"{cfg_file} is not a valid TBot configuration!")
 
-    cfg.workdir = pathlib.PurePosixPath(
-        cfg["tbot.workdir",
-            f"/tmp/tbot-{cfg['board.name']}-{random.randint(1000, 10000)}"])
     return cfg
