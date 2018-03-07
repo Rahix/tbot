@@ -8,10 +8,12 @@ import tbot
 def demo_bisect(tb: tbot.TBot) -> None:
     """ Demonstrate git bisecting """
     repo = tb.config["tbot.workdir"] / "uboot-bisect-demo"
-    tb.call("uboot_checkout", builddir=repo)
+    ubootdir = tb.call("uboot_checkout", clean=True, builddir=repo)
+    toolchain = tb.call("toolchain_get")
 
     # Add 4 bad commits
     for i in range(0, 4):
+        tb.log.log_debug(f"({i+1}/4) Adding a bad commit ...")
         tb.shell.exec0(f"cd {repo}; echo 'asdfghjkl{i}' >>common/autoboot.c")
 
         string = "very ".join(map(lambda x: "", range(0, i + 1)))
@@ -19,10 +21,10 @@ def demo_bisect(tb: tbot.TBot) -> None:
         tb.shell.exec0(f"cd {repo}; git commit -m 'A {string}bad commit'")
 
     bad = tb.call("git_bisect",
-                  gitdir=repo,
-                  good="HEAD~10",
+                  gitdir=ubootdir,
+                  good="HEAD~20",
                   and_then="uboot_build",
-                  params={"builddir": repo},
+                  params={"builddir": ubootdir, "toolchain": toolchain},
                  )
 
     bad_commit = tb.shell.exec0(f"cd {repo}; git show {bad}")

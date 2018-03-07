@@ -7,6 +7,16 @@ import tbot
 from tbot import tc
 
 @tbot.testcase
+@tbot.cmdline
+def just_uboot_build(tb: tbot.TBot) -> None:
+    """
+    Build U-Boot in the currently existing (possibly dirty) U-Boot tree.
+    """
+    uboot_dir = tb.call("uboot_checkout", clean=False)
+    toolchain = tb.call("toolchain_get")
+    tb.call("uboot_build", builddir=uboot_dir, toolchain=toolchain)
+
+@tbot.testcase
 def uboot_build(tb: tbot.TBot, *,
                 builddir: tc.UBootRepository,
                 toolchain: tc.Toolchain,
