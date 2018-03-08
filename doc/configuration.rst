@@ -119,6 +119,15 @@ U-Boot
         # A directory containing patches to be applied over the U-Boot tree
         "patchdir": pathlib.PurePosixPath("/home/hws/Documents/corvus_patches"),
 
+        "shell": {
+            # U-Boot prompt to be expected (varies with defconfig)
+            "prompt": "U-Boot> ",
+            # Timeout before stopping autoboot in seconds
+            "timeout": 4,
+            # U-Boot command to boot Linux, may be multiple commands separated by \n
+            "boot_command: "boot",
+        },
+
         "test": {
             # Whether the lab host has virtualenv installed. If it doesn't,
             # it needs pytest (if you want to run the U-Boot python test suite)
@@ -138,6 +147,25 @@ U-Boot
         # This can be overridden by setting the following config option:
         # (Do not set this if you don't need it!)
         "builddir": pathlib.PurePosixPath("/path/to/build/dir"),
+    }
+
+Linux
+^^^^^
+
+::
+
+    cfg["linux"] = {
+        "shell": {
+            # Username for logging in on the board
+            "username": "root",
+            # Password for logging in on the board
+            "password": "root",
+            # Login prompt on the board, TBot will wait for this string
+            # before sending the username
+            "login_prompt": "login: ",
+            # Time to wait after sending credentials
+            "login_timeout": 1,
+        },
     }
 
 Toolchains
@@ -175,12 +203,10 @@ Board
             "off_command": "remote_power at91sam9g45 off",
         },
 
-        "shell": {
-            # Identifier for this shell
+        "serial": {
+            # Identifier for this connection
             "name": "connect_at91sam9g45",
-            # Command to open a rlogin like shell to the board
+            # Command to open a rlogin like connection to the board
             "command": "connect at91sam9g45",
-            # U-Boot prompt to be expected (varies with defconfig)
-            "prompt": "U-Boot> ",
         },
     }

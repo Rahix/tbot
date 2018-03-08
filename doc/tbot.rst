@@ -41,6 +41,12 @@ Board machine for U-Boot interaction
    :members:
    :inherited-members:
 
+Board machine for Linux interaction
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: tbot.machine.board_linux.MachineBoardLinux
+   :members:
+   :inherited-members:
+
 Dummy board machine
 ^^^^^^^^^^^^^^^^^^^
 .. autoclass:: tbot.machine.board_dummy.MachineBoardDummy

@@ -69,26 +69,61 @@ directory. For that, tbot has an ``env`` machine. You can use it like this::
     @tbot.testcase
     @tbot.cmdline
     def envshell_demo(tb):
-        with tb.machine(tbot.machine.MachineLabEnv()) as tbn:
-            tbn.shell.exec0("FOO='bar'")
+        with tb.machine(tbot.machine.MachineLabEnv()) as tb:
+            tb.shell.exec0("FOO='bar'")
 
-            out = tbn.shell.exec0("echo $FOO")
+            out = tb.shell.exec0("echo $FOO")
             assert out == "bar\n"
 
 
 Board interaction
 -----------------
 
-In a similar fashion, you can interact with the U-Boot shell of your board.
+In a similar fashion, you can interact with the U-Boot/Linux shell of your board.
 TBot will automatically turn on the board and make sure it is turned off, when
-your testcase is done. It might be looking like the following::
+your testcase is done. It might be looking like the following (U-Boot)::
 
     import tbot
 
     @tbot.testcase
     @tbot.cmdline
-    def boardshell_demo(tb):
-        with tb.with_board_uboot() as tbn:
-            tbn.boardshell.exec0("version")
+    def boardshell_demo_uboot(tb):
+        with tb.with_board_uboot() as tb:
+            tb.boardshell.exec0("version")
 
         # Board is powered off after the end of the with statement
+
+(Linux)::
+
+    import tbot
+
+    @tbot.testcase
+    @tbot.cmdline
+    def boardshell_demo_linux(tb):
+        with tb.with_board_linux() as tb:
+            tb.boardshell.exec0("uname -a")
+
+        # Board is powered off after the end of the with statement
+
+It is also possible to do something in U-Boot before booting Linux::
+
+    import tbot
+
+    @tbot.testcase
+    @tbot.cmdline
+    def boardshell_demo_uboot_and_linux(tb):
+        with tb.with_board_uboot() as tb:
+            # Do things in U-Boot
+            tb.boardshell.exec0("version")
+
+            with tb.with_board_linux() as tb:
+                # Do things in Linux (Linux was started without
+                # powercycling, so changes made in U-Boot will
+                # still be effective)
+                tb.boardshell.exec0("uname -a")
+
+            # Back to U-Boot, TBot has powercycled the board
+            tb.boardshell.exec0("version")
+
+        # Board is powered off after the end of the with statement
+
