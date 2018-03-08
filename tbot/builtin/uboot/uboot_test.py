@@ -94,12 +94,12 @@ recompile if it is dirty.
 testsuite using the following commands:\n")
         tb.shell.exec0(f"export PATH={test_hooks}:$PATH")
 
-        with tb.machine(tbot.machine.MachineBoardDummy(turn_on=False)) as tbn:
+        with tb.machine(tbot.machine.MachineBoardDummy(turn_on=False)) as tb:
             max_fail_param = f"--maxfail={test_maxfail}" if test_maxfail is not None else ""
-            tbn.shell.exec0(f"\
+            tb.shell.exec0(f"\
 ./test/py/test.py --bd {test_boardname} --build {max_fail_param}")
 
-            tbn.log.doc_log("The U-Boot testsuite, which has hopefully finished \
+            tb.log.doc_log("The U-Boot testsuite, which has hopefully finished \
 successfully by now, is not capable of turning off the board itself. \
 You have to do that manually:\n")
 

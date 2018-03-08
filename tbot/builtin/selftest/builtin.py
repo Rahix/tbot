@@ -27,8 +27,8 @@ def selftest_builtin_tests(tb: tbot.TBot) -> None:
     with tb.machine(tbot.machine.MachineBoardDummy(
         name="dummy-test-custom-machine",
         power_cmd_on="echo ON > /tmp/dummy-machine-test-custom",
-        power_cmd_off="rm /tmp/dummy-machine-test-custom")) as tbn:
-        out = tbn.shell.exec0("cat /tmp/dummy-machine-test-custom")
+        power_cmd_off="rm /tmp/dummy-machine-test-custom")) as tb:
+        out = tb.shell.exec0("cat /tmp/dummy-machine-test-custom")
         assert out == "ON\n"
 
     tb.log.log_debug("Create a custom U-Boot shell")
@@ -39,6 +39,6 @@ def selftest_builtin_tests(tb: tbot.TBot) -> None:
         power_cmd_off="",
         connect_command="sh\nPROMPT_COMMAND=\nPS1='U-Boot> ';read",
         prompt="U-Boot> ",
-        timeout=0.1)) as tbn:
-        out = tbn.boardshell.exec0("echo Hello Custom World")
+        timeout=0.1)) as tb:
+        out = tb.boardshell.exec0("echo Hello Custom World")
         assert out == "Hello Custom World\n"

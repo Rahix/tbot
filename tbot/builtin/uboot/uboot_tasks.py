@@ -27,10 +27,10 @@ def check_uboot_version(tb: tbot.TBot, *,
     :param uboot_binary: Path to the U-Boot binary
     :type uboot_binary: pathlib.PurePosixPath
     """
-    with tb.with_board_uboot() as tbn:
-        strings = tbn.shell.exec0(f"strings {uboot_binary} | grep U-Boot", log_show=False)
-        version = tbn.boardshell.exec0("version").split('\n')[0]
-        tbn.log.log_debug(f"U-Boot Version (on the board) is '{version}'")
+    with tb.with_board_uboot() as tb:
+        strings = tb.shell.exec0(f"strings {uboot_binary} | grep U-Boot", log_show=False)
+        version = tb.boardshell.exec0("version").split('\n')[0]
+        tb.log.log_debug(f"U-Boot Version (on the board) is '{version}'")
         assert version in strings, "U-Boot version does not seem to match"
 
 @tbot.testcase

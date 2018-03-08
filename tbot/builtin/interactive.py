@@ -125,8 +125,8 @@ def interactive_uboot(tb: tbot.TBot) -> None:
     Open an interactive U-Boot prompt on the board
     """
 
-    with tb.with_board_uboot() as tbn:
-        boardshell = tbn.boardshell
+    with tb.with_board_uboot() as tb:
+        boardshell = tb.boardshell
         if not isinstance(boardshell, tbot.machine.MachineBoardUBoot):
             raise Exception("boardshell is not a U-Boot machine")
         channel = boardshell.channel
@@ -141,8 +141,8 @@ def interactive_linux(tb: tbot.TBot) -> None:
     Open an interactive Linux prompt on the board
     """
 
-    with tb.with_board_linux() as tbn:
-        boardshell = tbn.boardshell
+    with tb.with_board_linux() as tb:
+        boardshell = tb.boardshell
         if not isinstance(boardshell, tbot.machine.MachineBoardLinux):
             raise Exception("boardshell is not a Linux machine")
         channel = boardshell.channel

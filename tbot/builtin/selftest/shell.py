@@ -48,43 +48,43 @@ windows line ending\n", "%r does not match" % out
 @tbot.cmdline
 def selftest_noenv_shell(tb: tbot.TBot) -> None:
     """ Test noenv shell functionality """
-    with tb.machine(tbot.machine.MachineLabNoEnv()) as tbn:
-        test_shell(tbn.shell, True, True)
+    with tb.machine(tbot.machine.MachineLabNoEnv()) as tb:
+        test_shell(tb.shell, True, True)
 
         # Test if environment is actually not shared
-        tbn.shell.exec0("FOOBAR='avalue'")
-        out = tbn.shell.exec0("echo $FOOBAR")
+        tb.shell.exec0("FOOBAR='avalue'")
+        out = tb.shell.exec0("echo $FOOBAR")
         assert out == "\n", f"Environment variable was set when it shouldn't: {repr(out)}"
 
 @tbot.testcase
 @tbot.cmdline
 def selftest_env_shell(tb: tbot.TBot) -> None:
     """ Test env shell functionality """
-    with tb.machine(tbot.machine.MachineLabEnv()) as tbn:
-        test_shell(tbn.shell, True, True)
+    with tb.machine(tbot.machine.MachineLabEnv()) as tb:
+        test_shell(tb.shell, True, True)
 
         # Test if environment is actually working
-        tbn.shell.exec0("FOOBAR='avalue'")
-        out = tbn.shell.exec0("echo $FOOBAR")
+        tb.shell.exec0("FOOBAR='avalue'")
+        out = tb.shell.exec0("echo $FOOBAR")
         assert out == "avalue\n", f"Environment variable was not set correctly: {repr(out)}"
 
 @tbot.testcase
 @tbot.cmdline
 def selftest_board_shell(tb: tbot.TBot) -> None:
     """ Test board shell functionality """
-    with tb.with_board_uboot() as tbn:
-        test_shell(tbn.boardshell,
-                   tbn.config["uboot.shell.support_printf", False],
-                   tbn.config["uboot.shell.support_echo_e", False])
+    with tb.with_board_uboot() as tb:
+        test_shell(tb.boardshell,
+                   tb.config["uboot.shell.support_printf", False],
+                   tb.config["uboot.shell.support_echo_e", False])
 
 @tbot.testcase
 @tbot.cmdline
 def selftest_powercycle(tb: tbot.TBot) -> None:
     """ Test powercycling a board """
-    with tb.with_board_uboot() as tbn:
-        tbn.call("selftest_board_shell")
-        tbn.boardshell.powercycle()
-        tbn.call("selftest_board_shell")
+    with tb.with_board_uboot() as tb:
+        tb.call("selftest_board_shell")
+        tb.boardshell.powercycle()
+        tb.call("selftest_board_shell")
 
 @tbot.testcase
 @tbot.cmdline

@@ -21,12 +21,12 @@ U-Boot on the P2020RDB-PCA board
 
     tb.call("p2020rdb_install_uboot")
 
-    with tb.with_board_uboot() as tbn:
-        tbn.call("check_uboot_version", uboot_binary=\
+    with tb.with_board_uboot() as tb:
+        tb.call("check_uboot_version", uboot_binary=\
             ubootdir / "u-boot-with-spl.bin")
 
-        env = tbn.boardshell.exec0("printenv", log_show=False)
-        tbn.log.doc_appendix("U-Boot environment", f"""```sh
+        env = tb.boardshell.exec0("printenv", log_show=False)
+        tb.log.doc_appendix("U-Boot environment", f"""```sh
 {env}
 ```""")
 
@@ -61,15 +61,15 @@ Copy U-Boot into your tftp directory:
 
         tb.log.doc_log("Power on the board and download U-Boot via TFTP:\n")
 
-        with tb.with_board_uboot() as tbn:
+        with tb.with_board_uboot() as tb:
             filename = pathlib.PurePosixPath(tb.config["tftp.boarddir"])
             filename = filename / tb.config["tftp.tbotsubdir"] / "u-boot-with-spl.bin"
-            tbn.boardshell.exec0(f"tftp 10000000 {filename}", log_show_stdout=False)
+            tb.boardshell.exec0(f"tftp 10000000 {filename}", log_show_stdout=False)
 
-            tbn.log.doc_log("Write it into flash:\n")
+            tb.log.doc_log("Write it into flash:\n")
 
-            tbn.boardshell.exec0(f"nand device 0", log_show_stdout=False)
-            tbn.boardshell.exec0(f"nand erase.spread 0 {size}")
-            tbn.boardshell.exec0(f"nand write 10000000 0 {size}")
+            tb.boardshell.exec0(f"nand device 0", log_show_stdout=False)
+            tb.boardshell.exec0(f"nand erase.spread 0 {size}")
+            tb.boardshell.exec0(f"nand write 10000000 0 {size}")
 
             tb.log.doc_log("Powercycle the board and check the U-Boot version:\n")
