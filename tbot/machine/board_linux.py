@@ -1,17 +1,18 @@
 """
-Board machine for U-Boot interaction
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Board machine for Linux interaction
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 """
 import random
 import time
 import typing
 import paramiko
 import tbot
+from . import machine
 from . import board
 
 #pylint: disable=too-many-instance-attributes
 class MachineBoardLinux(board.MachineBoard):
-    """ Board machine for U-Boot interaction
+    """ Board machine for Linux interaction
 
     :param name: Name of the shell (eg ``someboard-bash``), defaults to
                  ``tb.config["linux.shell.name"]``
@@ -62,8 +63,8 @@ class MachineBoardLinux(board.MachineBoard):
 
     def _setup(self,
                tb: 'tbot.TBot',
-               previous: 'typing.Optional[Machine]' = None,
-              ) -> 'MachineBoardUBoot':
+               previous: typing.Optional[machine.Machine] = None,
+              ) -> 'MachineBoardLinux':
         self.name = self.name or tb.config["board.serial.name", "unknown-linux"]
         # Check if the previous machine is also a MachineBoardUBoot,
         # if this is the case, prevent reinitialisation
@@ -141,12 +142,15 @@ class MachineBoardLinux(board.MachineBoard):
             verbosity=tbot.logger.Verbosity.INFO,
             dict_values={"board": self.boardname})
         tb.log.log(ev)
-        if self.own_ub:
-            #pylint: disable=protected-access
-            self.ub_machine._destruct(tb)
+        if isinstance(self.ub_machine, tbot.machine.MachineBoardUBoot):
+            if self.own_ub:
+                #pylint: disable=protected-access
+                self.ub_machine._destruct(tb)
+            else:
+                # Reset to U-Boot
+                self.ub_machine.powercycle()
         else:
-            # Reset to U-Boot
-            self.ub_machine.powercycle()
+            raise Exception("U-Boot not initialized correctly, board might still be on!")
 
     def _read_to_prompt(self, log_event: tbot.logger.LogEvent) -> str:
         buf = ""
@@ -209,7 +213,7 @@ class MachineBoardLinux(board.MachineBoard):
     def _exec(self,
               command: str,
               log_event: tbot.logger.LogEvent) -> typing.Tuple[int, str]:
-        log_event.prefix = "   >> "
+        log_event.prefix = "   >< "
         stdout = self._command(command, log_event)
 
         # Get the return code
@@ -219,5 +223,5 @@ class MachineBoardLinux(board.MachineBoard):
 
     @property
     def unique_machine_name(self) -> str:
-        """ Unique name of this machine, ``"board-uboot-<boardshell-name>"`` """
+        """ Unique name of this machine, ``"board-linux-<boardshell-name>"`` """
         return f"board-linux-{self.name}"

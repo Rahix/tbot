@@ -7,6 +7,7 @@ import time
 import typing
 import paramiko
 import tbot
+from . import machine
 from . import board
 
 #pylint: disable=too-many-instance-attributes
@@ -62,7 +63,7 @@ class MachineBoardUBoot(board.MachineBoard):
 
     def _setup(self,
                tb: 'tbot.TBot',
-               previous: 'typing.Optional[Machine]' = None,
+               previous: typing.Optional[machine.Machine] = None,
               ) -> 'MachineBoardUBoot':
         self.name = self.name or tb.config["board.serial.name", "unknown"]
         # Check if the previous machine is also a MachineBoardUBoot,

@@ -2,6 +2,7 @@
 Abstract base class for board machines
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 """
+import typing
 import tbot
 
 from . import machine
@@ -14,11 +15,11 @@ class MachineBoard(machine.Machine):
         super().__init__()
         self.boardname = None
         self.powerup = True
-        self._tb = None
+        self._tb: typing.Optional['tbot.TBot'] = None
 
     def _setup(self,
                tb: 'tbot.TBot',
-               previous: 'typing.Optional[Machine]' = None,
+               previous: typing.Optional[machine.Machine] = None,
               ) -> 'MachineBoard':
         super()._setup(tb, previous)
         self.boardname = self.boardname or tb.config["board.name", "unknown"]
@@ -32,6 +33,7 @@ class MachineBoard(machine.Machine):
                 dict_values={"board": self.boardname})
 
             tb.log.log(ev)
+        return self
 
     def _destruct(self, tb: 'tbot.TBot') -> None:
         super()._destruct(tb)
@@ -44,6 +46,8 @@ class MachineBoard(machine.Machine):
 
     def powercycle(self) -> None:
         """ Powercycle the board """
+        if not isinstance(self._tb, tbot.TBot):
+            raise Exception("Board machine not initialized correctly, board might still be on!")
         self._destruct(self._tb)
         self._setup(self._tb, self)
 

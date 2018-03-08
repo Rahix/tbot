@@ -23,7 +23,7 @@ class MachineLabEnv(machine.Machine):
 
     def _setup(self,
                tb: 'tbot.TBot',
-               previous: 'typing.Optional[Machine]' = None,
+               previous: typing.Optional[machine.Machine] = None,
               ) -> 'MachineLabEnv':
         conn = tb.machines.connection
         self.channel = conn.get_transport().open_session()

@@ -4,6 +4,7 @@ Board machine dummy for just turning the board on and off
 """
 import typing
 import tbot
+from . import machine
 from . import board
 
 class MachineBoardDummy(board.MachineBoard):
@@ -38,7 +39,7 @@ class MachineBoardDummy(board.MachineBoard):
 
     def _setup(self,
                tb: 'tbot.TBot',
-               previous: 'typing.Optional[Machine]' = None,
+               previous: typing.Optional[machine.Machine] = None,
               ) -> 'MachineBoardDummy':
         self.name = self.name or tb.config["board.name", "unknown"]
         self.boardname = self.name

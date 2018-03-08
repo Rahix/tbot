@@ -87,7 +87,7 @@ class Machine(abc.ABC):
         assert ret[0] == 0, f"Command \"{command}\" failed:\n{ret[1]}"
         return ret[1]
 
-class MachineManager(dict):
+class MachineManager(typing.Dict[str, Machine]):
     """ A container to manage the list of available machines """
     def __init__(self, tb: 'tbot.TBot', conn: typing.Optional[paramiko.SSHClient] = None) -> None:
         if isinstance(conn, paramiko.SSHClient):
