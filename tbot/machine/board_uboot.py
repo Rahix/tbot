@@ -142,7 +142,6 @@ class MachineBoardUBoot(board.MachineBoard):
         while True:
             # Read a lot and hope that this is all there is, so
             # we don't cut off inside a unicode sequence and fail
-            # TODO: Make this more robust
             buf_data = self.channel.recv(10000000)
             try:
                 buf_data = buf_data.decode("utf-8")

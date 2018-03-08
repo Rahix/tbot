@@ -18,9 +18,21 @@ class MachineBoardLinux(board.MachineBoard):
     :type name: str
     :param boardname: Name of the board, defaults to ``tb.config["board.name"]``
     :type boardname: str
-    :param timeout: Time to wait before aborting autoboot (in seconds), defaults to
-                    ``tb.config["linux.shell.timeout"]`` or ``10`` seconds.
-    :type timeout: float
+    :param boot_command: U-Boot command to boot linux. May be multiple commands
+                         separated by newlines, defaults to
+                         ``tb.config["uboot.shell.boot_command"]``
+    :type boot_command: str
+    :param login_prompt: The string to wait for before sending the username,
+                         defaults to ``tb.config["linux.shell.login_prompt"]``
+    :type login_prompt: str
+    :param login_timeout: The time to wait after entering login credentials,
+                          defaults to ``tb.config["linux.shell.login_timeout"]``
+    :type login_timeout: float
+    :param username: Username, defaults to ``tb.config["linux.shell.username"]``
+    :type username: str
+    :param password: Password, use ``""`` if no password is required,
+                     defaults to ``tb.config["linux.shell.password"]``
+    :type password: str
     """
     #pylint: disable=too-many-arguments
     def __init__(self, *,
@@ -65,6 +77,7 @@ class MachineBoardLinux(board.MachineBoard):
         else:
             # Create our own U-Boot
             ub_machine = tbot.machine.MachineBoardUBoot()
+            #pylint: disable=protected-access
             self.ub_machine = ub_machine._setup(tb, previous)
             self.own_ub = True
 
@@ -78,7 +91,6 @@ class MachineBoardLinux(board.MachineBoard):
             stdout=f"\x1B[1mLINUX BOOT\x1B[0m ({self.boardname})",
             verbosity=tbot.logger.Verbosity.INFO,
             dict_values={"board": self.boardname})
-
         tb.log.log(ev)
 
         self.channel = self.ub_machine.channel
@@ -130,6 +142,7 @@ class MachineBoardLinux(board.MachineBoard):
             dict_values={"board": self.boardname})
         tb.log.log(ev)
         if self.own_ub:
+            #pylint: disable=protected-access
             self.ub_machine._destruct(tb)
         else:
             # Reset to U-Boot
@@ -146,7 +159,6 @@ class MachineBoardLinux(board.MachineBoard):
         while True:
             # Read a lot and hope that this is all there is, so
             # we don't cut off inside a unicode sequence and fail
-            # TODO: Make this more robust
             buf_data = self.channel.recv(10000000)
             try:
                 buf_data = buf_data.decode("utf-8")
