@@ -157,13 +157,23 @@ class TBot:
 
     def with_board_uboot(self) -> 'TBot':
         """
-        Shortcut to create a new TBot instance with a boardmachine
+        Shortcut to create a new TBot instance with a U-Boot boardmachine
 
         :returns: The new TBot instance, which has to be used inside a with
             statement
         :rtype: TBot
         """
         return self.machine(tbot.machine.MachineBoardUBoot())
+
+    def with_board_linux(self) -> 'TBot':
+        """
+        Shortcut to create a new TBot instance with a Linux boardmachine
+
+        :returns: The new TBot instance, which has to be used inside a with
+            statement
+        :rtype: TBot
+        """
+        return self.machine(tbot.machine.MachineBoardLinux())
 
     def __enter__(self) -> 'TBot':
         return self
