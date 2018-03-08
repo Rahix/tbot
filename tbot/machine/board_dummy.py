@@ -4,6 +4,7 @@ Board machine dummy for just turning the board on and off
 """
 import typing
 import tbot
+from . import machine
 from . import board
 
 class MachineBoardDummy(board.MachineBoard):
@@ -36,11 +37,13 @@ class MachineBoardDummy(board.MachineBoard):
 
         self.noenv: typing.Optional[tbot.machine.Machine] = None
 
-
-    def _setup(self, tb: 'tbot.TBot') -> None:
+    def _setup(self,
+               tb: 'tbot.TBot',
+               previous: typing.Optional[machine.Machine] = None,
+              ) -> 'MachineBoardDummy':
         self.name = self.name or tb.config["board.name", "unknown"]
         self.boardname = self.name
-        super()._setup(tb)
+        super()._setup(tb, previous)
 
         self.power_cmd_on = self.power_cmd_on or tb.config["board.power.on_command"]
         self.power_cmd_off = self.power_cmd_off or tb.config["board.power.off_command"]
@@ -50,6 +53,8 @@ class MachineBoardDummy(board.MachineBoard):
 
         if self.powerup:
             self.noenv.exec0(self.power_cmd_on, log_show_stdout=False)
+
+        return self
 
     def _destruct(self, tb: 'tbot.TBot') -> None:
         super()._destruct(tb)

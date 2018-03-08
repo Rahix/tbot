@@ -21,7 +21,10 @@ class MachineLabEnv(machine.Machine):
 
         super().__init__()
 
-    def _setup(self, tb: 'tbot.TBot') -> None:
+    def _setup(self,
+               tb: 'tbot.TBot',
+               previous: typing.Optional[machine.Machine] = None,
+              ) -> 'MachineLabEnv':
         conn = tb.machines.connection
         self.channel = conn.get_transport().open_session()
         self.channel.get_pty("xterm-256color")
@@ -37,7 +40,8 @@ PS1='{self.prompt}'
 """)
         self._read_to_prompt(None)
 
-        super()._setup(tb)
+        super()._setup(tb, previous)
+        return self
 
     def _read_to_prompt(self, log_event: tbot.logger.LogEvent) -> str:
         buf = ""

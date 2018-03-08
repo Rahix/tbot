@@ -105,7 +105,10 @@ def interactive_build(tb: tbot.TBot, *,
         """ Actual interactive shell """
         tb.shell.exec0(f"cd {builddir}")
 
-        channel = tb.machines["labhost-env"].channel
+        labhost_machine = tb.machines["labhost-env"]
+        if not isinstance(labhost_machine, tbot.machine.MachineLabEnv):
+            raise Exception("labhost-env is not a MachineLabEnv, something is very wrong!")
+        channel = labhost_machine.channel
         def setup(ch: paramiko.Channel) -> None:
             """ Setup a custom prompt """
             # Set custom prompt
@@ -122,8 +125,34 @@ def interactive_uboot(tb: tbot.TBot) -> None:
     Open an interactive U-Boot prompt on the board
     """
 
-    with tb.with_boardshell() as tbn:
-        channel = tbn.boardshell.channel
+    with tb.with_board_uboot() as tb:
+        boardshell = tb.boardshell
+        if not isinstance(boardshell, tbot.machine.MachineBoardUBoot):
+            raise Exception("boardshell is not a U-Boot machine")
+        channel = boardshell.channel
         print("U-Boot Shell (CTRL-D to exit):")
         ishell(channel, abort="\x04")
+        print("\r")
+
+@tbot.testcase
+@tbot.cmdline
+def interactive_linux(tb: tbot.TBot) -> None:
+    """
+    Open an interactive Linux prompt on the board
+    """
+
+    with tb.with_board_linux() as tb:
+        boardshell = tb.boardshell
+        if not isinstance(boardshell, tbot.machine.MachineBoardLinux):
+            raise Exception("boardshell is not a Linux machine")
+        channel = boardshell.channel
+        def setup(ch: paramiko.Channel) -> None:
+            """ Setup a custom prompt """
+            # Set custom prompt
+            ch.send("PS1=\"\\[\\033[36m\\]Board-Linux: \\[\\033[32m\\]\\w\\[\\033[0m\\]> \"\n")
+            # Read back what we just sent
+            time.sleep(0.1)
+            ch.recv(1024)
+        print("Linux Shell (CTRL-D to exit):")
+        ishell(channel, abort="\x04", setup=setup)
         print("\r")

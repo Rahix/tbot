@@ -19,8 +19,13 @@ class Machine(abc.ABC):
     def __init__(self) -> None:
         self._log: typing.Optional[tbot.logger.Logger] = None
 
-    def _setup(self, tb: 'tbot.TBot') -> None:
+    def _setup(self,
+               tb: 'tbot.TBot',
+               #pylint: disable=unused-argument
+               previous: 'typing.Optional[Machine]' = None,
+              ) -> 'Machine':
         self._log = tb.log
+        return self
 
     def _destruct(self, tb: 'tbot.TBot') -> None:
         pass
@@ -82,7 +87,7 @@ class Machine(abc.ABC):
         assert ret[0] == 0, f"Command \"{command}\" failed:\n{ret[1]}"
         return ret[1]
 
-class MachineManager(dict):
+class MachineManager(typing.Dict[str, Machine]):
     """ A container to manage the list of available machines """
     def __init__(self, tb: 'tbot.TBot', conn: typing.Optional[paramiko.SSHClient] = None) -> None:
         if isinstance(conn, paramiko.SSHClient):

@@ -35,9 +35,15 @@ Labhost machine with environment
    :members:
    :inherited-members:
 
-Board machine for rlogin like connections
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. autoclass:: tbot.machine.board_rlogin.MachineBoardRlogin
+Board machine for U-Boot interaction
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: tbot.machine.board_uboot.MachineBoardUBoot
+   :members:
+   :inherited-members:
+
+Board machine for Linux interaction
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: tbot.machine.board_linux.MachineBoardLinux
    :members:
    :inherited-members:
 

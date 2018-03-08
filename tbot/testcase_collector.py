@@ -11,14 +11,18 @@ import tbot
 TBOT_TESTCASES: typing.Dict[str, typing.Callable] = dict()
 TBOT_TESTCASES_CMDLINE: typing.Dict[str, typing.Callable] = dict()
 
-def cmdline(f: typing.Callable) -> typing.Callable:
+F1 = typing.TypeVar('F1', bound=typing.Callable)
+
+def cmdline(f: F1) -> F1:
     """ Decorator for testcases that can be called from the commandline as well """
     #pylint: disable=global-statement
     global TBOT_TESTCASES_CMDLINE
     TBOT_TESTCASES_CMDLINE[f.__name__] = f
     return f
 
-def testcase(f: typing.Callable) -> typing.Callable:
+F2 = typing.TypeVar('F2', bound=typing.Callable)
+
+def testcase(f: F2) -> F2:
     """ Decorator for testcases """
     #pylint: disable=global-statement
     global TBOT_TESTCASES
@@ -29,11 +33,11 @@ def testcase(f: typing.Callable) -> typing.Callable:
     })
     wrapped = enforce.runtime_validation(f)
     TBOT_TESTCASES[f.__name__] = wrapped
-    return wrapped
+    return f
 
 
 def get_testcases(paths: typing.Union[typing.List[str], typing.List[pathlib.Path], None] = None) \
-        -> typing.Dict[str, typing.Callable]:
+        -> typing.Tuple[typing.Dict[str, typing.Callable], typing.Dict[str, typing.Callable]]:
     """
     Collect all testcases from the directories
     specified in ``paths``
@@ -41,6 +45,15 @@ def get_testcases(paths: typing.Union[typing.List[str], typing.List[pathlib.Path
     :param paths: List of directories to search
     :returns: Collection of testcases
     """
+    def walkdir(path: pathlib.Path) -> typing.Generator[pathlib.Path, None, None]:
+        """ List all python files in a directory recusively """
+        for f in path.iterdir():
+            if f.suffix == ".py":
+                yield f
+            elif f.is_dir() and f.name != "__pycache__":
+                for subfile in walkdir(f):
+                    yield subfile
+
     if paths is None:
         paths = [pathlib.Path("tc")]
     sources: typing.List[pathlib.Path] = list()
@@ -48,8 +61,7 @@ def get_testcases(paths: typing.Union[typing.List[str], typing.List[pathlib.Path
         # skip nonexistent paths
         path = pathlib.Path(path) if not isinstance(path, pathlib.Path) else path
         if path.is_dir():
-            sources += [p for p in path.iterdir()
-                        if p.suffix == ".py"]
+            sources += list(walkdir(path))
 
     for source in sources:
         module_spec = importlib.util.spec_from_file_location(source.stem, str(source))

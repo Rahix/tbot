@@ -1,11 +1,13 @@
-class GitRepository:
+import pathlib
+
+class GitRepository(pathlib.PurePosixPath):
     pass
 
-class UBootRepository:
+class UBootRepository(pathlib.PurePosixPath):
     pass
 
-class UnknownToolchainException:
+class UnknownToolchainException(Exception):
     pass
 
-class Toolchain:
+class Toolchain(str):
     pass

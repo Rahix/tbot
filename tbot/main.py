@@ -46,8 +46,8 @@ def TestcaseCompleter(**_kwargs: typing.Any) -> typing.List[str]:
     tbotpath = pathlib.Path(__file__).absolute().parent
 
     tbot_path = pathlib.PurePosixPath("{tbotpath}")
+    #TODO: Fix this ignoring -d args
     default = [tbot_path / "builtin",
-               tbot_path / "builtin" / "uboot",
                "tc"]
     tc_paths = [str(path).format(tbotpath=tbotpath) for path in default]
     from tbot import testcase_collector
@@ -86,7 +86,6 @@ def main() -> None:
     tbot_path = pathlib.PurePosixPath("{tbotpath}")
     parser.add_argument("-d", "--tcdir", type=str, action="append",
                         default=[tbot_path / "builtin",
-                                 tbot_path / "builtin" / "uboot",
                                  "tc",
                                 ],
                         help="Add a directory to the testcase search path")
