@@ -74,8 +74,8 @@ def selftest_board_shell(tb: tbot.TBot) -> None:
     """ Test board shell functionality """
     with tb.with_board_uboot() as tbn:
         test_shell(tbn.boardshell,
-                   tbn.config["board.shell.support_printf", False],
-                   tbn.config["board.shell.support_echo_e", False])
+                   tbn.config["uboot.shell.support_printf", False],
+                   tbn.config["uboot.shell.support_echo_e", False])
 
 @tbot.testcase
 @tbot.cmdline

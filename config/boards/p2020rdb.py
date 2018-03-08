@@ -19,14 +19,16 @@ def config(cfg: Config) -> None:
             "on_command": "remote_power p2020rdb_1 on",
             "off_command": "remote_power p2020rdb_1 off",
         },
-        "shell": {
+        "serial": {
             "name": "connect_p2020rdb_1",
             "command": "connect p2020rdb_1",
-            "prompt": "=> ",
         },
     }
 
     cfg["uboot"] = {
+        "shell": {
+            "prompt": "=> ",
+        },
         "test": {
             "hooks": pathlib.PurePosixPath("/home/hws/hooks/P2020"),
             "config": pathlib.PurePosixPath("/home/hws/data/u_boot_boardenv_P2020RDB_PC_NAND.py"),

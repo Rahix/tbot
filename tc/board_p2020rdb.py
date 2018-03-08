@@ -22,11 +22,8 @@ U-Boot on the P2020RDB-PCA board
     tb.call("p2020rdb_install_uboot")
 
     with tb.with_board_uboot() as tbn:
-        try:
-            tbn.call("check_uboot_version", uboot_binary=\
-                ubootdir / "u-boot-with-spl.bin")
-        except AssertionError:
-            pass
+        tbn.call("check_uboot_version", uboot_binary=\
+            ubootdir / "u-boot-with-spl.bin")
 
         env = tbn.boardshell.exec0("printenv", log_show=False)
         tbn.log.doc_appendix("U-Boot environment", f"""```sh

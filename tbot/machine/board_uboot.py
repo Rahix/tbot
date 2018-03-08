@@ -14,7 +14,7 @@ class MachineBoardUBoot(board.MachineBoard):
     """ Board machine for U-Boot interaction
 
     :param name: Name of the shell (eg ``someboard-uboot``), defaults to
-                 ``tb.config["board.shell.name"]``
+                 ``tb.config["board.serial.name"]``
     :type name: str
     :param boardname: Name of the board, defaults to ``tb.config["board.name"]``
     :type boardname: str
@@ -25,13 +25,13 @@ class MachineBoardUBoot(board.MachineBoard):
                           ``tb.config["board.power.off_command"]``
     :type power_cmd_off: str
     :param connect_command: Command to connect to the board with a tool that behaves similar
-                            to rlogin, defaults to ``tb.config["board.shell.command"]``
+                            to rlogin, defaults to ``tb.config["board.serial.command"]``
     :type connect_command: str
     :param prompt: The U-Boot prompt that is expected on the board, defaults to
-                   ``tb.config["board.shell.prompt"]`` or ``"U-Boot> "``
+                   ``tb.config["uboot.shell.prompt"]`` or ``"U-Boot> "``
     :type prompt: str
     :param timeout: Time to wait before aborting autoboot (in seconds), defaults to
-                    ``tb.config["board.shell.timeout"]`` or ``2`` seconds.
+                    ``tb.config["uboot.shell.timeout"]`` or ``2`` seconds.
     :type timeout: float
     """
     #pylint: disable=too-many-arguments
@@ -64,7 +64,7 @@ class MachineBoardUBoot(board.MachineBoard):
                tb: 'tbot.TBot',
                previous: 'typing.Optional[Machine]' = None,
               ) -> 'MachineBoardUBoot':
-        self.name = self.name or tb.config["board.shell.name", "unknown"]
+        self.name = self.name or tb.config["board.serial.name", "unknown"]
         # Check if the previous machine is also a MachineBoardUBoot,
         # if this is the case, prevent reinitialisation
         if previous is not self and \
@@ -87,9 +87,9 @@ class MachineBoardUBoot(board.MachineBoard):
         self.channel.resize_pty(200, 200, 1000, 1000)
         self.channel.invoke_shell()
 
-        self.connect_command = self.connect_command or tb.config["board.shell.command"]
-        self.uboot_prompt = self.uboot_prompt or tb.config["board.shell.prompt", "U-Boot> "]
-        self.uboot_timeout = self.uboot_timeout or tb.config["board.shell.timeout", 2]
+        self.connect_command = self.connect_command or tb.config["board.serial.command"]
+        self.uboot_prompt = self.uboot_prompt or tb.config["uboot.shell.prompt", "U-Boot> "]
+        self.uboot_timeout = self.uboot_timeout or tb.config["board.serial.timeout", 2]
 
         # Save the noenv shell to have it accessible later
         self.noenv = tb.machines["labhost-noenv"]

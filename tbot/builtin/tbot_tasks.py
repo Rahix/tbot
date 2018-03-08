@@ -2,6 +2,7 @@
 Common TBot tasks
 -----------------
 """
+import pathlib
 import tbot
 
 @tbot.testcase
@@ -20,36 +21,50 @@ def tbot_clean_workdir(tb: tbot.TBot) -> None:
 #pylint: disable=pointless-statement
 def tbot_check_config(tb: tbot.TBot) -> None:
     """ Check validity of configuration """
-    warns = 0
+    warnings = 0
 
-    tb.config["tbot.workdir"]
-    tb.config["uboot.builddir"]
-    tb.config["tftp.directory"]
-    tb.config["lab.hostname"]
-    tb.config["lab.name"]
-    tb.config["board.name"]
+    def warning(msg):
+        """ Print a warning message """
+        nonlocal warnings
+        tb.log.log_msg(f"\x1B[33;1mWARNING:\x1B[0m {msg}")
+        warnings += 1
+
+    def check_exist(key, ty, warn):
+        """
+        Check if a config key exists
+        and has the correct type
+        """
+        val = tb.config[key, None]
+        if val is None:
+            warning(f"{warn}, \"{key}\" must be {ty}")
+        elif not isinstance(val, ty):
+            warning(f"\"{key}\" must be {ty} not {type(val)}")
+
+    if tb.config["lab.hostname", None] is None:
+        raise Exception("No labhost hostname")
+
+    if tb.config["lab.name", None] is None:
+        raise Exception("No lab name")
+    if tb.config["board.name", None] is None:
+        raise Exception("No board name")
+
+    check_exist("tbot.workdir", pathlib.PurePosixPath, "No workdir specified")
+    check_exist("uboot.builddir", pathlib.PurePosixPath, "No U-Boot builddir specified")
+    check_exist("tftp.directory", pathlib.PurePosixPath, "No TFTP directory specified")
 
     toolchains = tb.config["toolchains", dict()]
     if toolchains == dict():
-        tb.log.log_msg(f"\x1B[33;1mWARNING:\x1B[0m No toolchains available")
-        warns += 1
+        warning(f"\x1B[33;1mWARNING:\x1B[0m No toolchains available")
 
-    if tb.config["board.toolchain", None] is None:
-        tb.log.log_msg(f"\x1B[33;1mWARNING:\x1B[0m No board toolchain specified")
-        warns += 1
+    check_exist("board.toolchain", str, "No board toolchain specified")
+    check_exist("board.power", tbot.config.Config, "No board power commands specified,\
+you will not be able to\nuse this board")
 
-    if tb.config["board.power", None] is None:
-        tb.log.log_msg(f"\x1B[33;1mWARNING:\x1B[0m No board power commands specified\n\
-You will not be able to use this board!")
-        warns += 1
+    check_exist("board.serial.command", str, "No board connect command specified,\
+you will not be able to\nconnect to this board")
+    check_exist("board.serial.name", str, "No serial name specified, this is not\
+necessary but recommended\nfor easier log readability")
 
-    if tb.config["board.shell.command", None] is None:
-        tb.log.log_msg(f"\x1B[33;1mWARNING:\x1B[0m No board connect command specified\n\
-You will not be able to connect to this board!")
-        warns += 1
+    check_exist("uboot.test", tbot.config.Config, "No test config found")
 
-    if tb.config["uboot.test", None] is None:
-        tb.log.log_msg(f"\x1B[33;1mWARNING:\x1B[0m No test config found")
-        warns += 1
-
-    tb.log.log_msg(f"Config checked, {warns} warnings")
+    tb.log.log_msg(f"Config checked, {warnings} warnings")

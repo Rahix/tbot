@@ -23,19 +23,13 @@ def config(cfg: Config) -> None:
             "on_command": "echo POWER ON; echo ON >/tmp/powerstate",
             "off_command": "echo POWER_OFF; echo OFF >/tmp/powerstate",
         },
-        "shell": {
+        "serial": {
             "name": "connect_at91sam9g45",
             "command": "connect at91sam9g45",
-            "prompt": "U-Boot> ",
         } if cfg["lab.name"] == "pollux" else {
             "name": "local-ub",
             # Fake connect. Also contains a read call to simulate autoboot abort
             "command": "sh\nPROMPT_COMMAND=\nPS1='U-Boot> ';read",
-            "prompt": "U-Boot> ",
-            "timeout": 0.1,
-            "support_echo_e": True,
-            "support_printf": True,
-            "is_uboot": False,
         },
     }
 
@@ -45,9 +39,19 @@ def config(cfg: Config) -> None:
             "hooks": pathlib.PurePosixPath("/home/hws/hooks/corvus"),
             "boardname": "corvus",
         },
+        "shell": {
+            "prompt": "U-Boot> ",
+        },
     } if cfg["lab.name"] == "pollux" else {
         "patchdir": pathlib.PurePosixPath("/home/hws/Documents/corvus_patches"),
         "env_location": pathlib.PurePosixPath("/home/hws/Documents/tbot2/env/corvus-env.txt"),
+        "shell": {
+            "prompt": "U-Boot> ",
+            "timeout": 0.1,
+            "support_echo_e": True,
+            "support_printf": True,
+            "is_uboot": False,
+        },
     }
 
     cfg["tftp"] = {
