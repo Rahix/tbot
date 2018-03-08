@@ -119,6 +119,7 @@ def uboot_checkout_and_build(tb: tbot.TBot, *,
                        builddir=builddir,
                        patchdir=patchdir,
                        repo=repo)
+    assert isinstance(ubootdir, UBootRepository)
 
     toolchain = toolchain or tb.call("toolchain_get")
 

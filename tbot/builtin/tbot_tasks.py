@@ -2,6 +2,7 @@
 Common TBot tasks
 -----------------
 """
+import typing
 import pathlib
 import tbot
 
@@ -23,13 +24,13 @@ def tbot_check_config(tb: tbot.TBot) -> None:
     """ Check validity of configuration """
     warnings = 0
 
-    def warning(msg):
+    def warning(msg: str) -> None:
         """ Print a warning message """
         nonlocal warnings
         tb.log.log_msg(f"\x1B[33;1mWARNING:\x1B[0m {msg}")
         warnings += 1
 
-    def check_exist(key, ty, warn):
+    def check_exist(key: str, ty: typing.Type, warn: str) -> None:
         """
         Check if a config key exists
         and has the correct type

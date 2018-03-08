@@ -105,7 +105,10 @@ def interactive_build(tb: tbot.TBot, *,
         """ Actual interactive shell """
         tb.shell.exec0(f"cd {builddir}")
 
-        channel = tb.machines["labhost-env"].channel
+        labhost_machine = tb.machines["labhost-env"]
+        if not isinstance(labhost_machine, tbot.machine.MachineLabEnv):
+            raise Exception("labhost-env is not a MachineLabEnv, something is very wrong!")
+        channel = labhost_machine.channel
         def setup(ch: paramiko.Channel) -> None:
             """ Setup a custom prompt """
             # Set custom prompt
@@ -123,7 +126,10 @@ def interactive_uboot(tb: tbot.TBot) -> None:
     """
 
     with tb.with_board_uboot() as tbn:
-        channel = tbn.boardshell.channel
+        boardshell = tbn.boardshell
+        if not isinstance(boardshell, tbot.machine.MachineBoardUBoot):
+            raise Exception("boardshell is not a U-Boot machine")
+        channel = boardshell.channel
         print("U-Boot Shell (CTRL-D to exit):")
         ishell(channel, abort="\x04")
         print("\r")
