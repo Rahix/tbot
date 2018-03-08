@@ -133,3 +133,26 @@ def interactive_uboot(tb: tbot.TBot) -> None:
         print("U-Boot Shell (CTRL-D to exit):")
         ishell(channel, abort="\x04")
         print("\r")
+
+@tbot.testcase
+@tbot.cmdline
+def interactive_linux(tb: tbot.TBot) -> None:
+    """
+    Open an interactive Linux prompt on the board
+    """
+
+    with tb.with_board_linux() as tbn:
+        boardshell = tbn.boardshell
+        if not isinstance(boardshell, tbot.machine.MachineBoardLinux):
+            raise Exception("boardshell is not a Linux machine")
+        channel = boardshell.channel
+        def setup(ch: paramiko.Channel) -> None:
+            """ Setup a custom prompt """
+            # Set custom prompt
+            ch.send("PS1=\"\\[\\033[36m\\]Board-Linux: \\[\\033[32m\\]\\w\\[\\033[0m\\]> \"\n")
+            # Read back what we just sent
+            time.sleep(0.1)
+            ch.recv(1024)
+        print("Linux Shell (CTRL-D to exit):")
+        ishell(channel, abort="\x04", setup=setup)
+        print("\r")
