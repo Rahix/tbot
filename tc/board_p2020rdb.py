@@ -7,7 +7,7 @@ import tbot
 
 @tbot.testcase
 @tbot.cmdline
-def board_p2020rdb(tb: tbot.TBot) -> None:
+def p2020rdb(tb: tbot.TBot) -> None:
     """
     P2020RDB-PCA board specific testcase to build U-Boot, flash it into
     NAND and run the U-Boot test suite
@@ -34,6 +34,15 @@ U-Boot on the P2020RDB-PCA board
     tb.call("uboot_tests", builddir=ubootdir, toolchain=toolchain)
 
 @tbot.testcase
+@tbot.cmdline
+def p2020rdb_check_install(tb: tbot.TBot) -> None:
+    """ Check if the U-Boot installation was successful """
+    ubootdir = tb.call("uboot_checkout", clean=False)
+    tb.call("check_uboot_version", uboot_binary=\
+        ubootdir / "u-boot-with-spl.bin")
+
+@tbot.testcase
+@tbot.cmdline
 def p2020rdb_install_uboot(tb: tbot.TBot) -> None:
     """ Install U-Boot into NAND flash of the P2020RDB-PCA """
     tb.log.doc_log("""
@@ -68,6 +77,7 @@ Copy U-Boot into your tftp directory:
 
             tb.log.doc_log("Write it into flash:\n")
 
+            tb.log.log_debug("Writing to NAND ...")
             tb.boardshell.exec0(f"nand device 0", log_show_stdout=False)
             tb.boardshell.exec0(f"nand erase.spread 0 {size}")
             tb.boardshell.exec0(f"nand write 10000000 0 {size}")

@@ -12,7 +12,7 @@ TBot builtin testcases
 .. automodule:: tbot.builtin.toolchain
    :members:
 
-.. automodule:: tbot.builtin.uboot.build_uboot
+.. automodule:: tbot.builtin.uboot.uboot_build
    :members:
 
 .. automodule:: tbot.builtin.uboot.uboot_tasks

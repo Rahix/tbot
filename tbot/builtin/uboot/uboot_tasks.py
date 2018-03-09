@@ -133,3 +133,57 @@ def uboot_checkout_and_build(tb: tbot.TBot, *,
             defconfig=defconfig)
 
     return ubootdir
+
+
+@tbot.testcase
+@tbot.cmdline
+def uboot_checkout_and_prepare(tb: tbot.TBot, *,
+                               builddir: typing.Optional[pathlib.PurePosixPath] = None,
+                               patchdir: typing.Optional[pathlib.PurePosixPath] = None,
+                               repo: typing.Optional[str] = None,
+                               toolchain: typing.Optional[tc.Toolchain] = None,
+                               defconfig: typing.Optional[str] = None,
+                              ) -> UBootRepository:
+    """
+    Checkout U-Boot and prepare for building it (ie in an interactive session
+    using ``interactive_build``)
+
+    :param builddir: Where to checkout U-Boot to, defaults to ``tb.config["uboot.builddir"]``
+    :type builddir: pathlib.PurePosixPath
+    :param patchdir: Optional U-Boot patches to be applied
+        ontop of the tree, defaults to ``tb.config["uboot.patchdir"]``, supply a
+        nonexistent path to force building without patches
+    :type patchdir: pathlib.PurePosixPath
+    :param repo: Where to get U-Boot from, defaults to ``tb.config["uboot.repository"]``
+    :type repo: str
+    :param toolchain: What toolchain to use, defaults to ``tb.config["board.toolchain"]``
+    :type toolchain: Toolchain
+    :param defconfig: What U-Boot defconfig to use, defaults to ``tb.config["board.defconfig"]``
+    :type defconfig: str
+    :returns: The U-Boot checkout as a meta object for other testcases
+    :rtype: UBootRepository
+    """
+
+    tb.log.doc_log("""
+## U-Boot checkout ##
+""")
+
+    ubootdir = tb.call("uboot_checkout",
+                       builddir=builddir,
+                       patchdir=patchdir,
+                       repo=repo)
+    assert isinstance(ubootdir, UBootRepository)
+
+    toolchain = toolchain or tb.call("toolchain_get")
+
+    tb.log.doc_log("""
+## U-Boot build ##
+""")
+
+    tb.call("uboot_build",
+            builddir=ubootdir,
+            toolchain=toolchain,
+            defconfig=defconfig,
+            do_compile=False)
+
+    return ubootdir
