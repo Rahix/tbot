@@ -192,7 +192,8 @@ class TestcaseEndLogEvent(LogEvent):
         super().__init__()
         self._dict["name"] = tc_name
         self._dict["duration"] = duration
-        self._dict["success"] = fail_ok or success
+        self._dict["success"] = success
+        self._dict["fail_ok"] = fail_ok
         self.layer = layer
         self.success = success
         self.fail_ok = fail_ok
