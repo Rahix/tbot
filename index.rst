@@ -20,6 +20,7 @@ support for U-Boot.
    doc/logging
    doc/tbot
    doc/builtins
+   doc/example-workflow
    doc/examples
 
 

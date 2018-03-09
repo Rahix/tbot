@@ -32,6 +32,12 @@ def main():
                            </div>
                          </div>
                        </div>"""
+            if msg['fail_ok']:
+                return f"""<div class="status-xpass">
+                             <pre>Fail expected, Time: {msg['duration']:.2f}s</pre>
+                           </div>
+                         </div>
+                       </div>"""
             return f"""    <div class="status-fail">
                              <pre>FAIL, Time: {msg['duration']:.2f}s</pre>
                            </div>

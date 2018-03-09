@@ -21,6 +21,7 @@ def uboot_build(tb: tbot.TBot, *,
                 builddir: tc.UBootRepository,
                 toolchain: tc.Toolchain,
                 defconfig: typing.Optional[str] = None,
+                do_compile: bool = True,
                ) -> None:
     """
     Build U-Boot
@@ -31,6 +32,8 @@ def uboot_build(tb: tbot.TBot, *,
     :type toolchain: Toolchain
     :param defconfig: What U-Boot defconfig to use, defaults to ``tb.config["board.defconfig"]``
     :type defconfig: str
+    :param do_compile: Whether we should actually run ``make`` or skip it
+    :type do_compile: bool
     """
 
     defconfig = defconfig or tb.config["board.defconfig"]
@@ -54,8 +57,10 @@ Prepare the buildprocess by moving into the build directory and executing the fo
         tb.shell.exec0(f"make mrproper", log_show_stdout=False)
         tb.shell.exec0(f"make {defconfig}", log_show_stdout=False)
 
-        @tb.call
         def compile(tb: tbot.TBot) -> None: #pylint: disable=redefined-builtin, unused-variable
             """ The actual compilation process """
             tb.log.doc_log("Start the compilation using\n")
             tb.shell.exec0(f"make -j4 all")
+
+        if do_compile:
+            tb.call(compile)

@@ -89,14 +89,16 @@ class TBot:
             return self.call(tc, **kwargs)
         return _decorator
 
-    def call(self,
-             tc: typing.Union[str, typing.Callable],
+    def call(self, tc: typing.Union[str, typing.Callable], *,
+             fail_ok: bool = False,
              **kwargs: typing.Any) -> typing.Any:
         """
         Call a testcase
 
         :param tc: The testcase to be called. Can either be a string or a callable
         :type tc: str, typing.Callable
+        :param fail_ok: Whether a failure in this testcase is tolerable
+        :type fail_ok: bool
         :param kwargs: Additional arguments for the testcase
         :type kwargs: dict
         :returns: The return value from the testcase
@@ -118,7 +120,7 @@ class TBot:
             self.layer -= 1
             self.log.layer = self.layer
             run_duration = time.monotonic() - start_time
-            self.log.log(logger.TestcaseEndLogEvent(name, self.layer, run_duration, False))
+            self.log.log(logger.TestcaseEndLogEvent(name, self.layer, run_duration, False, fail_ok))
             raise
 
         self.layer -= 1

@@ -12,7 +12,7 @@ def selftest_builtin_errors(tb: tbot.TBot) -> None:
 
     tb.log.log_debug("Testing toolchain_env with nonexistent toolchain name ...")
     try:
-        tb.call("toolchain_get", name="a-toolchain-that-will-never-exist")
+        tb.call("toolchain_get", fail_ok=True, name="a-toolchain-that-will-never-exist")
     except tc.UnknownToolchainException:
         tb.log.log_debug("Catched unknown toolchain exception")
     else:

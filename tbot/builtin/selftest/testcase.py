@@ -25,7 +25,7 @@ def selftest_test_failures(tb: tbot.TBot) -> None:
 
     did_raise = False
     try:
-        tb.call(a_failing_testcase)
+        tb.call(a_failing_testcase, fail_ok=True)
     except Exception as e: #pylint: disable=broad-except
         assert e.args[0] == "failure?", "Testcase raised wrong exception"
         did_raise = True
@@ -54,7 +54,7 @@ def selftest_wrong_parameter_type(tb: tbot.TBot) -> None:
     failed = False
     try:
         tb.log.log_debug("Testing with wrong parameter type (standalone) ...")
-        out2 = tb.call("selftest_standalone_int_param", param="string_param")
+        out2 = tb.call("selftest_standalone_int_param", fail_ok=True, param="string_param")
     except enforce.exceptions.RuntimeTypeError:
         failed = True
 
@@ -67,7 +67,7 @@ def selftest_wrong_parameter_type(tb: tbot.TBot) -> None:
     failed = False
     try:
         tb.log.log_debug("Testing with wrong parameter type (implicit) ...")
-        out2 = tb.call(testcase_with_int_param, param="string_param")
+        out2 = tb.call(testcase_with_int_param, fail_ok=True, param="string_param")
     except enforce.exceptions.RuntimeTypeError:
         failed = True
 

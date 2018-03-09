@@ -15,10 +15,12 @@ def LabCompleter(**_kwargs: typing.Any) -> typing.List[str]:
     :returns: List of lab names
     """
     lst = []
-    for lab in pathlib.Path("config/labs").iterdir():
-        if lab.suffix == ".py":
-            lst.append(lab.stem)
-    return lst
+    try:
+        for lab in pathlib.Path("config/labs").iterdir():
+            if lab.suffix == ".py":
+                lst.append(lab.stem)
+    finally:
+        return lst #pylint: disable=lost-exception
 
 #pylint: disable=invalid-name
 def BoardCompleter(**_kwargs: typing.Any) -> typing.List[str]:
@@ -29,10 +31,12 @@ def BoardCompleter(**_kwargs: typing.Any) -> typing.List[str]:
     :returns: List of board names
     """
     lst = []
-    for board in pathlib.Path("config/boards").iterdir():
-        if board.suffix == ".py":
-            lst.append(board.stem)
-    return lst
+    try:
+        for board in pathlib.Path("config/boards").iterdir():
+            if board.suffix == ".py":
+                lst.append(board.stem)
+    finally:
+        return lst #pylint: disable=lost-exception
 
 #pylint: disable=invalid-name
 def TestcaseCompleter(**_kwargs: typing.Any) -> typing.List[str]:
@@ -43,19 +47,21 @@ def TestcaseCompleter(**_kwargs: typing.Any) -> typing.List[str]:
     :returns: List of testcase names
     """
     lst = []
-    tbotpath = pathlib.Path(__file__).absolute().parent
+    try:
+        tbotpath = pathlib.Path(__file__).absolute().parent
 
-    tbot_path = pathlib.PurePosixPath("{tbotpath}")
-    #TODO: Fix this ignoring -d args
-    default = [tbot_path / "builtin",
-               "tc"]
-    tc_paths = [str(path).format(tbotpath=tbotpath) for path in default]
-    from tbot import testcase_collector
-    _, testcases = testcase_collector.get_testcases(tc_paths)
+        tbot_path = pathlib.PurePosixPath("{tbotpath}")
+        #TODO: Fix this ignoring -d args
+        default = [tbot_path / "builtin",
+                   "tc"]
+        tc_paths = [str(path).format(tbotpath=tbotpath) for path in default]
+        from tbot import testcase_collector
+        _, testcases = testcase_collector.get_testcases(tc_paths)
 
-    for tc in testcases:
-        lst.append(tc)
-    return lst
+        for tc in testcases:
+            lst.append(tc)
+    finally:
+        return lst #pylint: disable=lost-exception
 
 #pylint: disable=too-many-locals, too-many-branches
 def main() -> None:

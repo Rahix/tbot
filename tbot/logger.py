@@ -187,13 +187,16 @@ class TestcaseEndLogEvent(LogEvent):
                  tc_name: str,
                  layer: int,
                  duration: float,
-                 success: bool = True) -> None:
+                 success: bool = True,
+                 fail_ok: bool = False) -> None:
         super().__init__()
         self._dict["name"] = tc_name
         self._dict["duration"] = duration
         self._dict["success"] = success
+        self._dict["fail_ok"] = fail_ok
         self.layer = layer
         self.success = success
+        self.fail_ok = fail_ok
 
     def _init(self) -> None:
         msg = ""
@@ -202,7 +205,10 @@ class TestcaseEndLogEvent(LogEvent):
         if self.success:
             msg += "│   └─\x1B[1;32mDone.\x1B[0m"
         else:
-            msg += "│   └─\x1B[1;31mFail.\x1B[0m"
+            if self.fail_ok:
+                msg += "│   └─\x1B[1;33mFail expected.\x1B[0m"
+            else:
+                msg += "│   └─\x1B[1;31mFail.\x1B[0m"
         self.log_print(msg, False)
 
     @property
