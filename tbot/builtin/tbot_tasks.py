@@ -67,5 +67,7 @@ you will not be able to\nconnect to this board")
 necessary but recommended\nfor easier log readability")
 
     check_exist("uboot.test", tbot.config.Config, "No test config found")
+    check_exist("uboot.shell.boot_command", str, "No linux boot command specified,\
+you will not be able to\nboot linux on this board")
 
     tb.log.log_msg(f"Config checked, {warnings} warnings")
