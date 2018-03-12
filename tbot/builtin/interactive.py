@@ -141,6 +141,7 @@ def interactive_linux(tb: tbot.TBot) -> None:
     Open an interactive Linux prompt on the board
     """
 
+    bname = tb.config["board.name"]
     with tb.with_board_linux() as tb:
         boardshell = tb.boardshell
         if not isinstance(boardshell, tbot.machine.MachineBoardLinux):
@@ -149,7 +150,7 @@ def interactive_linux(tb: tbot.TBot) -> None:
         def setup(ch: paramiko.Channel) -> None:
             """ Setup a custom prompt """
             # Set custom prompt
-            ch.send("PS1=\"\\[\\033[36m\\]Board-Linux: \\[\\033[32m\\]\\w\\[\\033[0m\\]> \"\n")
+            ch.send(f"PS1=\"\\[\\033[36m\\]{bname}-linux: \\[\\033[32m\\]\\w\\[\\033[0m\\]> \"\n")
             # Read back what we just sent
             time.sleep(0.1)
             ch.recv(1024)
