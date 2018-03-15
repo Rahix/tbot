@@ -83,6 +83,16 @@ def main():
 {msg['text']}</pre>
                              </div>
                            </div>"""
+        elif msg['type'][0] == "exception":
+            return f"""    <div class="stream block">
+                             <div class="stream-header block-header">
+                               Exception: {msg['name']}
+                             </div>
+                             <div class="stream-content block-content">
+                               <pre>
+{msg['trace']}</pre>
+                             </div>
+                           </div>"""
         elif msg['type'] == ["boardshell_cleanup"] \
              or msg['type'] == ["tbotend"] \
              or msg['type'][0] == "custom" \
