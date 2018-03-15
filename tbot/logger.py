@@ -5,6 +5,7 @@ Logger
 import abc
 import time
 import json
+import pathlib
 import enum
 import typing
 
@@ -183,6 +184,7 @@ class TestcaseEndLogEvent(LogEvent):
     :param success: Whether the testcase succeeded
     :type success: bool
     """
+    #pylint: disable=too-many-arguments
     def __init__(self,
                  tc_name: str,
                  layer: int,
@@ -294,8 +296,7 @@ class Logger:
     :param logfile: Where to store the ``json.log``
     :type logfile: str
     """
-    #TODO: Make logfile a pathlib path
-    def __init__(self, verbosity: Verbosity, logfile: str) -> None:
+    def __init__(self, verbosity: Verbosity, logfile: pathlib.Path) -> None:
         self.logevents: typing.List[LogEvent] = list()
         self.verbosity = verbosity
         self.logfile = logfile
@@ -363,7 +364,7 @@ class Logger:
         """
         self.log_msg(message, Verbosity.DEBUG)
 
-    def write_logfile(self, filename: typing.Optional[str] = None) -> None:
+    def write_logfile(self, filename: typing.Optional[pathlib.PurePosixPath] = None) -> None:
         """
         Write log to a file
 
@@ -371,7 +372,6 @@ class Logger:
             the logfile supplied on init will be used.
         :type filename: str
         """
-        #TODO: Make filename a pathlib path
         #pylint: disable=protected-access
         json.dump([ev._dict for ev in self.logevents],
                   open(self.logfile if filename is None else filename, "w"),

@@ -152,7 +152,7 @@ def main() -> None:
 
     verbosity = logger.Verbosity(logger.Verbosity.INFO + len(args.verbose))
     log = logger.Logger(verbosity,
-                        args.logfile)
+                        pathlib.Path(args.logfile))
 
     with tbot.TBot(config, testcases, log) as tb:
         tb.log.log_msg(f"""\
