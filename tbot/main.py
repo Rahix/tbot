@@ -76,27 +76,29 @@ def main() -> None:
     parser.add_argument("board", type=str, help="name of the board to test on") \
         .completer = BoardCompleter
     parser.add_argument("testcase", type=str, nargs="*", default=None,
-                        help="name of the testcase to run") \
+                        help="name of the testcase to run (default: \"uboot_checkout_and_build\")") \
         .completer = TestcaseCompleter
 
     parser.add_argument("-c", "--confdir", type=str, default="config",
-                        help="Specify alternate configuration directory")
+                        help="Specify alternate configuration directory (default: \"config/\")")
     confdir_path = pathlib.PurePosixPath("{confdir}")
     parser.add_argument("--labconfdir", type=str,
                         default=confdir_path / "labs",
-                        help="Specify alternate lab config directory")
+                        help="Specify alternate lab config directory (default: \"config/labs/\")")
     parser.add_argument("--boardconfdir", type=str,
                         default=confdir_path / "boards",
-                        help="Specify alternate board config directory")
+                        help="Specify alternate board config directory (default: \"config/boards/\")")
 
     tbot_path = pathlib.PurePosixPath("{tbotpath}")
     parser.add_argument("-d", "--tcdir", type=str, action="append",
                         default=[tbot_path / "builtin",
                                  "tc",
                                 ],
-                        help="Add a directory to the testcase search path")
+                        help="Add a directory to the testcase search path. The default search path \
+contains TBot's builtin testcases and, if it exists, a subdirectory in the current working directory \
+named \"tc\"")
     parser.add_argument("-l", "--logfile", type=str, default=None,
-                        help="Json log file name")
+                        help="Json log file name (default: \"log/<lab>-<board>-<run>.json\")")
     parser.add_argument("-v", "--verbose", action="append_const", const=0,
                         default=[], help="Increase verbosity")
     parser.add_argument("--list-testcases", action="store_true", default=False,
