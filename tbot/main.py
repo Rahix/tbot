@@ -95,6 +95,7 @@ def main() -> None:
                                  "tc",
                                 ],
                         help="Add a directory to the testcase search path")
+    #TODO: Make default logfile unambiguous
     parser.add_argument("-l", "--logfile", type=str, default="log.json",
                         help="Json log file name")
     parser.add_argument("-v", "--verbose", action="append_const", const=0,

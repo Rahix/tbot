@@ -170,6 +170,28 @@ class TestcaseBeginLogEvent(LogEvent):
     def _event_type(self) -> typing.List[str]:
         return ["testcase", "begin"]
 
+class TestcaseExceptionLogEvent(LogEvent):
+    """
+    Log event for an exception
+    """
+
+    def __init__(self, exc_name, trace):
+        super().__init__()
+        self._dict["name"] = exc_name
+        self._dict["trace"] = trace
+        self.name = exc_name
+
+    def _init(self) -> None:
+        self.log_print(f"Catched exception: {self.name}")
+
+    @property
+    def _verbosity_level(self) -> Verbosity:
+        return Verbosity.DEBUG
+
+    @property
+    def _event_type(self) -> typing.List[str]:
+        return ["exception"]
+
 
 class TestcaseEndLogEvent(LogEvent):
     """

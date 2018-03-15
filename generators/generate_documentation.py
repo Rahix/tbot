@@ -14,7 +14,6 @@ OMIT_LINES = 6
 def main():
     """ Generate a markdown documentation """
 
-    # TODO: implement a cli
     log = json.load(open("log.json"))
 
     appendices = {}

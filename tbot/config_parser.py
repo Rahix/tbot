@@ -3,7 +3,6 @@ TBot configuration parser
 """
 import pathlib
 import importlib
-import random
 import typing
 from tbot import config
 
@@ -19,8 +18,7 @@ def parse_config(configs: typing.List[pathlib.Path]) -> config.Config:
     """
     cfg = config.Config()
     for cfg_file in configs:
-        #TODO: Proper name
-        module_spec = importlib.util.spec_from_file_location("config", str(cfg_file))
+        module_spec = importlib.util.spec_from_file_location(cfg_file.stem, str(cfg_file))
 
         if hasattr(module_spec, "loader") and isinstance(module_spec.loader, importlib.abc.Loader):
             module = importlib.util.module_from_spec(module_spec)
