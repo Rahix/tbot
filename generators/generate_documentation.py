@@ -8,13 +8,18 @@ during the run.
 """
 import json
 import math
+import sys
 
 OMIT_LINES = 6
 
 def main():
     """ Generate a markdown documentation """
 
-    log = json.load(open("log.json"))
+    try:
+        log = json.load(open(sys.argv[1]))
+    except: #pylint: disable=broad-except
+        print(f"\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m\n")
+        raise
 
     appendices = {}
 

@@ -7,11 +7,16 @@ using U-Boot's python test suite's html log
 generator as a base
 """
 import json
+import sys
 
 def main():
     """ Generate an html log """
 
-    log = json.load(open("log.json"))
+    try:
+        log = json.load(open(sys.argv[1]))
+    except: #pylint: disable=broad-except
+        print(f"\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m\n")
+        raise
 
     #pylint: disable=too-many-return-statements
     def gen_html(msg):
