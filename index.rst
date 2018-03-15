@@ -16,6 +16,7 @@ support for U-Boot.
    :caption: Contents:
 
    doc/getting-started
+   doc/usage
    doc/configuration
    doc/logging
    doc/tbot
