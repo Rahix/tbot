@@ -1,10 +1,15 @@
 #!/usr/bin/python3
 """ Generate a human readable log """
 import json
+import sys
 
 if __name__ == "__main__":
 
-    LOG = json.load(open("log.json"))
+    try:
+        LOG = json.load(open(sys.argv[1]))
+    except: #pylint: disable=broad-except
+        print(f"\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m\n")
+        raise
 
     #pylint: disable=too-many-return-statements
     def gen_md(msg):

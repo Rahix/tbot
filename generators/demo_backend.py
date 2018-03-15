@@ -4,16 +4,22 @@ Demo backend that prints some
 stats about the U-Boot build
 """
 import json
+import sys
 
 def main():
     """ Main """
-    log = json.load(open("log.json"))
+    try:
+        log = json.load(open(sys.argv[1]))
+    except: #pylint: disable=broad-except
+        print(f"\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m\n")
+        raise
+
 
     testcases = [
-        ("U-Boot git repo setup ", "clean_repo_checkout"),
+        ("U-Boot git repo setup ", "git_clean_checkout"),
         ("U-Boot build total    ", "@build"),
         ("U-Boot build raw      ", "@compile"),
-        ("U-Boot total          ", "build_uboot"),
+        ("U-Boot total          ", "uboot_build"),
         ]
 
     # Get testcase begin and end times

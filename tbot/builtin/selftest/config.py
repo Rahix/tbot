@@ -73,7 +73,7 @@ def config(cfg):
             cfg = tbot.config_parser.parse_config([tempdir / "c3.py",
                                                    tempdir / "c5.py",
                                                   ])
-        except: #TODO: Better exception
+        except tbot.config.ConfigAssignException:
             fail = True
         assert fail is True
 
@@ -84,7 +84,7 @@ def config(cfg):
             cfg = tbot.config_parser.parse_config([tempdir / "c5.py",
                                                    tempdir / "c3.py",
                                                   ])
-        except:
+        except tbot.config.ConfigAssignException:
             fail = True
         assert fail is True
 

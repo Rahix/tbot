@@ -55,9 +55,13 @@ PS1='{self.prompt}'
             while True:
                 # Read a lot and hope that this is all there is, so
                 # we don't cut off inside a unicode sequence and fail
-                # TODO: Make this more robust
+                #TODO: Make this functionality common code to deduplicate
                 buf_data = self.channel.recv(10000000)
-                buf_data = buf_data.decode("utf-8")
+                try:
+                    buf_data = buf_data.decode("utf-8")
+                except UnicodeDecodeError:
+                    # TODO: Falling back to latin_1 is just a workaround as well ...
+                    buf_data = buf_data.decode("latin_1")
 
                 # Fix '\r's, replace '\r\n' twice to avoid some glitches
                 buf_data = buf_data.replace('\r\n', '\n') \

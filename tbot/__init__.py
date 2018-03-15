@@ -116,7 +116,8 @@ class TBot:
                 retval = enforce.runtime_validation(tc)(self, **kwargs)
         except Exception as e: #pylint: disable=broad-except
             # Cleanup is done by "with" handler __exit__
-            # TODO: Add the exception to the log
+            exc_name = type(e).__module__ + "." + type(e).__qualname__
+            self.log.log(logger.TestcaseExceptionLogEvent(exc_name, traceback.format_exc()))
             self.layer -= 1
             self.log.layer = self.layer
             run_duration = time.monotonic() - start_time

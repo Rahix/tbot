@@ -76,27 +76,29 @@ def main() -> None:
     parser.add_argument("board", type=str, help="name of the board to test on") \
         .completer = BoardCompleter
     parser.add_argument("testcase", type=str, nargs="*", default=None,
-                        help="name of the testcase to run") \
+                        help="name of the testcase to run (default: \"uboot_checkout_and_build\")") \
         .completer = TestcaseCompleter
 
     parser.add_argument("-c", "--confdir", type=str, default="config",
-                        help="Specify alternate configuration directory")
+                        help="Specify alternate configuration directory (default: \"config/\")")
     confdir_path = pathlib.PurePosixPath("{confdir}")
     parser.add_argument("--labconfdir", type=str,
                         default=confdir_path / "labs",
-                        help="Specify alternate lab config directory")
+                        help="Specify alternate lab config directory (default: \"config/labs/\")")
     parser.add_argument("--boardconfdir", type=str,
                         default=confdir_path / "boards",
-                        help="Specify alternate board config directory")
+                        help="Specify alternate board config directory (default: \"config/boards/\")")
 
     tbot_path = pathlib.PurePosixPath("{tbotpath}")
     parser.add_argument("-d", "--tcdir", type=str, action="append",
                         default=[tbot_path / "builtin",
                                  "tc",
                                 ],
-                        help="Add a directory to the testcase search path")
-    parser.add_argument("-l", "--logfile", type=str, default="log.json",
-                        help="Json log file name")
+                        help="Add a directory to the testcase search path. The default search path \
+contains TBot's builtin testcases and, if it exists, a subdirectory in the current working directory \
+named \"tc\"")
+    parser.add_argument("-l", "--logfile", type=str, default=None,
+                        help="Json log file name (default: \"log/<lab>-<board>-<run>.json\")")
     parser.add_argument("-v", "--verbose", action="append_const", const=0,
                         default=[], help="Increase verbosity")
     parser.add_argument("--list-testcases", action="store_true", default=False,
@@ -151,14 +153,28 @@ def main() -> None:
         return
 
     verbosity = logger.Verbosity(logger.Verbosity.INFO + len(args.verbose))
-    log = logger.Logger(verbosity,
-                        args.logfile)
+    if args.logfile is not None:
+        logfile = pathlib.Path(args.logfile)
+    else:
+        logdir = pathlib.Path("log")
+        logdir.mkdir(exist_ok=True)
+        glob_pattern = f"{args.lab}-{args.board}-*.json"
+        new_num = sum(1 for _ in logdir.glob(glob_pattern)) + 1
+        logfile = logdir / f"{args.lab}-{args.board}-{new_num:04}.json"
+        # Ensure logfile will not overwrite another one
+        while logfile.exists():
+            new_num += 1
+            logfile = logdir / f"{args.lab}-{args.board}-{new_num:04}.json"
+
+    log = logger.Logger(verbosity, logfile)
 
     with tbot.TBot(config, testcases, log) as tb:
         tb.log.log_msg(f"""\
 LAB:   {args.lab:10} name="{tb.config["lab.name"]}"
-BOARD: {args.board:10} name="{tb.config["board.name"]}" """)
+BOARD: {args.board:10} name="{tb.config["board.name"]}"
+LOG:   "{logfile}\"""")
 
+        success = False
         try:
             if args.testcase != []:
                 for tc in args.testcase:
@@ -174,7 +190,14 @@ BOARD: {args.board:10} name="{tb.config["board.name"]}" """)
                     tb.call("uboot_checkout_and_build")
         except Exception: #pylint: disable=broad-except
             tb.log.log_msg(traceback.format_exc(), tbot.logger.Verbosity.ERROR)
-            tb.log.log(logger.TBotFinishedLogEvent(False))
+        except KeyboardInterrupt:
+            tb.log.layer = 0
+            print("\r│  ^C")
+            tb.log.log_msg("\x1B[31mTest run aborted by user.", tbot.logger.Verbosity.ERROR)
+        else:
+            success = True
+        finally:
+            tb.log.log_msg(f"Log written to \"{logfile}\"")
+            tb.log.log(logger.TBotFinishedLogEvent(success))
             tb.log.write_logfile()
-            sys.exit(1)
-        tb.log.log(logger.TBotFinishedLogEvent(True))
+        sys.exit(0 if success else 1)
