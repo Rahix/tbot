@@ -46,6 +46,8 @@ as an ``asctime()``. Other keys may exist, depending on the event type. The foll
 * ``["board", "boot"]``: Boot ``"log"`` of powering on the board.
 * ``["board", "poweroff"]``: Marker that the board was powered off at this point. ``"board"`` contains the name of
   the board. Usually followed by a shell event with the command used to do so.
+* ``["exception"]``: An exception occured at this point. This is not necessarily fatal, in some cases it even is required
+  for a testcase to succeed. Contains the exceptions ``"name"`` and a ``"trace"``.
 * ``["msg", verbosity]``: A ``"text"`` message. ``verbosity`` is the Verbosity level.
 * ``["tbotend"]``: The very last event. Only information is, whether the test run was a ``"success"``.
 
