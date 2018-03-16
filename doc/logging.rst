@@ -23,7 +23,7 @@ or this::
 
     {
         "success": true,
-        "type": ["tbotend"],
+        "type": ["tbot", "end"],
         "time": "Thu Jan 25 09:49:39 2018"
     }
 
@@ -46,8 +46,12 @@ as an ``asctime()``. Other keys may exist, depending on the event type. The foll
 * ``["board", "boot"]``: Boot ``"log"`` of powering on the board.
 * ``["board", "poweroff"]``: Marker that the board was powered off at this point. ``"board"`` contains the name of
   the board. Usually followed by a shell event with the command used to do so.
+* ``["exception"]``: An exception occured at this point. This is not necessarily fatal, in some cases it even is required
+  for a testcase to succeed. Contains the exceptions ``"name"`` and a ``"trace"``.
 * ``["msg", verbosity]``: A ``"text"`` message. ``verbosity`` is the Verbosity level.
-* ``["tbotend"]``: The very last event. Only information is, whether the test run was a ``"success"``.
+* ``["tbot", "info"]``: Info about this test run: ``"lab"`` and ``"board"`` as specified on the command line, ``"lab-name"``
+  and ``"board-name"`` from the config and a list of the ``"testcases"`` that were attempted to be run.
+* ``["tbot", "end"]``: The very last event. Only information is, whether the test run was a ``"success"``.
 
 As a demonstration of how this log might be used, take a look at the generate scripts:
 

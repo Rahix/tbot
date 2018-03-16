@@ -36,6 +36,7 @@ class MachineLabNoEnv(machine.Machine):
             .replace('\r\n', '\n') \
             .replace('\r', '\n')
 
+        #FIXME: Make output appear instantly and not after the run is done
         for line in output.strip('\n').split('\n'):
             log_event.add_line(line)
         return ret_code, output
