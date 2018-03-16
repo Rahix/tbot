@@ -169,10 +169,20 @@ named \"tc\"")
     log = logger.Logger(verbosity, logfile)
 
     with tbot.TBot(config, testcases, log) as tb:
-        tb.log.log_msg(f"""\
+        tb.log.log(logger.CustomLogEvent(
+            ['tbot', 'info'],
+            f"""\
 LAB:   {args.lab:10} name="{tb.config["lab.name"]}"
 BOARD: {args.board:10} name="{tb.config["board.name"]}"
-LOG:   "{logfile}\"""")
+LOG:   "{logfile}\"""",
+            dict_values={
+                "lab": args.lab,
+                "board": args.board,
+                "lab-name": tb.config["lab.name"],
+                "board-name": tb.config["board.name"],
+                "testcases": args.testcase,
+            },
+        ))
 
         success = False
         try:
