@@ -268,7 +268,7 @@ class TBotFinishedLogEvent(LogEvent):
 
     @property
     def _event_type(self) -> typing.List[str]:
-        return ["tbotend"]
+        return ["tbot", "end"]
 
 
 class CustomLogEvent(LogEvent):

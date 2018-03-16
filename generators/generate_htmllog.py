@@ -93,8 +93,8 @@ def main():
 {msg['trace']}</pre>
                              </div>
                            </div>"""
-        elif msg['type'] == ["boardshell_cleanup"] \
-             or msg['type'] == ["tbotend"] \
+        elif msg['type'] == ["tbot", "end"] \
+             or msg['type'] == ["tbot", "info"] \
              or msg['type'][0] == "custom" \
              or msg['type'][0] == "board" \
              or msg['type'][0] == "doc":
