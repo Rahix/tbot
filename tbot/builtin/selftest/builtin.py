@@ -37,7 +37,7 @@ def selftest_builtin_tests(tb: tbot.TBot) -> None:
         boardname="custom-machine",
         power_cmd_on="",
         power_cmd_off="",
-        connect_command="sh\nPROMPT_COMMAND=\nPS1='U-Boot> ';read",
+        connect_command="sh\nPROMPT_COMMAND=\nPS1='U-Boot> ';read dummyvar",
         prompt="U-Boot> ",
         timeout=0.1)) as tb:
         out = tb.boardshell.exec0("echo Hello Custom World")
