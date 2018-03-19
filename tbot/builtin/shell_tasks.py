@@ -13,6 +13,11 @@ class TftpDirectory:
     A meta object to represent the tftp directory.
     Can be created with :func:`setup_tftpdir`
 
+    :param root: TFTP root directory
+    :type root: pathlib.PurePosixPath
+    :param subdir: TFTP sub-directory
+    :type subdir: pathlib.PurePosixPath
+
     :ivar root: TFTP root directory
     :ivar subdir: TFTP sub-directory, this is what you should use on the board
     :ivar path: Full TFTP path, this is what you should use on the Labhost
