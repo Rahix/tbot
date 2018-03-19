@@ -21,7 +21,7 @@ class MachineBoardLinux(board.MachineBoard):
     :type boardname: str
     :param boot_command: U-Boot command to boot linux. May be multiple commands
                          separated by newlines, defaults to
-                         ``tb.config["uboot.shell.boot_command"]``
+                         ``tb.config["linux.boot_command"]``
     :type boot_command: str
     :param login_prompt: The string to wait for before sending the username,
                          defaults to ``tb.config["linux.shell.login_prompt"]``
@@ -96,7 +96,7 @@ class MachineBoardLinux(board.MachineBoard):
 
         self.channel = self.ub_machine.channel
 
-        self.boot_command = self.boot_command or tb.config["uboot.shell.boot_command"]
+        self.boot_command = self.boot_command or tb.config["linux.boot_command"]
         self.login_prompt = self.login_prompt or tb.config["linux.shell.login_prompt", "login: "]
         self.login_timeout = self.login_timeout or tb.config["linux.shell.login_timeout", 2]
         self.username = self.username or tb.config["linux.shell.username", "root"]

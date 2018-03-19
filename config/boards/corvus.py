@@ -51,16 +51,16 @@ def config(cfg: Config) -> None:
             "support_echo_e": True,
             "support_printf": True,
             "is_uboot": False,
-            "boot_command": """\
-sleep 1; \
-echo 'Some boot log ...'; \
-echo 'Very interesting ...'; \
-read -p 'lnx-login: ' dummyvar; read -p 'pw: ' dummyvar; sh""",
         },
     }
 
     cfg["linux"] = {
     } if cfg["lab.name"] == "pollux" else {
+        "boot_command": """\
+sleep 1; \
+echo 'Some boot log ...'; \
+echo 'Very interesting ...'; \
+read -p 'lnx-login: ' dummyvar; read -p 'pw: ' dummyvar; sh""",
         "shell": {
             "username": "root",
             "password": "root",

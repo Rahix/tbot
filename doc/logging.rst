@@ -1,7 +1,7 @@
 .. tbot logging
 
-TBot logging
-============
+Logging
+=======
 
 tbot log file ``log.json``
 --------------------------

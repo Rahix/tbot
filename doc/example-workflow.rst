@@ -69,4 +69,5 @@ command for your testcase, in this case ``tbot denx p2020rdb p2020rdb -vvv``. It
 to set the highest possible verbosity level to make it easier to understand where a failure
 happened. Optionally, add one or more of the generators to automatically run as well, to get
 a pretty version of the log (``generators/generate_htmllog.py``) or a documentation on how to
-setup your board (``generators/generate_documentation.py``).
+setup your board (``generators/generate_documentation.py``). For Jenkins, there is also a generator
+to generate a JUnit XML file (``generators/junit.py``) that Jenkins can use to display the test results.

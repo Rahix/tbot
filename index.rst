@@ -15,6 +15,7 @@ and it can be used for automation of test running with CI.
    :maxdepth: 2
    :caption: Contents:
 
+   doc/install
    doc/getting-started
    doc/usage
    doc/configuration

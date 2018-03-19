@@ -1,7 +1,7 @@
 .. example test cases
 
-Example test cases
-==================
+Example Testcases
+=================
 
 .. automodule:: tc.board_p2020rdb
    :members:
