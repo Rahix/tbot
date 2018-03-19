@@ -8,7 +8,25 @@ import json
 import pathlib
 import enum
 import typing
+import sys
 
+def has_unicode(with_unicode: str, without_unicode: str) -> str:
+    """
+    Check whether the terminal supports unicode, if it does,
+    returns the ``with_unicode`` string, if it doesn't, returns
+    the ``without_unicode`` string.
+
+    :param with_unicode: String to be returned, if the terminal does
+                         support unicode
+    :type with_unicode: str
+    :param without_unicode: String to be returned, if the terminal does
+                            not support unicode
+    :type without_unicode: str
+    :rtype: str
+    """
+    if sys.stdout.encoding == "UTF-8":
+        return with_unicode
+    return without_unicode
 
 class Verbosity(enum.IntEnum):
     """ Logger verbosity level """
@@ -157,9 +175,13 @@ class TestcaseBeginLogEvent(LogEvent):
 
     def _init(self) -> None:
         msg = ""
+        prfx = has_unicode("│   ", "|   ")
         for _ in range(0, self.layer):
-            msg += "│   "
-        msg += f"├─Calling \x1B[1;34m{self.tc}\x1B[0m ... "
+            msg += prfx
+        msg += has_unicode(
+            f"├─Calling \x1B[1;34m{self.tc}\x1B[0m ... ",
+            f"+-Calling \x1B[1;34m{self.tc}\x1B[0m ... ",
+        )
         self.log_print(msg, False)
 
     @property
@@ -224,15 +246,25 @@ class TestcaseEndLogEvent(LogEvent):
 
     def _init(self) -> None:
         msg = ""
+        prfx = has_unicode("│   ", "|   ")
         for _ in range(0, self.layer):
-            msg += "│   "
+            msg += prfx
         if self.success:
-            msg += "│   └─\x1B[1;32mDone.\x1B[0m"
+            msg += has_unicode(
+                "│   └─\x1B[1;32mDone.\x1B[0m",
+                "|   \\-\x1B[1;32mDone.\x1B[0m",
+            )
         else:
             if self.fail_ok:
-                msg += "│   └─\x1B[1;33mFail expected.\x1B[0m"
+                msg += has_unicode(
+                    "│   └─\x1B[1;33mFail expected.\x1B[0m",
+                    "|   \\-\x1B[1;33mFail expected.\x1B[0m",
+                )
             else:
-                msg += "│   └─\x1B[1;31mFail.\x1B[0m"
+                msg += has_unicode(
+                    "│   └─\x1B[1;31mFail.\x1B[0m",
+                    "|   \\-\x1B[1;31mFail.\x1B[0m",
+                )
         self.log_print(msg, False)
 
     @property
@@ -258,9 +290,17 @@ class TBotFinishedLogEvent(LogEvent):
 
     def _init(self) -> None:
         if self.success:
-            self.log_print("└─Done, \x1B[1;32mSUCCESS\x1B[0m\n", False)
+            self.log_print(
+                has_unicode(
+                    "└─Done, \x1B[1;32mSUCCESS\x1B[0m\n",
+                    "\\-Done, \x1B[1;32mSUCCESS\x1B[0m\n",
+                ), False)
         else:
-            self.log_print("└─Done, \x1B[1;31mFAILURE\x1B[0m\n", False)
+            self.log_print(
+                has_unicode(
+                    "└─Done, \x1B[1;31mFAILURE\x1B[0m\n",
+                    "\\-Done, \x1B[1;31mFAILURE\x1B[0m\n",
+                ), False)
 
     @property
     def _verbosity_level(self) -> Verbosity:
@@ -424,10 +464,11 @@ class Logger:
             for i, line in enumerate(msg.split('\n')):
                 msg_prefix = "\x1B[0m"
                 if prefix is True:
+                    prfx = has_unicode("│   ", "|   ")
                     for _ in range(0, self.layer):
-                        msg_prefix += "│   "
+                        msg_prefix += prfx
                     if prefix_dash and i == 0:
-                        msg_prefix += f"├─"
+                        msg_prefix += has_unicode("├─", "+-")
                     else:
-                        msg_prefix += f"│ "
+                        msg_prefix += has_unicode("│ ", "| ")
                 print(msg_prefix + line)
