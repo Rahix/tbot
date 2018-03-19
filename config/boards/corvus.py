@@ -15,7 +15,6 @@ def config(cfg: Config) -> None:
     cfg["board"] = {
         "name": "at91sam9g45",
         "toolchain": "cortexa8hf-neon",
-        "defconfig": "corvus_defconfig",
         "power": {
             "on_command": "remote_power at91sam9g45 on",
             "off_command": "remote_power at91sam9g45 off",
@@ -34,6 +33,7 @@ def config(cfg: Config) -> None:
     }
 
     cfg["uboot"] = {
+        "defconfig": "corvus_defconfig",
         "patchdir": pathlib.PurePosixPath("/home/hws/corvus_patches"),
         "test": {
             "hooks": pathlib.PurePosixPath("/home/hws/hooks/corvus"),
@@ -43,6 +43,7 @@ def config(cfg: Config) -> None:
             "prompt": "U-Boot> ",
         },
     } if cfg["lab.name"] == "pollux" else {
+        "defconfig": "corvus_defconfig",
         "patchdir": pathlib.PurePosixPath("/home/hws/Documents/corvus_patches"),
         "env_location": pathlib.PurePosixPath("/home/hws/Documents/tbot2/env/corvus-env.txt"),
         "shell": {

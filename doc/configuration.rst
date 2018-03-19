@@ -92,19 +92,19 @@ TFTP
 ::
 
     cfg["tftp"] = {
-        # Path to the tftp folder
-        "rootdir": "/tftpboot",
+        # Path to the directory that is exported over TFTP
+        "root": "/tftpboot",
         "boarddir": "boardname",
         "tbotsubdir": "tbot",
         # tbot assumes the following tftp folder structure:
-        # <rootdir>/<boarddir>/<tbotsubdir>
-        # rootdir and tbotsubdir are usually set inside the lab
+        # <root>/<boarddir>/<tbotsubdir>
+        # root and tbotsubdir are usually set inside the lab
         # config, boarddir is set in the board config
 
-        # Alternatively you can set an entirely custom
-        # tftp directory with the following option:
+        # If you do not want to use this structure, you can
+        # specify a custom direcory below "root":
         # (Do not set this if you don't need it!)
-        "directory": "/tftpboot/boardname/tbot",
+        "directory": "boardname/tbot",
     }
 
 U-Boot

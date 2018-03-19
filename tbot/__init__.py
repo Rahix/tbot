@@ -119,7 +119,7 @@ class TBot:
             # A small hack to ensure, the exception is only added once:
             if "__tbot_exc_catched" not in e.__dict__:
                 exc_name = type(e).__module__ + "." + type(e).__qualname__
-                self.log.log(logger.TestcaseExceptionLogEvent(exc_name, traceback.format_exc()))
+                self.log.log(logger.ExceptionLogEvent(exc_name, traceback.format_exc()))
                 e.__dict__["__tbot_exc_catched"] = True
             self.layer -= 1
             self.log.layer = self.layer

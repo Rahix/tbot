@@ -18,7 +18,7 @@ def config(cfg: Config) -> None:
     cfg["tbot.workdir"] = pathlib.PurePosixPath("/work") / username / "tbot2workdir"
 
     cfg["tftp"] = {
-        "rootdir": pathlib.PurePosixPath("/tftpboot"),
+        "root": pathlib.PurePosixPath("/tftpboot"),
         "tbotsubdir": pathlib.PurePosixPath(f"tbot-{username}"),
     }
 

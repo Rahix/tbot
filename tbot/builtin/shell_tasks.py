@@ -8,37 +8,60 @@ import tbot
 
 EXPORT = ["TftpDirectory"]
 
-class TftpDirectory(pathlib.PurePosixPath):
+class TftpDirectory:
     """
     A meta object to represent the tftp directory.
     Can be created with :func:`setup_tftpdir`
+
+    :param root: TFTP root directory
+    :type root: pathlib.PurePosixPath
+    :param subdir: TFTP sub-directory
+    :type subdir: pathlib.PurePosixPath
+
+    :ivar root: TFTP root directory
+    :ivar subdir: TFTP sub-directory, this is what you should use on the board
+    :ivar path: Full TFTP path, this is what you should use on the Labhost
     """
-    pass
+
+    def __init__(self,
+                 root: pathlib.PurePosixPath,
+                 subdir: pathlib.PurePosixPath) -> None:
+        self.root = root
+        self.subdir = subdir
+        self.path = root / subdir
 
 @tbot.testcase
 def setup_tftpdir(tb: tbot.TBot, *,
-                  tftpdir: typing.Optional[pathlib.PurePosixPath] = None,
+                  root: typing.Optional[pathlib.PurePosixPath] = None,
+                  subdir: typing.Optional[pathlib.PurePosixPath] = None,
                  ) -> TftpDirectory:
     """
     Setup the tftp directory
 
-    :param tftpdir: Optional path to the tftpdir, defaults to
-                    ``tb.config["tftp.directory"]`` (which has a default value
-                    in ``config/tbot.py``
-    :type tftpdir: pathlib.PurePosixPath
+    :param root: Optional path to the TFTP root directory, defaults to
+                    ``tb.config["tftp.root"]``
+    :type root: pathlib.PurePosixPath
+    :param subdir: Optional subdir path inside the TFTP directory (has a
+                   default value in ``config/tbot.py``)
+    :type subdir: pathlib.PurePosixPath
     :returns: The TFTP directory as a meta object
     :rtype: TftpDirectory
     """
-    tftpdir = tftpdir or tb.config["tftp.directory"]
+    root = root or tb.config["tftp.root"]
+    subdir = subdir or tb.config["tftp.directory"]
 
-    if not isinstance(tftpdir, pathlib.PurePosixPath):
+    if not isinstance(root, pathlib.PurePosixPath):
+        raise Exception("Configuation error: 'tftp.root' must be a PurePosixPath!")
+    if not isinstance(subdir, pathlib.PurePosixPath):
         raise Exception("Configuation error: 'tftp.directory' must be a PurePosixPath!")
 
-    tb.shell.exec0(f"mkdir -p {tftpdir}", log_show=False)
+    tftpdir = TftpDirectory(root, subdir)
 
-    tb.log.log_debug(f"tftpdir is '{tftpdir}'")
+    tb.shell.exec0(f"mkdir -p {tftpdir.path}", log_show=False)
 
-    return TftpDirectory(tftpdir)
+    tb.log.log_debug(f"TFTP directory is '{tftpdir.path}'")
+
+    return tftpdir
 
 @tbot.testcase
 def cp_to_tftpdir(tb: tbot.TBot, *,
@@ -64,7 +87,7 @@ def cp_to_tftpdir(tb: tbot.TBot, *,
     builddir = builddir or tb.config["uboot.builddir"]
 
     source_path = builddir / name if isinstance(name, str) else name
-    dest_path = tftpdir / (name if dest_name is None else dest_name)
+    dest_path = tftpdir.path / (name if dest_name is None else dest_name)
 
     tb.log.log_debug(f"Copying '{source_path}' to '{dest_path}'")
 

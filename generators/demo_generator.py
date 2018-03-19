@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 """
+Demo Backend
+^^^^^^^^^^^^
 Demo backend that prints some
 stats about the U-Boot build
 """
@@ -7,7 +9,10 @@ import json
 import sys
 
 def main():
-    """ Main """
+    """
+    Demo backend that prints some
+    stats about the U-Boot build
+    """
     try:
         log = json.load(open(sys.argv[1]))
     except: #pylint: disable=broad-except

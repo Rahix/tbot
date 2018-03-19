@@ -3,10 +3,8 @@
 Logging
 =======
 
-tbot log file ``log.json``
---------------------------
-
-tbot create a ``log.json`` file when run. This file contains detailed information about what
+tbot create a ``json`` log file when run. By default, this is ``log/<lab>-<board>-<run>.json`` but this
+can be changes using the ``-l`` commandline parameter. This file contains detailed information about what
 happened while running. It is structured as a json array of dictionaries containing information
 about events in the order they happened. An event might look like this::
 
@@ -53,10 +51,16 @@ as an ``asctime()``. Other keys may exist, depending on the event type. The foll
   and ``"board-name"`` from the config and a list of the ``"testcases"`` that were attempted to be run.
 * ``["tbot", "end"]``: The very last event. Only information is, whether the test run was a ``"success"``.
 
-As a demonstration of how this log might be used, take a look at the generate scripts:
+As a demonstration of how this log might be used, take a look at the generator scripts:
+
+.. automodule:: generators.demo_generator
+   :members:
 
 .. automodule:: generators.generate_documentation
    :members:
 
 .. automodule:: generators.generate_htmllog
+   :members:
+
+.. automodule:: generators.junit
    :members:

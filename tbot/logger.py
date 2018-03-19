@@ -192,12 +192,17 @@ class TestcaseBeginLogEvent(LogEvent):
     def _event_type(self) -> typing.List[str]:
         return ["testcase", "begin"]
 
-class TestcaseExceptionLogEvent(LogEvent):
+class ExceptionLogEvent(LogEvent):
     """
     Log event for an exception
+
+    :param exc_name: Name of the exception
+    :type exc_name: str
+    :param trace: Stack trace
+    :type trace: str
     """
 
-    def __init__(self, exc_name, trace):
+    def __init__(self, exc_name: str, trace: str) -> None:
         super().__init__()
         self._dict["name"] = exc_name
         self._dict["trace"] = trace
