@@ -31,7 +31,11 @@ def test_shell(shell: tbot.machine.Machine,
         # Test '\r' behaviour, we do not want any '\r\n's in out output,
         # unix style line endings only. Also, standalone '\r's should be made
         # into unix line endings for proper output formatting.
-        out = shell.exec0("echo -e 'a string with a \\rin the middle and a \\r\\n\
+
+        # Busybox's builtin echo does not support the -e option. To mitigate this,
+        # we use the system's echo
+        echo = shell.exec0("which echo").strip()
+        out = shell.exec0(f"{echo} -e 'a string with a \\rin the middle and a \\r\\n\
 windows line ending'")
         assert out == "a string with a \nin the middle and a \n\
 windows line ending\n", "%r does not match" % out
@@ -76,6 +80,17 @@ def selftest_board_shell(tb: tbot.TBot) -> None:
         test_shell(tb.boardshell,
                    tb.config["uboot.shell.support_printf", False],
                    tb.config["uboot.shell.support_echo_e", False])
+@tbot.testcase
+@tbot.cmdline
+def selftest_linux_shell(tb: tbot.TBot) -> None:
+    """ Test linux shell functionality """
+    with tb.with_board_linux() as tb:
+        test_shell(tb.boardshell, True, True)
+
+        # Test if environment is actually working
+        tb.boardshell.exec0("FOOBAR='avalue'")
+        out = tb.boardshell.exec0("echo $FOOBAR")
+        assert out == "avalue\n", f"Environment variable was not set correctly: {repr(out)}"
 
 @tbot.testcase
 @tbot.cmdline
