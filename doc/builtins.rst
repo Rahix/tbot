@@ -1,7 +1,7 @@
 .. TBot builtin testcases
 
-TBot builtin testcases
-======================
+Builtin Testcases
+=================
 
 .. automodule:: tbot.builtin.git_tasks
    :members:

@@ -1,7 +1,7 @@
 .. TBot configuration guide
 
-TBot configuration
-==================
+Configuration
+=============
 
 TBot uses python for it's config. The configuration is divided into
 3 parts, with each part overriding values set in the previous ones:
@@ -48,7 +48,7 @@ Lab configuration
 Board configuration
 ^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: config.boards.taurus
+.. automodule:: config.boards.corvus
    :members:
 
 Available options:
@@ -124,8 +124,6 @@ U-Boot
             "prompt": "U-Boot> ",
             # Timeout before stopping autoboot in seconds
             "timeout": 4,
-            # U-Boot command to boot Linux, may be multiple commands separated by \n
-            "boot_command: "boot",
         },
 
         "test": {
@@ -155,6 +153,8 @@ Linux
 ::
 
     cfg["linux"] = {
+        # U-Boot command to boot Linux, may be multiple commands separated by '\n'
+        "boot_command": "boot",
         "shell": {
             # Username for logging in on the board
             "username": "root",

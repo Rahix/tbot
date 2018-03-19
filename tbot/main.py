@@ -202,7 +202,10 @@ LOG:   "{logfile}\"""",
             tb.log.log_msg(traceback.format_exc(), tbot.logger.Verbosity.ERROR)
         except KeyboardInterrupt:
             tb.log.layer = 0
-            print("\r│  ^C")
+            print(tbot.logger.has_unicode(
+                "\r│  ^C",
+                "\r|  ^C",
+            ))
             tb.log.log_msg("\x1B[31mTest run aborted by user.", tbot.logger.Verbosity.ERROR)
         else:
             success = True

@@ -1,6 +1,6 @@
 .. TBot
 
-TBot module
+TBot Module
 ===========
 
 TBot

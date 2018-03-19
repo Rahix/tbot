@@ -29,7 +29,7 @@ def config(cfg: Config) -> None:
         } if cfg["lab.name"] == "pollux" else {
             "name": "local-ub",
             # Fake connect. Also contains a read call to simulate autoboot abort
-            "command": "sh\nPROMPT_COMMAND=\nPS1='U-Boot> ';read",
+            "command": "sh\nPROMPT_COMMAND=\nPS1='U-Boot> ';read dummyvar",
         },
     }
 
@@ -51,16 +51,16 @@ def config(cfg: Config) -> None:
             "support_echo_e": True,
             "support_printf": True,
             "is_uboot": False,
-            "boot_command": """\
-sleep 1; \
-echo 'Some boot log ...'; \
-echo 'Very interesting ...'; \
-read -p 'lnx-login: '; read -p 'pw: '; sh""",
         },
     }
 
     cfg["linux"] = {
     } if cfg["lab.name"] == "pollux" else {
+        "boot_command": """\
+sleep 1; \
+echo 'Some boot log ...'; \
+echo 'Very interesting ...'; \
+read -p 'lnx-login: ' dummyvar; read -p 'pw: ' dummyvar; sh""",
         "shell": {
             "username": "root",
             "password": "root",

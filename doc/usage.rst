@@ -1,7 +1,7 @@
 .. TBot usage
 
-TBot commandline usage
-======================
+Commandline Usage
+=================
 
 .. code-block:: text
 

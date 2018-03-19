@@ -1,13 +1,13 @@
-.. tbot documentation master file, created by
+.. TBot documentation master file, created by
    sphinx-quickstart on Tue Jan 23 11:42:55 2018.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to tbot's documentation!
+Welcome to TBot's documentation!
 ================================
 
-tbot is a test automation tool for embedded linux. The current version focuses on
-support for U-Boot.
+TBot is a test automation tool for embedded linux development. It can handle day to day routines to make a develper's life a lot easier
+and it can be used for automation of test running with CI.
 
 .. image:: _static/tbot.svg
 
@@ -15,6 +15,7 @@ support for U-Boot.
    :maxdepth: 2
    :caption: Contents:
 
+   doc/install
    doc/getting-started
    doc/usage
    doc/configuration
