@@ -13,7 +13,7 @@ def selftest_testcase_calling(tb: tbot.TBot) -> None:
         return int(param)
 
     out = tb.call(a_testcase, param="123")
-    assert out == 123, "Testcase did not return 123: %r" % out
+    assert out == 123, f"Testcase did not return 123: {out!r}"
 
 @tbot.testcase
 @tbot.cmdline
@@ -58,7 +58,7 @@ def selftest_wrong_parameter_type(tb: tbot.TBot) -> None:
     except enforce.exceptions.RuntimeTypeError:
         failed = True
 
-    assert failed is True, "TBot did not detect a wrong parameter type (result: %r)" % (out2,)
+    assert failed is True, f"TBot did not detect a wrong parameter type (result: {out2!r})"
 
     tb.log.log_debug("Testing with correct parameter type (implicit) ...")
     out = tb.call(testcase_with_int_param, param=20)
@@ -71,4 +71,4 @@ def selftest_wrong_parameter_type(tb: tbot.TBot) -> None:
     except enforce.exceptions.RuntimeTypeError:
         failed = True
 
-    assert failed is True, "TBot did not detect a wrong parameter type (result: %r)" % (out2,)
+    assert failed is True, f"TBot did not detect a wrong parameter type (result {out2!r})"

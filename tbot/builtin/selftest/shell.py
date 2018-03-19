@@ -19,13 +19,13 @@ def test_shell(shell: tbot.machine.Machine,
 
     # Test basic IO, does printf without a newline work?
     out = shell.exec0("echo 'Hello World'")
-    assert out == "Hello World\n", "%r != 'Hello World\\n'" % out
+    assert out == "Hello World\n", f"{out!r} != 'Hello World\\n'"
 
     if has_printf:
         out = shell.exec0("printf 'Hello World'")
-        assert out == "Hello World", "%r != 'Hello World'" % out
+        assert out == "Hello World", f"{out!r} != 'Hello World'"
         out = shell.exec0("printf 'Hello\\nWorld'")
-        assert out == "Hello\nWorld", "%r != 'Hello\\nWorld'" % out
+        assert out == "Hello\nWorld", f"{out!r} != 'Hello\\nWorld'"
 
     if has_echo_e:
         # Test '\r' behaviour, we do not want any '\r\n's in out output,
@@ -35,10 +35,18 @@ def test_shell(shell: tbot.machine.Machine,
         # Busybox's builtin echo does not support the -e option. To mitigate this,
         # we use the system's echo
         echo = shell.exec0("which echo").strip()
-        out = shell.exec0(f"{echo} -e 'a string with a \\rin the middle and a \\r\\n\
-windows line ending'")
-        assert out == "a string with a \nin the middle and a \n\
-windows line ending\n", "%r does not match" % out
+        out = shell.exec0(f"{echo} -e 'a str w \\rand \\r\\n\
+win le'")
+        assert out == "a str w \nand \n\
+win le\n", f"{out!r} does not match"
+
+    # Test long commands
+    out = shell.exec0("echo 'A long command that is definitively too long for the\
+ standard terminal width but should be able to run ok, nontheless. At least in theory\
+ - That is what this test is for ...'")
+    assert out == "A long command that is definitively too long for the\
+ standard terminal width but should be able to run ok, nontheless. At least in theory\
+ - That is what this test is for ...\n", f"{out!r} does not match"
 
     # Test return codes
     return_code, _ = shell.exec("true")
@@ -107,7 +115,7 @@ def selftest_nested_boardshells(tb: tbot.TBot) -> None:
     """ Test if tbot handles nested boardshells correctly """
     with tb.with_board_uboot() as tb1:
         out = tb1.boardshell.exec0("echo Hello World")
-        assert out == "Hello World\n", "%r != 'Hello World'" % out
+        assert out == "Hello World\n", f"{out!r} != 'Hello World'"
 
         bs1 = tb1.boardshell
 
@@ -116,8 +124,8 @@ def selftest_nested_boardshells(tb: tbot.TBot) -> None:
             """ Second attempt of starting a boardshell """
             with tb.with_board_uboot() as tb2:
                 out = tb2.boardshell.exec0("echo Hello World")
-                assert out == "Hello World\n", "%r != 'Hello World'" % out
+                assert out == "Hello World\n", f"{out!r} != 'Hello World'"
 
                 bs2 = tb2.boardshell
 
-                assert bs1 is bs2, "%r is not %r" % (bs1, bs2)
+                assert bs1 is bs2, f"{bs1!r} is not {bs2!r}"
