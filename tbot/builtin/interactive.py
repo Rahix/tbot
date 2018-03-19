@@ -149,10 +149,13 @@ def interactive_linux(tb: tbot.TBot) -> None:
         channel = boardshell.channel
         def setup(ch: paramiko.Channel) -> None:
             """ Setup a custom prompt """
+            # Set terminal size
+            size = shutil.get_terminal_size()
+            ch.send(f"stty cols {size.columns}\nstty rows {size.lines}\n$SHELL\n")
             # Set custom prompt
             ch.send(f"PS1=\"\\[\\033[36m\\]{bname}-linux: \\[\\033[32m\\]\\w\\[\\033[0m\\]> \"\n")
             # Read back what we just sent
-            time.sleep(0.1)
+            time.sleep(0.5)
             ch.recv(1024)
         print("Linux Shell (CTRL-D to exit):")
         ishell(channel, abort="\x04", setup=setup)
