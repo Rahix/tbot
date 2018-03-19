@@ -49,7 +49,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'tbot'
+project = 'TBot'
 copyright = '2018, Rahix'
 author = 'Rahix'
 
