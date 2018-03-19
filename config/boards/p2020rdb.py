@@ -14,7 +14,6 @@ def config(cfg: Config) -> None:
     cfg["board"] = {
         "name": "p2020rdb",
         "toolchain": "generic-powerpc-e500v2",
-        "defconfig": "P2020RDB-PC_NAND_defconfig",
         "power": {
             "on_command": "remote_power p2020rdb_1 on",
             "off_command": "remote_power p2020rdb_1 off",
@@ -26,6 +25,7 @@ def config(cfg: Config) -> None:
     }
 
     cfg["uboot"] = {
+        "defconfig": "P2020RDB-PC_NAND_defconfig",
         "shell": {
             "prompt": "=> ",
         },

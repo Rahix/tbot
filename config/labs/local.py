@@ -22,7 +22,7 @@ def config(cfg: Config) -> None:
     }
 
     cfg["tftp"] = {
-        "rootdir": pathlib.PurePosixPath("/tmp/tftp"),
+        "root": pathlib.PurePosixPath("/tmp/tftp"),
         "tbotsubdir": pathlib.PurePosixPath("tbot"),
     }
 

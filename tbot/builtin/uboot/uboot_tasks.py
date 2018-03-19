@@ -105,7 +105,7 @@ def uboot_checkout_and_build(tb: tbot.TBot, *,
     :type repo: str
     :param toolchain: What toolchain to use, defaults to ``tb.config["board.toolchain"]``
     :type toolchain: Toolchain
-    :param defconfig: What U-Boot defconfig to use, defaults to ``tb.config["board.defconfig"]``
+    :param defconfig: What U-Boot defconfig to use, defaults to ``tb.config["uboot.defconfig"]``
     :type defconfig: str
     :returns: The U-Boot checkout as a meta object for other testcases
     :rtype: UBootRepository
@@ -158,7 +158,7 @@ def uboot_checkout_and_prepare(tb: tbot.TBot, *,
     :type repo: str
     :param toolchain: What toolchain to use, defaults to ``tb.config["board.toolchain"]``
     :type toolchain: Toolchain
-    :param defconfig: What U-Boot defconfig to use, defaults to ``tb.config["board.defconfig"]``
+    :param defconfig: What U-Boot defconfig to use, defaults to ``tb.config["uboot.defconfig"]``
     :type defconfig: str
     :returns: The U-Boot checkout as a meta object for other testcases
     :rtype: UBootRepository

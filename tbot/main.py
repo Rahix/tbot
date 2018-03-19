@@ -75,9 +75,10 @@ def main() -> None:
         .completer = LabCompleter
     parser.add_argument("board", type=str, help="name of the board to test on") \
         .completer = BoardCompleter
-    parser.add_argument("testcase", type=str, nargs="*", default=None,
-                        help="name of the testcase to run (default: \"uboot_checkout_and_build\")") \
-        .completer = TestcaseCompleter
+    parser.add_argument(
+        "testcase", type=str, nargs="*", default=None,
+        help="name of the testcase to run (default: \"uboot_checkout_and_build\")"
+    ).completer = TestcaseCompleter
 
     parser.add_argument("-c", "--confdir", type=str, default="config",
                         help="Specify alternate configuration directory (default: \"config/\")")
@@ -85,9 +86,9 @@ def main() -> None:
     parser.add_argument("--labconfdir", type=str,
                         default=confdir_path / "labs",
                         help="Specify alternate lab config directory (default: \"config/labs/\")")
-    parser.add_argument("--boardconfdir", type=str,
-                        default=confdir_path / "boards",
-                        help="Specify alternate board config directory (default: \"config/boards/\")")
+    parser.add_argument(
+        "--boardconfdir", type=str, default=confdir_path / "boards",
+        help="Specify alternate board config directory (default: \"config/boards/\")")
 
     tbot_path = pathlib.PurePosixPath("{tbotpath}")
     parser.add_argument("-d", "--tcdir", type=str, action="append",

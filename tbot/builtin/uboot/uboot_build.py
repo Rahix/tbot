@@ -30,13 +30,13 @@ def uboot_build(tb: tbot.TBot, *,
     :type builddir: UBootRepository
     :param toolchain: Which toolchain to use
     :type toolchain: Toolchain
-    :param defconfig: What U-Boot defconfig to use, defaults to ``tb.config["board.defconfig"]``
+    :param defconfig: What U-Boot defconfig to use, defaults to ``tb.config["uboot.defconfig"]``
     :type defconfig: str
     :param do_compile: Whether we should actually run ``make`` or skip it
     :type do_compile: bool
     """
 
-    defconfig = defconfig or tb.config["board.defconfig"]
+    defconfig = defconfig or tb.config["uboot.defconfig"]
 
     tb.log.doc_log(f"""
 We are using the `{toolchain}` toolchain and will compile \

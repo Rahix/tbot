@@ -15,7 +15,6 @@ def config(cfg: Config) -> None:
     cfg["board"] = {
         "name": "at91_taurus",
         "toolchain": "generic-armv7a-hf",
-        "defconfig": "taurus_defconfig",
         "power": {
             "on_command": "remote_power at91_taurus on",
             "off_command": "remote_power at91_taurus off",
@@ -28,6 +27,7 @@ def config(cfg: Config) -> None:
     }
 
     cfg["uboot"] = {
+        "defconfig": "taurus_defconfig",
         "patchdir": pathlib.PurePosixPath("/work/hs/tbot/patches/taurus_uboot_patches"),
         "env_location": pathlib.PurePosixPath("/home/hws/env/taurus-env.txt"),
     }
