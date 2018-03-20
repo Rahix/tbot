@@ -2,7 +2,6 @@
 Configuration
 -------------
 """
-import pathlib
 import typing
 
 class ConfigAssignException(Exception):
@@ -25,11 +24,6 @@ class Config(dict):
 
     The configuration is available as ``tb.config`` in all testcases.
     """
-    def __init__(self) -> None:
-        super().__init__()
-
-        self.workdir = pathlib.PurePosixPath("/tmp/tbot-workdir")
-
     def __getitem__(self, keys: typing.Union[str, typing.Tuple[str, typing.Any]]) -> typing.Any:
         if isinstance(keys, str):
             key = keys
