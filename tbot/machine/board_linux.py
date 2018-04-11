@@ -9,6 +9,7 @@ import paramiko
 import tbot
 from . import machine
 from . import board
+from . import shell_utils
 
 #pylint: disable=too-many-instance-attributes
 class MachineBoardLinux(board.MachineBoard):
@@ -112,8 +113,11 @@ class MachineBoardLinux(board.MachineBoard):
                                                   cmds[-1], prefix="   >> ",
                                                   log_show_stdout=False)
             tb.log.log(ev)
-            self.prompt = self.login_prompt
-            boot_stdout = self._read_to_prompt(ev)
+            boot_stdout = shell_utils.read_to_prompt(
+                self.channel,
+                self.login_prompt,
+                ev,
+            )
 
             # Login
             self.channel.send(f"{self.username}\n")
@@ -130,7 +134,11 @@ class MachineBoardLinux(board.MachineBoard):
             # Set PROMPT
             self.prompt = f"TBOT-LINUX-{random.randint(11111,99999)}>"
             self.channel.send(f"\nPROMPT_COMMAND=\nPS1='{self.prompt}'\n")
-            boot_stdout += self._read_to_prompt(ev)
+            boot_stdout += shell_utils.read_to_prompt(
+                self.channel,
+                self.prompt,
+                ev,
+            )
             ev.finished(0)
         except: # If anything goes wrong, turn off again
             self._destruct(tb)
@@ -155,53 +163,6 @@ class MachineBoardLinux(board.MachineBoard):
         else:
             raise Exception("U-Boot not initialized correctly, board might still be on!")
 
-    def _read_to_prompt(self, log_event: tbot.logger.LogEvent) -> str:
-        buf = ""
-
-        last_newline = 0
-
-        if not isinstance(self.channel, paramiko.Channel):
-            raise Exception("Channel not initilized")
-
-        while True:
-            # Read a lot and hope that this is all there is, so
-            # we don't cut off inside a unicode sequence and fail
-            buf_data = self.channel.recv(10000000)
-            try:
-                buf_data = buf_data.decode("utf-8")
-            except UnicodeDecodeError:
-                print("===> FAILED UNICODE PARSING")
-                print("buf: " + repr(buf))
-                print("buf_data(raw): " + repr(buf_data))
-                # TODO: Falling back to latin_1 is just a workaround as well ...
-                buf_data = buf_data.decode("latin_1")
-                print("buf_data(decoded): " + repr(buf_data))
-
-            # Fix '\r's, replace '\r\n' twice to avoid some glitches
-            buf_data = buf_data.replace('\r\n', '\n') \
-                .replace('\r\n', '\n') \
-                .replace('\r', '\n') \
-                .replace('\0', '')
-
-            buf += buf_data
-
-            if log_event is not None:
-                while "\n" in buf[last_newline:]:
-                    line = buf[last_newline:].split('\n')[0]
-                    if last_newline != 0:
-                        log_event.add_line(line)
-                    last_newline += len(line) + 1
-
-            if buf[-len(self.prompt):] == self.prompt:
-                # Print rest of last line to make sure nothing gets lost
-                if log_event is not None and "\n" not in buf[last_newline:]:
-                    line = buf[last_newline:-len(self.prompt)]
-                    if line != "":
-                        log_event.add_line(line)
-                break
-
-        return buf
-
     def _command(self,
                  command: str,
                  log_event: tbot.logger.LogEvent) -> str:
@@ -209,7 +170,11 @@ class MachineBoardLinux(board.MachineBoard):
             raise Exception("Channel not initilized")
 
         self.channel.send(f"{command}\n")
-        stdout = self._read_to_prompt(log_event)[len(command)+1:-len(self.prompt)]
+        stdout = shell_utils.read_to_prompt(
+            self.channel,
+            self.prompt,
+            log_event,
+        )[len(command)+1:-len(self.prompt)]
 
         return stdout
 
