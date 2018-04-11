@@ -65,6 +65,9 @@ Utils
 .. automodule:: tbot.testcase_collector
    :members:
 
+.. automodule:: tbot.machine.shell_utils
+   :members:
+
 Machine Manager
 ^^^^^^^^^^^^^^^
 

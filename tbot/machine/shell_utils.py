@@ -52,40 +52,38 @@ def read_to_prompt(chan: paramiko.Channel,
 
     last_newline = 0
 
-    try:
-        while True:
-            # Read a lot and hope that this is all there is, so
-            # we don't cut off inside a unicode sequence and fail
-            buf_data = chan.recv(10000000)
-            try:
-                buf_data = buf_data.decode("utf-8")
-            except UnicodeDecodeError:
-                # TODO: Falling back to latin_1 is just a workaround as well ...
-                buf_data = buf_data.decode("latin_1")
+    while True:
+        # Read a lot and hope that this is all there is, so
+        # we don't cut off inside a unicode sequence and fail
+        buf_data = chan.recv(10000000)
+        try:
+            buf_data = buf_data.decode("utf-8")
+        except UnicodeDecodeError:
+            # Fall back to latin-1 if unicode decoding fails ... This is not perfect
+            # but it does not stop a test run just because of an invalid character
+            buf_data = buf_data.decode("latin_1")
 
-            # Fix '\r's, replace '\r\n' twice to avoid some glitches
-            buf_data = buf_data.replace('\r\n', '\n') \
-                .replace('\r\n', '\n') \
-                .replace('\r', '\n')
+        # Fix '\r's, replace '\r\n' twice to avoid some glitches
+        buf_data = buf_data.replace('\r\n', '\n') \
+            .replace('\r\n', '\n') \
+            .replace('\r', '\n')
 
-            buf += buf_data
+        buf += buf_data
 
-            if log_event is not None:
-                while "\n" in buf[last_newline:]:
-                    line = buf[last_newline:].split('\n')[0]
-                    if last_newline != 0:
-                        log_event.add_line(line)
-                    last_newline += len(line) + 1
+        if log_event is not None:
+            while "\n" in buf[last_newline:]:
+                line = buf[last_newline:].split('\n')[0]
+                if last_newline != 0:
+                    log_event.add_line(line)
+                last_newline += len(line) + 1
 
-            if buf[-len(prompt):] == prompt:
-                # Print rest of last line to make sure nothing gets lost
-                if log_event is not None and "\n" not in buf[last_newline:]:
-                    line = buf[last_newline:-len(prompt)]
-                    if line != "":
-                        log_event.add_line(line)
-                break
-    except UnicodeDecodeError:
-        return ""
+        if buf[-len(prompt):] == prompt:
+            # Print rest of last line to make sure nothing gets lost
+            if log_event is not None and "\n" not in buf[last_newline:]:
+                line = buf[last_newline:-len(prompt)]
+                if line != "":
+                    log_event.add_line(line)
+            break
 
     return buf
 
