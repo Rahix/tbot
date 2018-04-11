@@ -88,3 +88,30 @@ def read_to_prompt(chan: paramiko.Channel,
         return ""
 
     return buf
+
+def exec_command(chan: paramiko.Channel,
+                 prompt: str,
+                 command: str,
+                 log_event: typing.Optional[tbot.logger.LogEvent] = None) -> str:
+    """
+    Execute a command and return it's output
+
+    :param chan: Channel to execute this command on
+    :type chan: paramiko.Channel
+    :param prompt: Prompt to be expected
+    :type prompt: str
+    :param command: Command to be executed (no trailing ``\\n``)
+    :type command: str
+    :param log_event: Optional log event for this command
+    :type log_event: tbot.logger.LogEvent
+    :returns: The output of the command
+    :rtype: str
+    """
+    chan.send(f"{command}\n")
+    stdout = read_to_prompt(
+        chan,
+        prompt,
+        log_event,
+    )[len(command)+1:-len(prompt)]
+
+    return stdout

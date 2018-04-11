@@ -163,29 +163,18 @@ class MachineBoardLinux(board.MachineBoard):
         else:
             raise Exception("U-Boot not initialized correctly, board might still be on!")
 
-    def _command(self,
-                 command: str,
-                 log_event: tbot.logger.LogEvent) -> str:
-        if not isinstance(self.channel, paramiko.Channel):
-            raise Exception("Channel not initilized")
-
-        self.channel.send(f"{command}\n")
-        stdout = shell_utils.read_to_prompt(
-            self.channel,
-            self.prompt,
-            log_event,
-        )[len(command)+1:-len(self.prompt)]
-
-        return stdout
-
     def _exec(self,
               command: str,
               log_event: tbot.logger.LogEvent) -> typing.Tuple[int, str]:
         log_event.prefix = "   >< "
-        stdout = self._command(command, log_event)
+        stdout = shell_utils.exec_command(
+            self.channel, self.prompt,
+            command, log_event)
 
         # Get the return code
-        retcode = int(self._command("echo $?", None).strip())
+        retcode = int(shell_utils.exec_command(
+            self.channel, self.prompt,
+            "echo $?", None).strip())
 
         return retcode, stdout
 
