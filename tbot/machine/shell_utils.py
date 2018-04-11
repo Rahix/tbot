@@ -1,0 +1,90 @@
+"""
+Utilities for shell interaction
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""
+import typing
+import paramiko
+import tbot
+
+def setup_channel(chan: paramiko.Channel,
+                  prompt: str) -> None:
+    """
+    Setup a paramiko channel
+
+    :param chan: The channel to be set up
+    :type chan: paramiko.Channel
+    :param prompt: The prompt that should be used, has to be very unique!
+    :type prompt: str
+    :returns: Nothing
+    :rtype: None
+    """
+    chan.get_pty("xterm-256color")
+    # Resize the pty to ensure we do not get escape sequences from the terminal
+    # trying to wrap to the next line
+    chan.resize_pty(200, 200, 1000, 1000)
+    chan.invoke_shell()
+
+    # Initialize remote shell
+    chan.send(f"""\
+PROMPT_COMMAND=''
+PS1='{prompt}'
+""")
+
+    read_to_prompt(chan, prompt)
+
+def read_to_prompt(chan: paramiko.Channel,
+                   prompt: str,
+                   log_event: typing.Optional[tbot.logger.LogEvent] = None
+                  ) -> str:
+    """
+    Read until the shell waits for further input
+
+    :param chan: Channel to read from
+    :type chan: paramiko.Channel
+    :param prompt: Prompt to be waited for
+    :type prompt: str
+    :param log_event: Optional log event to write output lines to
+    :type log_event: tbot.logger.LogEvent
+    :returns: The read string (including the prompt)
+    :rtype: str
+    """
+    buf = ""
+
+    last_newline = 0
+
+    try:
+        while True:
+            # Read a lot and hope that this is all there is, so
+            # we don't cut off inside a unicode sequence and fail
+            buf_data = chan.recv(10000000)
+            try:
+                buf_data = buf_data.decode("utf-8")
+            except UnicodeDecodeError:
+                # TODO: Falling back to latin_1 is just a workaround as well ...
+                buf_data = buf_data.decode("latin_1")
+
+            # Fix '\r's, replace '\r\n' twice to avoid some glitches
+            buf_data = buf_data.replace('\r\n', '\n') \
+                .replace('\r\n', '\n') \
+                .replace('\r', '\n')
+
+            buf += buf_data
+
+            if log_event is not None:
+                while "\n" in buf[last_newline:]:
+                    line = buf[last_newline:].split('\n')[0]
+                    if last_newline != 0:
+                        log_event.add_line(line)
+                    last_newline += len(line) + 1
+
+            if buf[-len(prompt):] == prompt:
+                # Print rest of last line to make sure nothing gets lost
+                if log_event is not None and "\n" not in buf[last_newline:]:
+                    line = buf[last_newline:-len(prompt)]
+                    if line != "":
+                        log_event.add_line(line)
+                break
+    except UnicodeDecodeError:
+        return ""
+
+    return buf
