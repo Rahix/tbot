@@ -7,6 +7,7 @@ from .board import MachineBoard
 
 from .lab_noenv import MachineLabNoEnv
 from .lab_env import MachineLabEnv
+from .build import MachineBuild
 
 from .board_uboot import MachineBoardUBoot
 from .board_linux import MachineBoardLinux
