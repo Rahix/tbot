@@ -71,6 +71,10 @@ def read_to_prompt(chan: paramiko.Channel,
         buf += buf_data
 
         if log_event is not None:
+            #pylint: disable=protected-access
+            log_event._log.log_oververbose(repr(buf_data))
+
+        if log_event is not None:
             while "\n" in buf[last_newline:]:
                 line = buf[last_newline:].split('\n')[0]
                 if last_newline != 0:

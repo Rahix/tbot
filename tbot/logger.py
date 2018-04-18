@@ -37,6 +37,7 @@ class Verbosity(enum.IntEnum):
     DEBUG = 4
     VERBOSE = 5
     VERY_VERBOSE = 6
+    OVER_VERBOSE = 7
 
     def __str__(self) -> str:
         return super(Verbosity, self).__str__().split(".")[-1]
@@ -412,7 +413,6 @@ class Logger:
         :type message: str
         :param verbosity: Minimum verbosity level for this message to be written
         :type verbosity: tbot.logger.Verbosity
-        :returns: Nothing
         """
         ev = CustomLogEvent(
             ["msg", str(verbosity)],
@@ -427,9 +427,18 @@ class Logger:
 
         :param message: Debug message
         :type message: str
-        :returns: Nothing
         """
         self.log_msg(message, Verbosity.DEBUG)
+
+    def log_oververbose(self, message: str) -> None:
+        """
+        Print to stdout directly for debugging purposes
+
+        :param message: Debug message
+        :type message: str:
+        """
+        if self.verbosity >= Verbosity.OVER_VERBOSE:
+            print(message)
 
     def write_logfile(self, filename: typing.Optional[pathlib.PurePosixPath] = None) -> None:
         """
