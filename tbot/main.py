@@ -102,6 +102,8 @@ named \"tc\"")
                         help="Json log file name (default: \"log/<lab>-<board>-<run>.json\")")
     parser.add_argument("-v", "--verbose", action="append_const", const=0,
                         default=[], help="Increase verbosity")
+    parser.add_argument("-q", "--quiet", action="append_const", const=0,
+                        default=[], help="Decrease verbosity")
     parser.add_argument("--list-testcases", action="store_true", default=False,
                         help="List all testcases")
     parser.add_argument("--list-labs", action="store_true", default=False,
@@ -153,7 +155,9 @@ named \"tc\"")
             print(tc)
         return
 
-    verbosity = logger.Verbosity(logger.Verbosity.INFO + len(args.verbose))
+    verbosity = logger.Verbosity(max(0, logger.Verbosity.INFO
+                                     + len(args.verbose)
+                                     - len(args.quiet)))
     if args.logfile is not None:
         logfile = pathlib.Path(args.logfile)
     else:
