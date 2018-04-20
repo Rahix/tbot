@@ -3,8 +3,15 @@ TBot config selftests
 ---------------------
 """
 import pathlib
+import typing
 import tempfile
 import tbot
+
+def parse_config(configs: typing.List[pathlib.Path]) -> tbot.config.Config:
+    """ Wrapper around the tbot config parser for convenience """
+    cfg = tbot.config.Config()
+    tbot.config_parser.parse_config(cfg, configs)
+    return cfg
 
 @tbot.testcase
 @tbot.cmdline
@@ -21,7 +28,7 @@ def config(cfg):
     cfg["foo"] = 1
 """)
 
-        cfg = tbot.config_parser.parse_config([tempdir / "c1.py"])
+        cfg = parse_config([tempdir / "c1.py"])
         assert cfg["foo"] == 1
 
 ####################################################################
@@ -32,9 +39,9 @@ def config(cfg):
     cfg["foo"] = 2
 """)
 
-        cfg = tbot.config_parser.parse_config([tempdir / "c1.py",
-                                               tempdir / "c2.py",
-                                              ])
+        cfg = parse_config([tempdir / "c1.py",
+                            tempdir / "c2.py",
+                           ])
         assert cfg["foo"] == 2
 
 ####################################################################
@@ -53,9 +60,9 @@ def config(cfg):
     cfg["foo.bar"] = 4
 """)
 
-        cfg = tbot.config_parser.parse_config([tempdir / "c3.py",
-                                               tempdir / "c4.py",
-                                              ])
+        cfg = parse_config([tempdir / "c3.py",
+                            tempdir / "c4.py",
+                           ])
         assert cfg["foo.bar"] == 4
 
 ####################################################################
@@ -70,9 +77,9 @@ def config(cfg):
 
         fail = False
         try:
-            cfg = tbot.config_parser.parse_config([tempdir / "c3.py",
-                                                   tempdir / "c5.py",
-                                                  ])
+            cfg = parse_config([tempdir / "c3.py",
+                                tempdir / "c5.py",
+                               ])
         except tbot.config.ConfigAssignException:
             fail = True
         assert fail is True
@@ -81,9 +88,9 @@ def config(cfg):
         tb.log.log_debug("Testing overwriting a subtree with a value ...")
         fail = False
         try:
-            cfg = tbot.config_parser.parse_config([tempdir / "c5.py",
-                                                   tempdir / "c3.py",
-                                                  ])
+            cfg = parse_config([tempdir / "c5.py",
+                                tempdir / "c3.py",
+                               ])
         except tbot.config.ConfigAssignException:
             fail = True
         assert fail is True
@@ -98,9 +105,9 @@ def config(cfg):
     }
 """)
 
-        cfg = tbot.config_parser.parse_config([tempdir / "c5.py",
-                                               tempdir / "c6.py",
-                                              ])
+        cfg = parse_config([tempdir / "c5.py",
+                            tempdir / "c6.py",
+                           ])
         assert cfg["foo.bar.baz"] == 5
         assert cfg["foo.bar.foo"] == 6
 
@@ -118,7 +125,7 @@ def config(cfg):
     }
 """)
 
-        cfg = tbot.config_parser.parse_config([tempdir / "c7.py"])
+        cfg = parse_config([tempdir / "c7.py"])
         assert cfg["foo.bar.baz"] == 7
         assert cfg["foo.baz.bar"] == 77
         assert cfg["foo.baz.foo.bar"] == 777

@@ -80,7 +80,10 @@ def main() -> None:
         help="name of the testcase to run (default: \"uboot_checkout_and_build\")"
     ).completer = TestcaseCompleter
 
-    parser.add_argument("-c", "--confdir", type=str, default="config",
+    parser.add_argument("-c", "--config", type=str, action="append",
+                        default=[], help="Set a config value. Argument must be \
+of the form <option-name>=<python-expression>")
+    parser.add_argument("--confdir", type=str, default="config",
                         help="Specify alternate configuration directory (default: \"config/\")")
     confdir_path = pathlib.PurePosixPath("{confdir}")
     parser.add_argument("--labconfdir", type=str,
@@ -141,10 +144,22 @@ named \"tc\"")
                 print(board.stem)
         return
 
+    config = tbot.config.Config()
     if not args.list_testcases:
-        config = config_parser.parse_config([lab_config_path,
-                                             board_config_path,
-                                             tbot_config_path])
+        #pylint: disable=eval-used
+        opts = list(map(lambda _opt: (_opt[0], eval(_opt[1])),
+                        (opt.split('=', maxsplit=1) for opt in args.config)))
+        # Apply before loading config to set values that are used in the config
+        for opt_name, opt_val in opts:
+            config[opt_name] = opt_val
+        config_parser.parse_config(config,
+                                   [lab_config_path,
+                                    board_config_path,
+                                    tbot_config_path])
+        # Apply after loading config to overwrite values
+        for opt_name, opt_val in opts:
+            config[opt_name] = opt_val
+
 
     tbotpath = pathlib.Path(__file__).absolute().parent
     tc_paths = [str(path).format(tbotpath=tbotpath) for path in args.tcdir]
