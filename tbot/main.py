@@ -125,7 +125,12 @@ named \"tc\"")
     import sys
     import traceback
 
-    tbot_config_path = pathlib.Path(args.confdir) / "tbot.py"
+    tbotpath = pathlib.Path(__file__).absolute().parent
+    tbot_config_path = tbotpath.parent / "config" / "tbot.py"
+    tbot_custom_config_path = pathlib.Path(args.confdir) / "tbot.py"
+    if pathlib.Path.absolute(tbot_config_path) == pathlib.Path.absolute(tbot_custom_config_path):
+        # If its the same, don't apply it twice
+        tbot_custom_config_path = None
     lab_config_path = pathlib.Path(str(args.labconfdir).format(confdir=args.confdir)) \
         / f"{args.lab}.py"
 
@@ -152,16 +157,16 @@ named \"tc\"")
         # Apply before loading config to set values that are used in the config
         for opt_name, opt_val in opts:
             config[opt_name] = opt_val
-        config_parser.parse_config(config,
-                                   [lab_config_path,
-                                    board_config_path,
-                                    tbot_config_path])
+        config_parser.parse_config(
+            config, [lab_config_path, board_config_path]
+            + ([tbot_custom_config_path] if tbot_custom_config_path is not None
+               and pathlib.Path.exists(tbot_custom_config_path) else [])
+            + [tbot_config_path])
         # Apply after loading config to overwrite values
         for opt_name, opt_val in opts:
             config[opt_name] = opt_val
 
 
-    tbotpath = pathlib.Path(__file__).absolute().parent
     tc_paths = [str(path).format(tbotpath=tbotpath) for path in args.tcdir]
     testcases, cmdline_testcases = testcase_collector.get_testcases(tc_paths)
 
