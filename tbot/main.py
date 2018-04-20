@@ -82,7 +82,7 @@ def main() -> None:
 
     parser.add_argument("-c", "--config", type=str, action="append",
                         default=[], help="Set a config value. Argument must be \
-of the form <option-name>=<python-expression>")
+of the form <option-name>=<python-expression>. WARNING: Uses eval!")
     parser.add_argument("--confdir", type=str, default="config",
                         help="Specify alternate configuration directory (default: \"config/\")")
     confdir_path = pathlib.PurePosixPath("{confdir}")
