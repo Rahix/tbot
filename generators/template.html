@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>${page_title}</title>
+    <style>
+/*
+ * Copyright (c) 2015 Stephen Warren
+ * Copyright (c) 2016, NVIDIA CORPORATION. All rights reserved.
+ *
+ * SPDX-License-Identifier: GPL-2.0
+ */
+
+/*
+ * This provides pretty formatting of the HTML log file, e.g.
+ * - colored bars beside/above log sections for easily parsed delineation.
+ * - color highlighting of various messages.
+ */
+
+body {
+    background-color: black;
+    color: #ffffff;
+}
+
+pre {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.implicit {
+    color: #808080;
+}
+
+.block {
+    border-style: solid;
+    border-color: #303030;
+    border-width: 0px 0px 0px 5px;
+    padding-left: 5px
+}
+
+.block-header {
+    background-color: #303030;
+    margin-left: -5px;
+    margin-top: 5px;
+}
+
+.block-header:hover {
+    text-decoration: underline;
+}
+
+.block-trailer {
+    display: none;
+}
+
+.error {
+    color: #ff0000
+}
+
+.warning {
+    color: #ffff00
+}
+
+.info {
+    color: #808080
+}
+
+.action {
+    color: #8080ff
+}
+
+.timestamp {
+    color: #8080ff
+}
+
+.status-pass {
+    color: #00ff00
+}
+
+.status-skipped {
+    color: #ffff00
+}
+
+.status-xfail {
+    color: #ff7f00
+}
+
+.status-xpass {
+    color: #ff7f00
+}
+
+.status-fail {
+    color: #ff0000
+}
+
+.hidden {
+    display: none;
+}
+
+a:link {
+    text-decoration: inherit;
+    color: inherit;
+}
+
+a:visited {
+    text-decoration: inherit;
+    color: inherit;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+    </style>
+    <script src="http://code.jquery.com/jquery.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        // Add expand/contract buttons to all block headers
+        btns = "<span class=\"block-expand hidden\">[+] </span>" +
+               "<span class=\"block-contract\">[-] </span>";
+        $(".block-header").prepend(btns);
+
+        // Pre-contract all blocks except messages of loglevel INFO and higher
+        passed_bcs = $(".block-content");
+        passed_bcs = passed_bcs.not(":not(:has(.block)) :has(.level-INFO)");
+        passed_bcs = passed_bcs.not(":not(:has(.block)) :has(.level-WARNING)");
+        passed_bcs = passed_bcs.not(":not(:has(.block)) :has(.level-ERROR)");
+        passed_bcs = passed_bcs.not(":not(:has(.block)) :has(.level-ALL)");
+        // Expand top level
+        passed_bcs = passed_bcs.not("tt > div > div");
+        // Hide the passed blocks
+        passed_bcs.addClass("hidden");
+        // Flip the expand/contract button hiding for those blocks.
+        bhs = passed_bcs.parent().children(".block-header")
+        bhs.children(".block-expand").removeClass("hidden");
+        bhs.children(".block-contract").addClass("hidden");
+
+        // Flip the expand/contract button hiding for those blocks.
+        bhsd = passed_bcs.parent().children(".block-header-dir")
+        bhsd.children(".block-expand").removeClass("hidden");
+        bhsd.children(".block-contract").addClass("hidden");
+
+        // Add click handler to block headers.
+        // The handler expands/contracts the block.
+        $(".block-header").on("click", function (e) {
+          var header = $(this);
+          var content = header.next(".block-content");
+          var expanded = !content.hasClass("hidden");
+          if (expanded) {
+              content.addClass("hidden");
+              header.children(".block-expand").first().removeClass("hidden");
+              header.children(".block-contract").first().addClass("hidden");
+          } else {
+              header.children(".block-contract").first().removeClass("hidden");
+              header.children(".block-expand").first().addClass("hidden");
+              content.removeClass("hidden");
+          }
+        });
+
+        // Add click handler to block headers dir.
+        // The handler expands/contracts the block.
+        $(".block-header-dir").on("click", function (e) {
+          var header = $(this);
+          var content = header.next(".block-content");
+          var expanded = !content.hasClass("hidden");
+          if (expanded) {
+              content.addClass("hidden");
+              header.children(".block-expand").first().removeClass("hidden");
+              header.children(".block-contract").first().addClass("hidden");
+          } else {
+              header.children(".block-contract").first().removeClass("hidden");
+              header.children(".block-expand").first().addClass("hidden");
+              content.removeClass("hidden");
+          }
+        });
+
+        // When clicking on a link, expand the target block
+        $("a").on("click", function (e) {
+          var block = $($(this).attr("href"));
+          var header = block.children(".block-header");
+          var content = block.children(".block-content").first();
+          header.children(".block-contract").first().removeClass("hidden");
+          header.children(".block-expand").first().addClass("hidden");
+          content.removeClass("hidden");
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <tt>
+      ${content}
+      </div>
+      </div>
+    </tt>
+  </body>
+</html>
