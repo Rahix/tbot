@@ -80,7 +80,10 @@ def main() -> None:
         help="name of the testcase to run (default: \"uboot_checkout_and_build\")"
     ).completer = TestcaseCompleter
 
-    parser.add_argument("-c", "--confdir", type=str, default="config",
+    parser.add_argument("-c", "--config", type=str, action="append",
+                        default=[], help="Set a config value. Argument must be \
+of the form <option-name>=<python-expression>. WARNING: Uses eval!")
+    parser.add_argument("--confdir", type=str, default="config",
                         help="Specify alternate configuration directory (default: \"config/\")")
     confdir_path = pathlib.PurePosixPath("{confdir}")
     parser.add_argument("--labconfdir", type=str,
@@ -102,6 +105,8 @@ named \"tc\"")
                         help="Json log file name (default: \"log/<lab>-<board>-<run>.json\")")
     parser.add_argument("-v", "--verbose", action="append_const", const=0,
                         default=[], help="Increase verbosity")
+    parser.add_argument("-q", "--quiet", action="append_const", const=0,
+                        default=[], help="Decrease verbosity")
     parser.add_argument("--list-testcases", action="store_true", default=False,
                         help="List all testcases")
     parser.add_argument("--list-labs", action="store_true", default=False,
@@ -120,7 +125,12 @@ named \"tc\"")
     import sys
     import traceback
 
-    tbot_config_path = pathlib.Path(args.confdir) / "tbot.py"
+    tbotpath = pathlib.Path(__file__).absolute().parent
+    tbot_config_path = tbotpath.parent / "config" / "tbot.py"
+    tbot_custom_config_path = pathlib.Path(args.confdir) / "tbot.py"
+    if pathlib.Path.absolute(tbot_config_path) == pathlib.Path.absolute(tbot_custom_config_path):
+        # If its the same, don't apply it twice
+        tbot_custom_config_path = None
     lab_config_path = pathlib.Path(str(args.labconfdir).format(confdir=args.confdir)) \
         / f"{args.lab}.py"
 
@@ -139,12 +149,24 @@ named \"tc\"")
                 print(board.stem)
         return
 
+    config = tbot.config.Config()
     if not args.list_testcases:
-        config = config_parser.parse_config([lab_config_path,
-                                             board_config_path,
-                                             tbot_config_path])
+        #pylint: disable=eval-used
+        opts = list(map(lambda _opt: (_opt[0], eval(_opt[1])),
+                        (opt.split('=', maxsplit=1) for opt in args.config)))
+        # Apply before loading config to set values that are used in the config
+        for opt_name, opt_val in opts:
+            config[opt_name] = opt_val
+        config_parser.parse_config(
+            config, [lab_config_path, board_config_path]
+            + ([tbot_custom_config_path] if tbot_custom_config_path is not None
+               and pathlib.Path.exists(tbot_custom_config_path) else [])
+            + [tbot_config_path])
+        # Apply after loading config to overwrite values
+        for opt_name, opt_val in opts:
+            config[opt_name] = opt_val
 
-    tbotpath = pathlib.Path(__file__).absolute().parent
+
     tc_paths = [str(path).format(tbotpath=tbotpath) for path in args.tcdir]
     testcases, cmdline_testcases = testcase_collector.get_testcases(tc_paths)
 
@@ -153,7 +175,9 @@ named \"tc\"")
             print(tc)
         return
 
-    verbosity = logger.Verbosity(logger.Verbosity.INFO + len(args.verbose))
+    verbosity = logger.Verbosity(max(0, logger.Verbosity.INFO
+                                     + len(args.verbose)
+                                     - len(args.quiet)))
     if args.logfile is not None:
         logfile = pathlib.Path(args.logfile)
     else:

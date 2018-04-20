@@ -17,4 +17,6 @@ def config(cfg: Config) -> None:
     cfg["uboot.builddir"] = \
         cfg["uboot.builddir", cfg["tbot.workdir"] / f"uboot-{cfg['board.name']}"]
 
-    cfg["tftp.directory"] = cfg["tftp.directory", cfg["tftp.boarddir"] / cfg["tftp.tbotsubdir"]]
+    if cfg["tftp.boarddir", None] is not None:
+        cfg["tftp.directory"] = cfg["tftp.directory",
+                                    cfg["tftp.boarddir"] / cfg["tftp.tbotsubdir", "tbot"]]

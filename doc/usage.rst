@@ -5,8 +5,8 @@ Commandline Usage
 
 .. code-block:: text
 
-    usage: tbot [-h] [-c CONFDIR] [--labconfdir LABCONFDIR]
-                [--boardconfdir BOARDCONFDIR] [-d TCDIR] [-l LOGFILE] [-v]
+    usage: tbot [-h] [-c CONFIG] [--confdir CONFDIR] [--labconfdir LABCONFDIR]
+                [--boardconfdir BOARDCONFDIR] [-d TCDIR] [-l LOGFILE] [-v] [-q]
                 [--list-testcases] [--list-labs] [--list-boards]
                 lab board [testcase [testcase ...]]
 
@@ -15,29 +15,32 @@ Commandline Usage
     positional arguments:
       lab                   name of the lab to connect to
       board                 name of the board to test on
-      testcase              name of the testcase to run
-                            (default: "uboot_checkout_and_build")
+      testcase              name of the testcase to run (default:
+                            "uboot_checkout_and_build")
 
     optional arguments:
       -h, --help            show this help message and exit
-      -c CONFDIR, --confdir CONFDIR
-                            Specify alternate configuration directory
-                            (default: "config/")
+      -c CONFIG, --config CONFIG
+                            Set a config value. Argument must be of the form
+                            <option-name>=<python-expression>. WARNING: Uses eval!
+      --confdir CONFDIR     Specify alternate configuration directory (default:
+                            "config/")
       --labconfdir LABCONFDIR
-                            Specify alternate lab config directory
-                            (default: "config/labs/")
+                            Specify alternate lab config directory (default:
+                            "config/labs/")
       --boardconfdir BOARDCONFDIR
-                            Specify alternate board config directory
-                            (default: "config/boards/")
+                            Specify alternate board config directory (default:
+                            "config/boards/")
       -d TCDIR, --tcdir TCDIR
                             Add a directory to the testcase search path. The
                             default search path contains TBot's builtin testcases
                             and, if it exists, a subdirectory in the current
                             working directory named "tc"
       -l LOGFILE, --logfile LOGFILE
-                            Json log file name
-                            (default: "log/<lab>-<board>-<run>.json")
+                            Json log file name (default:
+                            "log/<lab>-<board>-<run>.json")
       -v, --verbose         Increase verbosity
+      -q, --quiet           Decrease verbosity
       --list-testcases      List all testcases
       --list-labs           List all labs
       --list-boards         List all boards

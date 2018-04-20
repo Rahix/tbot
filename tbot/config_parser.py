@@ -6,17 +6,15 @@ import importlib
 import typing
 from tbot import config
 
-
-
-def parse_config(configs: typing.List[pathlib.Path]) -> config.Config:
+def parse_config(cfg: config.Config,
+                 configs: typing.List[pathlib.Path]) -> None:
     """
     Parse a list of configurations and apply them in the order they were
     given.
 
+    :param config: Config to apply the files to
     :param configs: List of configuration files
-    :returns: The final configuration
     """
-    cfg = config.Config()
     for cfg_file in configs:
         module_spec = importlib.util.spec_from_file_location(cfg_file.stem, str(cfg_file))
 
@@ -30,5 +28,3 @@ def parse_config(configs: typing.List[pathlib.Path]) -> config.Config:
             module.__dict__["config"](cfg)
         else:
             raise Exception(f"{cfg_file} is not a valid TBot configuration!")
-
-    return cfg

@@ -9,6 +9,7 @@ import paramiko
 import tbot
 from . import machine
 from . import board
+from . import shell_utils
 
 #pylint: disable=too-many-instance-attributes
 class MachineBoardUBoot(board.MachineBoard):
@@ -81,12 +82,7 @@ class MachineBoardUBoot(board.MachineBoard):
         conn = tb.machines.connection
         self.conn = conn
         self.channel = conn.get_transport().open_session()
-        self.channel.get_pty("xterm-256color")
-
-        # Resize the pty to ensure we do not get escape sequences from the terminal
-        # trying to wrap to the next line
-        self.channel.resize_pty(200, 200, 1000, 1000)
-        self.channel.invoke_shell()
+        shell_utils.setup_channel(self.channel, self.prompt)
 
         self.connect_command = self.connect_command or tb.config["board.serial.command"]
         self.uboot_prompt = self.uboot_prompt or tb.config["uboot.shell.prompt", "U-Boot> "]
@@ -97,8 +93,6 @@ class MachineBoardUBoot(board.MachineBoard):
 
         try:
             # Poweron the board
-            self.channel.send(f"PROMPT_COMMAND=\nPS1='{self.prompt}'\n")
-            self._read_to_prompt(None)
             self.channel.send(f"{self.connect_command}\n")
 
             self.noenv.exec0(self.power_cmd_on, log_show_stdout=False)
@@ -107,7 +101,7 @@ class MachineBoardUBoot(board.MachineBoard):
             time.sleep(self.uboot_timeout)
             self.channel.send("\n")
             self.prompt = self.uboot_prompt
-            boot_stdout = self._read_to_prompt(None)
+            boot_stdout = shell_utils.read_to_prompt(self.channel, self.prompt)
 
             ev = tbot.logger.CustomLogEvent(
                 ["board", "boot"],
@@ -132,72 +126,18 @@ class MachineBoardUBoot(board.MachineBoard):
         else:
             raise Exception("Channel not initilized")
 
-    def _read_to_prompt(self, log_event: tbot.logger.LogEvent) -> str:
-        buf = ""
-
-        last_newline = 0
-
-        if not isinstance(self.channel, paramiko.Channel):
-            raise Exception("Channel not initilized")
-
-        while True:
-            # Read a lot and hope that this is all there is, so
-            # we don't cut off inside a unicode sequence and fail
-            buf_data = self.channel.recv(10000000)
-            try:
-                buf_data = buf_data.decode("utf-8")
-            except UnicodeDecodeError:
-                print("===> FAILED UNICODE PARSING")
-                print("buf: " + repr(buf))
-                print("buf_data(raw): " + repr(buf_data))
-                # TODO: Falling back to latin_1 is just a workaround as well ...
-                buf_data = buf_data.decode("latin_1")
-                print("buf_data(decoded): " + repr(buf_data))
-
-            # Fix '\r's, replace '\r\n' twice to avoid some glitches
-            buf_data = buf_data.replace('\r\n', '\n') \
-                .replace('\r\n', '\n') \
-                .replace('\r', '\n') \
-                .replace('\0', '')
-
-            buf += buf_data
-
-            if log_event is not None:
-                while "\n" in buf[last_newline:]:
-                    line = buf[last_newline:].split('\n')[0]
-                    if last_newline != 0:
-                        log_event.add_line(line)
-                    last_newline += len(line) + 1
-
-            if buf[-len(self.prompt):] == self.prompt:
-                # Print rest of last line to make sure nothing gets lost
-                if log_event is not None and "\n" not in buf[last_newline:]:
-                    line = buf[last_newline:-len(self.prompt)]
-                    if line != "":
-                        log_event.add_line(line)
-                break
-
-        return buf
-
-    def _command(self,
-                 command: str,
-                 log_event: tbot.logger.LogEvent) -> str:
-        if not isinstance(self.channel, paramiko.Channel):
-            raise Exception("Channel not initilized")
-
-        self.channel.send(f"{command}\n")
-        stdout = self._read_to_prompt(log_event)[len(command)+1:-len(self.prompt)]
-
-        return stdout
-
     def _exec(self,
               command: str,
               log_event: tbot.logger.LogEvent) -> typing.Tuple[int, str]:
         log_event.prefix = "   >> "
-        stdout = self._command(command, log_event)
+        stdout = shell_utils.exec_command(
+            self.channel, self.prompt,
+            command, log_event)
 
         # Get the return code
-        retcode = int(self._command("echo $?", None).strip())
+        retcode = int(shell_utils.exec_command(
+            self.channel, self.prompt,
+            "echo $?", None).strip())
 
         return retcode, stdout
 
