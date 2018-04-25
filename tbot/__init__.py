@@ -86,7 +86,8 @@ class TBot:
         """
         def _decorator(f: typing.Callable) -> typing.Any:
             kwargs["and_then"] = f
-            return self.call(tc, **kwargs)
+            self.call(tc, **kwargs)
+            return f
         return _decorator
 
     def call(self, tc: typing.Union[str, typing.Callable], *,
