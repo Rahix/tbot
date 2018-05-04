@@ -53,7 +53,7 @@ _tbot()
             --help --config --confdir --labconfdir
             --boardconfdir --tcdir --logfile --verbose
             --quiet --list-testcases --list-labs
-            --list-boards' -- "$cur" ) )
+            --list-boards -vv -vvv -vvvv -qq -qqq -qqqq' -- "$cur" ) )
     else
         case $current_mode in
             1)  # LAB

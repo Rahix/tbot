@@ -3,6 +3,7 @@ Utilities for shell interaction
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 """
 import typing
+import re
 import paramiko
 import tbot
 
@@ -34,7 +35,8 @@ PS1='{prompt}'
 
 def read_to_prompt(chan: paramiko.Channel,
                    prompt: str,
-                   log_event: typing.Optional[tbot.logger.LogEvent] = None
+                   log_event: typing.Optional[tbot.logger.LogEvent] = None,
+                   prompt_regex: bool = False,
                   ) -> str:
     """
     Read until the shell waits for further input
@@ -46,9 +48,16 @@ def read_to_prompt(chan: paramiko.Channel,
     :param log_event: Optional log event to write output lines to
     :type log_event: tbot.logger.LogEvent
     :returns: The read string (including the prompt)
+    :param prompt_regex: Wether the prompt string is to be interpreted as
+                         a regular expression (read_to_prompt will add a $
+                         to the end of your expression to ensure it only
+                         matches the end of the output)
+    :type prompt_regex: bool
     :rtype: str
     """
     buf = ""
+
+    expression = f"{prompt}$" if prompt_regex else None
 
     last_newline = 0
 
@@ -81,7 +90,8 @@ def read_to_prompt(chan: paramiko.Channel,
                     log_event.add_line(line)
                 last_newline += len(line) + 1
 
-        if buf[-len(prompt):] == prompt:
+        if (not prompt_regex and buf[-len(prompt):] == prompt) \
+            or (prompt_regex and re.search(expression, buf) is not None):
             # Print rest of last line to make sure nothing gets lost
             if log_event is not None and "\n" not in buf[last_newline:]:
                 line = buf[last_newline:-len(prompt)]

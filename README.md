@@ -5,6 +5,7 @@ TBot is a test automation tool for embedded linux development. It can handle day
 develper's life a lot easier and it can be used for automation of test running with CI. TBot is written in
 Python3.6 and will not work with anything below.
 Please take a look at the [documentation](https://rahix.de/tbot-doc/html/) for a guide on how to get started.
+Or alternatively there is a short slidedeck available at <https://rahix.de/tbot-doc/tbot-presentation/>.
 
 ## Installation ##
 Clone this Repository, then install TBot using
