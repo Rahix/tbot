@@ -3,15 +3,34 @@ _tbot()
     local cur prev words cword
     _init_completion || return
 
+    # Completions for path arguments
+    if [[ "$prev" == @(-d|--tcdir|--confdir|--labconfdir|--boardconfdir) ]]; then
+        _filedir -d
+        # Remove __pycache__ for convenience
+        COMPREPLY=(${COMPREPLY[@]/*__pycache__*/})
+        return
+    fi
+
+    # Check what is required next
     # 1) LAB
     # 2) BOARD
     # 3+) TESTCASE
     local current_mode=0
-    for word in ${words[*]}; do
-        if [[ $word != -* && $word != $cur ]]; then
+    local index=0
+    while [[ $index -lt ${#words[@]} ]]; do
+        local current_word="${words[$index]}"
+        if [[ $current_word != -* && $current_word != $cur ]]; then
             current_mode=$(($current_mode + 1))
+        # If this argument is one that carries a parameter
+        elif [[ $current_word == @(-c|-d|-l|--config|--confdir|--labconfdir|--boardconfdir|--tcdir|--logfile) ]]; then
+            # Skip one
+            index=$(($index + 1))
         fi
+        index=$(($index + 1))
     done
+
+    #TODO: Catch --confdir, --labconfdir, --boardconfdir,
+    #      and --tcdir and adjust completions accordingly
 
     if [[ "$cur" == -* ]]; then
         COMPREPLY=( $( compgen -W '-h -c -d -l -v -q
