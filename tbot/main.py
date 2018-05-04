@@ -4,64 +4,6 @@ TBot main entry point
 import pathlib
 import typing
 import argparse
-import argcomplete
-
-#pylint: disable=invalid-name
-def LabCompleter(**_kwargs: typing.Any) -> typing.List[str]:
-    """
-    Return a list of all currently available labs for shell completion
-
-    :param _kwargs: Compatibility parameter for argcomplete
-    :returns: List of lab names
-    """
-    lst = []
-    try:
-        for lab in pathlib.Path("config/labs").iterdir():
-            if lab.suffix == ".py":
-                lst.append(lab.stem)
-    finally:
-        return lst #pylint: disable=lost-exception
-
-#pylint: disable=invalid-name
-def BoardCompleter(**_kwargs: typing.Any) -> typing.List[str]:
-    """
-    Return a list of all currently available boards for shell completion
-
-    :param _kwargs: Compatibility parameter for argcomplete
-    :returns: List of board names
-    """
-    lst = []
-    try:
-        for board in pathlib.Path("config/boards").iterdir():
-            if board.suffix == ".py":
-                lst.append(board.stem)
-    finally:
-        return lst #pylint: disable=lost-exception
-
-#pylint: disable=invalid-name
-def TestcaseCompleter(**_kwargs: typing.Any) -> typing.List[str]:
-    """
-    Return a list of all currently available testcases for shell completion
-
-    :param _kwargs: Compatibility parameter for argcomplete
-    :returns: List of testcase names
-    """
-    lst = []
-    try:
-        tbotpath = pathlib.Path(__file__).absolute().parent
-
-        tbot_path = pathlib.PurePosixPath("{tbotpath}")
-        #TODO: Fix this ignoring -d args
-        default = [tbot_path / "builtin",
-                   "tc"]
-        tc_paths = [str(path).format(tbotpath=tbotpath) for path in default]
-        from tbot import testcase_collector
-        _, testcases = testcase_collector.get_testcases(tc_paths)
-
-        for tc in testcases:
-            lst.append(tc)
-    finally:
-        return lst #pylint: disable=lost-exception
 
 #pylint: disable=too-many-locals, too-many-branches
 def main() -> None:
@@ -71,14 +13,12 @@ def main() -> None:
         description="A test tool for embedded linux development",
         )
 
-    parser.add_argument("lab", type=str, help="name of the lab to connect to") \
-        .completer = LabCompleter
-    parser.add_argument("board", type=str, help="name of the board to test on") \
-        .completer = BoardCompleter
+    parser.add_argument("lab", type=str, help="name of the lab to connect to")
+    parser.add_argument("board", type=str, help="name of the board to test on")
     parser.add_argument(
         "testcase", type=str, nargs="*", default=None,
         help="name of the testcase to run (default: \"uboot_checkout_and_build\")"
-    ).completer = TestcaseCompleter
+    )
 
     parser.add_argument("-c", "--config", type=str, action="append",
                         default=[], help="Set a config value. Argument must be \
@@ -114,8 +54,6 @@ named \"tc\"")
     parser.add_argument("--list-boards", action="store_true", default=False,
                         help="List all boards")
 
-    argcomplete.autocomplete(parser)
-
     args = parser.parse_args()
 
     from tbot import config_parser
@@ -127,10 +65,13 @@ named \"tc\"")
 
     tbotpath = pathlib.Path(__file__).absolute().parent
     tbot_config_path = tbotpath.parent / "config" / "tbot.py"
-    tbot_custom_config_path = pathlib.Path(args.confdir) / "tbot.py"
-    if pathlib.Path.absolute(tbot_config_path) == pathlib.Path.absolute(tbot_custom_config_path):
+    tbot_custom_config_path_maybe = pathlib.Path(args.confdir) / "tbot.py"
+    if pathlib.Path.absolute(tbot_config_path) \
+        == pathlib.Path.absolute(tbot_custom_config_path_maybe):
         # If its the same, don't apply it twice
         tbot_custom_config_path = None
+    else:
+        tbot_custom_config_path = tbot_custom_config_path_maybe
     lab_config_path = pathlib.Path(str(args.labconfdir).format(confdir=args.confdir)) \
         / f"{args.lab}.py"
 

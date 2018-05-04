@@ -2,14 +2,12 @@
 TBot
 ----
 """
-import argparse
 import time
 import pathlib
 import typing
 import traceback
 import sys
 import paramiko
-import argcomplete
 import enforce
 from tbot import config_parser
 from tbot import logger
