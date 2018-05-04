@@ -7,15 +7,6 @@ import typing
 import tbot
 from tbot import tc
 
-EXPORT = ["UBootRepository"]
-
-class UBootRepository(tc.GitRepository):
-    """
-    A meta object to represent a checked out version of U-Boot.
-    Can be created with :func:`uboot_checkout` or :func:`uboot_checkout_and_build`
-    """
-    pass
-
 @tbot.testcase
 def check_uboot_version(tb: tbot.TBot, *,
                         uboot_binary: pathlib.PurePosixPath,
@@ -40,7 +31,7 @@ def uboot_checkout(tb: tbot.TBot, *,
                    builddir: typing.Optional[pathlib.PurePosixPath] = None,
                    patchdir: typing.Optional[pathlib.PurePosixPath] = None,
                    repo: typing.Optional[str] = None,
-                  ) -> UBootRepository:
+                  ) -> tc.UBootRepository:
     """
     Create a checkout of U-Boot
 
@@ -81,7 +72,7 @@ def uboot_checkout(tb: tbot.TBot, *,
                      target=builddir)
     if patchdir is not None and clean is True:
         tb.call("git_apply_patches", gitdir=gitdir, patchdir=patchdir)
-    return UBootRepository(gitdir)
+    return tc.UBootRepository(gitdir)
 
 @tbot.testcase
 @tbot.cmdline
@@ -91,7 +82,7 @@ def uboot_checkout_and_build(tb: tbot.TBot, *,
                              repo: typing.Optional[str] = None,
                              toolchain: typing.Optional[tc.Toolchain] = None,
                              defconfig: typing.Optional[str] = None,
-                            ) -> UBootRepository:
+                            ) -> tc.UBootRepository:
     """
     Checkout U-Boot and build it
 
@@ -119,7 +110,7 @@ def uboot_checkout_and_build(tb: tbot.TBot, *,
                        builddir=builddir,
                        patchdir=patchdir,
                        repo=repo)
-    assert isinstance(ubootdir, UBootRepository)
+    assert isinstance(ubootdir, tc.UBootRepository)
 
     toolchain = toolchain or tb.call("toolchain_get")
 
@@ -143,7 +134,7 @@ def uboot_checkout_and_prepare(tb: tbot.TBot, *,
                                repo: typing.Optional[str] = None,
                                toolchain: typing.Optional[tc.Toolchain] = None,
                                defconfig: typing.Optional[str] = None,
-                              ) -> UBootRepository:
+                              ) -> tc.UBootRepository:
     """
     Checkout U-Boot and prepare for building it (ie in an interactive session
     using ``interactive_build``)
@@ -172,7 +163,7 @@ def uboot_checkout_and_prepare(tb: tbot.TBot, *,
                        builddir=builddir,
                        patchdir=patchdir,
                        repo=repo)
-    assert isinstance(ubootdir, UBootRepository)
+    assert isinstance(ubootdir, tc.UBootRepository)
 
     toolchain = toolchain or tb.call("toolchain_get")
 

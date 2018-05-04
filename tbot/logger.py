@@ -30,14 +30,14 @@ def has_unicode(with_unicode: str, without_unicode: str) -> str:
 
 class Verbosity(enum.IntEnum):
     """ Logger verbosity level """
-    QUIET = 0
-    ERROR = 1
-    WARNING = 2
-    INFO = 3
-    DEBUG = 4
-    VERBOSE = 5
-    VERY_VERBOSE = 6
-    OVER_VERBOSE = 7
+    ALL = -1
+    ERROR = 0
+    WARNING = 1
+    INFO = 2
+    DEBUG = 3
+    VERBOSE = 4
+    VERY_VERBOSE = 5
+    OVER_VERBOSE = 6
 
     def __str__(self) -> str:
         return super(Verbosity, self).__str__().split(".")[-1]
@@ -187,7 +187,7 @@ class TestcaseBeginLogEvent(LogEvent):
 
     @property
     def _verbosity_level(self) -> Verbosity:
-        return Verbosity.INFO
+        return Verbosity.ALL
 
     @property
     def _event_type(self) -> typing.List[str]:
@@ -275,7 +275,7 @@ class TestcaseEndLogEvent(LogEvent):
 
     @property
     def _verbosity_level(self) -> Verbosity:
-        return Verbosity.INFO
+        return Verbosity.ALL
 
     @property
     def _event_type(self) -> typing.List[str]:
@@ -310,7 +310,7 @@ class TBotFinishedLogEvent(LogEvent):
 
     @property
     def _verbosity_level(self) -> Verbosity:
-        return Verbosity.INFO
+        return Verbosity.ALL
 
     @property
     def _event_type(self) -> typing.List[str]:

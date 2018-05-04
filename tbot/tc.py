@@ -16,3 +16,7 @@ class UnknownToolchainException(Exception):
 class Toolchain(str):
     """ Dummy for pylint to shut up """
     pass
+
+class TftpDirectory(pathlib.PurePosixPath):
+    """ Dummy for pylint to shut up """
+    pass

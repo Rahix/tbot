@@ -5,20 +5,12 @@ Testcases for working with git
 import typing
 import pathlib
 import tbot
-
-EXPORT = ["GitRepository"]
-
-class GitRepository(pathlib.PurePosixPath):
-    """
-    A meta object representing a git repository.
-    Can be created with :func:`git_clean_checkout` or :func:`git_dirty_checkout`
-    """
-    pass
+from tbot import tc
 
 @tbot.testcase
 def git_dirty_checkout(tb: tbot.TBot, *,
                        target: pathlib.PurePosixPath,
-                       repo: str) -> GitRepository:
+                       repo: str) -> tc.GitRepository:
     """
     Checkout a git repo if it does not exist yet, but do not touch it
     if it already exists
@@ -45,12 +37,12 @@ git clone {repo} {target}""", log_show=True)
         tb.log.log(event)
         event.finished(0)
 
-    return GitRepository(target)
+    return tc.GitRepository(target)
 
 @tbot.testcase
 def git_clean_checkout(tb: tbot.TBot, *,
                        target: pathlib.PurePosixPath,
-                       repo: str) -> GitRepository:
+                       repo: str) -> tc.GitRepository:
     """
     Checkout a git repo if it does not exist yet and make sure there are
     no artifacts left from previous builds.
@@ -85,12 +77,12 @@ git clone {repo} {target}""", log_show=True)
         tb.log.log(event)
         event.finished(0)
 
-    return GitRepository(target)
+    return tc.GitRepository(target)
 
 
 @tbot.testcase
 def git_apply_patches(tb: tbot.TBot, *,
-                      gitdir: GitRepository,
+                      gitdir: tc.GitRepository,
                       patchdir: pathlib.PurePosixPath) -> None:
     """
     Apply patchfiles inside patchdir onto the git repository in gitdir.
@@ -126,7 +118,7 @@ cd {gitdir}; git am -3 {patch}""", log_show_stdout=False)
 
 @tbot.testcase
 def git_bisect(tb: tbot.TBot,
-               gitdir: GitRepository,
+               gitdir: tc.GitRepository,
                good: str,
                and_then: typing.Union[str, typing.Callable],
                params: typing.Optional[typing.Dict[str, typing.Any]] = None,

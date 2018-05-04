@@ -8,12 +8,15 @@ generator as a base
 """
 import json
 import sys
+import pathlib
+import string
 
 def main():
     """ Generate an html log """
 
     try:
-        log = json.load(open(sys.argv[1]))
+        filename = pathlib.Path(sys.argv[1])
+        log = json.load(open(filename))
     except: #pylint: disable=broad-except
         print(f"\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m\n")
         raise
@@ -51,44 +54,53 @@ def main():
         elif msg['type'][0] == "shell":
             shell_type = repr(tuple(msg['type'][1:]))
             command = repr(msg['command'])[1:-1]
-            output = msg['output'][:-1].replace('<', '&lt;') \
-                .replace('>', '&gt;') \
-                .replace('&', '&amp;')
-            return f"""    <div class="stream block">
-                             <div class="stream-header block-header">
+            output = msg['output'][:-1].replace('&', '&amp;') \
+                .replace('<', '&lt;') \
+                .replace('>', '&gt;')
+            return f"""    <div class="block">
+                             <div class="block-header">
                                {shell_type} {command}
                              </div>
-                             <div class="stream-content block-content">
+                             <div class="block-content">
                                <pre>
 {output}</pre>
                              </div>
                            </div>"""
         elif msg['type'] == ["board", "boot"]:
-            return f"""    <div class="stream block">
-                             <div class="stream-header block-header">
+            output = msg['log'].replace('&', '&amp;') \
+                .replace('<', '&lt;') \
+                .replace('>', '&gt;')
+            return f"""    <div class="block">
+                             <div class="block-header">
                                -&gt; Board boot log
                              </div>
-                             <div class="stream-content block-content">
+                             <div class="block-content">
                                <pre>
-{msg['log']}</pre>
+{output}</pre>
                              </div>
                            </div>"""
         elif msg['type'][0] == "msg":
-            return f"""    <div class="stream block">
-                             <div class="stream-header block-header">
+            output = msg['text'].replace('&', '&amp;') \
+                .replace('<', '&lt;') \
+                .replace('>', '&gt;')
+            return f"""    <div class="block">
+                             <div class="block-header">
                                Message ({msg['type'][1]}):
                              </div>
-                             <div class="stream-content block-content">
+                             <div class="block-content">
                                <pre>
-{msg['text']}</pre>
+{output}</pre>
+                               <div class="level-{msg['type'][1]}" style="color: #aaa">
+                                  <i>Loglevel: {msg['type'][1]}</i>
+                               </div>
                              </div>
                            </div>"""
         elif msg['type'][0] == "exception":
-            return f"""    <div class="stream block">
-                             <div class="stream-header block-header">
+            return f"""    <div class="block">
+                             <div class="block-header">
                                Exception: {msg['name']}
                              </div>
-                             <div class="stream-content block-content">
+                             <div class="block-content">
                                <pre>
 {msg['trace']}</pre>
                              </div>
@@ -102,103 +114,15 @@ def main():
 
         raise Exception("unknown event %r" % (msg,))
 
-    # Header
-    print("""<html>
-<head>
-<link rel="stylesheet" type="text/css" href="multiplexed_log.css">
-<script src="http://code.jquery.com/jquery.min.js"></script>
-<script>
-$(document).ready(function () {
-    // Add expand/contract buttons to all block headers
-    btns = "<span class=\\"block-expand hidden\\">[+] </span>" +
-        "<span class=\\"block-contract\\">[-] </span>";
-    $(".block-header").prepend(btns);
+    with open(pathlib.Path(__file__).parent / "template.html") as f:
+        template_string = f.read()
 
-    // Add expand/contract buttons to all block headers dir
-    btnsd = "<span class=\\"block-expand hidden\\">[+] </span>" +
-        "<span class=\\"block-contract\\">[-] </span>";
-    $(".block-header-dir").prepend(btns);
+    data = {
+        "page_title": f"TBot log: {pathlib.Path(filename.stem)}",
+        "content": "\n".join(map(gen_html, log)),
+    }
 
-    // Pre-contract all blocks which passed, leaving only problem cases
-    // expanded, to highlight issues the user should look at.
-    // Only top-level blocks (sections) should have any status
-    passed_bcs = $(".block-content:has(.status-pass)");
-    // Some blocks might have multiple status entries (e.g. the status
-    // report), so take care not to hide blocks with partial success.
-    passed_bcs = passed_bcs.not(":has(.status-fail)");
-    passed_bcs = passed_bcs.not(":has(.status-xfail)");
-    passed_bcs = passed_bcs.not(":has(.status-xpass)");
-    passed_bcs = passed_bcs.not(":has(.status-skipped)");
-    // Expand top level
-    passed_bcs = passed_bcs.not("tt > div > div");
-    // Hide the passed blocks
-    passed_bcs.addClass("hidden");
-    // Flip the expand/contract button hiding for those blocks.
-    bhs = passed_bcs.parent().children(".block-header")
-    bhs.children(".block-expand").removeClass("hidden");
-    bhs.children(".block-contract").addClass("hidden");
-
-    // Flip the expand/contract button hiding for those blocks.
-    bhsd = passed_bcs.parent().children(".block-header-dir")
-    bhsd.children(".block-expand").removeClass("hidden");
-    bhsd.children(".block-contract").addClass("hidden");
-
-    // Add click handler to block headers.
-    // The handler expands/contracts the block.
-    $(".block-header").on("click", function (e) {
-        var header = $(this);
-        var content = header.next(".block-content");
-        var expanded = !content.hasClass("hidden");
-        if (expanded) {
-            content.addClass("hidden");
-            header.children(".block-expand").first().removeClass("hidden");
-            header.children(".block-contract").first().addClass("hidden");
-        } else {
-            header.children(".block-contract").first().removeClass("hidden");
-            header.children(".block-expand").first().addClass("hidden");
-            content.removeClass("hidden");
-        }
-    });
-
-    // Add click handler to block headers dir.
-    // The handler expands/contracts the block.
-    $(".block-header-dir").on("click", function (e) {
-        var header = $(this);
-        var content = header.next(".block-content");
-        var expanded = !content.hasClass("hidden");
-        if (expanded) {
-            content.addClass("hidden");
-            header.children(".block-expand").first().removeClass("hidden");
-            header.children(".block-contract").first().addClass("hidden");
-        } else {
-            header.children(".block-contract").first().removeClass("hidden");
-            header.children(".block-expand").first().addClass("hidden");
-            content.removeClass("hidden");
-        }
-    });
-
-    // When clicking on a link, expand the target block
-    $("a").on("click", function (e) {
-        var block = $($(this).attr("href"));
-        var header = block.children(".block-header");
-        var content = block.children(".block-content").first();
-        header.children(".block-contract").first().removeClass("hidden");
-        header.children(".block-expand").first().addClass("hidden");
-        content.removeClass("hidden");
-    });
-});
-</script>
-</head>
-<body>
-<tt>
-""")
-
-    print("\n".join(map(gen_html, log)))
-
-    # Footer
-    print("""</tt>
-</body>
-</html>""")
+    print(string.Template(template_string).safe_substitute(data))
 
 if __name__ == "__main__":
     main()

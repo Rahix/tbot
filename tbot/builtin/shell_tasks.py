@@ -5,36 +5,13 @@ Common shell operations
 import pathlib
 import typing
 import tbot
-
-EXPORT = ["TftpDirectory"]
-
-class TftpDirectory:
-    """
-    A meta object to represent the tftp directory.
-    Can be created with :func:`setup_tftpdir`
-
-    :param root: TFTP root directory
-    :type root: pathlib.PurePosixPath
-    :param subdir: TFTP sub-directory
-    :type subdir: pathlib.PurePosixPath
-
-    :ivar root: TFTP root directory
-    :ivar subdir: TFTP sub-directory, this is what you should use on the board
-    :ivar path: Full TFTP path, this is what you should use on the Labhost
-    """
-
-    def __init__(self,
-                 root: pathlib.PurePosixPath,
-                 subdir: pathlib.PurePosixPath) -> None:
-        self.root = root
-        self.subdir = subdir
-        self.path = root / subdir
+from tbot import tc
 
 @tbot.testcase
 def setup_tftpdir(tb: tbot.TBot, *,
                   root: typing.Optional[pathlib.PurePosixPath] = None,
                   subdir: typing.Optional[pathlib.PurePosixPath] = None,
-                 ) -> TftpDirectory:
+                 ) -> tc.TftpDirectory:
     """
     Setup the tftp directory
 
@@ -55,7 +32,7 @@ def setup_tftpdir(tb: tbot.TBot, *,
     if not isinstance(subdir, pathlib.PurePosixPath):
         raise Exception("Configuation error: 'tftp.directory' must be a PurePosixPath!")
 
-    tftpdir = TftpDirectory(root, subdir)
+    tftpdir = tc.TftpDirectory(root, subdir)
 
     tb.shell.exec0(f"mkdir -p {tftpdir.path}", log_show=False)
 
@@ -68,7 +45,7 @@ def cp_to_tftpdir(tb: tbot.TBot, *,
                   name: typing.Union[str, pathlib.PurePosixPath],
                   dest_name: typing.Optional[str] = None,
                   builddir: typing.Optional[pathlib.PurePosixPath] = None,
-                  tftpdir: TftpDirectory,
+                  tftpdir: tc.TftpDirectory,
                  ) -> None:
     """
     Copy a file into the tftp folder

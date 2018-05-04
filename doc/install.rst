@@ -18,7 +18,7 @@ TBot supports command line completions. Enable them by adding
 
 ::
 
-    eval "$(register-python-argcomplete tbot)"
+    source /path/to/tbot/completions.sh
 
 to your ``.bashrc`` or equivalent.
 

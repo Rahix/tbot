@@ -4,6 +4,7 @@ Tescase collector
 """
 import pathlib
 import typing
+import itertools
 import importlib.util
 import enforce
 import tbot
@@ -63,12 +64,16 @@ def get_testcases(paths: typing.Union[typing.List[str], typing.List[pathlib.Path
         if path.is_dir():
             sources += list(walkdir(path))
 
-    for source in sources:
+    export_sources = (source for source in sources if source.stem.endswith("_exports"))
+    normal_sources = (source for source in sources if not source.stem.endswith("_exports"))
+    # First load export sources then continue with normal
+    for source in itertools.chain(export_sources, normal_sources):
         module_spec = importlib.util.spec_from_file_location(source.stem, str(source))
         module = importlib.util.module_from_spec(module_spec)
         if isinstance(module_spec.loader, importlib.abc.Loader):
             module_spec.loader.exec_module(module)
-            if "EXPORT" in module.__dict__:
+            # Load exports
+            if source.stem.endswith("_exports") and "EXPORT" in module.__dict__:
                 for k in module.__dict__["EXPORT"]:
                     tbot.tc.__dict__[k] = module.__dict__[k]
         else:
