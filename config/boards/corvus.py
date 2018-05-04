@@ -28,7 +28,7 @@ def config(cfg: Config) -> None:
         } if cfg["lab.name"] == "pollux" else {
             "name": "local-ub",
             # Fake connect. Also contains a read call to simulate autoboot abort
-            "command": "sh\nPROMPT_COMMAND=\nPS1='U-Boot> ';read dummyvar",
+            "command": "sh\nPROMPT_COMMAND=\nPS1='U-Boot> ';sleep 0.1;echo 'Autoboot: ';read dummyvar",
         },
     }
 
@@ -47,8 +47,8 @@ def config(cfg: Config) -> None:
         "patchdir": pathlib.PurePosixPath("/home/hws/Documents/corvus_patches"),
         "env_location": pathlib.PurePosixPath("/home/hws/Documents/tbot2/env/corvus-env.txt"),
         "shell": {
+            "autoboot-prompt": r"Autoboot:\s+",
             "prompt": "U-Boot> ",
-            "timeout": 0.1,
             "support_echo_e": True,
             "support_printf": True,
             "is_uboot": False,
