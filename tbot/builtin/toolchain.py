@@ -8,7 +8,12 @@ from tbot import tc
 
 
 @tbot.testcase
-def toolchain_get(tb: tbot.TBot, *, name: typing.Optional[str] = None) -> tc.Toolchain:
+def toolchain_get(
+    tb: tbot.TBot,
+    *,
+    name: typing.Optional[str] = None,
+    buildhost: typing.Optional[str] = None,
+) -> tc.Toolchain:
     """
     Get a toolchain and ensure it exists
 
@@ -18,10 +23,11 @@ def toolchain_get(tb: tbot.TBot, *, name: typing.Optional[str] = None) -> tc.Too
     :rtype: Toolchain
     """
     name = name or tb.config["board.toolchain"]
-    if tb.config[f"toolchains.{name}", None] is None:
+    buildhost = buildhost or tb.config["build.default"]
+    if tb.config[f"build.{buildhost}.toolchains.{name}", None] is None:
         raise tc.UnknownToolchainException(repr(name))
     tbot.log.debug(f"Toolchain '{name}' exists")
-    return tc.Toolchain(name)
+    return tc.Toolchain(name, buildhost, tb.config)
 
 
 @tbot.testcase
@@ -48,8 +54,6 @@ def toolchain_env(
     # We don't need to check if the toolchain exists because it has to
     # (You can't create a Toolchain() object without it existing)
 
-    toolchain_script = tb.config[f"toolchains.{toolchain}.env_setup_script"]
-
     tbot.log.debug(f"Setting up '{toolchain}' toolchain")
 
     tbot.log.doc(
@@ -58,8 +62,8 @@ def toolchain_env(
     )
 
     # Create an env shell
-    with tb.machine(tbot.machine.MachineLabEnv()) as tb:
-        tb.shell.exec0(f"unset LD_LIBRARY_PATH")
-        tb.shell.exec0(f"source {toolchain_script}")
+    with tb.machine(tbot.machine.MachineBuild(name=toolchain.host)) as tb:
+        tb.buildshell.exec0(f"unset LD_LIBRARY_PATH")
+        tb.buildshell.exec0(f"source {toolchain.env_setup_script}")
 
         tb.call(and_then, **params)
