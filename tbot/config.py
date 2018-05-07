@@ -45,7 +45,8 @@ class Config(dict):
             return super(Config, cfg).__getitem__(key_path[-1])
         except KeyError as key_error:
             if isinstance(keys, str):
-                raise key_error
+                key_error.args = [key]
+                raise
             return keys[1]
 
     def __setitem__(self, key: str, value: typing.Any) -> None:
