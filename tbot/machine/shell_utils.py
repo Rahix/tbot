@@ -27,6 +27,7 @@ def setup_channel(chan: paramiko.Channel,
 
     # Initialize remote shell
     chan.send(f"""\
+unset HISTFILE
 PROMPT_COMMAND=''
 PS1='{prompt}'
 """)

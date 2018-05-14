@@ -80,6 +80,7 @@ def ishell(channel: paramiko.Channel, *,
                     channel.send(data_string)
     finally:
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, oldtty)
+        channel.settimeout(None)
 
 @tbot.testcase
 @tbot.cmdline
@@ -132,6 +133,8 @@ def interactive_uboot(tb: tbot.TBot) -> None:
         channel = boardshell.channel
         print("U-Boot Shell (CTRL-D to exit):")
         ishell(channel, abort="\x04")
+        channel.send("\n")
+        tbot.machine.shell_utils.read_to_prompt(channel, boardshell.prompt)
         print("\r")
 
 @tbot.testcase
@@ -159,4 +162,6 @@ def interactive_linux(tb: tbot.TBot) -> None:
             ch.recv(1024)
         print("Linux Shell (CTRL-D to exit):")
         ishell(channel, abort="\x04", setup=setup)
+        channel.send("\x04")
+        tbot.machine.shell_utils.read_to_prompt(channel, boardshell.prompt)
         print("\r")
