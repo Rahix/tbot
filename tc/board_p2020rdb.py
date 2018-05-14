@@ -5,7 +5,6 @@ P2020RDB-PCA board specific testcases
 import tbot
 
 @tbot.testcase
-@tbot.cmdline
 def p2020rdb(tb: tbot.TBot) -> None:
     """
     P2020RDB-PCA board specific testcase to build U-Boot, flash it into
@@ -33,7 +32,6 @@ U-Boot on the P2020RDB-PCA board
     tb.call("uboot_tests", builddir=ubootdir, toolchain=toolchain)
 
 @tbot.testcase
-@tbot.cmdline
 def p2020rdb_check_install(tb: tbot.TBot) -> None:
     """ Check if the U-Boot installation was successful """
     ubootdir = tb.call("uboot_checkout", clean=False)
@@ -41,7 +39,6 @@ def p2020rdb_check_install(tb: tbot.TBot) -> None:
         ubootdir / "u-boot-with-spl.bin")
 
 @tbot.testcase
-@tbot.cmdline
 def p2020rdb_install_uboot(tb: tbot.TBot) -> None:
     """ Install U-Boot into NAND flash of the P2020RDB-PCA """
     tb.log.doc_log("""

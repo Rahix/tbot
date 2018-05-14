@@ -111,7 +111,7 @@ named \"tc\"")
 
 
     tc_paths = [str(path).format(tbotpath=tbotpath) for path in args.tcdir]
-    testcases, cmdline_testcases = testcase_collector.get_testcases(tc_paths)
+    testcases = testcase_collector.get_testcases(tc_paths)
 
     if args.list_testcases:
         for tc in testcases:
@@ -159,11 +159,11 @@ LOG:   "{logfile}\"""",
                               (param.split('=', maxsplit=1) for param in args.param)))
             if args.testcase != []:
                 for tc in args.testcase:
-                    if tc in cmdline_testcases:
+                    if tc in testcases:
                         tb.call(tc, **params)
                     else:
                         raise Exception(\
-"Testcase not found or not suitable for commandline use")
+"Testcase not found")
             else:
                 @tb.call
                 def default(tb: tbot.TBot) -> None: #pylint: disable=unused-variable

@@ -5,7 +5,6 @@ TBot logger selftests
 import tbot
 
 @tbot.testcase
-@tbot.cmdline
 def selftest_logger(tb: tbot.TBot) -> None:
     """ Test logger """
     text = """\

@@ -5,7 +5,6 @@ TBot testcase selftests
 import tbot
 
 @tbot.testcase
-@tbot.cmdline
 def selftest_testcase_calling(tb: tbot.TBot) -> None:
     """ Test calling testcases """
     def a_testcase(_tb: tbot.TBot, param: str) -> int:
@@ -16,7 +15,6 @@ def selftest_testcase_calling(tb: tbot.TBot) -> None:
     assert out == 123, f"Testcase did not return 123: {out!r}"
 
 @tbot.testcase
-@tbot.cmdline
 def selftest_test_failures(tb: tbot.TBot) -> None:
     """ Test a failing testcase """
     def a_failing_testcase(_tb: tbot.TBot) -> None:
@@ -37,7 +35,6 @@ def selftest_standalone_int_param(_tb: tbot.TBot, *, param: int) -> str:
     return str(param)
 
 @tbot.testcase
-@tbot.cmdline
 def selftest_wrong_parameter_type(tb: tbot.TBot) -> None:
     """ Test whether TBot detects wrong parameter types """
 

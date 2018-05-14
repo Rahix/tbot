@@ -8,7 +8,6 @@ import tbot
 from tbot import tc
 
 @tbot.testcase
-@tbot.cmdline
 def just_uboot_tests(tb: tbot.TBot) -> None:
     """
     Run U-Boot tests on the currently existing (possibly dirty) U-Boot tree.

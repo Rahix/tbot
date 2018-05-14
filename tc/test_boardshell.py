@@ -6,7 +6,6 @@ import tbot
 
 
 @tbot.testcase
-@tbot.cmdline
 def test_boardshell(tb: tbot.TBot) -> None:
     """ Test if the boardshell is working """
     with tb.with_board_uboot() as tb:

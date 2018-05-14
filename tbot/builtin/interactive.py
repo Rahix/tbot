@@ -83,7 +83,6 @@ def ishell(channel: paramiko.Channel, *,
         channel.settimeout(None)
 
 @tbot.testcase
-@tbot.cmdline
 def interactive_build(tb: tbot.TBot, *,
                       builddir: typing.Optional[pathlib.PurePosixPath] = None,
                       toolchain: typing.Optional[tc.Toolchain] = None,
@@ -120,7 +119,6 @@ def interactive_build(tb: tbot.TBot, *,
         ishell(channel, setup=setup)
 
 @tbot.testcase
-@tbot.cmdline
 def interactive_uboot(tb: tbot.TBot) -> None:
     """
     Open an interactive U-Boot prompt on the board
@@ -138,7 +136,6 @@ def interactive_uboot(tb: tbot.TBot) -> None:
         print("\r")
 
 @tbot.testcase
-@tbot.cmdline
 def interactive_linux(tb: tbot.TBot) -> None:
     """
     Open an interactive Linux prompt on the board
