@@ -1,6 +1,5 @@
 """
 Utilities for shell interaction
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 """
 import typing
 import re
