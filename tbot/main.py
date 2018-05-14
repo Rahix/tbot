@@ -20,6 +20,9 @@ def main() -> None:
         help="name of the testcase to run (default: \"uboot_checkout_and_build\")"
     )
 
+    parser.add_argument("-p", "--param", type=str, action="append",
+                        default=[], help="Set a testcase parameter. Argument must be \
+of the form <param-name>=<python-expression>. WARNING: Uses eval!")
     parser.add_argument("-c", "--config", type=str, action="append",
                         default=[], help="Set a config value. Argument must be \
 of the form <option-name>=<python-expression>. WARNING: Uses eval!")
