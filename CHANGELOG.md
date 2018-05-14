@@ -1,6 +1,19 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Commandline testcase parameters
+- Completions for logfile
+- More config documentation
+
+### Removed
+- `@cmdline` decorator. All testcases are now callable from
+  the commandline, for some you will need to use the new `-p`
+  option to work properly
+
+### Fixed
+- Completions for `-c` were not always properly handled
+  (`=` messed with argument splitting)
 
 
 ## [0.2.1] - 2018-05-14
