@@ -2,7 +2,9 @@
 
 ## [Unreleased]
 ### Added
-- Commandline testcase parameters
+- **Commandline testcase parameters**: You can now pass parameters
+  to testcases from the commandline using the `-p` or `--param`
+  commandline parameter
 - Completions for logfile
 - More config documentation
 - `shell_utils.command_and_retval`: Run a command on a channel
