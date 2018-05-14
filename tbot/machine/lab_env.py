@@ -36,16 +36,12 @@ class MachineLabEnv(machine.Machine):
     def _exec(self,
               command: str,
               log_event: tbot.logger.LogEvent) -> typing.Tuple[int, str]:
-        stdout = shell_utils.exec_command(
-            self.channel, self.prompt,
-            command, log_event)
-
-        # Get the return code
-        retcode = int(shell_utils.exec_command(
-            self.channel, self.prompt,
-            "echo $?", None).strip())
-
-        return retcode, stdout
+        return shell_utils.command_and_retval(
+            self.channel,
+            self.prompt,
+            command,
+            log_event
+        )
 
     @property
     def common_machine_name(self) -> str:

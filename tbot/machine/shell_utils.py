@@ -128,3 +128,29 @@ def exec_command(chan: paramiko.Channel,
     )[len(command)+1:-len(prompt)]
 
     return stdout
+
+def command_and_retval(chan: paramiko.Channel,
+                       prompt: str,
+                       command: str,
+                       log_event: typing.Optional[tbot.logger.LogEvent] = None,
+                      ) -> typing.Tuple[int, str]:
+    """
+    Execute a command and return it's output and return value
+
+    :param chan: Channel to execute this command on
+    :type chan: paramiko.Channel
+    :param prompt: Prompt to be expected
+    :type prompt: str
+    :param command: Command to be executed (no trailing ``\\n``)
+    :type command: str
+    :param log_event: Optional log event for this command
+    :type log_event: tbot.logger.LogEvent
+    :returns: The return-code and output of the command
+    :rtype: (int, str)
+    """
+    stdout = exec_command(chan, prompt, command, log_event)
+
+    # Get the return code
+    retcode = int(exec_command(chan, prompt, "echo $?", None).strip())
+
+    return retcode, stdout

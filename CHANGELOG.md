@@ -5,6 +5,8 @@
 - Commandline testcase parameters
 - Completions for logfile
 - More config documentation
+- `shell_utils.command_and_retval`: Run a command on a channel
+  and get it's return code
 
 ### Removed
 - `@cmdline` decorator. All testcases are now callable from
