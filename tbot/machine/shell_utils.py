@@ -58,7 +58,7 @@ def read_to_prompt(chan: paramiko.Channel,
     """
     buf = ""
 
-    expression = f"{prompt}$" if prompt_regex else None
+    expression = f"{prompt}$" if prompt_regex else "^$"
 
     last_newline = 0
 

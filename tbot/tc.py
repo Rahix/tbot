@@ -17,6 +17,12 @@ class Toolchain(str):
     """ Dummy for pylint to shut up """
     pass
 
-class TftpDirectory(pathlib.PurePosixPath):
+class TftpDirectory:
     """ Dummy for pylint to shut up """
-    pass
+    path = pathlib.PurePosixPath("/")
+
+    def __init__(self,
+                 a: pathlib.PurePosixPath,
+                 b: pathlib.PurePosixPath,
+                ) -> None:
+        pass

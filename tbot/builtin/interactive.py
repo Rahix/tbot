@@ -129,6 +129,8 @@ def interactive_uboot(tb: tbot.TBot) -> None:
         if not isinstance(boardshell, tbot.machine.MachineBoardUBoot):
             raise Exception("boardshell is not a U-Boot machine")
         channel = boardshell.channel
+        if not isinstance(channel, paramiko.Channel):
+            raise Exception("channel is not a paramiko channel")
         print("U-Boot Shell (CTRL-D to exit):")
         ishell(channel, abort="\x04")
         channel.send("\n")
@@ -147,6 +149,8 @@ def interactive_linux(tb: tbot.TBot) -> None:
         if not isinstance(boardshell, tbot.machine.MachineBoardLinux):
             raise Exception("boardshell is not a Linux machine")
         channel = boardshell.channel
+        if not isinstance(channel, paramiko.Channel):
+            raise Exception("channel is not a paramiko channel")
         def setup(ch: paramiko.Channel) -> None:
             """ Setup a custom prompt """
             # Set terminal size
