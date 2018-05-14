@@ -2,7 +2,6 @@
 TBot main entry point
 """
 import pathlib
-import typing
 import argparse
 
 #pylint: disable=too-many-locals, too-many-branches
@@ -155,10 +154,13 @@ LOG:   "{logfile}\"""",
 
         success = False
         try:
+            #pylint: disable=eval-used
+            params = dict(map(lambda _param: (_param[0], eval(_param[1])),
+                              (param.split('=', maxsplit=1) for param in args.param)))
             if args.testcase != []:
                 for tc in args.testcase:
                     if tc in cmdline_testcases:
-                        tb.call(tc)
+                        tb.call(tc, **params)
                     else:
                         raise Exception(\
 "Testcase not found or not suitable for commandline use")
@@ -166,7 +168,7 @@ LOG:   "{logfile}\"""",
                 @tb.call
                 def default(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
                     """ Default testcase is building U-Boot """
-                    tb.call("uboot_checkout_and_build")
+                    tb.call("uboot_checkout_and_build", **params)
         except Exception: #pylint: disable=broad-except
             tb.log.log_msg(traceback.format_exc(), tbot.logger.Verbosity.ERROR)
         except KeyboardInterrupt:
