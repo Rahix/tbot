@@ -36,6 +36,38 @@ Another thing about configs is, that paths should always be ``pathlib`` paths to
 of testcases. Use ``pathlib.Path`` for paths on the TBot host (eg ``"lab.keyfile"``) and
 ``pathlib.PurePosixPath`` for paths on the Lab host (eg ``"tbot.workdir"``).
 
+Configuring your configuration
+------------------------------
+
+Because TBot's config is python, you can do all kinds of crazy with it. An example is making your
+configuration configurable. For example, you might have a board that you want to either boot using
+an nfs root filesystem or one from the internal MMC. To implement this, add a config option like the
+following to your board config::
+
+    # This line is necessary to ensure that a default value is set if none is defined elsewhere
+    cfg["linux.use_nfs"] = cfg["linux.use_nfs", True]
+
+    # Use it later on in your boot command:
+
+    cfg["linux.boot_command"] = """\
+    # Get kernel
+    # Get dtb
+    # Do other setup
+    """ + ("""\
+    setenv bootargs ${bootargs} root=/dev/nfs nfsroot=... nolock rw
+    """ if cfg["linux.use_nfs"] else """\
+    setenv bootargs ${bootargs} root=/dev/mmcblk0p1
+    """) + """\
+    bootm ${kern_addr} - ${dtb_addr}"""
+
+Now you can either use this config like usual and use the default value (``True`` in this case)
+or specify a custom one on the commandline::
+
+    $ tbot <lab> <board> -c linux.use_nfs=False <testcase>
+
+As with commandline testcase parameters, TBot will evaluate everything after the ``=`` as a python
+expression using *eval*.
+
 Examples:
 ---------
 
