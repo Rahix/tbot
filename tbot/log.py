@@ -144,6 +144,14 @@ def message(msg, verbosity=Verbosity.INFO):
 def debug(msg):
     return message(msg, Verbosity.DEBUG)
 
+def oververbose(msg):
+    stdout_handler = LogStdoutHandler(dict(),
+                                      Verbosity.OVER_VERBOSE,
+                                      has_unicode("├>", "+>")
+                                     )
+    stdout_handler.print(has_color("33") + msg)
+    return stdout_handler
+
 def set_layer(layer):
     global LOGNESTLAYER #pylint: disable=global-statement
     LOGNESTLAYER = layer

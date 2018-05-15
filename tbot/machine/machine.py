@@ -63,10 +63,6 @@ class Machine(abc.ABC):
         :returns: A tuple of the return code and the output (stdout and stderr are merged)
         :rtype: (int, str)
         """
-        log_event = tbot.logger.ShellCommandLogEvent(self.unique_machine_name.split('-'),
-                                                     command,
-                                                     log_show=log_show,
-                                                     log_show_stdout=log_show_stdout)
         stdout_handler = tbot.log_events.shell_command(
             machine=self.unique_machine_name.split('-'),
             command=command,
@@ -74,7 +70,7 @@ class Machine(abc.ABC):
             show_stdout=log_show_stdout,
         )
         ret = self._exec(command, stdout_handler)
-        log_event.finished(ret[0])
+        stdout_handler.dct["exit_code"] = ret[0]
         return ret
 
     def exec0(self, command: str, **kwargs: bool) -> str:

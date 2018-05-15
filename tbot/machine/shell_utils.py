@@ -79,10 +79,7 @@ def read_to_prompt(chan: paramiko.Channel,
 
         buf += buf_data
 
-        if False:
-            #TODO: Reimplement oververbose logging
-            #pylint: disable=protected-access
-            log_event._log.log_oververbose(repr(buf_data))
+        tbot.log.oververbose(repr(buf_data))
 
         if stdout_handler is not None:
             while "\n" in buf[last_newline:]:
