@@ -6,7 +6,6 @@ import tbot
 from tbot import tc
 
 @tbot.testcase
-@tbot.cmdline
 def selftest_builtin_errors(tb: tbot.TBot) -> None:
     """ Test whether builtin testcases properly error on invalid input """
 
@@ -19,7 +18,6 @@ def selftest_builtin_errors(tb: tbot.TBot) -> None:
         raise Exception("toolchain_env did not raise an UnknownToolchainException")
 
 @tbot.testcase
-@tbot.cmdline
 def selftest_builtin_tests(tb: tbot.TBot) -> None:
     """ Test a few things to validate the builtin testcases """
 

@@ -7,7 +7,6 @@ import tbot
 from tbot import tc
 
 @tbot.testcase
-@tbot.cmdline
 def just_uboot_build(tb: tbot.TBot) -> None:
     """
     Build U-Boot in the currently existing (possibly dirty) U-Boot tree.

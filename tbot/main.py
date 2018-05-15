@@ -2,7 +2,6 @@
 TBot main entry point
 """
 import pathlib
-import typing
 import argparse
 
 #pylint: disable=too-many-locals, too-many-branches
@@ -20,6 +19,9 @@ def main() -> None:
         help="name of the testcase to run (default: \"uboot_checkout_and_build\")"
     )
 
+    parser.add_argument("-p", "--param", type=str, action="append",
+                        default=[], help="Set a testcase parameter. Argument must be \
+of the form <param-name>=<python-expression>. WARNING: Uses eval!")
     parser.add_argument("-c", "--config", type=str, action="append",
                         default=[], help="Set a config value. Argument must be \
 of the form <option-name>=<python-expression>. WARNING: Uses eval!")
@@ -109,7 +111,7 @@ named \"tc\"")
 
 
     tc_paths = [str(path).format(tbotpath=tbotpath) for path in args.tcdir]
-    testcases, cmdline_testcases = testcase_collector.get_testcases(tc_paths)
+    testcases = testcase_collector.get_testcases(tc_paths)
 
     if args.list_testcases:
         for tc in testcases:
@@ -152,18 +154,21 @@ LOG:   "{logfile}\"""",
 
         success = False
         try:
+            #pylint: disable=eval-used
+            params = dict(map(lambda _param: (_param[0], eval(_param[1])),
+                              (param.split('=', maxsplit=1) for param in args.param)))
             if args.testcase != []:
                 for tc in args.testcase:
-                    if tc in cmdline_testcases:
-                        tb.call(tc)
+                    if tc in testcases:
+                        tb.call(tc, **params)
                     else:
                         raise Exception(\
-"Testcase not found or not suitable for commandline use")
+"Testcase not found")
             else:
                 @tb.call
                 def default(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
                     """ Default testcase is building U-Boot """
-                    tb.call("uboot_checkout_and_build")
+                    tb.call("uboot_checkout_and_build", **params)
         except Exception: #pylint: disable=broad-except
             tb.log.log_msg(traceback.format_exc(), tbot.logger.Verbosity.ERROR)
         except KeyboardInterrupt:

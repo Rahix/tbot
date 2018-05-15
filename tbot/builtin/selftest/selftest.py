@@ -5,7 +5,6 @@ TBot selftests
 import tbot
 
 @tbot.testcase
-@tbot.cmdline
 def selftest(tb: tbot.TBot) -> None:
     """ TBot self test """
     tb.log.log_msg("Testing shell functionality ...")

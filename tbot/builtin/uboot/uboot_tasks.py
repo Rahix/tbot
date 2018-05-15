@@ -25,7 +25,6 @@ def check_uboot_version(tb: tbot.TBot, *,
         assert version in strings, "U-Boot version does not seem to match"
 
 @tbot.testcase
-@tbot.cmdline
 def uboot_checkout(tb: tbot.TBot, *,
                    clean: bool = True,
                    builddir: typing.Optional[pathlib.PurePosixPath] = None,
@@ -75,7 +74,6 @@ def uboot_checkout(tb: tbot.TBot, *,
     return tc.UBootRepository(gitdir)
 
 @tbot.testcase
-@tbot.cmdline
 def uboot_checkout_and_build(tb: tbot.TBot, *,
                              builddir: typing.Optional[pathlib.PurePosixPath] = None,
                              patchdir: typing.Optional[pathlib.PurePosixPath] = None,
@@ -127,7 +125,6 @@ def uboot_checkout_and_build(tb: tbot.TBot, *,
 
 
 @tbot.testcase
-@tbot.cmdline
 def uboot_checkout_and_prepare(tb: tbot.TBot, *,
                                builddir: typing.Optional[pathlib.PurePosixPath] = None,
                                patchdir: typing.Optional[pathlib.PurePosixPath] = None,

@@ -7,7 +7,6 @@ import pathlib
 import tbot
 
 @tbot.testcase
-@tbot.cmdline
 def tbot_clean_workdir(tb: tbot.TBot) -> None:
     """
     Clean TBot's workdir, utility testcase to remove
@@ -18,7 +17,6 @@ def tbot_clean_workdir(tb: tbot.TBot) -> None:
     tb.shell.exec0(f"rm -rvf {workdir}")
 
 @tbot.testcase
-@tbot.cmdline
 #pylint: disable=pointless-statement
 def tbot_check_config(tb: tbot.TBot) -> None:
     """ Check validity of configuration """

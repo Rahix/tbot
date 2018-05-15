@@ -14,11 +14,10 @@ def parse_config(configs: typing.List[pathlib.Path]) -> tbot.config.Config:
     return cfg
 
 @tbot.testcase
-@tbot.cmdline
 def selftest_config(tb: tbot.TBot) -> None:
     """ Test TBot's config framework """
-    with tempfile.TemporaryDirectory() as tempdir:
-        tempdir = pathlib.Path(str(tempdir))
+    with tempfile.TemporaryDirectory() as tempdr:
+        tempdir = pathlib.Path(str(tempdr))
 
 ####################################################################
         tb.log.log_debug("Testing a single config ...")

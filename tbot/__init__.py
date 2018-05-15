@@ -17,7 +17,6 @@ import tbot.machine
 import tbot.config
 
 from tbot.testcase_collector import testcase
-from tbot.testcase_collector import cmdline
 
 #pylint: disable=too-many-instance-attributes
 class TBot:

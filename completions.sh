@@ -11,6 +11,17 @@ _tbot()
         return
     fi
 
+    # We can't complete these arguments
+    if [[ "$prev" == @(-c|-p|--config|--param) ]]; then
+        return
+    fi
+
+    # Completions for the logfile
+    if [[ "$prev" == @(-l|--logfile) ]]; then
+        _filedir
+        return
+    fi
+
     # Check what is required next
     # and catch values that we need for later completions
     # 1) LAB
@@ -22,24 +33,27 @@ _tbot()
     while [[ $index -lt ${#words[@]} ]]; do
         local current_word="${words[$index]}"
 
-        if [[ $current_word != -* && $current_word != $cur ]]; then
+        if [[ "$current_word" != -* && "$current_word" != "$cur" ]]; then
             current_mode=$(($current_mode + 1))
         # If this argument is one that carries a parameter
         # catch that parameter and skip the next
-        elif [[ $current_word == @(-d|--tcdir) ]]; then
+        elif [[ "$current_word" == @(-d|--tcdir) ]]; then
             local index=$(($index + 1))
             local tcdirs_additional="${tcdirs_additional} -d ${words[$index]}"
-        elif [[ $current_word == "--confdir" ]]; then
+        elif [[ "$current_word" == "--confdir" ]]; then
             local index=$(($index + 1))
             local confdir=${words[$index]}
-        elif [[ $current_word == "--labconfdir" ]]; then
+        elif [[ "$current_word" == "--labconfdir" ]]; then
             local index=$(($index + 1))
             local labconfdir=${words[$index]}
-        elif [[ $current_word == "--boardconfdir" ]]; then
+        elif [[ "$current_word" == "--boardconfdir" ]]; then
             local index=$(($index + 1))
             local boardconfdir=${words[$index]}
-        elif [[ $current_word == @(-c|-l|--config|--logfile) ]]; then
+        elif [[ "$current_word" == @(-c|-p|-l|--config|--logfile|--param) ]]; then
             local index=$(($index + 1))
+            if [[ "${words[$(($index + 1))]}" == "=" ]]; then
+                local index=$(($index + 2))
+            fi
         fi
         local index=$(($index + 1))
     done
@@ -49,8 +63,8 @@ _tbot()
     local boardconfdir=${boardconfdir:-${confdir}/boards}
 
     if [[ "$cur" == -* ]]; then
-        COMPREPLY=( $( compgen -W '-h -c -d -l -v -q
-            --help --config --confdir --labconfdir
+        COMPREPLY=( $( compgen -W '-h -c -p -d -l -v -q
+            --help --config --param --confdir --labconfdir
             --boardconfdir --tcdir --logfile --verbose
             --quiet --list-testcases --list-labs
             --list-boards -vv -vvv -vvvv -qq -qqq -qqqq' -- "$cur" ) )

@@ -21,18 +21,43 @@ it would look like this::
     import tbot
 
     @tbot.testcase
-    @tbot.cmdline
-    def an_example_testcase(tb):
+    def an_example_testcase(tb: tbot.TBot) -> None:
         tb.call("build_uboot")
 
 Now you can call your testcase like this::
 
     $ tbot <lab-name> <board-name> an_example_testcase
 
-Note the 2 decorators for this function ``tbot.testcase`` makes a function a testcase
-that can be called by other testcases and ``tbot.cmdline`` allows the testcase to be
-called from the command line (like the command above). Only use ``tbot.cmdline`` if your
-testcase does not have any mandatory parameters, else calling it will not work.
+Note the decorator for this function: ``tbot.testcase`` makes a function a testcase
+that can be called by other testcases or from the commandline.
+
+Testcases can also take parameters and return values::
+
+    import tbot
+
+    @tbot.testcase
+    def a_testcase_with_a_parameter(tb: tbot.TBot, *,
+                                    param_mandatory: bool,
+                                    param_optional: bool = False,
+                                   ) -> bool:
+        tb.log.log_msg(f"A: {param_mandatory}, B: {param_optional}")
+        return param_mandatory or param_optional
+
+When you try to call this testcase from the commandline, you will notice TBot failing
+with an error that says something about a missing parameter. And that is entirely
+reasonable because the testcase takes a mandatory argument (Arguments after a
+``*`` are called *Mandatory Keyword-Argumens*). You can pass that parameter to TBot
+like this::
+
+    $ tbot <lab-name> <board-name> a_testcase_with_a_parameter -p param_mandatory=True
+
+TBot will evaluate everything after the ``=`` as a python expression. And of course, the
+optional parameter can also be set in the same way.
+
+To get the return value of a testcase, you have to call it from another testcase, like this::
+
+    ret_val = tb.call("a_testcase_with_a_parameter", param_mandatory=False, param_optional=True)
+    assert ret_val is True
 
 Lab host shell interaction
 --------------------------
@@ -43,7 +68,6 @@ following::
     import tbot
 
     @tbot.testcase
-    @tbot.cmdline
     def shell_interaction(tb: tbot.TBot) -> None:
         # exec0 executes a command and expects a return code of 0
         # and will raise an exception otherwise
@@ -67,7 +91,6 @@ directory. For that, tbot has an ``env`` machine. You can use it like this::
     import tbot
 
     @tbot.testcase
-    @tbot.cmdline
     def envshell_demo(tb):
         with tb.machine(tbot.machine.MachineLabEnv()) as tb:
             tb.shell.exec0("FOO='bar'")
@@ -86,7 +109,6 @@ your testcase is done. It might be looking like the following (U-Boot)::
     import tbot
 
     @tbot.testcase
-    @tbot.cmdline
     def boardshell_demo_uboot(tb):
         with tb.with_board_uboot() as tb:
             tb.boardshell.exec0("version")
@@ -98,7 +120,6 @@ your testcase is done. It might be looking like the following (U-Boot)::
     import tbot
 
     @tbot.testcase
-    @tbot.cmdline
     def boardshell_demo_linux(tb):
         with tb.with_board_linux() as tb:
             tb.boardshell.exec0("uname -a")
@@ -110,7 +131,6 @@ It is also possible to do something in U-Boot before booting Linux::
     import tbot
 
     @tbot.testcase
-    @tbot.cmdline
     def boardshell_demo_uboot_and_linux(tb):
         with tb.with_board_uboot() as tb:
             # Do things in U-Boot

@@ -57,7 +57,6 @@ win le\n", f"{out!r} does not match"
 
 
 @tbot.testcase
-@tbot.cmdline
 def selftest_noenv_shell(tb: tbot.TBot) -> None:
     """ Test noenv shell functionality """
     with tb.machine(tbot.machine.MachineLabNoEnv()) as tb:
@@ -69,7 +68,6 @@ def selftest_noenv_shell(tb: tbot.TBot) -> None:
         assert out == "\n", f"Environment variable was set when it shouldn't: {repr(out)}"
 
 @tbot.testcase
-@tbot.cmdline
 def selftest_env_shell(tb: tbot.TBot) -> None:
     """ Test env shell functionality """
     with tb.machine(tbot.machine.MachineLabEnv()) as tb:
@@ -81,7 +79,6 @@ def selftest_env_shell(tb: tbot.TBot) -> None:
         assert out == "avalue\n", f"Environment variable was not set correctly: {repr(out)}"
 
 @tbot.testcase
-@tbot.cmdline
 def selftest_board_shell(tb: tbot.TBot) -> None:
     """ Test board shell functionality """
     with tb.with_board_uboot() as tb:
@@ -89,7 +86,6 @@ def selftest_board_shell(tb: tbot.TBot) -> None:
                    tb.config["uboot.shell.support_printf", False],
                    tb.config["uboot.shell.support_echo_e", False])
 @tbot.testcase
-@tbot.cmdline
 def selftest_linux_shell(tb: tbot.TBot) -> None:
     """ Test linux shell functionality """
     with tb.with_board_linux() as tb:
@@ -101,7 +97,6 @@ def selftest_linux_shell(tb: tbot.TBot) -> None:
         assert out == "avalue\n", f"Environment variable was not set correctly: {repr(out)}"
 
 @tbot.testcase
-@tbot.cmdline
 def selftest_powercycle(tb: tbot.TBot) -> None:
     """ Test powercycling a board """
     with tb.with_board_uboot() as tb:
@@ -110,7 +105,6 @@ def selftest_powercycle(tb: tbot.TBot) -> None:
         tb.call("selftest_board_shell")
 
 @tbot.testcase
-@tbot.cmdline
 def selftest_nested_boardshells(tb: tbot.TBot) -> None:
     """ Test if tbot handles nested boardshells correctly """
     with tb.with_board_uboot() as tb1:

@@ -10,20 +10,10 @@ import enforce
 import tbot
 
 TBOT_TESTCASES: typing.Dict[str, typing.Callable] = dict()
-TBOT_TESTCASES_CMDLINE: typing.Dict[str, typing.Callable] = dict()
 
-F1 = typing.TypeVar('F1', bound=typing.Callable)
+F = typing.TypeVar('F', bound=typing.Callable)
 
-def cmdline(f: F1) -> F1:
-    """ Decorator for testcases that can be called from the commandline as well """
-    #pylint: disable=global-statement
-    global TBOT_TESTCASES_CMDLINE
-    TBOT_TESTCASES_CMDLINE[f.__name__] = f
-    return f
-
-F2 = typing.TypeVar('F2', bound=typing.Callable)
-
-def testcase(f: F2) -> F2:
+def testcase(f: F) -> F:
     """ Decorator for testcases """
     #pylint: disable=global-statement
     global TBOT_TESTCASES
@@ -38,7 +28,7 @@ def testcase(f: F2) -> F2:
 
 
 def get_testcases(paths: typing.Union[typing.List[str], typing.List[pathlib.Path], None] = None) \
-        -> typing.Tuple[typing.Dict[str, typing.Callable], typing.Dict[str, typing.Callable]]:
+        -> typing.Dict[str, typing.Callable]:
     """
     Collect all testcases from the directories
     specified in ``paths``
@@ -79,4 +69,4 @@ def get_testcases(paths: typing.Union[typing.List[str], typing.List[pathlib.Path
         else:
             raise Exception(f"Failed to load {source}")
 
-    return TBOT_TESTCASES, TBOT_TESTCASES_CMDLINE
+    return TBOT_TESTCASES
