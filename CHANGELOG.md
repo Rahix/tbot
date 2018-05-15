@@ -3,6 +3,8 @@
 ## [Unreleased]
 ### Added
 - New singleton logger `tbot.log`
+- Warning when trying to generate documentation
+  from unsuccessful TBot runs
 
 ### Changes
 - The old logger was replaced by a new singleton implementation.
