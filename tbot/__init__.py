@@ -10,7 +10,6 @@ import sys
 import paramiko
 import enforce
 from tbot import config_parser
-from tbot import logger
 from tbot import log
 from tbot import log_events
 from tbot import testcase_collector
@@ -29,24 +28,19 @@ class TBot:
     :type config: tbot.config.Config
     :param testcases: Testcases available to this instance
     :type testcases: dict
-    :param log: The logger that TBot should use
-    :type log: logger.Logger
     :param new: Whether this is a new instance that should create a noenv machine.
         Always ``True`` unless you know what you are doing.
     :type new: bool
     :ivar config: :class:`tbot.config.Config()`
     :ivar testcases: All available testcases
-    :ivar log: :class:`tbot.logger.Logger()`
     :ivar machines: All available machines :class:`tbot.machine.machine.MachineManager()`
     """
     def __init__(self,
                  config: tbot.config.Config,
                  testcases: dict,
-                 log: logger.Logger,
                  new: bool = True) -> None:
         self.config = config
         self.testcases = testcases
-        self.log = log
         self.layer = 0
 
         self.destruct_machines: typing.List[tbot.machine.Machine] = list()
@@ -144,7 +138,7 @@ class TBot:
             statement
         :rtype: TBot
         """
-        new_inst = TBot(self.config, self.testcases, self.log, False)
+        new_inst = TBot(self.config, self.testcases, False)
         new_inst.layer = self.layer
         new_inst.machines = tbot.machine.MachineManager(new_inst, self.machines.connection)
 
@@ -190,7 +184,7 @@ class TBot:
         method will be called automatically when exiting a with statement.
         """
         # Make sure logfile is written
-        self.log.write_logfile()
+        tbot.log.flush_log()
         # Destruct all machines that need to be destructed
         for mach in self.destruct_machines:
             #pylint: disable=protected-access

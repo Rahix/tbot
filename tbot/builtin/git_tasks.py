@@ -32,10 +32,13 @@ git clone {repo} {target}""")
         tb.log.log_debug("Repository already checked out ...")
 
         # Log a git clone for documentation generation
-        event = tbot.logger.ShellCommandLogEvent(['sh', 'noenv'], f"""\
-git clone {repo} {target}""", log_show=True)
-        tb.log.log(event)
-        event.finished(0)
+        stdout_handler = tbot.log_events.shell_command(
+            machine=['labhost', 'noenv'],
+            command=f"git clone {repo} {target}",
+            show=True,
+            show_stdout=False,
+        )
+        stdout_handler.dct['exit_code'] = 0
 
     return tc.GitRepository(target)
 
@@ -72,10 +75,13 @@ cd {target}; git reset --hard origin; git clean -fdx""", log_show=False)
 cd {target}; git pull""", log_show=False)
 
         # Log a git clone for documentation generation
-        event = tbot.logger.ShellCommandLogEvent(['sh', 'noenv'], f"""\
-git clone {repo} {target}""", log_show=True)
-        tb.log.log(event)
-        event.finished(0)
+        stdout_handler = tbot.log_events.shell_command(
+            machine=['labhost', 'noenv'],
+            command=f"git clone {repo} {target}",
+            show=True,
+            show_stdout=False,
+        )
+        stdout_handler.dct['exit_code'] = 0
 
     return tc.GitRepository(target)
 

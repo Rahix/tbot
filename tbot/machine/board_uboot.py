@@ -108,7 +108,7 @@ class MachineBoardUBoot(board.MachineBoard):
 
             tbot.log.event(
                 ty=["board", "boot"],
-                verbosity=tbot.logger.Verbosity.INFO,
+                verbosity=tbot.log.Verbosity.INFO,
                 dct={"log": boot_stdout},
             )
         except: # If anything goes wrong, turn off again

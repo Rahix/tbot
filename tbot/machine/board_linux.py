@@ -91,7 +91,7 @@ class MachineBoardLinux(board.MachineBoard):
         tbot.log.event(
             ty=["board", "boot-linux"],
             msg=f"{tbot.log.has_color('1')}LINUX BOOT{tbot.log.has_color('0')} ({self.boardname})",
-            verbosity=tbot.logger.Verbosity.INFO,
+            verbosity=tbot.log.Verbosity.INFO,
             dct={"board": self.boardname},
         )
 
@@ -154,7 +154,7 @@ class MachineBoardLinux(board.MachineBoard):
         ev = tbot.log.event(
             ty=["board", "linux-shutdown"],
             msg=f"{tbot.log.has_color('1')}LINUX SHUTDOWN{tbot.log.has_color('0')} ({self.boardname})",
-            verbosity=tbot.logger.Verbosity.INFO,
+            verbosity=tbot.log.Verbosity.INFO,
             dct={"board": self.boardname},
         )
         if isinstance(self.ub_machine, tbot.machine.MachineBoardUBoot):

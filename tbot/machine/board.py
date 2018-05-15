@@ -31,7 +31,7 @@ class MachineBoard(machine.Machine):
             tbot.log.event(
                 ty=["board", "powerup"],
                 msg=f"{BOLD}BOARD POWERUP{RST} ({self.boardname})",
-                verbosity=tbot.logger.Verbosity.INFO,
+                verbosity=tbot.log.Verbosity.INFO,
                 dct={"board": self.boardname},
             )
 
@@ -42,7 +42,7 @@ class MachineBoard(machine.Machine):
         tbot.log.event(
             ty=["board", "poweroff"],
             msg=f"{BOLD}BOARD POWEROFF{RST} ({self.boardname})",
-            verbosity=tbot.logger.Verbosity.INFO,
+            verbosity=tbot.log.Verbosity.INFO,
             dct={"board": self.boardname},
         )
 

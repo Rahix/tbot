@@ -35,7 +35,7 @@ PS1='{prompt}'
 
 def read_to_prompt(chan: paramiko.Channel,
                    prompt: str,
-                   stdout_handler: typing.Optional[tbot.logger.LogEvent] = None,
+                   stdout_handler = None,
                    prompt_regex: bool = False,
                   ) -> str:
     """
@@ -102,7 +102,7 @@ def read_to_prompt(chan: paramiko.Channel,
 def exec_command(chan: paramiko.Channel,
                  prompt: str,
                  command: str,
-                 log_event: typing.Optional[tbot.logger.LogEvent] = None) -> str:
+                 stdout_handler = None) -> str:
     """
     Execute a command and return it's output
 
@@ -121,7 +121,7 @@ def exec_command(chan: paramiko.Channel,
     stdout = read_to_prompt(
         chan,
         prompt,
-        log_event,
+        stdout_handler,
     )[len(command)+1:-len(prompt)]
 
     return stdout
@@ -129,7 +129,7 @@ def exec_command(chan: paramiko.Channel,
 def command_and_retval(chan: paramiko.Channel,
                        prompt: str,
                        command: str,
-                       log_event: typing.Optional[tbot.logger.LogEvent] = None,
+                       stdout_handler = None,
                       ) -> typing.Tuple[int, str]:
     """
     Execute a command and return it's output and return value
@@ -145,7 +145,7 @@ def command_and_retval(chan: paramiko.Channel,
     :returns: The return-code and output of the command
     :rtype: (int, str)
     """
-    stdout = exec_command(chan, prompt, command, log_event)
+    stdout = exec_command(chan, prompt, command, stdout_handler)
 
     # Get the return code
     retcode = int(exec_command(chan, prompt, "echo $?", None).strip())

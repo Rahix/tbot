@@ -16,15 +16,11 @@ KWARGS_LIST = [
 
 class Machine(abc.ABC):
     """ Abstract base class for machines """
-    def __init__(self) -> None:
-        self._log: typing.Optional[tbot.logger.Logger] = None
-
     def _setup(self,
                tb: 'tbot.TBot',
                #pylint: disable=unused-argument
                previous: 'typing.Optional[Machine]' = None,
               ) -> 'Machine':
-        self._log = tb.log
         return self
 
     def _destruct(self, tb: 'tbot.TBot') -> None:

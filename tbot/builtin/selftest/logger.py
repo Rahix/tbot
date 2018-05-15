@@ -26,6 +26,6 @@ perferendis dolor. Tempore at ipsum eos molestiae nobis error corporis."""
     tbot.log.event(
         ty=["custom", "event"],
         msg=text,
-        verbosity=tbot.logger.Verbosity.INFO,
+        verbosity=tbot.log.Verbosity.INFO,
         dct={"text": text},
     )
