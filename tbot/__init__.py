@@ -11,6 +11,8 @@ import paramiko
 import enforce
 from tbot import config_parser
 from tbot import logger
+from tbot import log
+from tbot import log_events
 from tbot import testcase_collector
 from tbot import tc
 import tbot.machine
@@ -102,9 +104,9 @@ class TBot:
         :returns: The return value from the testcase
         """
         name = tc if isinstance(tc, str) else f"@{tc.__name__}"
-        self.log.log(logger.TestcaseBeginLogEvent(name, self.layer))
+        tbot.log_events.testcase_begin(name)
         self.layer += 1
-        self.log.layer = self.layer
+        tbot.log.set_layer(self.layer)
         start_time = time.monotonic()
 
         try:
@@ -117,18 +119,18 @@ class TBot:
             # A small hack to ensure, the exception is only added once:
             if "__tbot_exc_catched" not in e.__dict__:
                 exc_name = type(e).__module__ + "." + type(e).__qualname__
-                self.log.log(logger.ExceptionLogEvent(exc_name, traceback.format_exc()))
+                tbot.log_events.exception(exc_name, traceback.format_exc())
                 e.__dict__["__tbot_exc_catched"] = True
             self.layer -= 1
-            self.log.layer = self.layer
             run_duration = time.monotonic() - start_time
-            self.log.log(logger.TestcaseEndLogEvent(name, self.layer, run_duration, False, fail_ok))
+            tbot.log_events.testcase_end(name, run_duration, False, fail_ok)
+            tbot.log.set_layer(self.layer)
             raise
 
         self.layer -= 1
-        self.log.layer = self.layer
         run_duration = time.monotonic() - start_time
-        self.log.log(logger.TestcaseEndLogEvent(name, self.layer, run_duration, True))
+        tbot.log_events.testcase_end(name, run_duration, True)
+        tbot.log.set_layer(self.layer)
         return retval
 
     def machine(self,

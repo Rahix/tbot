@@ -485,4 +485,5 @@ class Logger:
                         msg_prefix += has_unicode("├─", "+-")
                     else:
                         msg_prefix += has_unicode("│ ", "| ")
+                raise Exception("WRONG")
                 print(msg_prefix + line)
