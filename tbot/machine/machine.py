@@ -16,15 +16,11 @@ KWARGS_LIST = [
 
 class Machine(abc.ABC):
     """ Abstract base class for machines """
-    def __init__(self) -> None:
-        self._log: typing.Optional[tbot.logger.Logger] = None
-
     def _setup(self,
                tb: 'tbot.TBot',
                #pylint: disable=unused-argument
                previous: 'typing.Optional[Machine]' = None,
               ) -> 'Machine':
-        self._log = tb.log
         return self
 
     def _destruct(self, tb: 'tbot.TBot') -> None:
@@ -33,7 +29,7 @@ class Machine(abc.ABC):
     @abc.abstractmethod
     def _exec(self,
               command: str,
-              log_event: tbot.logger.LogEvent) -> typing.Tuple[int, str]:
+              stdout_handler) -> typing.Tuple[int, str]:
         pass
 
     @abc.abstractproperty
@@ -63,14 +59,14 @@ class Machine(abc.ABC):
         :returns: A tuple of the return code and the output (stdout and stderr are merged)
         :rtype: (int, str)
         """
-        log_event = tbot.logger.ShellCommandLogEvent(self.unique_machine_name.split('-'),
-                                                     command,
-                                                     log_show=log_show,
-                                                     log_show_stdout=log_show_stdout)
-        if isinstance(self._log, tbot.logger.Logger):
-            self._log.log(log_event)
-        ret = self._exec(command, log_event)
-        log_event.finished(ret[0])
+        stdout_handler = tbot.log_events.shell_command(
+            machine=self.unique_machine_name.split('-'),
+            command=command,
+            show=log_show,
+            show_stdout=log_show_stdout,
+        )
+        ret = self._exec(command, stdout_handler)
+        stdout_handler.dct["exit_code"] = ret[0]
         return ret
 
     def exec0(self, command: str, **kwargs: bool) -> str:

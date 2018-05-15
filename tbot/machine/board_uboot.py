@@ -98,20 +98,23 @@ class MachineBoardUBoot(board.MachineBoard):
 
             self.noenv.exec0(self.power_cmd_on, log_show_stdout=False)
 
+            stdout_handler = tbot.log.event(
+                ty=["board", "boot"],
+                msg=f"(labhost, preboot) {repr(self.connect_command)[1:-1]}",
+                verbosity=tbot.log.Verbosity.VERY_VERBOSE,
+                dct={"log": ""},
+            )
+            stdout_handler.prefix = "   <> "
+            stdout_handler.is_continuation = True
             # Stop autoboot
             boot_stdout = shell_utils.read_to_prompt(self.channel,
                                                      self.autoboot_prompt,
-                                                     prompt_regex=True)
+                                                     prompt_regex=True,
+                                                     stdout_handler=stdout_handler)
             self.channel.send("\n")
             self.prompt = self.uboot_prompt
             boot_stdout += shell_utils.read_to_prompt(self.channel, self.prompt)
 
-            ev = tbot.logger.CustomLogEvent(
-                ["board", "boot"],
-                verbosity=tbot.logger.Verbosity.INFO,
-                dict_values={"log": boot_stdout})
-
-            tb.log.log(ev)
         except: # If anything goes wrong, turn off again
             self._destruct(tb)
             raise
@@ -131,13 +134,13 @@ class MachineBoardUBoot(board.MachineBoard):
 
     def _exec(self,
               command: str,
-              log_event: tbot.logger.LogEvent) -> typing.Tuple[int, str]:
-        log_event.prefix = "   >> "
+              stdout_handler) -> typing.Tuple[int, str]:
+        stdout_handler.prefix = "   >> "
         return shell_utils.command_and_retval(
             self.channel,
             self.prompt,
             command,
-            log_event
+            stdout_handler
         )
 
     @property

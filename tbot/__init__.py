@@ -10,7 +10,8 @@ import sys
 import paramiko
 import enforce
 from tbot import config_parser
-from tbot import logger
+from tbot import log
+from tbot import log_events
 from tbot import testcase_collector
 from tbot import tc
 import tbot.machine
@@ -27,24 +28,19 @@ class TBot:
     :type config: tbot.config.Config
     :param testcases: Testcases available to this instance
     :type testcases: dict
-    :param log: The logger that TBot should use
-    :type log: logger.Logger
     :param new: Whether this is a new instance that should create a noenv machine.
         Always ``True`` unless you know what you are doing.
     :type new: bool
     :ivar config: :class:`tbot.config.Config()`
     :ivar testcases: All available testcases
-    :ivar log: :class:`tbot.logger.Logger()`
     :ivar machines: All available machines :class:`tbot.machine.machine.MachineManager()`
     """
     def __init__(self,
                  config: tbot.config.Config,
                  testcases: dict,
-                 log: logger.Logger,
                  new: bool = True) -> None:
         self.config = config
         self.testcases = testcases
-        self.log = log
         self.layer = 0
 
         self.destruct_machines: typing.List[tbot.machine.Machine] = list()
@@ -102,9 +98,9 @@ class TBot:
         :returns: The return value from the testcase
         """
         name = tc if isinstance(tc, str) else f"@{tc.__name__}"
-        self.log.log(logger.TestcaseBeginLogEvent(name, self.layer))
+        tbot.log_events.testcase_begin(name)
         self.layer += 1
-        self.log.layer = self.layer
+        tbot.log.set_layer(self.layer)
         start_time = time.monotonic()
 
         try:
@@ -117,18 +113,18 @@ class TBot:
             # A small hack to ensure, the exception is only added once:
             if "__tbot_exc_catched" not in e.__dict__:
                 exc_name = type(e).__module__ + "." + type(e).__qualname__
-                self.log.log(logger.ExceptionLogEvent(exc_name, traceback.format_exc()))
+                tbot.log_events.exception(exc_name, traceback.format_exc())
                 e.__dict__["__tbot_exc_catched"] = True
             self.layer -= 1
-            self.log.layer = self.layer
             run_duration = time.monotonic() - start_time
-            self.log.log(logger.TestcaseEndLogEvent(name, self.layer, run_duration, False, fail_ok))
+            tbot.log_events.testcase_end(name, run_duration, False, fail_ok)
+            tbot.log.set_layer(self.layer)
             raise
 
         self.layer -= 1
-        self.log.layer = self.layer
         run_duration = time.monotonic() - start_time
-        self.log.log(logger.TestcaseEndLogEvent(name, self.layer, run_duration, True))
+        tbot.log_events.testcase_end(name, run_duration, True)
+        tbot.log.set_layer(self.layer)
         return retval
 
     def machine(self,
@@ -142,7 +138,7 @@ class TBot:
             statement
         :rtype: TBot
         """
-        new_inst = TBot(self.config, self.testcases, self.log, False)
+        new_inst = TBot(self.config, self.testcases, False)
         new_inst.layer = self.layer
         new_inst.machines = tbot.machine.MachineManager(new_inst, self.machines.connection)
 
@@ -188,7 +184,7 @@ class TBot:
         method will be called automatically when exiting a with statement.
         """
         # Make sure logfile is written
-        self.log.write_logfile()
+        tbot.log.flush_log()
         # Destruct all machines that need to be destructed
         for mach in self.destruct_machines:
             #pylint: disable=protected-access

@@ -36,7 +36,7 @@ def setup_tftpdir(tb: tbot.TBot, *,
 
     tb.shell.exec0(f"mkdir -p {tftpdir.path}", log_show=False)
 
-    tb.log.log_debug(f"TFTP directory is '{tftpdir.path}'")
+    tbot.log.debug(f"TFTP directory is '{tftpdir.path}'")
 
     return tftpdir
 
@@ -66,6 +66,6 @@ def cp_to_tftpdir(tb: tbot.TBot, *,
     source_path = builddir / name if isinstance(name, str) else name
     dest_path = tftpdir.path / (name if dest_name is None else dest_name)
 
-    tb.log.log_debug(f"Copying '{source_path}' to '{dest_path}'")
+    tbot.log.debug(f"Copying '{source_path}' to '{dest_path}'")
 
     tb.shell.exec0(f"cp {source_path} {dest_path}")

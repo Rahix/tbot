@@ -25,7 +25,7 @@ def tbot_check_config(tb: tbot.TBot) -> None:
     def warning(msg: str) -> None:
         """ Print a warning message """
         nonlocal warnings
-        tb.log.log_msg(f"\x1B[33;1mWARNING:\x1B[0m {msg}")
+        tbot.log.message(f"\x1B[33;1mWARNING:\x1B[0m {msg}")
         warnings += 1
 
     def check_exist(key: str, ty: typing.Type, warn: str) -> bool:
@@ -82,8 +82,8 @@ necessary but recommended\nfor easier log readability")
         str,
         "No linux boot command specified, you will not be able to\nboot linux on this board")
 
-    tb.log.log_msg(f"Config checked, {warnings} warnings")
-    tb.log.log_msg(f"""\x1B[1mSummary:\x1B[0m
+    tbot.log.message(f"Config checked, {warnings} warnings")
+    tbot.log.message(f"""\x1B[1mSummary:\x1B[0m
 Workdir........: {'Y' if has_workdir else 'N - Building U-Boot will be impossible'}
 
 U-Boot Build...: {'Y' if has_uboot_builddir

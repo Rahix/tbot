@@ -1,6 +1,22 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- New singleton logger `tbot.log`
+
+### Changes
+- The old logger was replaced by a new singleton implementation.
+  This solves a few issues where the logger was not available
+  when it should have been. Also, logging is a prime example for
+  where to use a singleton. This will ensure that stdout is only
+  used in one place and things don't get messy ...
+
+### Removed
+- Old `tbot.logger` module and it's `LogEvent`'s
+- `TBot.log`
+
+### Fixed
+- U-Boot bootlog was not shown in very-verbose logging
 
 
 ## [0.2.2] - 2018-05-15

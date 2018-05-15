@@ -35,7 +35,7 @@ PS1='{prompt}'
 
 def read_to_prompt(chan: paramiko.Channel,
                    prompt: str,
-                   log_event: typing.Optional[tbot.logger.LogEvent] = None,
+                   stdout_handler = None,
                    prompt_regex: bool = False,
                   ) -> str:
     """
@@ -79,24 +79,22 @@ def read_to_prompt(chan: paramiko.Channel,
 
         buf += buf_data
 
-        if log_event is not None:
-            #pylint: disable=protected-access
-            log_event._log.log_oververbose(repr(buf_data))
+        tbot.log.oververbose(repr(buf_data))
 
-        if log_event is not None:
+        if stdout_handler is not None:
             while "\n" in buf[last_newline:]:
                 line = buf[last_newline:].split('\n')[0]
                 if last_newline != 0:
-                    log_event.add_line(line)
+                    stdout_handler.print(line)
                 last_newline += len(line) + 1
 
         if (not prompt_regex and buf[-len(prompt):] == prompt) \
             or (prompt_regex and re.search(expression, buf) is not None):
             # Print rest of last line to make sure nothing gets lost
-            if log_event is not None and "\n" not in buf[last_newline:]:
+            if stdout_handler is not None and "\n" not in buf[last_newline:]:
                 line = buf[last_newline:-len(prompt)]
                 if line != "":
-                    log_event.add_line(line)
+                    stdout_handler.print(line)
             break
 
     return buf
@@ -104,7 +102,7 @@ def read_to_prompt(chan: paramiko.Channel,
 def exec_command(chan: paramiko.Channel,
                  prompt: str,
                  command: str,
-                 log_event: typing.Optional[tbot.logger.LogEvent] = None) -> str:
+                 stdout_handler = None) -> str:
     """
     Execute a command and return it's output
 
@@ -123,7 +121,7 @@ def exec_command(chan: paramiko.Channel,
     stdout = read_to_prompt(
         chan,
         prompt,
-        log_event,
+        stdout_handler,
     )[len(command)+1:-len(prompt)]
 
     return stdout
@@ -131,7 +129,7 @@ def exec_command(chan: paramiko.Channel,
 def command_and_retval(chan: paramiko.Channel,
                        prompt: str,
                        command: str,
-                       log_event: typing.Optional[tbot.logger.LogEvent] = None,
+                       stdout_handler = None,
                       ) -> typing.Tuple[int, str]:
     """
     Execute a command and return it's output and return value
@@ -147,7 +145,7 @@ def command_and_retval(chan: paramiko.Channel,
     :returns: The return-code and output of the command
     :rtype: (int, str)
     """
-    stdout = exec_command(chan, prompt, command, log_event)
+    stdout = exec_command(chan, prompt, command, stdout_handler)
 
     # Get the return code
     retcode = int(exec_command(chan, prompt, "echo $?", None).strip())

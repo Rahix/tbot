@@ -55,7 +55,7 @@ def uboot_tests(tb: tbot.TBot, *,
     test_maxfail = test_maxfail or tb.config["uboot.test.maxfail", None]
 
 
-    tb.log.doc_log("""
+    tbot.log.doc("""
 ## Run U-Boot tests ##
 U-Boot contains a python test suite that can be run on the host and on the target. \
 Here we will run it on the target. Make sure all dependencies are met.  Refer to \
@@ -63,19 +63,19 @@ Here we will run it on the target. Make sure all dependencies are met.  Refer to
 """)
 
     if test_config is not None:
-        tb.log.doc_log("""To ensure that the testcases work properly, we need a \
+        tbot.log.doc("""To ensure that the testcases work properly, we need a \
 configuration file for the testsuite. Copy the config file into `test/py` inside \
 the U-Boot tree:
 """)
 
-        tb.log.log_debug(f"Using '{test_config}' for the U-Boot test suite")
+        tbot.log.debug(f"Using '{test_config}' for the U-Boot test suite")
         filename = test_config.name
         target = builddir / "test" / "py" / filename
         tb.shell.exec0(f"cp {test_config} {target}")
 
-        tb.log.doc_log("The config file can be found in the appendix of this document.\n")
+        tbot.log.doc("The config file can be found in the appendix of this document.\n")
         cfg_file_content = tb.shell.exec0(f"cat {test_config}", log_show=False)
-        tb.log.doc_appendix(f"U-Boot test config: {filename}", f"""```python
+        tbot.log.doc_appendix(f"U-Boot test config: {filename}", f"""```python
 {cfg_file_content}
 ```""")
 
@@ -83,13 +83,13 @@ the U-Boot tree:
         """ Actually run the testsuite """
         assert tb.shell.unique_machine_name == "labhost-env", "Need an env shell!"
 
-        tb.log.doc_log("""Clean the workdir because the U-Boot testsuite won't \
+        tbot.log.doc("""Clean the workdir because the U-Boot testsuite won't \
 recompile if it is dirty.
 """)
 
         tb.shell.exec0(f"make mrproper", log_show_stdout=False)
 
-        tb.log.doc_log("Install the necessary hooks and start the \
+        tbot.log.doc("Install the necessary hooks and start the \
 testsuite using the following commands:\n")
         tb.shell.exec0(f"export PATH={test_hooks}:$PATH")
 
@@ -98,19 +98,19 @@ testsuite using the following commands:\n")
             tb.shell.exec0(f"\
 ./test/py/test.py --bd {test_boardname} --build {max_fail_param}")
 
-            tb.log.doc_log("The U-Boot testsuite, which has hopefully finished \
+            tbot.log.doc("The U-Boot testsuite, which has hopefully finished \
 successfully by now, is not capable of turning off the board itself. \
 You have to do that manually:\n")
 
     has_venv = tb.config["uboot.test.use_venv", True]
-    tb.log.log_debug(f"Virtualenv availability: {has_venv}")
+    tbot.log.debug(f"Virtualenv availability: {has_venv}")
     if has_venv:
-        tb.log.doc_log("Create a virtualenv and install pytest inside it:\n")
+        tbot.log.doc("Create a virtualenv and install pytest inside it:\n")
 
         # Setup python
         tb.shell.exec0(f"cd {builddir}; virtualenv-2.7 venv", log_show_stdout=False)
 
-        tb.log.doc_log("""The testsuite will rebuild the U-Boot binary. For doing so, \
+        tbot.log.doc("""The testsuite will rebuild the U-Boot binary. For doing so, \
 it needs the correct toolchain enabled.
 """)
 
@@ -125,11 +125,11 @@ it needs the correct toolchain enabled.
             tb.call(run_tests)
 
     else:
-        tb.log.doc_log("""Here we do not use virtualenv because our build host \
+        tbot.log.doc("""Here we do not use virtualenv because our build host \
 does not have it installed, but it is recommended to do so.
 """)
 
-        tb.log.doc_log("""The testsuite will rebuild the U-Boot binary. For doing so, \
+        tbot.log.doc("""The testsuite will rebuild the U-Boot binary. For doing so, \
 it needs the correct toolchain enabled.
 """)
 

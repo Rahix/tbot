@@ -9,11 +9,11 @@ from tbot import tc
 def selftest_builtin_errors(tb: tbot.TBot) -> None:
     """ Test whether builtin testcases properly error on invalid input """
 
-    tb.log.log_debug("Testing toolchain_env with nonexistent toolchain name ...")
+    tbot.log.debug("Testing toolchain_env with nonexistent toolchain name ...")
     try:
         tb.call("toolchain_get", fail_ok=True, name="a-toolchain-that-will-never-exist")
     except tc.UnknownToolchainException:
-        tb.log.log_debug("Catched unknown toolchain exception")
+        tbot.log.debug("Catched unknown toolchain exception")
     else:
         raise Exception("toolchain_env did not raise an UnknownToolchainException")
 
@@ -21,7 +21,7 @@ def selftest_builtin_errors(tb: tbot.TBot) -> None:
 def selftest_builtin_tests(tb: tbot.TBot) -> None:
     """ Test a few things to validate the builtin testcases """
 
-    tb.log.log_debug("Create a dummy boardshell with custom parameters")
+    tbot.log.debug("Create a dummy boardshell with custom parameters")
     with tb.machine(tbot.machine.MachineBoardDummy(
         name="dummy-test-custom-machine",
         power_cmd_on="echo ON > /tmp/dummy-machine-test-custom",
@@ -29,7 +29,7 @@ def selftest_builtin_tests(tb: tbot.TBot) -> None:
         out = tb.shell.exec0("cat /tmp/dummy-machine-test-custom")
         assert out == "ON\n"
 
-    tb.log.log_debug("Create a custom U-Boot shell")
+    tbot.log.debug("Create a custom U-Boot shell")
     with tb.machine(tbot.machine.MachineBoardUBoot(
         name="custom",
         boardname="custom-machine",
