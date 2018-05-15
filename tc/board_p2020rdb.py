@@ -10,7 +10,7 @@ def p2020rdb(tb: tbot.TBot) -> None:
     P2020RDB-PCA board specific testcase to build U-Boot, flash it into
     NAND and run the U-Boot test suite
     """
-    tb.log.doc_log("""\
+    tbot.log.doc("""\
 U-Boot on the P2020RDB-PCA board
 ================================
 """)
@@ -24,7 +24,7 @@ U-Boot on the P2020RDB-PCA board
             ubootdir / "u-boot-with-spl.bin")
 
         env = tb.boardshell.exec0("printenv", log_show=False)
-        tb.log.doc_appendix("U-Boot environment", f"""```sh
+        tbot.log.doc_appendix("U-Boot environment", f"""```sh
 {env}
 ```""")
 
@@ -41,7 +41,7 @@ def p2020rdb_check_install(tb: tbot.TBot) -> None:
 @tbot.testcase
 def p2020rdb_install_uboot(tb: tbot.TBot) -> None:
     """ Install U-Boot into NAND flash of the P2020RDB-PCA """
-    tb.log.doc_log("""
+    tbot.log.doc("""
 ## Installing U-Boot into NAND flash ##
 
 In this guide, we are going to install U-Boot into NAND flash. Set the `SW3` switch \
@@ -53,28 +53,28 @@ Copy U-Boot into your tftp directory:
     tftpdir = tb.call("setup_tftpdir")
     tb.call("cp_to_tftpdir", name="u-boot-with-spl.bin", tftpdir=tftpdir)
 
-    tb.log.doc_log("Find out the size of the U-Boot binary, as we will need it later:\n")
+    tbot.log.doc("Find out the size of the U-Boot binary, as we will need it later:\n")
 
     filename = tftpdir.path / "u-boot-with-spl.bin"
     size = tb.shell.exec0(f"printf '%x' `stat -c '%s' {filename}`")
 
-    tb.log.log_debug(f"U-Boot has size {size}")
+    tbot.log.debug(f"U-Boot has size {size}")
 
     @tb.call
     def install(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
         """ Actually flash to nand """
 
-        tb.log.doc_log("Power on the board and download U-Boot via TFTP:\n")
+        tbot.log.doc("Power on the board and download U-Boot via TFTP:\n")
 
         with tb.with_board_uboot() as tb:
             filename = tftpdir.subdir / "u-boot-with-spl.bin"
             tb.boardshell.exec0(f"tftp 10000000 {filename}", log_show_stdout=False)
 
-            tb.log.doc_log("Write it into flash:\n")
+            tbot.log.doc("Write it into flash:\n")
 
-            tb.log.log_debug("Writing to NAND ...")
+            tbot.log.debug("Writing to NAND ...")
             tb.boardshell.exec0(f"nand device 0", log_show_stdout=False)
             tb.boardshell.exec0(f"nand erase.spread 0 {size}")
             tb.boardshell.exec0(f"nand write 10000000 0 {size}")
 
-            tb.log.doc_log("Powercycle the board and check the U-Boot version:\n")
+            tbot.log.doc("Powercycle the board and check the U-Boot version:\n")

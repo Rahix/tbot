@@ -40,7 +40,7 @@ Testcases can also take parameters and return values::
                                     param_mandatory: bool,
                                     param_optional: bool = False,
                                    ) -> bool:
-        tb.log.log_msg(f"A: {param_mandatory}, B: {param_optional}")
+        tbot.log.message(f"A: {param_mandatory}, B: {param_optional}")
         return param_mandatory or param_optional
 
 When you try to call this testcase from the commandline, you will notice TBot failing

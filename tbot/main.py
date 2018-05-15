@@ -171,12 +171,12 @@ LOG:   "{logfile}\"""",
         except Exception: #pylint: disable=broad-except
             tbot.log.message(traceback.format_exc(), tbot.log.Verbosity.ERROR)
         except KeyboardInterrupt:
-            tb.log.layer = 0
+            tbot.log.set_layer(0)
             print(tbot.log.has_unicode(
                 "\r│  ^C",
                 "\r|  ^C",
             ))
-            tb.log.log_msg("\x1B[31mTest run aborted by user.", tbot.log.Verbosity.ERROR)
+            tbot.log.message("\x1B[31mTest run aborted by user.", tbot.log.Verbosity.ERROR)
         else:
             success = True
         finally:

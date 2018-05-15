@@ -42,6 +42,7 @@ class Verbosity(enum.IntEnum):
     VERBOSE = 4
     VERY_VERBOSE = 5
     OVER_VERBOSE = 6
+    NEVER = 1000000
 
     def __str__(self) -> str:
         return super(Verbosity, self).__str__().split(".")[-1]
@@ -138,6 +139,25 @@ def message(msg, verbosity=Verbosity.INFO):
         verbosity=verbosity,
         dct={
             "text": msg,
+        },
+    )
+
+def doc(text):
+    return event(
+        ty=["doc", "text"],
+        verbosity=Verbosity.NEVER,
+        dct={
+            "text": text,
+        },
+    )
+
+def doc_appendix(title, text):
+    return event(
+        ty=["doc", "appendix"],
+        verbosity=Verbosity.NEVER,
+        dct={
+            "title": title,
+            "text": text,
         },
     )
 

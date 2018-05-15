@@ -101,10 +101,9 @@ class MachineBoardUBoot(board.MachineBoard):
             stdout_handler = tbot.log.event(
                 ty=["board", "boot"],
                 msg=f"(labhost, preboot) {repr(self.connect_command)[1:-1]}",
-                verbosity=tbot.log.Verbosity.INFO,
+                verbosity=tbot.log.Verbosity.VERY_VERBOSE,
                 dct={"log": ""},
             )
-            stdout_handler.reset_verbosity(tbot.log.Verbosity.VERY_VERBOSE)
             stdout_handler.prefix = "   <> "
             stdout_handler.is_continuation = True
             # Stop autoboot
