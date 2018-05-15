@@ -37,8 +37,10 @@ class MachineLabNoEnv(machine.Machine):
             .replace('\r', '\n')
 
         #TODO: Make output appear instantly and not after the run is done
-        for line in output.strip('\n').split('\n'):
-            stdout_handler.print(line)
+        lines = output.strip('\n').split('\n')
+        if not (len(lines) == 1 and lines[0] == ""):
+            for line in lines:
+                stdout_handler.print(line)
         return ret_code, output
 
     @property
