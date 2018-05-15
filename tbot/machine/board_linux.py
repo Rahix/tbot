@@ -88,12 +88,12 @@ class MachineBoardLinux(board.MachineBoard):
 
         self.powerup = False
         super()._setup(tb, previous)
-        ev = tbot.logger.CustomLogEvent(
-            ["board", "boot-linux"],
-            stdout=f"\x1B[1mLINUX BOOT\x1B[0m ({self.boardname})",
+        tbot.log.event(
+            ty=["board", "boot-linux"],
+            msg=f"{tbot.log.has_color('1')}LINUX BOOT{tbot.log.has_color('0')} ({self.boardname})",
             verbosity=tbot.logger.Verbosity.INFO,
-            dict_values={"board": self.boardname})
-        tb.log.log(ev)
+            dct={"board": self.boardname},
+        )
 
         self.channel = self.ub_machine.channel
 
@@ -109,20 +109,24 @@ class MachineBoardLinux(board.MachineBoard):
             for cmd in cmds[:-1]:
                 self.ub_machine.exec0(cmd)
             self.channel.send(f"{cmds[-1]}\n")
-            ev = tbot.logger.ShellCommandLogEvent(self.ub_machine.unique_machine_name.split('-'),
-                                                  cmds[-1], prefix="   >> ",
-                                                  log_show_stdout=False)
-            tb.log.log(ev)
+            stdout_handler = tbot.log_events.shell_command(
+                machine=self.ub_machine.unique_machine_name.split('-'),
+                command=cmds[-1], 
+                show=True,
+                show_stdout=False,
+            )
+            stdout_handler.prefix = "   >> "
+
             boot_stdout = shell_utils.read_to_prompt(
                 self.channel,
                 self.login_prompt,
-                ev,
+                stdout_handler,
             )
 
             # Login
             self.channel.send(f"{self.username}\n")
             login_str = self.login_prompt + self.username
-            ev.add_line(login_str)
+            stdout_handler.print(login_str)
             boot_stdout += login_str + "\n"
             time.sleep(0.2)
             self.channel.send(f"{self.password}\n")
@@ -137,9 +141,9 @@ class MachineBoardLinux(board.MachineBoard):
             boot_stdout += shell_utils.read_to_prompt(
                 self.channel,
                 self.prompt,
-                ev,
+                stdout_handler,
             )
-            ev.finished(0)
+            stdout_handler.dct['exit_code'] = 0
         except: # If anything goes wrong, turn off again
             self._destruct(tb)
             raise
@@ -147,12 +151,12 @@ class MachineBoardLinux(board.MachineBoard):
         return self
 
     def _destruct(self, tb: 'tbot.TBot') -> None:
-        ev = tbot.logger.CustomLogEvent(
-            ["board", "linux-shutdown"],
-            stdout=f"\x1B[1mLINUX SHUTDOWN\x1B[0m ({self.boardname})",
+        ev = tbot.log.event(
+            ty=["board", "linux-shutdown"],
+            msg=f"{tbot.log.has_color('1')}LINUX SHUTDOWN{tbot.log.has_color('0')} ({self.boardname})",
             verbosity=tbot.logger.Verbosity.INFO,
-            dict_values={"board": self.boardname})
-        tb.log.log(ev)
+            dct={"board": self.boardname},
+        )
         if isinstance(self.ub_machine, tbot.machine.MachineBoardUBoot):
             if self.own_ub:
                 #pylint: disable=protected-access
@@ -165,13 +169,13 @@ class MachineBoardLinux(board.MachineBoard):
 
     def _exec(self,
               command: str,
-              log_event: tbot.logger.LogEvent) -> typing.Tuple[int, str]:
-        log_event.prefix = "   >< "
+              stdout_handler) -> typing.Tuple[int, str]:
+        stdout_handler.prefix = "   >< "
         return shell_utils.command_and_retval(
             self.channel,
             self.prompt,
             command,
-            log_event
+            stdout_handler
         )
 
     @property

@@ -106,12 +106,11 @@ class MachineBoardUBoot(board.MachineBoard):
             self.prompt = self.uboot_prompt
             boot_stdout += shell_utils.read_to_prompt(self.channel, self.prompt)
 
-            ev = tbot.logger.CustomLogEvent(
-                ["board", "boot"],
+            tbot.log.event(
+                ty=["board", "boot"],
                 verbosity=tbot.logger.Verbosity.INFO,
-                dict_values={"log": boot_stdout})
-
-            tb.log.log(ev)
+                dct={"log": boot_stdout},
+            )
         except: # If anything goes wrong, turn off again
             self._destruct(tb)
             raise
@@ -131,13 +130,13 @@ class MachineBoardUBoot(board.MachineBoard):
 
     def _exec(self,
               command: str,
-              log_event: tbot.logger.LogEvent) -> typing.Tuple[int, str]:
-        log_event.prefix = "   >> "
+              stdout_handler) -> typing.Tuple[int, str]:
+        stdout_handler.prefix = "   >> "
         return shell_utils.command_and_retval(
             self.channel,
             self.prompt,
             command,
-            log_event
+            stdout_handler
         )
 
     @property
