@@ -118,8 +118,8 @@ named \"tc\"")
         return
 
     verbosity = tbot.log.Verbosity(max(0, tbot.log.Verbosity.INFO
-                                     + len(args.verbose)
-                                     - len(args.quiet)))
+                                       + len(args.verbose)
+                                       - len(args.quiet)))
     if args.logfile is not None:
         logfile = pathlib.Path(args.logfile)
     else:
