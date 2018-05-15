@@ -33,7 +33,7 @@ class Machine(abc.ABC):
     @abc.abstractmethod
     def _exec(self,
               command: str,
-              log_event: tbot.logger.LogEvent) -> typing.Tuple[int, str]:
+              stdout_handler) -> typing.Tuple[int, str]:
         pass
 
     @abc.abstractproperty
@@ -67,9 +67,13 @@ class Machine(abc.ABC):
                                                      command,
                                                      log_show=log_show,
                                                      log_show_stdout=log_show_stdout)
-        if isinstance(self._log, tbot.logger.Logger):
-            self._log.log(log_event)
-        ret = self._exec(command, log_event)
+        stdout_handler = tbot.log_events.shell_command(
+            machine=self.unique_machine_name.split('-'),
+            command=command,
+            show=log_show,
+            show_stdout=log_show_stdout,
+        )
+        ret = self._exec(command, stdout_handler)
         log_event.finished(ret[0])
         return ret
 

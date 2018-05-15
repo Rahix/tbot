@@ -58,18 +58,32 @@ def check_log():
 
 class LogStdoutHandler:
 
-    def __init__(self, verbosity, custom_dash):
+    def __init__(self, dct, verbosity, custom_dash):
         global LOGVERBOSITY #pylint: disable=global-statement
         global LOGNESTLAYER #pylint: disable=global-statement
         self.do_output = verbosity <= LOGVERBOSITY
         self.is_continuation = False
         self.layer = LOGNESTLAYER
         self.custom_dash = custom_dash
+        self.dct = dct
+        self.key = None
+        self.prefix = None
+
+    def reset_verbosity(self, new_verbosity):
+        global LOGVERBOSITY #pylint: disable=global-statement
+        self.do_output = new_verbosity <= LOGVERBOSITY
 
     def print(self, msg: str):
         if not self.do_output:
             return
         lines = msg.split("\n")
+
+        # Add to log event
+        if self.key is not None:
+            if msg == "":
+                self.dct[self.key] += '\n'
+            else:
+                self.dct[self.key] += msg + ('' if msg[-1] == '\n' else '\n')
 
         for line in lines:
             msg_prefix = has_color("0")
@@ -84,6 +98,8 @@ class LogStdoutHandler:
                 self.is_continuation = True
             else:
                 msg_prefix += has_unicode("│ ", "| ")
+                if self.prefix is not None:
+                    msg_prefix += self.prefix
             print(msg_prefix + line + has_color("0"))
 
 def event(ty, *,
@@ -106,7 +122,7 @@ def event(ty, *,
     dct['time'] = time.ctime()
     dct['verbosity'] = str(verbosity)
 
-    stdout_handler = LogStdoutHandler(verbosity, custom_dash)
+    stdout_handler = LogStdoutHandler(dct, verbosity, custom_dash)
     if msg is not None:
         dct['message'] = msg
         stdout_handler.print(msg)
@@ -116,7 +132,7 @@ def event(ty, *,
     return stdout_handler
 
 def message(msg, verbosity=Verbosity.INFO):
-    event(
+    return event(
         ty=["msg", str(verbosity)],
         msg=msg,
         verbosity=verbosity,
@@ -126,7 +142,7 @@ def message(msg, verbosity=Verbosity.INFO):
     )
 
 def debug(msg):
-    message(msg, Verbosity.DEBUG)
+    return message(msg, Verbosity.DEBUG)
 
 def set_layer(layer):
     global LOGNESTLAYER #pylint: disable=global-statement
