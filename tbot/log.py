@@ -160,7 +160,7 @@ def init_log(filename, verbosity = Verbosity.INFO):
     global LOGFILE #pylint: disable=global-statement
     global LOGVERBOSITY #pylint: disable=global-statement
     #TODO: Remove .2
-    LOGFILE = pathlib.Path(str(filename) + ".2")
+    LOGFILE = pathlib.Path(filename)
     LOGVERBOSITY = verbosity
 
 def flush_log():
