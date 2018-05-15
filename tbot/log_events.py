@@ -67,8 +67,10 @@ def shell_command(*, machine, command, show, show_stdout):
         machine_string += machine[i] + ", "
     machine_string += machine[-1] + ")"
     cmd = repr(command)[1:-1]
+    ty = ["shell"]
+    ty.extend(machine)
     handler = tbot.log.event(
-        ty=["shell"],
+        ty=ty,
         msg=f"{machine_string} {cmd}",
         verbosity=tbot.log.Verbosity.VERBOSE,
         dct={

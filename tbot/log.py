@@ -74,16 +74,16 @@ class LogStdoutHandler:
         self.do_output = new_verbosity <= LOGVERBOSITY
 
     def print(self, msg: str):
-        if not self.do_output:
-            return
-        lines = msg.split("\n")
-
         # Add to log event
         if self.key is not None:
             if msg == "":
                 self.dct[self.key] += '\n'
             else:
                 self.dct[self.key] += msg + ('' if msg[-1] == '\n' else '\n')
+
+        if not self.do_output:
+            return
+        lines = msg.split("\n")
 
         for line in lines:
             msg_prefix = has_color("0")

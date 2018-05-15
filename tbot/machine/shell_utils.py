@@ -35,7 +35,7 @@ PS1='{prompt}'
 
 def read_to_prompt(chan: paramiko.Channel,
                    prompt: str,
-                   log_event: typing.Optional[tbot.logger.LogEvent] = None,
+                   stdout_handler: typing.Optional[tbot.logger.LogEvent] = None,
                    prompt_regex: bool = False,
                   ) -> str:
     """
@@ -79,24 +79,25 @@ def read_to_prompt(chan: paramiko.Channel,
 
         buf += buf_data
 
-        if log_event is not None:
+        if False:
+            #TODO: Reimplement oververbose logging
             #pylint: disable=protected-access
             log_event._log.log_oververbose(repr(buf_data))
 
-        if log_event is not None:
+        if stdout_handler is not None:
             while "\n" in buf[last_newline:]:
                 line = buf[last_newline:].split('\n')[0]
                 if last_newline != 0:
-                    log_event.add_line(line)
+                    stdout_handler.print(line)
                 last_newline += len(line) + 1
 
         if (not prompt_regex and buf[-len(prompt):] == prompt) \
             or (prompt_regex and re.search(expression, buf) is not None):
             # Print rest of last line to make sure nothing gets lost
-            if log_event is not None and "\n" not in buf[last_newline:]:
+            if stdout_handler is not None and "\n" not in buf[last_newline:]:
                 line = buf[last_newline:-len(prompt)]
                 if line != "":
-                    log_event.add_line(line)
+                    stdout_handler.print(line)
             break
 
     return buf
