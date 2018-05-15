@@ -98,19 +98,24 @@ class MachineBoardUBoot(board.MachineBoard):
 
             self.noenv.exec0(self.power_cmd_on, log_show_stdout=False)
 
+            stdout_handler = tbot.log.event(
+                ty=["board", "boot"],
+                msg=f"(labhost, preboot) {repr(self.connect_command)[1:-1]}",
+                verbosity=tbot.log.Verbosity.INFO,
+                dct={"log": ""},
+            )
+            stdout_handler.reset_verbosity(tbot.log.Verbosity.VERY_VERBOSE)
+            stdout_handler.prefix = "   <> "
+            stdout_handler.is_continuation = True
             # Stop autoboot
             boot_stdout = shell_utils.read_to_prompt(self.channel,
                                                      self.autoboot_prompt,
-                                                     prompt_regex=True)
+                                                     prompt_regex=True,
+                                                     stdout_handler=stdout_handler)
             self.channel.send("\n")
             self.prompt = self.uboot_prompt
             boot_stdout += shell_utils.read_to_prompt(self.channel, self.prompt)
 
-            tbot.log.event(
-                ty=["board", "boot"],
-                verbosity=tbot.log.Verbosity.INFO,
-                dct={"log": boot_stdout},
-            )
         except: # If anything goes wrong, turn off again
             self._destruct(tb)
             raise
