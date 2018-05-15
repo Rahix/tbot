@@ -59,7 +59,7 @@ Here we will run it on the host. Make sure all dependencies are met.  Refer to
         with tb.machine(tbot.machine.MachineLabEnv()) as tb:
             tb.shell.exec0(f"cd {builddir}")
             tb.shell.exec0(f"VIRTUAL_ENV_DISABLE_PROMPT=1 source venv/bin/activate",
-                            log_show_stdout=False)
+                           log_show_stdout=False)
             tb.shell.exec0(f"pip install pytest", log_show_stdout=False)
 
             tbot.log.doc(f"""Now clean the U-Boot repository and start the sandbox testsuite.

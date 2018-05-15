@@ -6,6 +6,7 @@ import sys
 import enum
 import json
 import time
+import typing
 import pathlib
 
 def has_unicode(with_unicode: str, without_unicode: str) -> str:
@@ -59,7 +60,7 @@ LOGLIST = list()
 LOGVERBOSITY = Verbosity.WARNING
 LOGNESTLAYER = 0
 
-def check_log():
+def check_log() -> None:
     """
     Check whether the log has been initialized and throw an exception
     otherwise.
@@ -80,7 +81,11 @@ class LogStdoutHandler:
     :ivar prefix: A custom prefix that will be added in front of continuation
                   lines.
     """
-    def __init__(self, dct, verbosity, custom_dash):
+    def __init__(self,
+                 dct: typing.Dict[str, typing.Any],
+                 verbosity: Verbosity,
+                 custom_dash: typing.Optional[str],
+                ) -> None:
         global LOGVERBOSITY #pylint: disable=global-statement
         global LOGNESTLAYER #pylint: disable=global-statement
         self.do_output = verbosity <= LOGVERBOSITY
@@ -91,7 +96,7 @@ class LogStdoutHandler:
         self.key = None
         self.prefix = None
 
-    def reset_verbosity(self, new_verbosity):
+    def reset_verbosity(self, new_verbosity: Verbosity) -> None:
         """
         Change the verbosity of this log event
 
@@ -101,7 +106,7 @@ class LogStdoutHandler:
         global LOGVERBOSITY #pylint: disable=global-statement
         self.do_output = new_verbosity <= LOGVERBOSITY
 
-    def print(self, msg: str):
+    def print(self, msg: str) -> None:
         """
         Print some text to stdout provided the verbosity is high enough.
         Also, add the text to the dict in case a `key` was set.
@@ -137,12 +142,12 @@ class LogStdoutHandler:
                     msg_prefix += self.prefix
             print(msg_prefix + line + has_color("0"))
 
-def event(ty, *,
-          msg=None,
-          verbosity=Verbosity.INFO,
-          dct=None,
-          custom_dash=None,
-         ):
+def event(ty: typing.List[str], *,
+          msg: typing.Optional[str] = None,
+          verbosity: Verbosity = Verbosity.INFO,
+          dct: typing.Optional[typing.Dict[str, typing.Any]] = None,
+          custom_dash: typing.Optional[str] = None,
+         ) -> LogStdoutHandler:
     """
     Create a new log event
 
@@ -183,7 +188,7 @@ def event(ty, *,
 
     return stdout_handler
 
-def message(msg, verbosity=Verbosity.INFO):
+def message(msg: str, verbosity: Verbosity = Verbosity.INFO) -> LogStdoutHandler:
     """
     Print a message
 
@@ -203,7 +208,7 @@ def message(msg, verbosity=Verbosity.INFO):
         },
     )
 
-def doc(text):
+def doc(text: str) -> LogStdoutHandler:
     """
     Add a log event that contains text for the documentation generator.
     ``text`` should be formatted in Markdown.
@@ -221,7 +226,7 @@ def doc(text):
         },
     )
 
-def doc_appendix(title, text):
+def doc_appendix(title: str, text: str) -> LogStdoutHandler:
     """
     Add a log event that contains an appendix for the documentation generator.
     ``text`` should be formatted in Markdown.
@@ -242,7 +247,7 @@ def doc_appendix(title, text):
         },
     )
 
-def debug(msg):
+def debug(msg: str) -> LogStdoutHandler:
     """
     Print a debug message
 
@@ -253,7 +258,7 @@ def debug(msg):
     """
     return message(msg, Verbosity.DEBUG)
 
-def oververbose(msg):
+def oververbose(msg: str) -> LogStdoutHandler:
     """
     Log a "oververbose" message, this is intended for very rarely needed debug
     output (just run TBot with this verbosity and see for yourself ...)
@@ -272,7 +277,7 @@ def oververbose(msg):
     stdout_handler.print(has_color("33") + msg)
     return stdout_handler
 
-def set_layer(layer):
+def set_layer(layer: int) -> None:
     """
     Set the call graph depth.
     You should never need to call this yourself.
@@ -280,7 +285,8 @@ def set_layer(layer):
     global LOGNESTLAYER #pylint: disable=global-statement
     LOGNESTLAYER = layer
 
-def init_log(filename, verbosity=Verbosity.INFO):
+def init_log(filename: typing.Union[pathlib.Path, str],
+             verbosity: Verbosity = Verbosity.INFO) -> None:
     """
     Initialize the logger
 
@@ -295,13 +301,14 @@ def init_log(filename, verbosity=Verbosity.INFO):
     LOGFILE = pathlib.Path(filename)
     LOGVERBOSITY = verbosity
 
-def flush_log():
+def flush_log() -> None:
     """
     Write the log file
     """
     global LOGLIST #pylint: disable=global-statement
     global LOGFILE #pylint: disable=global-statement
     check_log()
-    json.dump(LOGLIST,
-              open(LOGFILE, "w"),
-              indent=4)
+    if LOGFILE is not None:
+        json.dump(LOGLIST,
+                  open(LOGFILE, "w"),
+                  indent=4)
