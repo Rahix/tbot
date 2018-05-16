@@ -22,6 +22,7 @@
 - Documentation links not working properly
 - The interactive shells were not properly handling the
   receival of multiple bytes at once, this is fixed now
+- Path expansion in completions is now handled properly
 
 
 ## [0.2.2] - 2018-05-15
