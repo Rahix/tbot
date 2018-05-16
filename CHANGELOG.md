@@ -20,6 +20,8 @@
 ### Fixed
 - U-Boot bootlog was not shown in very-verbose logging
 - Documentation links not working properly
+- The interactive shells were not properly handling the
+  receival of multiple bytes at once, this is fixed now
 
 
 ## [0.2.2] - 2018-05-15
