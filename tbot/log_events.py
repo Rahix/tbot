@@ -87,6 +87,7 @@ def tbot_done(success: bool) -> tbot.log.LogStdoutHandler:
         dct={
             "success": success,
         },
+        custom_dash=DASH_END,
     )
 
 def exception(name: str, trace: str) -> tbot.log.LogStdoutHandler:
