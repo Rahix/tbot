@@ -12,7 +12,7 @@ def setup_channel(chan: paramiko.Channel,
     Setup a paramiko channel
 
     :param chan: The channel to be set up
-    :type chan: paramiko.Channel
+    :type chan: paramiko.channel.Channel
     :param prompt: The prompt that should be used, has to be very unique!
     :type prompt: str
     :returns: Nothing
@@ -42,7 +42,7 @@ def read_to_prompt(chan: paramiko.Channel,
     Read until the shell waits for further input
 
     :param chan: Channel to read from
-    :type chan: paramiko.Channel
+    :type chan: paramiko.channel.Channel
     :param prompt: Prompt to be waited for
     :type prompt: str
     :param stdout_handler: Optional stdout handler to write output lines to
@@ -108,7 +108,7 @@ def exec_command(chan: paramiko.Channel,
     Execute a command and return it's output
 
     :param chan: Channel to execute this command on
-    :type chan: paramiko.Channel
+    :type chan: paramiko.channel.Channel
     :param prompt: Prompt to be expected
     :type prompt: str
     :param command: Command to be executed (no trailing ``\\n``)
@@ -136,7 +136,7 @@ def command_and_retval(chan: paramiko.Channel,
     Execute a command and return it's output and return value
 
     :param chan: Channel to execute this command on
-    :type chan: paramiko.Channel
+    :type chan: paramiko.channel.Channel
     :param prompt: Prompt to be expected
     :type prompt: str
     :param command: Command to be executed (no trailing ``\\n``)

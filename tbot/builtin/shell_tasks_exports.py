@@ -9,7 +9,7 @@ EXPORT = ["TftpDirectory"]
 class TftpDirectory:
     """
     A meta object to represent the tftp directory.
-    Can be created with :func:`setup_tftpdir`
+    Can be created with :func:`~tbot.builtin.shell_tasks.setup_tftpdir`
 
     :param root: TFTP root directory
     :type root: pathlib.PurePosixPath

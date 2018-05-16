@@ -25,10 +25,10 @@ def ishell(channel: paramiko.Channel, *,
     """
     An interactive shell
 
+    :param paramiko.channel.Channel channel: Channel to use
     :param setup: An additional setup procedure to eg set a custom prompt
-    :param abort: A character that should not be sent to the remote but instead trigger
+    :param str abort: A character that should not be sent to the remote but instead trigger
                   closing the interactive session
-    :type abort: str
     """
     size = shutil.get_terminal_size()
     channel.resize_pty(size.columns, size.lines, 1000, 1000)

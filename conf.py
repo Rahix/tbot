@@ -31,10 +31,13 @@
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc',
-              'sphinx.ext.coverage',
-              'sphinx.ext.githubpages',
-              'sphinx.ext.viewcode']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.coverage',
+    'sphinx.ext.githubpages',
+    'sphinx.ext.viewcode',
+    'sphinx.ext.intersphinx',
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -80,6 +83,10 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+    'paramiko': ('http://docs.paramiko.org/en/2.4/', None),
+}
 
 # -- Options for HTML output ----------------------------------------------
 

@@ -12,12 +12,6 @@ TBot
 Machines
 --------
 
-Utils
-^^^^^
-
-.. automodule:: tbot.machine.shell_utils
-   :members:
-
 Machine base class
 ^^^^^^^^^^^^^^^^^^
 .. autoclass:: tbot.machine.machine.Machine
