@@ -136,6 +136,8 @@ named \"tc\"")
     tbot.log.init_log(logfile, verbosity)
 
     with tbot.TBot(config, testcases) as tb:
+        print(f"\
+{tbot.log.has_color('33;1')}TBot{tbot.log.has_color('0')} starting ...")
         tbot.log.event(
             ['tbot', 'info'],
             msg=f"""\
