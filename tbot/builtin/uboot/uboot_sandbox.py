@@ -31,7 +31,7 @@ def uboot_sandbox(tb: tbot.TBot, *,
     builddir = builddir or tb.config["tbot.workdir"] / "uboot-sandbox"
     patchdir = patchdir or tb.config["uboot.patchdir", None]
 
-    tb.log.doc_log("""
+    tbot.log.doc("""
 ## Run U-Boot tests inside sandbox on host (optional) ##
 
 ### U-Boot checkout for the sandbox ###
@@ -42,7 +42,7 @@ def uboot_sandbox(tb: tbot.TBot, *,
             builddir=builddir,
             patchdir=patchdir)
 
-    tb.log.doc_log("""
+    tbot.log.doc("""
 ### Run sandbox tests ###
 U-Boot contains a python test suite that can be run on the host and on the target.
 Here we will run it on the host. Make sure all dependencies are met.  Refer to
@@ -50,7 +50,7 @@ Here we will run it on the host. Make sure all dependencies are met.  Refer to
 """)
 
     if tb.config["uboot.test.use_venv", True]:
-        tb.log.doc_log("""Create a virtualenv and install pytest inside it:
+        tbot.log.doc("""Create a virtualenv and install pytest inside it:
 """)
 
         # Setup python
@@ -59,10 +59,10 @@ Here we will run it on the host. Make sure all dependencies are met.  Refer to
         with tb.machine(tbot.machine.MachineLabEnv()) as tb:
             tb.shell.exec0(f"cd {builddir}")
             tb.shell.exec0(f"VIRTUAL_ENV_DISABLE_PROMPT=1 source venv/bin/activate",
-                            log_show_stdout=False)
+                           log_show_stdout=False)
             tb.shell.exec0(f"pip install pytest", log_show_stdout=False)
 
-            tb.log.doc_log(f"""Now clean the U-Boot repository and start the sandbox testsuite.
+            tbot.log.doc(f"""Now clean the U-Boot repository and start the sandbox testsuite.
 """)
             tb.shell.exec0(f"make mrproper", log_show_stdout=False)
 
@@ -71,7 +71,7 @@ Here we will run it on the host. Make sure all dependencies are met.  Refer to
                 """ Actual test run """
                 tb.shell.exec0(f"./test/py/test.py --bd sandbox --build")
     else:
-        tb.log.doc_log("""Here we do not use virtualenv because our build host
+        tbot.log.doc("""Here we do not use virtualenv because our build host
 does not have it installed, but it is recommended to do so.  
 Clean the U-Boot repository and start the sandbox testsuite:
 """)

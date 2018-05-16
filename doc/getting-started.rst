@@ -5,7 +5,7 @@ Getting Started
 
 The main concept of TBot is, that everything is a testcase. Testcases
 can call other testcases like you would call a function to do a certain
-task. For example the :func:`uboot_checkout_and_build`
+task. For example the :func:`~tbot.builtin.uboot.uboot_tasks.uboot_checkout_and_build`
 testcase builds a version of U-Boot for your currently selected board.
 
 You could do so, by calling TBot like this::
@@ -40,7 +40,7 @@ Testcases can also take parameters and return values::
                                     param_mandatory: bool,
                                     param_optional: bool = False,
                                    ) -> bool:
-        tb.log.log_msg(f"A: {param_mandatory}, B: {param_optional}")
+        tbot.log.message(f"A: {param_mandatory}, B: {param_optional}")
         return param_mandatory or param_optional
 
 When you try to call this testcase from the commandline, you will notice TBot failing

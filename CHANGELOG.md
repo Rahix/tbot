@@ -3,6 +3,31 @@
 ## [Unreleased]
 
 
+## [0.2.3] - 2018-05-16
+### Added
+- New singleton logger `tbot.log`
+- Warning when trying to generate documentation
+  from unsuccessful TBot runs
+
+### Changed
+- The old logger was replaced by a new singleton implementation.
+  This solves a few issues where the logger was not available
+  when it should have been. Also, logging is a prime example for
+  where to use a singleton. This will ensure that stdout is only
+  used in one place and things don't get messy ...
+
+### Removed
+- Old `tbot.logger` module and it's `LogEvent`'s
+- `TBot.log`
+
+### Fixed
+- U-Boot bootlog was not shown in very-verbose logging
+- Documentation links not working properly
+- The interactive shells were not properly handling the
+  receival of multiple bytes at once, this is fixed now
+- Path expansion in completions is now handled properly
+
+
 ## [0.2.2] - 2018-05-15
 ### Added
 - **Commandline testcase parameters**: You can now pass parameters
@@ -24,17 +49,17 @@
 
 
 ## [0.2.1] - 2018-05-14
-### Changes
+### Changed
 - Disable writing to history when setting up a channel
 - Implement cleanup in interactive testcases so user code can continue
   after finishing an interactive session
 
-### Fixes
+### Fixed
 - Fix KeyErrors not displaying the full path to the failing key
 
 
 ## [0.2.0] - 2018-05-04
-### Changes
+### Changed
 - Use custom bash completions instead of argcomplete
 - Make the HTMLLog generator use a template. Eases development
   and reduces clutter in the source file. Also, the html logs
@@ -43,7 +68,7 @@
   levels of some log messages to ensure they are displayed
   when they should be
 
-### Fixes
+### Fixed
 - Fix testcase EXPORTS. Exports are now in a separate file
   that is loaded before everything else. This should fix
   some testcases not working because exports they depend on

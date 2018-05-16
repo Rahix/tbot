@@ -21,7 +21,7 @@ def check_uboot_version(tb: tbot.TBot, *,
     with tb.with_board_uboot() as tb:
         strings = tb.shell.exec0(f"strings {uboot_binary} | grep U-Boot", log_show=False)
         version = tb.boardshell.exec0("version").split('\n')[0]
-        tb.log.log_debug(f"U-Boot Version (on the board) is '{version}'")
+        tbot.log.debug(f"U-Boot Version (on the board) is '{version}'")
         assert version in strings, "U-Boot version does not seem to match"
 
 @tbot.testcase
@@ -62,7 +62,7 @@ def uboot_checkout(tb: tbot.TBot, *,
     docstr += f"* Board specific patches can be found in `{patchdir}`\n" \
         if patchdir is not None else ""
 
-    tb.log.doc_log(docstr + "\n")
+    tbot.log.doc(docstr + "\n")
 
     git_testcase = "git_clean_checkout" if clean else "git_dirty_checkout"
 
@@ -100,7 +100,7 @@ def uboot_checkout_and_build(tb: tbot.TBot, *,
     :rtype: UBootRepository
     """
 
-    tb.log.doc_log("""
+    tbot.log.doc("""
 ## U-Boot checkout ##
 """)
 
@@ -112,7 +112,7 @@ def uboot_checkout_and_build(tb: tbot.TBot, *,
 
     toolchain = toolchain or tb.call("toolchain_get")
 
-    tb.log.doc_log("""
+    tbot.log.doc("""
 ## U-Boot build ##
 """)
 
@@ -152,7 +152,7 @@ def uboot_checkout_and_prepare(tb: tbot.TBot, *,
     :rtype: UBootRepository
     """
 
-    tb.log.doc_log("""
+    tbot.log.doc("""
 ## U-Boot checkout ##
 """)
 
@@ -164,7 +164,7 @@ def uboot_checkout_and_prepare(tb: tbot.TBot, *,
 
     toolchain = toolchain or tb.call("toolchain_get")
 
-    tb.log.doc_log("""
+    tbot.log.doc("""
 ## U-Boot build ##
 """)
 

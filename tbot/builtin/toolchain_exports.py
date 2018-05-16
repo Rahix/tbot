@@ -12,6 +12,6 @@ class UnknownToolchainException(Exception):
 class Toolchain(str):
     """
     A meta object to represent a toolchain.
-    Can be created with :func:`toolchain_get`
+    Can be created with :func:`~tbot.builtin.toolchain.toolchain_get`
     """
     pass

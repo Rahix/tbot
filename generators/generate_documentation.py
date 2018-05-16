@@ -18,8 +18,17 @@ def main():
     try:
         log = json.load(open(sys.argv[1]))
     except: #pylint: disable=broad-except
-        print(f"\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m\n")
+        sys.stderr.write(f"""\
+\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m
+""")
         raise
+
+    if log[-1]['success'] != True:
+        sys.stderr.write("""\
+\x1B[1;33mWARNING:\x1B[0m The TBot run that generated this logfile
+did not finish successfully, the documentation
+that will be generated might be wrong!
+""")
 
     appendices = {}
 

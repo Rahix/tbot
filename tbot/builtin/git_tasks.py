@@ -29,13 +29,16 @@ test -d {target / '.git'}""", log_show=False)[0] == 0:
         tb.shell.exec0(f"""\
 git clone {repo} {target}""")
     else:
-        tb.log.log_debug("Repository already checked out ...")
+        tbot.log.debug("Repository already checked out ...")
 
         # Log a git clone for documentation generation
-        event = tbot.logger.ShellCommandLogEvent(['sh', 'noenv'], f"""\
-git clone {repo} {target}""", log_show=True)
-        tb.log.log(event)
-        event.finished(0)
+        stdout_handler = tbot.log_events.shell_command(
+            machine=['labhost', 'noenv'],
+            command=f"git clone {repo} {target}",
+            show=True,
+            show_stdout=False,
+        )
+        stdout_handler.dct['exit_code'] = 0
 
     return tc.GitRepository(target)
 
@@ -55,9 +58,9 @@ def git_clean_checkout(tb: tbot.TBot, *,
               repository
     :rtype: GitRepository
     """
-    tb.log.log_debug(f"Git checkout '{repo}' to '{target}'")
+    tbot.log.debug(f"Git checkout '{repo}' to '{target}'")
 
-    tb.log.doc_log(f"Checkout the git repository `{repo}`:\n")
+    tbot.log.doc(f"Checkout the git repository `{repo}`:\n")
 
     tb.shell.exec0(f"mkdir -p {target}")
     if not tb.shell.exec(f"""\
@@ -65,17 +68,20 @@ test -d {target / '.git'}""", log_show=False)[0] == 0:
         tb.shell.exec0(f"""\
 git clone {repo} {target}""")
     else:
-        tb.log.log_debug("Repository already checked out, cleaning ...")
+        tbot.log.debug("Repository already checked out, cleaning ...")
         tb.shell.exec0(f"""\
 cd {target}; git reset --hard origin; git clean -fdx""", log_show=False)
         tb.shell.exec0(f"""\
 cd {target}; git pull""", log_show=False)
 
         # Log a git clone for documentation generation
-        event = tbot.logger.ShellCommandLogEvent(['sh', 'noenv'], f"""\
-git clone {repo} {target}""", log_show=True)
-        tb.log.log(event)
-        event.finished(0)
+        stdout_handler = tbot.log_events.shell_command(
+            machine=['labhost', 'noenv'],
+            command=f"git clone {repo} {target}",
+            show=True,
+            show_stdout=False,
+        )
+        stdout_handler.dct['exit_code'] = 0
 
     return tc.GitRepository(target)
 
@@ -93,9 +99,9 @@ def git_apply_patches(tb: tbot.TBot, *,
     :type patchdir: pathlib.PurePosixPath
     """
 
-    tb.log.log_debug(f"Applying patches in '{patchdir}' to '{gitdir}'")
+    tbot.log.debug(f"Applying patches in '{patchdir}' to '{gitdir}'")
 
-    tb.log.doc_log(f"Apply the patches in `{patchdir}` \
+    tbot.log.doc(f"Apply the patches in `{patchdir}` \
 (Copies of the patch files can be found in the appendix of this document):\n")
 
     patchfiles = tb.shell.exec0(f"""\
@@ -105,13 +111,13 @@ find {patchdir} -name '*.patch'""", log_show=False).strip('\n').split("\n")
     patchfiles.sort()
 
     dbg_str = '\n    -> '.join(patchfiles)
-    tb.log.log_debug(f"The following patches were found:\n    -> {dbg_str}")
+    tbot.log.debug(f"The following patches were found:\n    -> {dbg_str}")
 
     for patch in patchfiles:
         tb.shell.exec0(f"""\
 cd {gitdir}; git am -3 {patch}""", log_show_stdout=False)
         patchfile = tb.shell.exec0(f"cat {patch}", log_show=False)
-        tb.log.doc_appendix(f"Patch {patch.split('/')[-1]}", f"""```patch
+        tbot.log.doc_appendix(f"Patch {patch.split('/')[-1]}", f"""```patch
 {patchfile}
 ```
 """)
@@ -133,7 +139,7 @@ def git_bisect(tb: tbot.TBot,
     :param good: The good commit
     :type good: str
     :param and_then: A testcase that decides whether a commit is good or bad
-    :type and_then: str, typing.Callable
+    :type and_then: str or typing.Callable
     :param params: Additional parameters for the ``and_then`` testcase
     :type params: dict
     :returns: The first bad commit
@@ -175,14 +181,14 @@ def git_bisect(tb: tbot.TBot,
         while True:
             current = tb.shell.exec0(f"\
 cd {gitdir}; git show | grep -E '^commit [0-9a-zA-Z]+$'")[len("commit "):].strip()
-            tb.log.log_msg(f"Trying {current} ...")
+            tbot.log.message(f"Trying {current} ...")
             tb.call(try_commit, and_then=and_then, params=params)
             commits = tb.shell.exec0(f"\
 cd {gitdir}; git bisect visualize | grep -E '^commit [0-9a-zA-Z]+$'") \
                 .split("\n")[:-1]
             if len(commits) == 1:
                 bad_commit = commits[0][len("commit "):]
-                tb.log.log_msg(f"First bad commit is {bad_commit}")
+                tbot.log.message(f"First bad commit is {bad_commit}")
                 break
     except Exception:
         raise

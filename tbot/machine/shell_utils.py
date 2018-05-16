@@ -12,7 +12,7 @@ def setup_channel(chan: paramiko.Channel,
     Setup a paramiko channel
 
     :param chan: The channel to be set up
-    :type chan: paramiko.Channel
+    :type chan: paramiko.channel.Channel
     :param prompt: The prompt that should be used, has to be very unique!
     :type prompt: str
     :returns: Nothing
@@ -35,18 +35,18 @@ PS1='{prompt}'
 
 def read_to_prompt(chan: paramiko.Channel,
                    prompt: str,
-                   log_event: typing.Optional[tbot.logger.LogEvent] = None,
+                   stdout_handler: typing.Optional[tbot.log.LogStdoutHandler] = None,
                    prompt_regex: bool = False,
                   ) -> str:
     """
     Read until the shell waits for further input
 
     :param chan: Channel to read from
-    :type chan: paramiko.Channel
+    :type chan: paramiko.channel.Channel
     :param prompt: Prompt to be waited for
     :type prompt: str
-    :param log_event: Optional log event to write output lines to
-    :type log_event: tbot.logger.LogEvent
+    :param stdout_handler: Optional stdout handler to write output lines to
+    :type stdout_handler: tbot.log.LogStdoutHandler
     :returns: The read string (including the prompt)
     :param prompt_regex: Wether the prompt string is to be interpreted as
                          a regular expression (read_to_prompt will add a $
@@ -79,24 +79,22 @@ def read_to_prompt(chan: paramiko.Channel,
 
         buf += buf_data
 
-        if log_event is not None:
-            #pylint: disable=protected-access
-            log_event._log.log_oververbose(repr(buf_data))
+        tbot.log.oververbose(repr(buf_data))
 
-        if log_event is not None:
+        if stdout_handler is not None:
             while "\n" in buf[last_newline:]:
                 line = buf[last_newline:].split('\n')[0]
                 if last_newline != 0:
-                    log_event.add_line(line)
+                    stdout_handler.print(line)
                 last_newline += len(line) + 1
 
         if (not prompt_regex and buf[-len(prompt):] == prompt) \
             or (prompt_regex and re.search(expression, buf) is not None):
             # Print rest of last line to make sure nothing gets lost
-            if log_event is not None and "\n" not in buf[last_newline:]:
+            if stdout_handler is not None and "\n" not in buf[last_newline:]:
                 line = buf[last_newline:-len(prompt)]
                 if line != "":
-                    log_event.add_line(line)
+                    stdout_handler.print(line)
             break
 
     return buf
@@ -104,18 +102,19 @@ def read_to_prompt(chan: paramiko.Channel,
 def exec_command(chan: paramiko.Channel,
                  prompt: str,
                  command: str,
-                 log_event: typing.Optional[tbot.logger.LogEvent] = None) -> str:
+                 stdout_handler: typing.Optional[tbot.log.LogStdoutHandler] = None,
+                ) -> str:
     """
     Execute a command and return it's output
 
     :param chan: Channel to execute this command on
-    :type chan: paramiko.Channel
+    :type chan: paramiko.channel.Channel
     :param prompt: Prompt to be expected
     :type prompt: str
     :param command: Command to be executed (no trailing ``\\n``)
     :type command: str
-    :param log_event: Optional log event for this command
-    :type log_event: tbot.logger.LogEvent
+    :param stdout_handler: Optional stdout handler to write output lines to
+    :type stdout_handler: tbot.log.LogStdoutHandler
     :returns: The output of the command
     :rtype: str
     """
@@ -123,7 +122,7 @@ def exec_command(chan: paramiko.Channel,
     stdout = read_to_prompt(
         chan,
         prompt,
-        log_event,
+        stdout_handler,
     )[len(command)+1:-len(prompt)]
 
     return stdout
@@ -131,23 +130,23 @@ def exec_command(chan: paramiko.Channel,
 def command_and_retval(chan: paramiko.Channel,
                        prompt: str,
                        command: str,
-                       log_event: typing.Optional[tbot.logger.LogEvent] = None,
+                       stdout_handler: typing.Optional[tbot.log.LogStdoutHandler] = None,
                       ) -> typing.Tuple[int, str]:
     """
     Execute a command and return it's output and return value
 
     :param chan: Channel to execute this command on
-    :type chan: paramiko.Channel
+    :type chan: paramiko.channel.Channel
     :param prompt: Prompt to be expected
     :type prompt: str
     :param command: Command to be executed (no trailing ``\\n``)
     :type command: str
-    :param log_event: Optional log event for this command
-    :type log_event: tbot.logger.LogEvent
+    :param stdout_handler: Optional stdout handler to write output lines to
+    :type stdout_handler: tbot.log.LogStdoutHandler
     :returns: The return-code and output of the command
-    :rtype: (int, str)
+    :rtype: tuple[int, str]
     """
-    stdout = exec_command(chan, prompt, command, log_event)
+    stdout = exec_command(chan, prompt, command, stdout_handler)
 
     # Get the return code
     retcode = int(exec_command(chan, prompt, "echo $?", None).strip())

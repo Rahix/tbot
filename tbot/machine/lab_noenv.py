@@ -23,7 +23,8 @@ class MachineLabNoEnv(machine.Machine):
 
     def _exec(self,
               command: str,
-              log_event: tbot.logger.ShellCommandLogEvent) -> typing.Tuple[int, str]:
+              stdout_handler: typing.Optional[tbot.log.LogStdoutHandler],
+             ) -> typing.Tuple[int, str]:
         assert isinstance(self.conn, paramiko.SSHClient), \
             "Machine was not initialized correctly!"
         channel = self.conn.get_transport().open_session()
@@ -36,9 +37,12 @@ class MachineLabNoEnv(machine.Machine):
             .replace('\r\n', '\n') \
             .replace('\r', '\n')
 
-        #FIXME: Make output appear instantly and not after the run is done
-        for line in output.strip('\n').split('\n'):
-            log_event.add_line(line)
+        #TODO: Make output appear instantly and not after the run is done
+        lines = output.strip('\n').split('\n')
+        if isinstance(stdout_handler, tbot.log.LogStdoutHandler) \
+            and not (len(lines) == 1 and lines[0] == ""):
+            for line in lines:
+                stdout_handler.print(line)
         return ret_code, output
 
     @property

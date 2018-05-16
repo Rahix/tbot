@@ -23,8 +23,9 @@ Facilis dolorem voluptate laudantium vero quis. Voluptatem quia ipsa
 quo pariatur iusto odio omnis. Nulla necessitatibus sapiente et
 perferendis dolor. Tempore at ipsum eos molestiae nobis error corporis."""
 
-    custom_ev = tbot.logger.CustomLogEvent(["custom", "event"], text,
-                                           tbot.logger.Verbosity.INFO,
-                                           {"text": text})
-
-    tb.log.log(custom_ev)
+    tbot.log.event(
+        ty=["custom", "event"],
+        msg=text,
+        verbosity=tbot.log.Verbosity.INFO,
+        dct={"text": text},
+    )

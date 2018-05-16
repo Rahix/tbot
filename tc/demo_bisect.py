@@ -12,7 +12,7 @@ def demo_bisect(tb: tbot.TBot) -> None:
 
     # Add 4 bad commits
     for i in range(0, 4):
-        tb.log.log_debug(f"({i+1}/4) Adding a bad commit ...")
+        tbot.log.debug(f"({i+1}/4) Adding a bad commit ...")
         tb.shell.exec0(f"cd {repo}; echo 'asdfghjkl{i}' >>common/autoboot.c")
 
         string = "very ".join(map(lambda x: "", range(0, i + 1)))
@@ -27,4 +27,4 @@ def demo_bisect(tb: tbot.TBot) -> None:
                  )
 
     bad_commit = tb.shell.exec0(f"cd {repo}; git show {bad}")
-    tb.log.log_msg(f"BAD COMMIT:\n{bad_commit}")
+    tbot.log.message(f"BAD COMMIT:\n{bad_commit}")

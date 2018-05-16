@@ -19,7 +19,7 @@ def toolchain_get(tb: tbot.TBot, *, name: typing.Optional[str] = None) -> tc.Too
     name = name or tb.config["board.toolchain"]
     if tb.config[f"toolchains.{name}", None] is None:
         raise tc.UnknownToolchainException(repr(name))
-    tb.log.log_debug(f"Toolchain '{name}' exists")
+    tbot.log.debug(f"Toolchain '{name}' exists")
     return tc.Toolchain(name)
 
 @tbot.testcase
@@ -33,7 +33,7 @@ def toolchain_env(tb: tbot.TBot, *,
     :param toolchain: Which toolchain to use
     :type toolchain: Toolchain
     :param and_then: What testcase to call inside the env
-    :type and_then: str, typing.Callable
+    :type and_then: str or typing.Callable
     :param params: Parameters for the testcase
     :type params: dict
     """
@@ -45,9 +45,9 @@ def toolchain_env(tb: tbot.TBot, *,
 
     toolchain_script = tb.config[f"toolchains.{toolchain}.env_setup_script"]
 
-    tb.log.log_debug(f"Setting up '{toolchain}' toolchain")
+    tbot.log.debug(f"Setting up '{toolchain}' toolchain")
 
-    tb.log.doc_log(f"""Setup the `{toolchain}` toolchain by calling its env script:
+    tbot.log.doc(f"""Setup the `{toolchain}` toolchain by calling its env script:
 """)
 
     # Create an env shell

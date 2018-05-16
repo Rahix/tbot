@@ -7,6 +7,8 @@ import tbot
 
 from . import machine
 
+RST = tbot.log.has_color("0")
+BOLD = tbot.log.has_color("1")
 
 #pylint: disable=abstract-method
 class MachineBoard(machine.Machine):
@@ -26,23 +28,23 @@ class MachineBoard(machine.Machine):
         self._tb = tb
 
         if self.powerup:
-            ev = tbot.logger.CustomLogEvent(
-                ["board", "powerup"],
-                stdout=f"\x1B[1mBOARD POWERUP\x1B[0m ({self.boardname})",
-                verbosity=tbot.logger.Verbosity.INFO,
-                dict_values={"board": self.boardname})
+            tbot.log.event(
+                ty=["board", "powerup"],
+                msg=f"{BOLD}BOARD POWERUP{RST} ({self.boardname})",
+                verbosity=tbot.log.Verbosity.INFO,
+                dct={"board": self.boardname},
+            )
 
-            tb.log.log(ev)
         return self
 
     def _destruct(self, tb: 'tbot.TBot') -> None:
         super()._destruct(tb)
-        ev = tbot.logger.CustomLogEvent(
-            ["board", "poweroff"],
-            stdout=f"\x1B[1mBOARD POWEROFF\x1B[0m ({self.boardname})",
-            verbosity=tbot.logger.Verbosity.INFO,
-            dict_values={"board": self.boardname})
-        tb.log.log(ev)
+        tbot.log.event(
+            ty=["board", "poweroff"],
+            msg=f"{BOLD}BOARD POWEROFF{RST} ({self.boardname})",
+            verbosity=tbot.log.Verbosity.INFO,
+            dct={"board": self.boardname},
+        )
 
     def powercycle(self) -> None:
         """ Powercycle the board """

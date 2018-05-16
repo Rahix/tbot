@@ -20,7 +20,7 @@ def selftest_config(tb: tbot.TBot) -> None:
         tempdir = pathlib.Path(str(tempdr))
 
 ####################################################################
-        tb.log.log_debug("Testing a single config ...")
+        tbot.log.debug("Testing a single config ...")
         with open(tempdir / "c1.py", mode='w') as c:
             c.write("""\
 def config(cfg):
@@ -31,7 +31,7 @@ def config(cfg):
         assert cfg["foo"] == 1
 
 ####################################################################
-        tb.log.log_debug("Testing overwriting a single value ...")
+        tbot.log.debug("Testing overwriting a single value ...")
         with open(tempdir / "c2.py", mode='w') as c:
             c.write("""\
 def config(cfg):
@@ -44,7 +44,7 @@ def config(cfg):
         assert cfg["foo"] == 2
 
 ####################################################################
-        tb.log.log_debug("Testing overwriting a nested value ...")
+        tbot.log.debug("Testing overwriting a nested value ...")
         with open(tempdir / "c3.py", mode='w') as c:
             c.write("""\
 def config(cfg):
@@ -65,7 +65,7 @@ def config(cfg):
         assert cfg["foo.bar"] == 4
 
 ####################################################################
-        tb.log.log_debug("Testing overwriting a value with a subtree ...")
+        tbot.log.debug("Testing overwriting a value with a subtree ...")
         with open(tempdir / "c5.py", mode='w') as c:
             c.write("""\
 def config(cfg):
@@ -84,7 +84,7 @@ def config(cfg):
         assert fail is True
 
 ####################################################################
-        tb.log.log_debug("Testing overwriting a subtree with a value ...")
+        tbot.log.debug("Testing overwriting a subtree with a value ...")
         fail = False
         try:
             cfg = parse_config([tempdir / "c5.py",
@@ -95,7 +95,7 @@ def config(cfg):
         assert fail is True
 
 ####################################################################
-        tb.log.log_debug("Testing overwriting a subtree with a subtree (merge)...")
+        tbot.log.debug("Testing overwriting a subtree with a subtree (merge)...")
         with open(tempdir / "c6.py", mode='w') as c:
             c.write("""\
 def config(cfg):
@@ -111,7 +111,7 @@ def config(cfg):
         assert cfg["foo.bar.foo"] == 6
 
 ####################################################################
-        tb.log.log_debug("Testing subtree nested keys ...")
+        tbot.log.debug("Testing subtree nested keys ...")
         with open(tempdir / "c7.py", mode='w') as c:
             c.write("""\
 def config(cfg):

@@ -12,12 +12,6 @@ TBot
 Machines
 --------
 
-Utils
-^^^^^
-
-.. automodule:: tbot.machine.shell_utils
-   :members:
-
 Machine base class
 ^^^^^^^^^^^^^^^^^^
 .. autoclass:: tbot.machine.machine.Machine
@@ -65,7 +59,10 @@ Utils
 .. automodule:: tbot.config
    :members:
 
-.. automodule:: tbot.logger
+.. automodule:: tbot.log
+   :members:
+
+.. automodule:: tbot.log_events
    :members:
 
 .. automodule:: tbot.testcase_collector

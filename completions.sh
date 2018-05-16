@@ -58,9 +58,12 @@ _tbot()
         local index=$(($index + 1))
     done
 
-    local confdir=${confdir:-config}
-    local labconfdir=${labconfdir:-${confdir}/labs}
-    local boardconfdir=${boardconfdir:-${confdir}/boards}
+    local confdir="${confdir:-config}"
+    # Expand path
+    eval confdir="${confdir}" 2>/dev/null
+
+    local labconfdir="${labconfdir:-${confdir}/labs}"
+    local boardconfdir="${boardconfdir:-${confdir}/boards}"
 
     if [[ "$cur" == -* ]]; then
         COMPREPLY=( $( compgen -W '-h -c -p -d -l -v -q
@@ -74,7 +77,7 @@ _tbot()
                 if [ ! -d $labconfdir ]; then
                     echo
                     echo "Warning: $labconfdir does not exist!"
-                    echo "${words[@]}"
+                    echo -n "${words[@]}"
                     return
                 fi
                 local labs=$(ls $labconfdir | grep \\.py | sed 's/\.py$//')

@@ -25,10 +25,10 @@ def ishell(channel: paramiko.Channel, *,
     """
     An interactive shell
 
+    :param paramiko.channel.Channel channel: Channel to use
     :param setup: An additional setup procedure to eg set a custom prompt
-    :param abort: A character that should not be sent to the remote but instead trigger
+    :param str abort: A character that should not be sent to the remote but instead trigger
                   closing the interactive session
-    :type abort: str
     """
     size = shutil.get_terminal_size()
     channel.resize_pty(size.columns, size.lines, 1000, 1000)
@@ -40,8 +40,15 @@ def ishell(channel: paramiko.Channel, *,
 
     oldtty = termios.tcgetattr(sys.stdin)
     try:
-        tty.setraw(sys.stdin.fileno())
-        tty.setcbreak(sys.stdin.fileno())
+        tty.setraw(sys.stdin)
+        tty.setcbreak(sys.stdin)
+
+        # Set to polling read
+        mode = termios.tcgetattr(sys.stdin)
+        mode[6][termios.VMIN] = 0
+        mode[6][termios.VTIME] = 0
+        termios.tcsetattr(sys.stdin, termios.TCSAFLUSH, mode)
+
         channel.settimeout(0.0)
 
         while True:
@@ -65,19 +72,12 @@ def ishell(channel: paramiko.Channel, *,
                 except socket.timeout:
                     pass
             if sys.stdin in r:
-                data_string = sys.stdin.read(1)
+                data_string = sys.stdin.read(4096)
                 if abort is not None and data_string == abort:
                     break
                 if data_string == "":
                     break
                 channel.send(data_string)
-                # TODO: Fix other data not being sent all at once
-                # Send escape sequences all at once (fixes arrow keys)
-                if data_string == "\x1B":
-                    data_string = sys.stdin.read(2)
-                    if data_string == "":
-                        break
-                    channel.send(data_string)
     finally:
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, oldtty)
         channel.settimeout(None)
