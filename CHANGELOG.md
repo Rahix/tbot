@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Fixed
+- Fix the config not being properly installed and thus TBot not
+  working outside a development environment
 
 
 ## [0.2.3] - 2018-05-16

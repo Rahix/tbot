@@ -65,7 +65,7 @@ named \"tc\"")
     import traceback
 
     tbotpath = pathlib.Path(__file__).absolute().parent
-    tbot_config_path = tbotpath.parent / "config" / "tbot.py"
+    tbot_config_path = tbotpath / "defaults_config.py"
     tbot_custom_config_path_maybe = pathlib.Path(args.confdir) / "tbot.py"
     if pathlib.Path.absolute(tbot_config_path) \
         == pathlib.Path.absolute(tbot_custom_config_path_maybe):
