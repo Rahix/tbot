@@ -35,7 +35,7 @@ PS1='{prompt}'
 
 def read_to_prompt(chan: paramiko.Channel,
                    prompt: str,
-                   stdout_handler = None,
+                   stdout_handler: typing.Optional[tbot.log.LogStdoutHandler] = None,
                    prompt_regex: bool = False,
                   ) -> str:
     """
@@ -45,8 +45,8 @@ def read_to_prompt(chan: paramiko.Channel,
     :type chan: paramiko.Channel
     :param prompt: Prompt to be waited for
     :type prompt: str
-    :param log_event: Optional log event to write output lines to
-    :type log_event: tbot.logger.LogEvent
+    :param stdout_handler: Optional stdout handler to write output lines to
+    :type stdout_handler: tbot.log.LogStdoutHandler
     :returns: The read string (including the prompt)
     :param prompt_regex: Wether the prompt string is to be interpreted as
                          a regular expression (read_to_prompt will add a $
@@ -102,7 +102,8 @@ def read_to_prompt(chan: paramiko.Channel,
 def exec_command(chan: paramiko.Channel,
                  prompt: str,
                  command: str,
-                 stdout_handler = None) -> str:
+                 stdout_handler: typing.Optional[tbot.log.LogStdoutHandler] = None,
+                ) -> str:
     """
     Execute a command and return it's output
 
@@ -112,8 +113,8 @@ def exec_command(chan: paramiko.Channel,
     :type prompt: str
     :param command: Command to be executed (no trailing ``\\n``)
     :type command: str
-    :param log_event: Optional log event for this command
-    :type log_event: tbot.logger.LogEvent
+    :param stdout_handler: Optional stdout handler to write output lines to
+    :type stdout_handler: tbot.log.LogStdoutHandler
     :returns: The output of the command
     :rtype: str
     """
@@ -129,7 +130,7 @@ def exec_command(chan: paramiko.Channel,
 def command_and_retval(chan: paramiko.Channel,
                        prompt: str,
                        command: str,
-                       stdout_handler = None,
+                       stdout_handler: typing.Optional[tbot.log.LogStdoutHandler] = None,
                       ) -> typing.Tuple[int, str]:
     """
     Execute a command and return it's output and return value
@@ -140,8 +141,8 @@ def command_and_retval(chan: paramiko.Channel,
     :type prompt: str
     :param command: Command to be executed (no trailing ``\\n``)
     :type command: str
-    :param log_event: Optional log event for this command
-    :type log_event: tbot.logger.LogEvent
+    :param stdout_handler: Optional stdout handler to write output lines to
+    :type stdout_handler: tbot.log.LogStdoutHandler
     :returns: The return-code and output of the command
     :rtype: tuple[int, str]
     """

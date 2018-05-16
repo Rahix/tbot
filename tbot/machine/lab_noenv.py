@@ -23,7 +23,8 @@ class MachineLabNoEnv(machine.Machine):
 
     def _exec(self,
               command: str,
-              stdout_handler) -> typing.Tuple[int, str]:
+              stdout_handler: typing.Optional[tbot.log.LogStdoutHandler],
+             ) -> typing.Tuple[int, str]:
         assert isinstance(self.conn, paramiko.SSHClient), \
             "Machine was not initialized correctly!"
         channel = self.conn.get_transport().open_session()
@@ -38,7 +39,8 @@ class MachineLabNoEnv(machine.Machine):
 
         #TODO: Make output appear instantly and not after the run is done
         lines = output.strip('\n').split('\n')
-        if not (len(lines) == 1 and lines[0] == ""):
+        if isinstance(stdout_handler, tbot.log.LogStdoutHandler) \
+            and not (len(lines) == 1 and lines[0] == ""):
             for line in lines:
                 stdout_handler.print(line)
         return ret_code, output

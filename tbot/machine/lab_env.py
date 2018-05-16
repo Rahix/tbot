@@ -35,7 +35,8 @@ class MachineLabEnv(machine.Machine):
 
     def _exec(self,
               command: str,
-              stdout_handler) -> typing.Tuple[int, str]:
+              stdout_handler: typing.Optional[tbot.log.LogStdoutHandler],
+             ) -> typing.Tuple[int, str]:
         return shell_utils.command_and_retval(
             self.channel,
             self.prompt,

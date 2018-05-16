@@ -65,7 +65,8 @@ class MachineBoardDummy(board.MachineBoard):
 
     def _exec(self,
               command: str,
-              stdout_handler) -> typing.Tuple[int, str]:
+              stdout_handler: typing.Optional[tbot.log.LogStdoutHandler],
+             ) -> typing.Tuple[int, str]:
         raise Exception("Cannot execute commands on a dummy board machine")
 
     @property

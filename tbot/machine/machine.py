@@ -29,7 +29,8 @@ class Machine(abc.ABC):
     @abc.abstractmethod
     def _exec(self,
               command: str,
-              stdout_handler) -> typing.Tuple[int, str]:
+              stdout_handler: typing.Optional[tbot.log.LogStdoutHandler],
+             ) -> typing.Tuple[int, str]:
         pass
 
     @abc.abstractproperty
