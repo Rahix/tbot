@@ -143,7 +143,7 @@ def command_and_retval(chan: paramiko.Channel,
     :param log_event: Optional log event for this command
     :type log_event: tbot.logger.LogEvent
     :returns: The return-code and output of the command
-    :rtype: (int, str)
+    :rtype: tuple[int, str]
     """
     stdout = exec_command(chan, prompt, command, stdout_handler)
 

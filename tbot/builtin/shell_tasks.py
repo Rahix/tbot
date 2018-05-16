@@ -51,7 +51,7 @@ def cp_to_tftpdir(tb: tbot.TBot, *,
     Copy a file into the tftp folder
 
     :param name: Name of the file or path to the file
-    :type name: str, pathlib.PurePosixPath
+    :type name: str or pathlib.PurePosixPath
     :param dest_name: Name of the file inside the tftp folder, defaults to
                       the filename of ``name``
     :type dest_name: str

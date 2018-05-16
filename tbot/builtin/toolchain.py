@@ -33,7 +33,7 @@ def toolchain_env(tb: tbot.TBot, *,
     :param toolchain: Which toolchain to use
     :type toolchain: Toolchain
     :param and_then: What testcase to call inside the env
-    :type and_then: str, typing.Callable
+    :type and_then: str or typing.Callable
     :param params: Parameters for the testcase
     :type params: dict
     """

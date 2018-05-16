@@ -65,7 +65,10 @@ Utils
 .. automodule:: tbot.config
    :members:
 
-.. automodule:: tbot.logger
+.. automodule:: tbot.log
+   :members:
+
+.. automodule:: tbot.log_events
    :members:
 
 .. automodule:: tbot.testcase_collector

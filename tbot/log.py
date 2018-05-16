@@ -291,7 +291,7 @@ def init_log(filename: typing.Union[pathlib.Path, str],
     Initialize the logger
 
     :param filename: The file the log should be written to (in json format)
-    :type filename: pathlib.Path, str
+    :type filename: pathlib.Path or str
     :param verbosity: The minimun verbosity for messages that are printed
                       to stdout
     :type verbosity: Verbosity

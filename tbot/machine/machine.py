@@ -57,7 +57,7 @@ class Machine(abc.ABC):
             of this command
         :type log_show_stdout: bool
         :returns: A tuple of the return code and the output (stdout and stderr are merged)
-        :rtype: (int, str)
+        :rtype: tuple[int, str]
         """
         stdout_handler = tbot.log_events.shell_command(
             machine=self.unique_machine_name.split('-'),

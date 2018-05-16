@@ -139,7 +139,7 @@ def git_bisect(tb: tbot.TBot,
     :param good: The good commit
     :type good: str
     :param and_then: A testcase that decides whether a commit is good or bad
-    :type and_then: str, typing.Callable
+    :type and_then: str or typing.Callable
     :param params: Additional parameters for the ``and_then`` testcase
     :type params: dict
     :returns: The first bad commit

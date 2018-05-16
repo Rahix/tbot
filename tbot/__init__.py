@@ -71,7 +71,7 @@ class TBot:
         Decorator to call a testcase with a function as a payload ("and_then" argument)
 
         :param tc: The testcase to call
-        :type tc: str, typing.Callable
+        :type tc: str or typing.Callable
         :param kwargs: Additional arguments for the testcase
         :type kwargs: dict
         :returns: The decorated function
@@ -90,7 +90,7 @@ class TBot:
         Call a testcase
 
         :param tc: The testcase to be called. Can either be a string or a callable
-        :type tc: str, typing.Callable
+        :type tc: str or typing.Callable
         :param fail_ok: Whether a failure in this testcase is tolerable
         :type fail_ok: bool
         :param kwargs: Additional arguments for the testcase
