@@ -6,7 +6,7 @@
 - Warning when trying to generate documentation
   from unsuccessful TBot runs
 
-### Changes
+### Changed
 - The old logger was replaced by a new singleton implementation.
   This solves a few issues where the logger was not available
   when it should have been. Also, logging is a prime example for
@@ -19,6 +19,7 @@
 
 ### Fixed
 - U-Boot bootlog was not shown in very-verbose logging
+- Documentation links not working properly
 
 
 ## [0.2.2] - 2018-05-15
@@ -42,17 +43,17 @@
 
 
 ## [0.2.1] - 2018-05-14
-### Changes
+### Changed
 - Disable writing to history when setting up a channel
 - Implement cleanup in interactive testcases so user code can continue
   after finishing an interactive session
 
-### Fixes
+### Fixed
 - Fix KeyErrors not displaying the full path to the failing key
 
 
 ## [0.2.0] - 2018-05-04
-### Changes
+### Changed
 - Use custom bash completions instead of argcomplete
 - Make the HTMLLog generator use a template. Eases development
   and reduces clutter in the source file. Also, the html logs
@@ -61,7 +62,7 @@
   levels of some log messages to ensure they are displayed
   when they should be
 
-### Fixes
+### Fixed
 - Fix testcase EXPORTS. Exports are now in a separate file
   that is loaded before everything else. This should fix
   some testcases not working because exports they depend on
