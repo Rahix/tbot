@@ -45,6 +45,8 @@ class MachineBoardDummy(board.MachineBoard):
         self, tb: "tbot.TBot", previous: typing.Optional[machine.Machine] = None
     ) -> "MachineBoardDummy":
         self.name = self.name or tb.config["board.name", "unknown"]
+        if not isinstance(self.name, str):
+            raise Exception(f"Invalid name: {self.name!r}")
         self.boardname = self.name
         super()._setup(tb, previous)
 
@@ -54,6 +56,9 @@ class MachineBoardDummy(board.MachineBoard):
         # Save the noenv shell to have it accessible later
         self.noenv = tb.machines["labhost-noenv"]
 
+        if self.noenv is None:
+            raise Exception("no-env shell does not exist")
+
         if self.powerup:
             self.noenv.exec0(self.power_cmd_on, log_show_stdout=False)
 
@@ -61,7 +66,9 @@ class MachineBoardDummy(board.MachineBoard):
 
     def _destruct(self, tb: "tbot.TBot") -> None:
         super()._destruct(tb)
-        if isinstance(self.noenv, tbot.machine.Machine):
+        if isinstance(self.noenv, tbot.machine.Machine) and isinstance(
+            self.power_cmd_off, str
+        ):
             self.noenv.exec0(self.power_cmd_off, log_show_stdout=False)
         else:
             raise Exception(

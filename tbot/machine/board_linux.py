@@ -100,6 +100,8 @@ class MachineBoardLinux(board.MachineBoard):
         )
 
         self.channel = self.ub_machine.channel
+        if self.channel is None:
+            raise Exception("U-Boot machine is not initialized correctly")
 
         self.boot_command = self.boot_command or tb.config["linux.boot_command"]
         self.login_prompt = (

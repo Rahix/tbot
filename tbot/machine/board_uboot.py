@@ -102,6 +102,9 @@ class MachineBoardUBoot(board.MachineBoard):
         # Save the noenv shell to have it accessible later
         self.noenv = tb.machines["labhost-noenv"]
 
+        if self.noenv is None:
+            raise Exception("no-env shell does not exist")
+
         try:
             # Poweron the board
             self.channel.send(f"{self.connect_command}\n")
@@ -135,7 +138,10 @@ class MachineBoardUBoot(board.MachineBoard):
 
     def _destruct(self, tb: "tbot.TBot") -> None:
         super()._destruct(tb)
-        if isinstance(self.noenv, tbot.machine.Machine):
+        if (
+            isinstance(self.noenv, tbot.machine.Machine)
+            and self.power_cmd_off is not None
+        ):
             self.noenv.exec0(self.power_cmd_off, log_show_stdout=False)
         else:
             raise Exception(

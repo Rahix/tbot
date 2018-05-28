@@ -101,8 +101,8 @@ class LogStdoutHandler:
         self.layer = LOGNESTLAYER
         self.custom_dash = custom_dash
         self.dct = dct
-        self.key = None
-        self.prefix = None
+        self.key: typing.Optional[str] = None
+        self.prefix: typing.Optional[str] = None
 
     def reset_verbosity(self, new_verbosity: Verbosity) -> None:
         """

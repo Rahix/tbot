@@ -17,7 +17,7 @@ class MachineBoard(machine.Machine):
 
     def __init__(self) -> None:
         super().__init__()
-        self.boardname = None
+        self.boardname: typing.Optional[str] = None
         self.powerup = True
         self._tb: typing.Optional["tbot.TBot"] = None
 
