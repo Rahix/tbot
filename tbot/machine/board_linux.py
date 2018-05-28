@@ -11,6 +11,7 @@ from . import machine
 from . import board
 from . import shell_utils
 
+
 # pylint: disable=too-many-instance-attributes
 class MachineBoardLinux(board.MachineBoard):
     """ Board machine for Linux interaction
@@ -147,14 +148,15 @@ class MachineBoardLinux(board.MachineBoard):
                 self.channel, self.prompt, stdout_handler
             )
             stdout_handler.dct["exit_code"] = 0
-        except:  # If anything goes wrong, turn off again
+        except:  # noqa: E722
+            # If anything goes wrong, turn off again
             self._destruct(tb)
             raise
 
         return self
 
     def _destruct(self, tb: "tbot.TBot") -> None:
-        ev = tbot.log.event(
+        tbot.log.event(
             ty=["board", "linux-shutdown"],
             msg=f"{tbot.log.has_color('1')}LINUX SHUTDOWN{tbot.log.has_color('0')} ({self.boardname})",
             verbosity=tbot.log.Verbosity.INFO,

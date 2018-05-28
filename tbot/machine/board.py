@@ -10,6 +10,7 @@ from . import machine
 RST = tbot.log.has_color("0")
 BOLD = tbot.log.has_color("1")
 
+
 # pylint: disable=abstract-method
 class MachineBoard(machine.Machine):
     """ Abstract base class for board machines """

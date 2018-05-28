@@ -17,6 +17,7 @@ from tbot import tc
 
 # Based on https://github.com/paramiko/paramiko/blob/master/demos/interactive.py
 
+
 # pylint: disable=too-many-branches, too-many-nested-blocks
 def ishell(
     channel: paramiko.Channel,

@@ -10,6 +10,7 @@ from . import machine
 from . import board
 from . import shell_utils
 
+
 # pylint: disable=too-many-instance-attributes
 class MachineBoardUBoot(board.MachineBoard):
     """ Board machine for U-Boot interaction
@@ -125,8 +126,8 @@ class MachineBoardUBoot(board.MachineBoard):
             self.channel.send("\n")
             self.prompt = self.uboot_prompt
             boot_stdout += shell_utils.read_to_prompt(self.channel, self.prompt)
-
-        except:  # If anything goes wrong, turn off again
+        except:  # noqa: E722
+            # If anything goes wrong, turn off again
             self._destruct(tb)
             raise
 

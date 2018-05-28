@@ -18,15 +18,31 @@ def main():
 
     try:
         log = json.load(open(sys.argv[1]))
-    except:  # pylint: disable=broad-except
+    except IndexError:
         sys.stderr.write(
             f"""\
 \x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m
 """
         )
-        raise
+        sys.exit(1)
+    except json.JSONDecodeError:
+        sys.stderr.write(
+            f"""\
+\x1B[31mInvalid JSON!\x1B[0m
+\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m
+"""
+        )
+        sys.exit(1)
+    except OSError:
+        sys.stderr.write(
+            f"""\
+\x1B[31mopen failed!\x1B[0m
+\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m
+"""
+        )
+        sys.exit(1)
 
-    if log[-1]["success"] != True:
+    if not log[-1]["success"]:
         sys.stderr.write(
             """\
 \x1B[1;33mWARNING:\x1B[0m The TBot run that generated this logfile

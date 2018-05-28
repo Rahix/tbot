@@ -125,9 +125,29 @@ def main():
 
     try:
         log = json.load(open(sys.argv[1]))
-    except:  # pylint: disable=broad-except
-        print(f"\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m\n")
-        raise
+    except IndexError:
+        sys.stderr.write(
+            f"""\
+\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m
+"""
+        )
+        sys.exit(1)
+    except json.JSONDecodeError:
+        sys.stderr.write(
+            f"""\
+\x1B[31mInvalid JSON!\x1B[0m
+\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m
+"""
+        )
+        sys.exit(1)
+    except OSError:
+        sys.stderr.write(
+            f"""\
+\x1B[31mopen failed!\x1B[0m
+\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m
+"""
+        )
+        sys.exit(1)
 
     toplevels = parse_log(log)
     testcases = []

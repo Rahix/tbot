@@ -89,7 +89,7 @@ Here we will run it on the host. Make sure all dependencies are met.  Refer to
     else:
         tbot.log.doc(
             """Here we do not use virtualenv because our build host
-does not have it installed, but it is recommended to do so.  
+does not have it installed, but it is recommended to do so.
 Clean the U-Boot repository and start the sandbox testsuite:
 """
         )

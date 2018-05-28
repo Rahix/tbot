@@ -3,21 +3,18 @@ TBot
 ----
 """
 import time
-import pathlib
 import typing
 import traceback
-import sys
-import paramiko
 import enforce
-from tbot import config_parser
-from tbot import log
-from tbot import log_events
-from tbot import testcase_collector
-from tbot import tc
+
+from tbot import log  # noqa: F401
+from tbot import log_events  # noqa: F401
+from tbot import tc  # noqa: F401
 import tbot.machine
 import tbot.config
 
-from tbot.testcase_collector import testcase
+from tbot.testcase_collector import testcase  # noqa: F401
+
 
 # pylint: disable=too-many-instance-attributes
 class TBot:
@@ -65,13 +62,15 @@ class TBot:
         return self.machines["board"]
 
     def call_then(
-        self, tc: typing.Union[str, typing.Callable], **kwargs: typing.Any
+        self,
+        tcs: typing.Union[str, typing.Callable],
+        **kwargs: typing.Any,
     ) -> typing.Callable:
         """
         Decorator to call a testcase with a function as a payload ("and_then" argument)
 
-        :param tc: The testcase to call
-        :type tc: str or typing.Callable
+        :param tcs: The testcase to call
+        :type tcs: str or typing.Callable
         :param kwargs: Additional arguments for the testcase
         :type kwargs: dict
         :returns: The decorated function
@@ -80,14 +79,14 @@ class TBot:
 
         def _decorator(f: typing.Callable) -> typing.Any:
             kwargs["and_then"] = f
-            self.call(tc, **kwargs)
+            self.call(tcs, **kwargs)
             return f
 
         return _decorator
 
     def call(
         self,
-        tc: typing.Union[str, typing.Callable],
+        tcs: typing.Union[str, typing.Callable],
         *,
         fail_ok: bool = False,
         **kwargs: typing.Any,
@@ -95,25 +94,25 @@ class TBot:
         """
         Call a testcase
 
-        :param tc: The testcase to be called. Can either be a string or a callable
-        :type tc: str or typing.Callable
+        :param tcs: The testcase to be called. Can either be a string or a callable
+        :type tcs: str or typing.Callable
         :param fail_ok: Whether a failure in this testcase is tolerable
         :type fail_ok: bool
         :param kwargs: Additional arguments for the testcase
         :type kwargs: dict
         :returns: The return value from the testcase
         """
-        name = tc if isinstance(tc, str) else f"@{tc.__name__}"
+        name = tcs if isinstance(tcs, str) else f"@{tcs.__name__}"
         tbot.log_events.testcase_begin(name)
         self.layer += 1
         tbot.log.set_layer(self.layer)
         start_time = time.monotonic()
 
         try:
-            if isinstance(tc, str):
-                retval = self.testcases[tc](self, **kwargs)
+            if isinstance(tcs, str):
+                retval = self.testcases[tcs](self, **kwargs)
             else:
-                retval = enforce.runtime_validation(tc)(self, **kwargs)
+                retval = enforce.runtime_validation(tcs)(self, **kwargs)
         except Exception as e:  # pylint: disable=broad-except
             # Cleanup is done by "with" handler __exit__
             # A small hack to ensure, the exception is only added once:

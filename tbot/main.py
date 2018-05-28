@@ -4,6 +4,7 @@ TBot main entry point
 import pathlib
 import argparse
 
+
 # pylint: disable=too-many-locals, too-many-branches
 def main() -> None:
     """ Main entry point of tbot """
