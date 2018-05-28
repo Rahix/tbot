@@ -9,9 +9,11 @@
   hooks.
 - Checks for malformed commands (eg. running `exit` or a command that
   contains a `\n`)
+
 ### Changed
 - Use flake8 instead of pylint
 - Reformat using black
+
 ### Fixed
 - Fix the config not being properly installed and thus TBot not
   working outside a development environment
