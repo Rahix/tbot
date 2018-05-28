@@ -6,6 +6,7 @@ Available in ``denx`` lab
 import pathlib
 from tbot.config import Config
 
+
 def config(cfg: Config) -> None:
     """ Board config """
     if cfg["lab.name"] != "pollux":
@@ -18,24 +19,19 @@ def config(cfg: Config) -> None:
             "on_command": "remote_power p2020rdb_1 on",
             "off_command": "remote_power p2020rdb_1 off",
         },
-        "serial": {
-            "name": "connect_p2020rdb_1",
-            "command": "connect p2020rdb_1",
-        },
+        "serial": {"name": "connect_p2020rdb_1", "command": "connect p2020rdb_1"},
     }
 
     cfg["uboot"] = {
         "defconfig": "P2020RDB-PC_NAND_defconfig",
-        "shell": {
-            "prompt": "=> ",
-        },
+        "shell": {"prompt": "=> "},
         "test": {
             "hooks": pathlib.PurePosixPath("/home/hws/hooks/P2020"),
-            "config": pathlib.PurePosixPath("/home/hws/data/u_boot_boardenv_P2020RDB_PC_NAND.py"),
+            "config": pathlib.PurePosixPath(
+                "/home/hws/data/u_boot_boardenv_P2020RDB_PC_NAND.py"
+            ),
             "boardname": "P2020RDB-PC_NAND",
         },
     }
 
-    cfg["tftp"] = {
-        "boarddir": "p2020rdb",
-    }
+    cfg["tftp"] = {"boarddir": "p2020rdb"}
