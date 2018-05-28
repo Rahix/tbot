@@ -84,7 +84,7 @@ PS1='{self.prompt}'
         return self
 
     def _exec(
-        self, command: str, stdout_handler: tbot.log.LogStdoutHandler
+        self, command: str, stdout_handler: typing.Optional[tbot.log.LogStdoutHandler]
     ) -> typing.Tuple[int, str]:
         stdout = shell_utils.exec_command(
             self.channel, self.prompt, command, stdout_handler
