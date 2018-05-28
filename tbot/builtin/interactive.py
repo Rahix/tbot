@@ -17,11 +17,14 @@ from tbot import tc
 
 # Based on https://github.com/paramiko/paramiko/blob/master/demos/interactive.py
 
-#pylint: disable=too-many-branches, too-many-nested-blocks
-def ishell(channel: paramiko.Channel, *,
-           setup: typing.Optional[typing.Callable[[paramiko.Channel], None]] = None,
-           abort: typing.Optional[str] = None,
-          ) -> None:
+
+# pylint: disable=too-many-branches, too-many-nested-blocks
+def ishell(
+    channel: paramiko.Channel,
+    *,
+    setup: typing.Optional[typing.Callable[[paramiko.Channel], None]] = None,
+    abort: typing.Optional[str] = None,
+) -> None:
     """
     An interactive shell
 
@@ -65,7 +68,7 @@ def ishell(channel: paramiko.Channel, *,
                         except UnicodeDecodeError:
                             time.sleep(0.1)
                     if data == b"":
-                        sys.stdout.write('\r\n*** Shell finished\r\n')
+                        sys.stdout.write("\r\n*** Shell finished\r\n")
                         break
                     sys.stdout.write(data_string)
                     sys.stdout.flush()
@@ -82,11 +85,14 @@ def ishell(channel: paramiko.Channel, *,
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, oldtty)
         channel.settimeout(None)
 
+
 @tbot.testcase
-def interactive_build(tb: tbot.TBot, *,
-                      builddir: typing.Optional[pathlib.PurePosixPath] = None,
-                      toolchain: typing.Optional[tc.Toolchain] = None,
-                     ) -> None:
+def interactive_build(
+    tb: tbot.TBot,
+    *,
+    builddir: typing.Optional[pathlib.PurePosixPath] = None,
+    toolchain: typing.Optional[tc.Toolchain] = None,
+) -> None:
     """
     Open an interactive shell in the U-Boot build directory with the toolchain
     enabled.
@@ -101,22 +107,29 @@ def interactive_build(tb: tbot.TBot, *,
     toolchain = toolchain or tb.call("toolchain_get")
 
     @tb.call_then("toolchain_env", toolchain=toolchain)
-    def interactive_shell(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
+    def interactive_shell(tb: tbot.TBot) -> None:  # pylint: disable=unused-variable
         """ Actual interactive shell """
         tb.shell.exec0(f"cd {builddir}")
 
         labhost_machine = tb.machines["labhost-env"]
         if not isinstance(labhost_machine, tbot.machine.MachineLabEnv):
-            raise Exception("labhost-env is not a MachineLabEnv, something is very wrong!")
+            raise Exception(
+                "labhost-env is not a MachineLabEnv, something is very wrong!"
+            )
         channel = labhost_machine.channel
+
         def setup(ch: paramiko.Channel) -> None:
             """ Setup a custom prompt """
             # Set custom prompt
-            ch.send("PS1=\"\\[\\033[36m\\]U-Boot Build: \\[\\033[32m\\]\\w\\[\\033[0m\\]> \"\n")
+            ch.send(
+                'PS1="\\[\\033[36m\\]U-Boot Build: \\[\\033[32m\\]\\w\\[\\033[0m\\]> "\n'
+            )
             # Read back what we just sent
             time.sleep(0.1)
             ch.recv(1024)
+
         ishell(channel, setup=setup)
+
 
 @tbot.testcase
 def interactive_uboot(tb: tbot.TBot) -> None:
@@ -137,6 +150,7 @@ def interactive_uboot(tb: tbot.TBot) -> None:
         tbot.machine.shell_utils.read_to_prompt(channel, boardshell.prompt)
         print("\r")
 
+
 @tbot.testcase
 def interactive_linux(tb: tbot.TBot) -> None:
     """
@@ -151,16 +165,20 @@ def interactive_linux(tb: tbot.TBot) -> None:
         channel = boardshell.channel
         if not isinstance(channel, paramiko.Channel):
             raise Exception("channel is not a paramiko channel")
+
         def setup(ch: paramiko.Channel) -> None:
             """ Setup a custom prompt """
             # Set terminal size
             size = shutil.get_terminal_size()
             ch.send(f"stty cols {size.columns}\nstty rows {size.lines}\n$SHELL\n")
             # Set custom prompt
-            ch.send(f"PS1=\"\\[\\033[36m\\]{bname}-linux: \\[\\033[32m\\]\\w\\[\\033[0m\\]> \"\n")
+            ch.send(
+                f'PS1="\\[\\033[36m\\]{bname}-linux: \\[\\033[32m\\]\\w\\[\\033[0m\\]> "\n'
+            )
             # Read back what we just sent
             time.sleep(0.5)
             ch.recv(1024)
+
         print("Linux Shell (CTRL-D to exit):")
         ishell(channel, abort="\x04", setup=setup)
         channel.send("\x04")

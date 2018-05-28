@@ -6,6 +6,7 @@ import pathlib
 
 EXPORT = ["GitRepository"]
 
+
 class GitRepository(pathlib.PurePosixPath):
     """
     A meta object representing a git repository.

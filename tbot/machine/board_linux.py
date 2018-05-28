@@ -11,7 +11,8 @@ from . import machine
 from . import board
 from . import shell_utils
 
-#pylint: disable=too-many-instance-attributes
+
+# pylint: disable=too-many-instance-attributes
 class MachineBoardLinux(board.MachineBoard):
     """ Board machine for Linux interaction
 
@@ -36,16 +37,18 @@ class MachineBoardLinux(board.MachineBoard):
                      defaults to ``tb.config["linux.shell.password"]``
     :type password: str
     """
-    #pylint: disable=too-many-arguments
-    def __init__(self, *,
-                 name: typing.Optional[str] = None,
-                 boardname: typing.Optional[str] = None,
-                 boot_command: typing.Optional[str] = None,
-                 login_prompt: typing.Optional[str] = None,
-                 login_timeout: typing.Optional[float] = None,
-                 username: typing.Optional[str] = None,
-                 password: typing.Optional[str] = None,
-                ) -> None:
+    # pylint: disable=too-many-arguments
+    def __init__(
+        self,
+        *,
+        name: typing.Optional[str] = None,
+        boardname: typing.Optional[str] = None,
+        boot_command: typing.Optional[str] = None,
+        login_prompt: typing.Optional[str] = None,
+        login_timeout: typing.Optional[float] = None,
+        username: typing.Optional[str] = None,
+        password: typing.Optional[str] = None,
+    ) -> None:
         super().__init__()
         self.name = name
         self.boardname = boardname
@@ -62,16 +65,17 @@ class MachineBoardLinux(board.MachineBoard):
         self.ub_machine: typing.Optional[tbot.machine.MachineBoardUBoot] = None
         self.own_ub = False
 
-    def _setup(self,
-               tb: 'tbot.TBot',
-               previous: typing.Optional[machine.Machine] = None,
-              ) -> 'MachineBoardLinux':
+    def _setup(
+        self, tb: "tbot.TBot", previous: typing.Optional[machine.Machine] = None
+    ) -> "MachineBoardLinux":
         self.name = self.name or tb.config["board.serial.name", "unknown-linux"]
         # Check if the previous machine is also a MachineBoardUBoot,
         # if this is the case, prevent reinitialisation
-        if previous is not self and \
-            isinstance(previous, MachineBoardLinux) and \
-            previous.unique_machine_name == self.unique_machine_name:
+        if (
+            previous is not self
+            and isinstance(previous, MachineBoardLinux)
+            and previous.unique_machine_name == self.unique_machine_name
+        ):
             return previous
 
         if isinstance(previous, tbot.machine.MachineBoardUBoot):
@@ -79,7 +83,7 @@ class MachineBoardLinux(board.MachineBoard):
         else:
             # Create our own U-Boot
             ub_machine = tbot.machine.MachineBoardUBoot()
-            #pylint: disable=protected-access
+            # pylint: disable=protected-access
             self.ub_machine = ub_machine._setup(tb, previous)
             self.own_ub = True
 
@@ -96,31 +100,35 @@ class MachineBoardLinux(board.MachineBoard):
         )
 
         self.channel = self.ub_machine.channel
+        if self.channel is None:
+            raise Exception("U-Boot machine is not initialized correctly")
 
         self.boot_command = self.boot_command or tb.config["linux.boot_command"]
-        self.login_prompt = self.login_prompt or tb.config["linux.shell.login_prompt", "login: "]
-        self.login_timeout = self.login_timeout or tb.config["linux.shell.login_timeout", 2]
+        self.login_prompt = (
+            self.login_prompt or tb.config["linux.shell.login_prompt", "login: "]
+        )
+        self.login_timeout = (
+            self.login_timeout or tb.config["linux.shell.login_timeout", 2]
+        )
         self.username = self.username or tb.config["linux.shell.username", "root"]
         self.password = self.password or tb.config["linux.shell.password", ""]
 
         try:
             # Boot
-            cmds = self.boot_command.split('\n')
+            cmds = self.boot_command.split("\n")
             for cmd in cmds[:-1]:
                 self.ub_machine.exec0(cmd)
             self.channel.send(f"{cmds[-1]}\n")
             stdout_handler = tbot.log_events.shell_command(
-                machine=self.ub_machine.unique_machine_name.split('-'),
-                command=cmds[-1], 
+                machine=self.ub_machine.unique_machine_name.split("-"),
+                command=cmds[-1],
                 show=True,
                 show_stdout=False,
             )
             stdout_handler.prefix = "   >> "
 
             boot_stdout = shell_utils.read_to_prompt(
-                self.channel,
-                self.login_prompt,
-                stdout_handler,
+                self.channel, self.login_prompt, stdout_handler
             )
 
             # Login
@@ -139,19 +147,18 @@ class MachineBoardLinux(board.MachineBoard):
             self.prompt = f"TBOT-LINUX-{random.randint(11111,99999)}>"
             self.channel.send(f"\nPROMPT_COMMAND=\nPS1='{self.prompt}'\n")
             boot_stdout += shell_utils.read_to_prompt(
-                self.channel,
-                self.prompt,
-                stdout_handler,
+                self.channel, self.prompt, stdout_handler
             )
-            stdout_handler.dct['exit_code'] = 0
-        except: # If anything goes wrong, turn off again
+            stdout_handler.dct["exit_code"] = 0
+        except:  # noqa: E722
+            # If anything goes wrong, turn off again
             self._destruct(tb)
             raise
 
         return self
 
-    def _destruct(self, tb: 'tbot.TBot') -> None:
-        ev = tbot.log.event(
+    def _destruct(self, tb: "tbot.TBot") -> None:
+        tbot.log.event(
             ty=["board", "linux-shutdown"],
             msg=f"{tbot.log.has_color('1')}LINUX SHUTDOWN{tbot.log.has_color('0')} ({self.boardname})",
             verbosity=tbot.log.Verbosity.INFO,
@@ -159,25 +166,23 @@ class MachineBoardLinux(board.MachineBoard):
         )
         if isinstance(self.ub_machine, tbot.machine.MachineBoardUBoot):
             if self.own_ub:
-                #pylint: disable=protected-access
+                # pylint: disable=protected-access
                 self.ub_machine._destruct(tb)
             else:
                 # Reset to U-Boot
                 self.ub_machine.powercycle()
         else:
-            raise Exception("U-Boot not initialized correctly, board might still be on!")
+            raise Exception(
+                "U-Boot not initialized correctly, board might still be on!"
+            )
 
-    def _exec(self,
-              command: str,
-              stdout_handler: typing.Optional[tbot.log.LogStdoutHandler],
-             ) -> typing.Tuple[int, str]:
+    def _exec(
+        self, command: str, stdout_handler: typing.Optional[tbot.log.LogStdoutHandler]
+    ) -> typing.Tuple[int, str]:
         if isinstance(stdout_handler, tbot.log.LogStdoutHandler):
             stdout_handler.prefix = "   >< "
         return shell_utils.command_and_retval(
-            self.channel,
-            self.prompt,
-            command,
-            stdout_handler
+            self.channel, self.prompt, command, stdout_handler
         )
 
     @property

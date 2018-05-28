@@ -6,6 +6,7 @@ import pathlib
 
 EXPORT = ["TftpDirectory"]
 
+
 class TftpDirectory:
     """
     A meta object to represent the tftp directory.
@@ -21,9 +22,9 @@ class TftpDirectory:
     :ivar path: Full TFTP path, this is what you should use on the Labhost
     """
 
-    def __init__(self,
-                 root: pathlib.PurePosixPath,
-                 subdir: pathlib.PurePosixPath) -> None:
+    def __init__(
+        self, root: pathlib.PurePosixPath, subdir: pathlib.PurePosixPath
+    ) -> None:
         self.root = root
         self.subdir = subdir
         self.path = root / subdir

@@ -4,6 +4,7 @@ TBot selftests
 """
 import tbot
 
+
 @tbot.testcase
 def selftest(tb: tbot.TBot) -> None:
     """ TBot self test """

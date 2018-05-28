@@ -13,6 +13,7 @@ BBLUE = tbot.log.has_color("1;34")
 
 DASH_END = tbot.log.has_unicode("└─", "\\-")
 
+
 def testcase_begin(name: str) -> tbot.log.LogStdoutHandler:
     """
     Log event for when a testcase is called
@@ -26,16 +27,13 @@ def testcase_begin(name: str) -> tbot.log.LogStdoutHandler:
         ty=["testcase", "begin"],
         msg=f"Calling {BBLUE}{name}{RST} ...",
         verbosity=tbot.log.Verbosity.ALL,
-        dct={
-            "name": name,
-        },
+        dct={"name": name},
     )
 
-def testcase_end(name: str,
-                 duration: float,
-                 success: bool = True,
-                 fail_ok: bool = False,
-                ) -> tbot.log.LogStdoutHandler:
+
+def testcase_end(
+    name: str, duration: float, success: bool = True, fail_ok: bool = False
+) -> tbot.log.LogStdoutHandler:
     """
     Log event for when a testcase is done
 
@@ -70,6 +68,7 @@ def testcase_end(name: str,
         custom_dash=DASH_END,
     )
 
+
 def tbot_done(success: bool) -> tbot.log.LogStdoutHandler:
     """
     Log event for TBot being done with running testcases
@@ -79,15 +78,17 @@ def tbot_done(success: bool) -> tbot.log.LogStdoutHandler:
     :returns: A handler for the created log event
     :rtype: LogStdoutHandler
     """
-    message = f"Done, {BGREEN if success else BRED}{'SUCCESS' if success else 'FAILURE'}"
+    message = (
+        f"Done, {BGREEN if success else BRED}{'SUCCESS' if success else 'FAILURE'}"
+    )
     return tbot.log.event(
         ty=["tbot", "end"],
         msg=message,
         verbosity=tbot.log.Verbosity.ALL,
-        dct={
-            "success": success,
-        },
+        dct={"success": success},
+        custom_dash=DASH_END,
     )
+
 
 def exception(name: str, trace: str) -> tbot.log.LogStdoutHandler:
     """
@@ -104,18 +105,13 @@ def exception(name: str, trace: str) -> tbot.log.LogStdoutHandler:
         ty=["exception"],
         msg=f"Catched exception: {name}",
         verbosity=tbot.log.Verbosity.DEBUG,
-        dct={
-            "name": name,
-            "trace": trace,
-        },
+        dct={"name": name, "trace": trace},
     )
 
-def shell_command(*,
-                  machine: typing.List[str],
-                  command: str,
-                  show: bool,
-                  show_stdout: bool,
-                 ) -> tbot.log.LogStdoutHandler:
+
+def shell_command(
+    *, machine: typing.List[str], command: str, show: bool, show_stdout: bool
+) -> tbot.log.LogStdoutHandler:
     """
     Log event for the execution of shell commands
 

@@ -6,7 +6,8 @@ Available in ``denx`` lab
 import pathlib
 from tbot.config import Config
 
-#pylint: disable=line-too-long
+
+# pylint: disable=line-too-long
 def config(cfg: Config) -> None:
     """ Board config """
     if cfg["lab.name"] != "pollux":
@@ -32,6 +33,4 @@ def config(cfg: Config) -> None:
         "env_location": pathlib.PurePosixPath("/home/hws/env/taurus-env.txt"),
     }
 
-    cfg["tftp"] = {
-        "boarddir": "at91_taurus",
-    }
+    cfg["tftp"] = {"boarddir": "at91_taurus"}

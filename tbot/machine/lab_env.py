@@ -9,8 +9,10 @@ import tbot
 from . import machine
 from . import shell_utils
 
+
 class MachineLabEnv(machine.Machine):
     """ Labhost machine with environment """
+
     def __init__(self, prompt: typing.Optional[str] = None) -> None:
         self.channel: typing.Optional[paramiko.Channel] = None
 
@@ -21,10 +23,9 @@ class MachineLabEnv(machine.Machine):
 
         super().__init__()
 
-    def _setup(self,
-               tb: 'tbot.TBot',
-               previous: typing.Optional[machine.Machine] = None,
-              ) -> 'MachineLabEnv':
+    def _setup(
+        self, tb: "tbot.TBot", previous: typing.Optional[machine.Machine] = None
+    ) -> "MachineLabEnv":
         conn = tb.machines.connection
         self.channel = conn.get_transport().open_session()
 
@@ -33,15 +34,11 @@ class MachineLabEnv(machine.Machine):
         super()._setup(tb, previous)
         return self
 
-    def _exec(self,
-              command: str,
-              stdout_handler: typing.Optional[tbot.log.LogStdoutHandler],
-             ) -> typing.Tuple[int, str]:
+    def _exec(
+        self, command: str, stdout_handler: typing.Optional[tbot.log.LogStdoutHandler]
+    ) -> typing.Tuple[int, str]:
         return shell_utils.command_and_retval(
-            self.channel,
-            self.prompt,
-            command,
-            stdout_handler
+            self.channel, self.prompt, command, stdout_handler
         )
 
     @property

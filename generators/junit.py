@@ -8,8 +8,10 @@ import json
 import sys
 import junit_xml
 
+
 class TestcaseExecution:
     """ A Testcase Execution """
+
     def __init__(self, name):
         self.name = name
         self.duration = 0
@@ -18,11 +20,14 @@ class TestcaseExecution:
         self.exc = None
         self.trace = None
 
+
 class ShellStep:
     """ A Shell command execution """
+
     def __init__(self, command, output):
         self.command = command
         self.output = output
+
 
 def parse_log(log):
     """ Parse json log """
@@ -31,28 +36,28 @@ def parse_log(log):
     stack = []
     exception = None
     for ev in log:
-        ty = ev['type']
+        ty = ev["type"]
         # timestamp = ev['time']
 
         if ty == ["testcase", "begin"]:
-            name = ev['name']
+            name = ev["name"]
 
             cur = TestcaseExecution(name)
 
             stack.append(cur)
         elif ty == ["testcase", "end"]:
-            name = ev['name']
-            duration = ev['duration']
-            success = ev['success']
-            fail_ok = ev['fail_ok']
+            name = ev["name"]
+            duration = ev["duration"]
+            success = ev["success"]
+            fail_ok = ev["fail_ok"]
 
             cur = stack.pop()
             assert cur.name == name
             cur.duration = duration
             cur.success = success or fail_ok
             if not success and not fail_ok and isinstance(exception, tuple):
-                cur.exc = exception[0] #pylint: disable=unsubscriptable-object
-                cur.trace = exception[1] #pylint: disable=unsubscriptable-object
+                cur.exc = exception[0]  # pylint: disable=unsubscriptable-object
+                cur.trace = exception[1]  # pylint: disable=unsubscriptable-object
                 exception = None
 
             if stack != []:
@@ -60,25 +65,24 @@ def parse_log(log):
             else:
                 toplevels.append(cur)
         elif ty == ["exception"]:
-            exception = (ev['name'], ev['trace'])
+            exception = (ev["name"], ev["trace"])
         elif ty[0] == "shell":
-            command = ev['command']
-            output = ev['output']
+            command = ev["command"]
+            output = ev["output"]
 
-            stack[-1].sub_steps.append(
-                ShellStep(command, output)
-            )
+            stack[-1].sub_steps.append(ShellStep(command, output))
 
     return toplevels
+
 
 def toplevel_to_junit(num, toplevel):
     """ Convert a toplevel testcase to junit testcases """
     testcases = []
     _, testcases = testcase_to_junit(
-        f"{num:02} - {toplevel.name}",
-        0, toplevel.name,
-        toplevel, True)
+        f"{num:02} - {toplevel.name}", 0, toplevel.name, toplevel, True
+    )
     return testcases
+
 
 def testcase_to_junit(toplevel, i, cls_path, testcase, is_toplevel=False):
     """ Convert a testcase to junit testcases """
@@ -90,7 +94,7 @@ def testcase_to_junit(toplevel, i, cls_path, testcase, is_toplevel=False):
     )
     if not testcase.success:
         if testcase.exc is not None:
-            tc.add_error_info(f"Testcase failed with \"{testcase.exc}\"", testcase.trace)
+            tc.add_error_info(f'Testcase failed with "{testcase.exc}"', testcase.trace)
         else:
             tc.add_error_info(f"Testcase failed because of sub testcase failure")
     testcases.append(tc)
@@ -115,25 +119,47 @@ def testcase_to_junit(toplevel, i, cls_path, testcase, is_toplevel=False):
             testcases.append(tc)
     return i, testcases
 
+
 def main():
     """ Generate a JUnit XML file """
 
     try:
         log = json.load(open(sys.argv[1]))
-    except: #pylint: disable=broad-except
-        print(f"\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m\n")
-        raise
+    except IndexError:
+        sys.stderr.write(
+            f"""\
+\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m
+"""
+        )
+        sys.exit(1)
+    except json.JSONDecodeError:
+        sys.stderr.write(
+            f"""\
+\x1B[31mInvalid JSON!\x1B[0m
+\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m
+"""
+        )
+        sys.exit(1)
+    except OSError:
+        sys.stderr.write(
+            f"""\
+\x1B[31mopen failed!\x1B[0m
+\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m
+"""
+        )
+        sys.exit(1)
 
     toplevels = parse_log(log)
     testcases = []
     for i, toplevel in enumerate(toplevels):
         testcases += toplevel_to_junit(i, toplevel)
-    print(json.dumps(list(map(
-        lambda x: f"{x.classname}",
-        testcases)), indent=4), file=sys.stderr)
+    print(
+        json.dumps(list(map(lambda x: f"{x.classname}", testcases)), indent=4),
+        file=sys.stderr,
+    )
 
-    print(junit_xml.TestSuite.to_xml_string([
-        junit_xml.TestSuite("TBot", testcases)]))
+    print(junit_xml.TestSuite.to_xml_string([junit_xml.TestSuite("TBot", testcases)]))
+
 
 if __name__ == "__main__":
     main()

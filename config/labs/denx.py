@@ -4,7 +4,8 @@ DENX pollux lab config
 import pathlib
 from tbot.config import Config
 
-#pylint: disable=line-too-long
+
+# pylint: disable=line-too-long
 def config(cfg: Config) -> None:
     """ Lab config """
     username = "hws"
@@ -30,18 +31,30 @@ def config(cfg: Config) -> None:
 
     cfg["toolchains"] = {
         "cortexa8hf-neon": {
-            "path": pathlib.PurePosixPath("/opt/poky/cortexa8hf-neon-2.4.1/sysroots/x86_64-pokysdk-linux/usr/bin/arm-poky-linux-gnueabi"),
-            "env_setup_script": pathlib.PurePosixPath("/opt/poky/cortexa8hf-neon-2.4.1/environment-setup-cortexa8hf-neon-poky-linux-gnueabi"),
+            "path": pathlib.PurePosixPath(
+                "/opt/poky/cortexa8hf-neon-2.4.1/sysroots/x86_64-pokysdk-linux/usr/bin/arm-poky-linux-gnueabi"
+            ),
+            "env_setup_script": pathlib.PurePosixPath(
+                "/opt/poky/cortexa8hf-neon-2.4.1/environment-setup-cortexa8hf-neon-poky-linux-gnueabi"
+            ),
             "prefix": "arm-poky-linux-gnueabi-",
         },
         "generic-armv7a-hf": {
-            "path": pathlib.PurePosixPath("/opt/yocto-2.4/generic-armv7a-hf/sysroots/x86_64-pokysdk-linux/usr/bin/arm-poky-linux-gnueabi"),
-            "env_setup_script": pathlib.PurePosixPath("/opt/yocto-2.4/generic-armv7a-hf/environment-setup-armv7ahf-neon-poky-linux-gnueabi"),
+            "path": pathlib.PurePosixPath(
+                "/opt/yocto-2.4/generic-armv7a-hf/sysroots/x86_64-pokysdk-linux/usr/bin/arm-poky-linux-gnueabi"
+            ),
+            "env_setup_script": pathlib.PurePosixPath(
+                "/opt/yocto-2.4/generic-armv7a-hf/environment-setup-armv7ahf-neon-poky-linux-gnueabi"
+            ),
             "prefix": "arm-poky-linux-gnueabi-",
         },
         "generic-powerpc-e500v2": {
-            "path": pathlib.PurePosixPath("/opt/yocto-2.4/generic-powerpc-e500v2/sysroots/x86_64-pokysdk-linux/usr/bin/powerpc-poky-linux-gnuspe"),
-            "env_setup_script": pathlib.PurePosixPath("/opt/yocto-2.4/generic-powerpc-e500v2/environment-setup-ppce500v2-poky-linux-gnuspe"),
+            "path": pathlib.PurePosixPath(
+                "/opt/yocto-2.4/generic-powerpc-e500v2/sysroots/x86_64-pokysdk-linux/usr/bin/powerpc-poky-linux-gnuspe"
+            ),
+            "env_setup_script": pathlib.PurePosixPath(
+                "/opt/yocto-2.4/generic-powerpc-e500v2/environment-setup-ppce500v2-poky-linux-gnuspe"
+            ),
             "prefix": "powerpc-poky-linux-gnuspe-",
         },
     }
