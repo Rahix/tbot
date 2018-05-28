@@ -92,6 +92,21 @@ def selftest_env_shell(tb: tbot.TBot) -> None:
             out == "avalue\n"
         ), f"Environment variable was not set correctly: {repr(out)}"
 
+        # Test malformed commands
+        raised = False
+        try:
+            tb.shell.exec0("echo 1\necho 2")
+        except tbot.machine.shell_utils.InvalidCommand:
+            raised = True
+        assert raised
+
+        raised = False
+        try:
+            tb.shell.exec0("exit")
+        except tbot.machine.shell_utils.InvalidChannelState:
+            raised = True
+        assert raised
+
 
 @tbot.testcase
 def selftest_board_shell(tb: tbot.TBot) -> None:

@@ -57,14 +57,15 @@ class TBot:
         return self.machines["labhost"]
 
     @property
-    def boardshell(self) -> tbot.machine.Machine:
+    def boardshell(self) -> tbot.machine.MachineBoard:
         """ The default board machine """
-        return self.machines["board"]
+        boardmachine = self.machines["board"]
+        if not isinstance(boardmachine, tbot.machine.MachineBoard):
+            raise Exception("BoardMachine is not a 'MachineBoard'")
+        return boardmachine
 
     def call_then(
-        self,
-        tcs: typing.Union[str, typing.Callable],
-        **kwargs: typing.Any,
+        self, tcs: typing.Union[str, typing.Callable], **kwargs: typing.Any
     ) -> typing.Callable:
         """
         Decorator to call a testcase with a function as a payload ("and_then" argument)
