@@ -72,12 +72,19 @@ class MachineBuild(machine.Machine):
 
             self.channel.send(
                 f"""\
+__SSH_EXIT_CODE_OPT=$?
 PROMPT_COMMAND=
 PS1='{self.prompt}'
 """
             )
 
             shell_utils.read_to_prompt(self.channel, self.prompt)
+
+            output = shell_utils.exec_command(
+                self.channel, self.prompt, "echo $__SSH_EXIT_CODE_OPT", None
+            )
+            if int(output) != 0:
+                raise Exception("Failed to connect to buildhost")
         except:  # noqa: E722
             raise
 
