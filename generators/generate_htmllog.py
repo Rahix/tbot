@@ -11,20 +11,21 @@ import sys
 import pathlib
 import string
 
+
 def main():
     """ Generate an html log """
 
     try:
         filename = pathlib.Path(sys.argv[1])
         log = json.load(open(filename))
-    except: #pylint: disable=broad-except
+    except:  # pylint: disable=broad-except
         print(f"\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m\n")
         raise
 
-    #pylint: disable=too-many-return-statements
+    # pylint: disable=too-many-return-statements
     def gen_html(msg):
         """ Generate html for a log message """
-        if msg['type'] == ["testcase", "begin"]:
+        if msg["type"] == ["testcase", "begin"]:
             return f"""<div class="section block">
                          <div class="section-header block-header">
                            {msg['name']}
@@ -33,14 +34,14 @@ def main():
                            <div class="action">
                              <pre></pre>
                            </div>"""
-        elif msg['type'] == ["testcase", "end"]:
-            if msg['success']:
+        elif msg["type"] == ["testcase", "end"]:
+            if msg["success"]:
                 return f"""<div class="status-pass">
                              <pre>OK, Time: {msg['duration']:.2f}s</pre>
                            </div>
                          </div>
                        </div>"""
-            if msg['fail_ok']:
+            if msg["fail_ok"]:
                 return f"""<div class="status-xpass">
                              <pre>Fail expected, Time: {msg['duration']:.2f}s</pre>
                            </div>
@@ -51,12 +52,15 @@ def main():
                            </div>
                          </div>
                        </div>"""
-        elif msg['type'][0] == "shell":
-            shell_type = repr(tuple(msg['type'][1:]))
-            command = repr(msg['command'])[1:-1]
-            output = msg['output'][:-1].replace('&', '&amp;') \
-                .replace('<', '&lt;') \
-                .replace('>', '&gt;')
+        elif msg["type"][0] == "shell":
+            shell_type = repr(tuple(msg["type"][1:]))
+            command = repr(msg["command"])[1:-1]
+            output = (
+                msg["output"][:-1]
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+            )
             return f"""    <div class="block">
                              <div class="block-header">
                                {shell_type} {command}
@@ -66,10 +70,13 @@ def main():
 {output}</pre>
                              </div>
                            </div>"""
-        elif msg['type'] == ["board", "boot"]:
-            output = msg['log'].replace('&', '&amp;') \
-                .replace('<', '&lt;') \
-                .replace('>', '&gt;')
+        elif msg["type"] == ["board", "boot"]:
+            output = (
+                msg["log"]
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+            )
             return f"""    <div class="block">
                              <div class="block-header">
                                -&gt; Board boot log
@@ -79,10 +86,13 @@ def main():
 {output}</pre>
                              </div>
                            </div>"""
-        elif msg['type'][0] == "msg":
-            output = msg['text'].replace('&', '&amp;') \
-                .replace('<', '&lt;') \
-                .replace('>', '&gt;')
+        elif msg["type"][0] == "msg":
+            output = (
+                msg["text"]
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+            )
             return f"""    <div class="block">
                              <div class="block-header">
                                Message ({msg['type'][1]}):
@@ -95,7 +105,7 @@ def main():
                                </div>
                              </div>
                            </div>"""
-        elif msg['type'][0] == "exception":
+        elif msg["type"][0] == "exception":
             return f"""    <div class="block">
                              <div class="block-header">
                                Exception: {msg['name']}
@@ -105,11 +115,13 @@ def main():
 {msg['trace']}</pre>
                              </div>
                            </div>"""
-        elif msg['type'] == ["tbot", "end"] \
-             or msg['type'] == ["tbot", "info"] \
-             or msg['type'][0] == "custom" \
-             or msg['type'][0] == "board" \
-             or msg['type'][0] == "doc":
+        elif (
+            msg["type"] == ["tbot", "end"]
+            or msg["type"] == ["tbot", "info"]
+            or msg["type"][0] == "custom"
+            or msg["type"][0] == "board"
+            or msg["type"][0] == "doc"
+        ):
             return ""
 
         raise Exception("unknown event %r" % (msg,))
@@ -123,6 +135,7 @@ def main():
     }
 
     print(string.Template(template_string).safe_substitute(data))
+
 
 if __name__ == "__main__":
     main()

@@ -3,6 +3,7 @@ Demonstration of a git bisect
 """
 import tbot
 
+
 @tbot.testcase
 def demo_bisect(tb: tbot.TBot) -> None:
     """ Demonstrate git bisecting """
@@ -19,12 +20,13 @@ def demo_bisect(tb: tbot.TBot) -> None:
         tb.shell.exec0(f"cd {repo}; git add common/autoboot.c")
         tb.shell.exec0(f"cd {repo}; git commit -m 'A {string}bad commit'")
 
-    bad = tb.call("git_bisect",
-                  gitdir=ubootdir,
-                  good="HEAD~20",
-                  and_then="uboot_build",
-                  params={"builddir": ubootdir, "toolchain": toolchain},
-                 )
+    bad = tb.call(
+        "git_bisect",
+        gitdir=ubootdir,
+        good="HEAD~20",
+        and_then="uboot_build",
+        params={"builddir": ubootdir, "toolchain": toolchain},
+    )
 
     bad_commit = tb.shell.exec0(f"cd {repo}; git show {bad}")
     tbot.log.message(f"BAD COMMIT:\n{bad_commit}")
