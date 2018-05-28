@@ -4,9 +4,8 @@ TBot shell selftests
 """
 import tbot
 
-def test_shell(shell: tbot.machine.Machine,
-               has_printf: bool,
-               has_echo_e: bool) -> None:
+
+def test_shell(shell: tbot.machine.Machine, has_printf: bool, has_echo_e: bool) -> None:
     """
     Run a couple of tests on a shell
 
@@ -35,18 +34,28 @@ def test_shell(shell: tbot.machine.Machine,
         # Busybox's builtin echo does not support the -e option. To mitigate this,
         # we use the system's echo
         echo = shell.exec0("which echo").strip()
-        out = shell.exec0(f"{echo} -e 'a str w \\rand \\r\\n\
-win le'")
-        assert out == "a str w \nand \n\
-win le\n", f"{out!r} does not match"
+        out = shell.exec0(
+            f"{echo} -e 'a str w \\rand \\r\\n\
+win le'"
+        )
+        assert (
+            out
+            == "a str w \nand \n\
+win le\n"
+        ), f"{out!r} does not match"
 
     # Test long commands
-    out = shell.exec0("echo 'A long command that is definitively too long for the\
+    out = shell.exec0(
+        "echo 'A long command that is definitively too long for the\
  standard terminal width but should be able to run ok, nontheless. At least in theory\
- - That is what this test is for ...'")
-    assert out == "A long command that is definitively too long for the\
+ - That is what this test is for ...'"
+    )
+    assert (
+        out
+        == "A long command that is definitively too long for the\
  standard terminal width but should be able to run ok, nontheless. At least in theory\
- - That is what this test is for ...\n", f"{out!r} does not match"
+ - That is what this test is for ...\n"
+    ), f"{out!r} does not match"
 
     # Test return codes
     return_code, _ = shell.exec("true")
@@ -65,7 +74,10 @@ def selftest_noenv_shell(tb: tbot.TBot) -> None:
         # Test if environment is actually not shared
         tb.shell.exec0("FOOBAR='avalue'")
         out = tb.shell.exec0("echo $FOOBAR")
-        assert out == "\n", f"Environment variable was set when it shouldn't: {repr(out)}"
+        assert (
+            out == "\n"
+        ), f"Environment variable was set when it shouldn't: {repr(out)}"
+
 
 @tbot.testcase
 def selftest_env_shell(tb: tbot.TBot) -> None:
@@ -76,15 +88,22 @@ def selftest_env_shell(tb: tbot.TBot) -> None:
         # Test if environment is actually working
         tb.shell.exec0("FOOBAR='avalue'")
         out = tb.shell.exec0("echo $FOOBAR")
-        assert out == "avalue\n", f"Environment variable was not set correctly: {repr(out)}"
+        assert (
+            out == "avalue\n"
+        ), f"Environment variable was not set correctly: {repr(out)}"
+
 
 @tbot.testcase
 def selftest_board_shell(tb: tbot.TBot) -> None:
     """ Test board shell functionality """
     with tb.with_board_uboot() as tb:
-        test_shell(tb.boardshell,
-                   tb.config["uboot.shell.support_printf", False],
-                   tb.config["uboot.shell.support_echo_e", False])
+        test_shell(
+            tb.boardshell,
+            tb.config["uboot.shell.support_printf", False],
+            tb.config["uboot.shell.support_echo_e", False],
+        )
+
+
 @tbot.testcase
 def selftest_linux_shell(tb: tbot.TBot) -> None:
     """ Test linux shell functionality """
@@ -94,7 +113,10 @@ def selftest_linux_shell(tb: tbot.TBot) -> None:
         # Test if environment is actually working
         tb.boardshell.exec0("FOOBAR='avalue'")
         out = tb.boardshell.exec0("echo $FOOBAR")
-        assert out == "avalue\n", f"Environment variable was not set correctly: {repr(out)}"
+        assert (
+            out == "avalue\n"
+        ), f"Environment variable was not set correctly: {repr(out)}"
+
 
 @tbot.testcase
 def selftest_powercycle(tb: tbot.TBot) -> None:
@@ -103,6 +125,7 @@ def selftest_powercycle(tb: tbot.TBot) -> None:
         tb.call("selftest_board_shell")
         tb.boardshell.powercycle()
         tb.call("selftest_board_shell")
+
 
 @tbot.testcase
 def selftest_nested_boardshells(tb: tbot.TBot) -> None:
@@ -114,7 +137,7 @@ def selftest_nested_boardshells(tb: tbot.TBot) -> None:
         bs1 = tb1.boardshell
 
         @tb1.call
-        def inner(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
+        def inner(tb: tbot.TBot) -> None:  # pylint: disable=unused-variable
             """ Second attempt of starting a boardshell """
             with tb.with_board_uboot() as tb2:
                 out = tb2.boardshell.exec0("echo Hello World")

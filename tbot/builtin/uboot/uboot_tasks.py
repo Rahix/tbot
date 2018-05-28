@@ -7,10 +7,9 @@ import typing
 import tbot
 from tbot import tc
 
+
 @tbot.testcase
-def check_uboot_version(tb: tbot.TBot, *,
-                        uboot_binary: pathlib.PurePosixPath,
-                       ) -> None:
+def check_uboot_version(tb: tbot.TBot, *, uboot_binary: pathlib.PurePosixPath) -> None:
     """
     Check whether the version of U-Boot running on the board is the same
     as the one supplied as a binary file in uboot_bin.
@@ -19,18 +18,23 @@ def check_uboot_version(tb: tbot.TBot, *,
     :type uboot_binary: pathlib.PurePosixPath
     """
     with tb.with_board_uboot() as tb:
-        strings = tb.shell.exec0(f"strings {uboot_binary} | grep U-Boot", log_show=False)
-        version = tb.boardshell.exec0("version").split('\n')[0]
+        strings = tb.shell.exec0(
+            f"strings {uboot_binary} | grep U-Boot", log_show=False
+        )
+        version = tb.boardshell.exec0("version").split("\n")[0]
         tbot.log.debug(f"U-Boot Version (on the board) is '{version}'")
         assert version in strings, "U-Boot version does not seem to match"
 
+
 @tbot.testcase
-def uboot_checkout(tb: tbot.TBot, *,
-                   clean: bool = True,
-                   builddir: typing.Optional[pathlib.PurePosixPath] = None,
-                   patchdir: typing.Optional[pathlib.PurePosixPath] = None,
-                   repo: typing.Optional[str] = None,
-                  ) -> tc.UBootRepository:
+def uboot_checkout(
+    tb: tbot.TBot,
+    *,
+    clean: bool = True,
+    builddir: typing.Optional[pathlib.PurePosixPath] = None,
+    patchdir: typing.Optional[pathlib.PurePosixPath] = None,
+    repo: typing.Optional[str] = None,
+) -> tc.UBootRepository:
     """
     Create a checkout of U-Boot
 
@@ -57,30 +61,37 @@ def uboot_checkout(tb: tbot.TBot, *,
 * The build directory is `{builddir}`
 * The U-Boot repository is `{repo}`
 """
-    docstr += "(For you it will most likely be `git://git.denx.de/u-boot.git`)\n" \
-        if repo != "git://git.denx.de/u-boot.git" else ""
-    docstr += f"* Board specific patches can be found in `{patchdir}`\n" \
-        if patchdir is not None else ""
+    docstr += (
+        "(For you it will most likely be `git://git.denx.de/u-boot.git`)\n"
+        if repo != "git://git.denx.de/u-boot.git"
+        else ""
+    )
+    docstr += (
+        f"* Board specific patches can be found in `{patchdir}`\n"
+        if patchdir is not None
+        else ""
+    )
 
     tbot.log.doc(docstr + "\n")
 
     git_testcase = "git_clean_checkout" if clean else "git_dirty_checkout"
 
-    gitdir = tb.call(git_testcase,
-                     repo=repo,
-                     target=builddir)
+    gitdir = tb.call(git_testcase, repo=repo, target=builddir)
     if patchdir is not None and clean is True:
         tb.call("git_apply_patches", gitdir=gitdir, patchdir=patchdir)
     return tc.UBootRepository(gitdir)
 
+
 @tbot.testcase
-def uboot_checkout_and_build(tb: tbot.TBot, *,
-                             builddir: typing.Optional[pathlib.PurePosixPath] = None,
-                             patchdir: typing.Optional[pathlib.PurePosixPath] = None,
-                             repo: typing.Optional[str] = None,
-                             toolchain: typing.Optional[tc.Toolchain] = None,
-                             defconfig: typing.Optional[str] = None,
-                            ) -> tc.UBootRepository:
+def uboot_checkout_and_build(
+    tb: tbot.TBot,
+    *,
+    builddir: typing.Optional[pathlib.PurePosixPath] = None,
+    patchdir: typing.Optional[pathlib.PurePosixPath] = None,
+    repo: typing.Optional[str] = None,
+    toolchain: typing.Optional[tc.Toolchain] = None,
+    defconfig: typing.Optional[str] = None,
+) -> tc.UBootRepository:
     """
     Checkout U-Boot and build it
 
@@ -100,38 +111,40 @@ def uboot_checkout_and_build(tb: tbot.TBot, *,
     :rtype: UBootRepository
     """
 
-    tbot.log.doc("""
+    tbot.log.doc(
+        """
 ## U-Boot checkout ##
-""")
+"""
+    )
 
-    ubootdir = tb.call("uboot_checkout",
-                       builddir=builddir,
-                       patchdir=patchdir,
-                       repo=repo)
+    ubootdir = tb.call(
+        "uboot_checkout", builddir=builddir, patchdir=patchdir, repo=repo
+    )
     assert isinstance(ubootdir, tc.UBootRepository)
 
     toolchain = toolchain or tb.call("toolchain_get")
 
-    tbot.log.doc("""
+    tbot.log.doc(
+        """
 ## U-Boot build ##
-""")
+"""
+    )
 
-    tb.call("uboot_build",
-            builddir=ubootdir,
-            toolchain=toolchain,
-            defconfig=defconfig)
+    tb.call("uboot_build", builddir=ubootdir, toolchain=toolchain, defconfig=defconfig)
 
     return ubootdir
 
 
 @tbot.testcase
-def uboot_checkout_and_prepare(tb: tbot.TBot, *,
-                               builddir: typing.Optional[pathlib.PurePosixPath] = None,
-                               patchdir: typing.Optional[pathlib.PurePosixPath] = None,
-                               repo: typing.Optional[str] = None,
-                               toolchain: typing.Optional[tc.Toolchain] = None,
-                               defconfig: typing.Optional[str] = None,
-                              ) -> tc.UBootRepository:
+def uboot_checkout_and_prepare(
+    tb: tbot.TBot,
+    *,
+    builddir: typing.Optional[pathlib.PurePosixPath] = None,
+    patchdir: typing.Optional[pathlib.PurePosixPath] = None,
+    repo: typing.Optional[str] = None,
+    toolchain: typing.Optional[tc.Toolchain] = None,
+    defconfig: typing.Optional[str] = None,
+) -> tc.UBootRepository:
     """
     Checkout U-Boot and prepare for building it (ie in an interactive session
     using ``interactive_build``)
@@ -152,26 +165,31 @@ def uboot_checkout_and_prepare(tb: tbot.TBot, *,
     :rtype: UBootRepository
     """
 
-    tbot.log.doc("""
+    tbot.log.doc(
+        """
 ## U-Boot checkout ##
-""")
+"""
+    )
 
-    ubootdir = tb.call("uboot_checkout",
-                       builddir=builddir,
-                       patchdir=patchdir,
-                       repo=repo)
+    ubootdir = tb.call(
+        "uboot_checkout", builddir=builddir, patchdir=patchdir, repo=repo
+    )
     assert isinstance(ubootdir, tc.UBootRepository)
 
     toolchain = toolchain or tb.call("toolchain_get")
 
-    tbot.log.doc("""
+    tbot.log.doc(
+        """
 ## U-Boot build ##
-""")
+"""
+    )
 
-    tb.call("uboot_build",
-            builddir=ubootdir,
-            toolchain=toolchain,
-            defconfig=defconfig,
-            do_compile=False)
+    tb.call(
+        "uboot_build",
+        builddir=ubootdir,
+        toolchain=toolchain,
+        defconfig=defconfig,
+        do_compile=False,
+    )
 
     return ubootdir

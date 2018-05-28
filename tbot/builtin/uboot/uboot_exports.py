@@ -6,6 +6,7 @@ from tbot import tc
 
 EXPORT = ["UBootRepository"]
 
+
 class UBootRepository(tc.GitRepository):
     """
     A meta object to represent a checked out version of U-Boot.

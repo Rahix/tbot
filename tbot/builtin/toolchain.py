@@ -6,6 +6,7 @@ import typing
 import tbot
 from tbot import tc
 
+
 @tbot.testcase
 def toolchain_get(tb: tbot.TBot, *, name: typing.Optional[str] = None) -> tc.Toolchain:
     """
@@ -22,11 +23,15 @@ def toolchain_get(tb: tbot.TBot, *, name: typing.Optional[str] = None) -> tc.Too
     tbot.log.debug(f"Toolchain '{name}' exists")
     return tc.Toolchain(name)
 
+
 @tbot.testcase
-def toolchain_env(tb: tbot.TBot, *,
-                  toolchain: tc.Toolchain,
-                  and_then: typing.Union[str, typing.Callable],
-                  params: typing.Optional[typing.Dict[str, typing.Any]] = None) -> None:
+def toolchain_env(
+    tb: tbot.TBot,
+    *,
+    toolchain: tc.Toolchain,
+    and_then: typing.Union[str, typing.Callable],
+    params: typing.Optional[typing.Dict[str, typing.Any]] = None,
+) -> None:
     """
     Setup a toolchain environment and call a testcase inside
 
@@ -47,8 +52,10 @@ def toolchain_env(tb: tbot.TBot, *,
 
     tbot.log.debug(f"Setting up '{toolchain}' toolchain")
 
-    tbot.log.doc(f"""Setup the `{toolchain}` toolchain by calling its env script:
-""")
+    tbot.log.doc(
+        f"""Setup the `{toolchain}` toolchain by calling its env script:
+"""
+    )
 
     # Create an env shell
     with tb.machine(tbot.machine.MachineLabEnv()) as tb:

@@ -7,6 +7,7 @@ import typing
 import tbot
 from tbot import tc
 
+
 @tbot.testcase
 def just_uboot_tests(tb: tbot.TBot) -> None:
     """
@@ -16,15 +17,18 @@ def just_uboot_tests(tb: tbot.TBot) -> None:
     toolchain = tb.call("toolchain_get")
     tb.call("uboot_tests", builddir=uboot_dir, toolchain=toolchain)
 
+
 @tbot.testcase
-def uboot_tests(tb: tbot.TBot, *,
-                builddir: tc.UBootRepository,
-                toolchain: tc.Toolchain,
-                test_config: typing.Optional[pathlib.PurePosixPath] = None,
-                test_hooks: typing.Optional[pathlib.PurePosixPath] = None,
-                test_boardname: typing.Optional[str] = None,
-                test_maxfail: typing.Optional[int] = None,
-               ) -> None:
+def uboot_tests(
+    tb: tbot.TBot,
+    *,
+    builddir: tc.UBootRepository,
+    toolchain: tc.Toolchain,
+    test_config: typing.Optional[pathlib.PurePosixPath] = None,
+    test_hooks: typing.Optional[pathlib.PurePosixPath] = None,
+    test_boardname: typing.Optional[str] = None,
+    test_maxfail: typing.Optional[int] = None,
+) -> None:
     """
     Run U-Boot tests on real hardware
 
@@ -54,19 +58,22 @@ def uboot_tests(tb: tbot.TBot, *,
     test_boardname = test_boardname or tb.config["uboot.test.boardname"]
     test_maxfail = test_maxfail or tb.config["uboot.test.maxfail", None]
 
-
-    tbot.log.doc("""
+    tbot.log.doc(
+        """
 ## Run U-Boot tests ##
 U-Boot contains a python test suite that can be run on the host and on the target. \
 Here we will run it on the target. Make sure all dependencies are met.  Refer to \
 <http://git.denx.de/?p=u-boot.git;a=blob;f=test/py/README.md> for a list.
-""")
+"""
+    )
 
     if test_config is not None:
-        tbot.log.doc("""To ensure that the testcases work properly, we need a \
+        tbot.log.doc(
+            """To ensure that the testcases work properly, we need a \
 configuration file for the testsuite. Copy the config file into `test/py` inside \
 the U-Boot tree:
-""")
+"""
+        )
 
         tbot.log.debug(f"Using '{test_config}' for the U-Boot test suite")
         filename = test_config.name
@@ -75,32 +82,45 @@ the U-Boot tree:
 
         tbot.log.doc("The config file can be found in the appendix of this document.\n")
         cfg_file_content = tb.shell.exec0(f"cat {test_config}", log_show=False)
-        tbot.log.doc_appendix(f"U-Boot test config: {filename}", f"""```python
+        tbot.log.doc_appendix(
+            f"U-Boot test config: {filename}",
+            f"""```python
 {cfg_file_content}
-```""")
+```""",
+        )
 
     def run_tests(tb: tbot.TBot) -> None:
         """ Actually run the testsuite """
         assert tb.shell.unique_machine_name == "labhost-env", "Need an env shell!"
 
-        tbot.log.doc("""Clean the workdir because the U-Boot testsuite won't \
+        tbot.log.doc(
+            """Clean the workdir because the U-Boot testsuite won't \
 recompile if it is dirty.
-""")
+"""
+        )
 
         tb.shell.exec0(f"make mrproper", log_show_stdout=False)
 
-        tbot.log.doc("Install the necessary hooks and start the \
-testsuite using the following commands:\n")
+        tbot.log.doc(
+            "Install the necessary hooks and start the \
+testsuite using the following commands:\n"
+        )
         tb.shell.exec0(f"export PATH={test_hooks}:$PATH")
 
         with tb.machine(tbot.machine.MachineBoardDummy(turn_on=False)) as tb:
-            max_fail_param = f"--maxfail={test_maxfail}" if test_maxfail is not None else ""
-            tb.shell.exec0(f"\
-./test/py/test.py --bd {test_boardname} --build {max_fail_param}")
+            max_fail_param = (
+                f"--maxfail={test_maxfail}" if test_maxfail is not None else ""
+            )
+            tb.shell.exec0(
+                f"\
+./test/py/test.py --bd {test_boardname} --build {max_fail_param}"
+            )
 
-            tbot.log.doc("The U-Boot testsuite, which has hopefully finished \
+            tbot.log.doc(
+                "The U-Boot testsuite, which has hopefully finished \
 successfully by now, is not capable of turning off the board itself. \
-You have to do that manually:\n")
+You have to do that manually:\n"
+            )
 
     has_venv = tb.config["uboot.test.use_venv", True]
     tbot.log.debug(f"Virtualenv availability: {has_venv}")
@@ -110,31 +130,39 @@ You have to do that manually:\n")
         # Setup python
         tb.shell.exec0(f"cd {builddir}; virtualenv-2.7 venv", log_show_stdout=False)
 
-        tbot.log.doc("""The testsuite will rebuild the U-Boot binary. For doing so, \
+        tbot.log.doc(
+            """The testsuite will rebuild the U-Boot binary. For doing so, \
 it needs the correct toolchain enabled.
-""")
+"""
+        )
 
         @tb.call_then("toolchain_env", toolchain=toolchain)
-        def setup_venv(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
+        def setup_venv(tb: tbot.TBot) -> None:  # pylint: disable=unused-variable
             """ Actual test run """
             tb.shell.exec0(f"cd {builddir}")
-            tb.shell.exec0(f"VIRTUAL_ENV_DISABLE_PROMPT=1 source venv/bin/activate",
-                           log_show_stdout=False)
+            tb.shell.exec0(
+                f"VIRTUAL_ENV_DISABLE_PROMPT=1 source venv/bin/activate",
+                log_show_stdout=False,
+            )
             tb.shell.exec0(f"pip install pytest", log_show_stdout=False)
 
             tb.call(run_tests)
 
     else:
-        tbot.log.doc("""Here we do not use virtualenv because our build host \
+        tbot.log.doc(
+            """Here we do not use virtualenv because our build host \
 does not have it installed, but it is recommended to do so.
-""")
+"""
+        )
 
-        tbot.log.doc("""The testsuite will rebuild the U-Boot binary. For doing so, \
+        tbot.log.doc(
+            """The testsuite will rebuild the U-Boot binary. For doing so, \
 it needs the correct toolchain enabled.
-""")
+"""
+        )
 
         @tb.call_then("toolchain_env", toolchain=toolchain)
-        def setup_no_venv(tb: tbot.TBot) -> None: #pylint: disable=unused-variable
+        def setup_no_venv(tb: tbot.TBot) -> None:  # pylint: disable=unused-variable
             """ Actual test run """
             tb.shell.exec0(f"cd {builddir}")
 

@@ -9,6 +9,7 @@ import time
 import typing
 import pathlib
 
+
 def has_unicode(with_unicode: str, without_unicode: str) -> str:
     """
     Check whether the terminal supports unicode, if it does,
@@ -27,6 +28,7 @@ def has_unicode(with_unicode: str, without_unicode: str) -> str:
         return with_unicode
     return without_unicode
 
+
 def has_color(seq: str) -> str:
     """
     Check color support and return the escape sequence for this color
@@ -39,6 +41,7 @@ def has_color(seq: str) -> str:
     if True:
         return f"\x1B[{seq}m"
     return ""
+
 
 class Verbosity(enum.IntEnum):
     """ Logger verbosity level """
@@ -55,19 +58,22 @@ class Verbosity(enum.IntEnum):
     def __str__(self) -> str:
         return super(Verbosity, self).__str__().split(".")[-1]
 
+
 LOGFILE = None
 LOGLIST = list()
 LOGVERBOSITY = Verbosity.WARNING
 LOGNESTLAYER = 0
+
 
 def check_log() -> None:
     """
     Check whether the log has been initialized and throw an exception
     otherwise.
     """
-    global LOGFILE #pylint: disable=global-statement
+    global LOGFILE  # pylint: disable=global-statement
     if LOGFILE is None:
         raise Exception("Logfile was not initialized!")
+
 
 class LogStdoutHandler:
     """
@@ -81,13 +87,15 @@ class LogStdoutHandler:
     :ivar prefix: A custom prefix that will be added in front of continuation
                   lines.
     """
-    def __init__(self,
-                 dct: typing.Dict[str, typing.Any],
-                 verbosity: Verbosity,
-                 custom_dash: typing.Optional[str],
-                ) -> None:
-        global LOGVERBOSITY #pylint: disable=global-statement
-        global LOGNESTLAYER #pylint: disable=global-statement
+
+    def __init__(
+        self,
+        dct: typing.Dict[str, typing.Any],
+        verbosity: Verbosity,
+        custom_dash: typing.Optional[str],
+    ) -> None:
+        global LOGVERBOSITY  # pylint: disable=global-statement
+        global LOGNESTLAYER  # pylint: disable=global-statement
         self.do_output = verbosity <= LOGVERBOSITY
         self.is_continuation = False
         self.layer = LOGNESTLAYER
@@ -103,7 +111,7 @@ class LogStdoutHandler:
         :param new_verbosity: The new verbosity
         :type new_verbosity: Verbosity
         """
-        global LOGVERBOSITY #pylint: disable=global-statement
+        global LOGVERBOSITY  # pylint: disable=global-statement
         self.do_output = new_verbosity <= LOGVERBOSITY
 
     def print(self, msg: str) -> None:
@@ -117,9 +125,9 @@ class LogStdoutHandler:
         # Add to log event
         if self.key is not None:
             if msg == "":
-                self.dct[self.key] += '\n'
+                self.dct[self.key] += "\n"
             else:
-                self.dct[self.key] += msg + ('' if msg[-1] == '\n' else '\n')
+                self.dct[self.key] += msg + ("" if msg[-1] == "\n" else "\n")
 
         if not self.do_output:
             return
@@ -142,12 +150,15 @@ class LogStdoutHandler:
                     msg_prefix += self.prefix
             print(msg_prefix + line + has_color("0"))
 
-def event(ty: typing.List[str], *,
-          msg: typing.Optional[str] = None,
-          verbosity: Verbosity = Verbosity.INFO,
-          dct: typing.Optional[typing.Dict[str, typing.Any]] = None,
-          custom_dash: typing.Optional[str] = None,
-         ) -> LogStdoutHandler:
+
+def event(
+    ty: typing.List[str],
+    *,
+    msg: typing.Optional[str] = None,
+    verbosity: Verbosity = Verbosity.INFO,
+    dct: typing.Optional[typing.Dict[str, typing.Any]] = None,
+    custom_dash: typing.Optional[str] = None,
+) -> LogStdoutHandler:
     """
     Create a new log event
 
@@ -165,28 +176,29 @@ def event(ty: typing.List[str], *,
     :returns: A handler for the created log event
     :rtype: LogStdoutHandler
     """
-    global LOGLIST #pylint: disable=global-statement
+    global LOGLIST  # pylint: disable=global-statement
     check_log()
     dct = dct or dict()
 
-    forbidden = ['type', 'time', 'message', 'verbosity']
+    forbidden = ["type", "time", "message", "verbosity"]
 
     for itm in forbidden:
         if itm in dct:
             raise Exception(f"A log event can not contain items named '{itm}'!")
 
-    dct['type'] = ty
-    dct['time'] = time.ctime()
-    dct['verbosity'] = str(verbosity)
+    dct["type"] = ty
+    dct["time"] = time.ctime()
+    dct["verbosity"] = str(verbosity)
 
     stdout_handler = LogStdoutHandler(dct, verbosity, custom_dash)
     if msg is not None:
-        dct['message'] = msg
+        dct["message"] = msg
         stdout_handler.print(msg)
 
     LOGLIST.append(dct)
 
     return stdout_handler
+
 
 def message(msg: str, verbosity: Verbosity = Verbosity.INFO) -> LogStdoutHandler:
     """
@@ -200,13 +212,9 @@ def message(msg: str, verbosity: Verbosity = Verbosity.INFO) -> LogStdoutHandler
     :rtype: LogStdoutHandler
     """
     return event(
-        ty=["msg", str(verbosity)],
-        msg=msg,
-        verbosity=verbosity,
-        dct={
-            "text": msg,
-        },
+        ty=["msg", str(verbosity)], msg=msg, verbosity=verbosity, dct={"text": msg}
     )
+
 
 def doc(text: str) -> LogStdoutHandler:
     """
@@ -218,13 +226,8 @@ def doc(text: str) -> LogStdoutHandler:
     :returns: A handler for the created log event
     :rtype: LogStdoutHandler
     """
-    return event(
-        ty=["doc", "text"],
-        verbosity=Verbosity.NEVER,
-        dct={
-            "text": text,
-        },
-    )
+    return event(ty=["doc", "text"], verbosity=Verbosity.NEVER, dct={"text": text})
+
 
 def doc_appendix(title: str, text: str) -> LogStdoutHandler:
     """
@@ -241,11 +244,9 @@ def doc_appendix(title: str, text: str) -> LogStdoutHandler:
     return event(
         ty=["doc", "appendix"],
         verbosity=Verbosity.NEVER,
-        dct={
-            "title": title,
-            "text": text,
-        },
+        dct={"title": title, "text": text},
     )
+
 
 def debug(msg: str) -> LogStdoutHandler:
     """
@@ -257,6 +258,7 @@ def debug(msg: str) -> LogStdoutHandler:
     :rtype: LogStdoutHandler
     """
     return message(msg, Verbosity.DEBUG)
+
 
 def oververbose(msg: str) -> LogStdoutHandler:
     """
@@ -270,23 +272,25 @@ def oververbose(msg: str) -> LogStdoutHandler:
     :returns: A handler for the message
     :rtype: LogStdoutHandler
     """
-    stdout_handler = LogStdoutHandler(dict(),
-                                      Verbosity.OVER_VERBOSE,
-                                      has_unicode("├>", "+>")
-                                     )
+    stdout_handler = LogStdoutHandler(
+        dict(), Verbosity.OVER_VERBOSE, has_unicode("├>", "+>")
+    )
     stdout_handler.print(has_color("33") + msg)
     return stdout_handler
+
 
 def set_layer(layer: int) -> None:
     """
     Set the call graph depth.
     You should never need to call this yourself.
     """
-    global LOGNESTLAYER #pylint: disable=global-statement
+    global LOGNESTLAYER  # pylint: disable=global-statement
     LOGNESTLAYER = layer
 
-def init_log(filename: typing.Union[pathlib.Path, str],
-             verbosity: Verbosity = Verbosity.INFO) -> None:
+
+def init_log(
+    filename: typing.Union[pathlib.Path, str], verbosity: Verbosity = Verbosity.INFO
+) -> None:
     """
     Initialize the logger
 
@@ -296,19 +300,18 @@ def init_log(filename: typing.Union[pathlib.Path, str],
                       to stdout
     :type verbosity: Verbosity
     """
-    global LOGFILE #pylint: disable=global-statement
-    global LOGVERBOSITY #pylint: disable=global-statement
+    global LOGFILE  # pylint: disable=global-statement
+    global LOGVERBOSITY  # pylint: disable=global-statement
     LOGFILE = pathlib.Path(filename)
     LOGVERBOSITY = verbosity
+
 
 def flush_log() -> None:
     """
     Write the log file
     """
-    global LOGLIST #pylint: disable=global-statement
-    global LOGFILE #pylint: disable=global-statement
+    global LOGLIST  # pylint: disable=global-statement
+    global LOGFILE  # pylint: disable=global-statement
     check_log()
     if LOGFILE is not None:
-        json.dump(LOGLIST,
-                  open(LOGFILE, "w"),
-                  indent=4)
+        json.dump(LOGLIST, open(LOGFILE, "w"), indent=4)

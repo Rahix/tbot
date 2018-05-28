@@ -4,9 +4,11 @@ Configuration
 """
 import typing
 
+
 class ConfigAssignException(Exception):
     """ An error while writing a config value """
     pass
+
 
 class Config(dict):
     """
@@ -24,7 +26,10 @@ class Config(dict):
 
     The configuration is available as ``tb.config`` in all testcases.
     """
-    def __getitem__(self, keys: typing.Union[str, typing.Tuple[str, typing.Any]]) -> typing.Any:
+
+    def __getitem__(
+        self, keys: typing.Union[str, typing.Tuple[str, typing.Any]]
+    ) -> typing.Any:
         if isinstance(keys, str):
             key = keys
         else:
@@ -72,14 +77,18 @@ class Config(dict):
                     super().__setitem__(key, cfg)
 
                 if not isinstance(cfg, Config):
-                    raise ConfigAssignException("Trying to overwrite a value with a subtree")
+                    raise ConfigAssignException(
+                        "Trying to overwrite a value with a subtree"
+                    )
 
                 for inner_key, inner_value in value.items():
                     cfg.__setitem__(inner_key, inner_value)
             else:
                 if key in self and isinstance(super().__getitem__(key), Config):
                     # We are trying to overwrite a subdir, this should not happen
-                    raise ConfigAssignException(f"Trying to overwrite a subdir: '{key}'")
+                    raise ConfigAssignException(
+                        f"Trying to overwrite a subdir: '{key}'"
+                    )
                 else:
                     super().__setitem__(key, value)
 

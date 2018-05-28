@@ -7,11 +7,14 @@ import typing
 import tbot
 from tbot import tc
 
+
 @tbot.testcase
-def setup_tftpdir(tb: tbot.TBot, *,
-                  root: typing.Optional[pathlib.PurePosixPath] = None,
-                  subdir: typing.Optional[pathlib.PurePosixPath] = None,
-                 ) -> tc.TftpDirectory:
+def setup_tftpdir(
+    tb: tbot.TBot,
+    *,
+    root: typing.Optional[pathlib.PurePosixPath] = None,
+    subdir: typing.Optional[pathlib.PurePosixPath] = None,
+) -> tc.TftpDirectory:
     """
     Setup the tftp directory
 
@@ -40,13 +43,16 @@ def setup_tftpdir(tb: tbot.TBot, *,
 
     return tftpdir
 
+
 @tbot.testcase
-def cp_to_tftpdir(tb: tbot.TBot, *,
-                  name: typing.Union[str, pathlib.PurePosixPath],
-                  dest_name: typing.Optional[str] = None,
-                  builddir: typing.Optional[pathlib.PurePosixPath] = None,
-                  tftpdir: tc.TftpDirectory,
-                 ) -> None:
+def cp_to_tftpdir(
+    tb: tbot.TBot,
+    *,
+    name: typing.Union[str, pathlib.PurePosixPath],
+    dest_name: typing.Optional[str] = None,
+    builddir: typing.Optional[pathlib.PurePosixPath] = None,
+    tftpdir: tc.TftpDirectory,
+) -> None:
     """
     Copy a file into the tftp folder
 

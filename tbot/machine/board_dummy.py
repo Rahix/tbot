@@ -7,6 +7,7 @@ import tbot
 from . import machine
 from . import board
 
+
 class MachineBoardDummy(board.MachineBoard):
     """
     Board machine dummy for just turning the board on and off
@@ -22,12 +23,15 @@ class MachineBoardDummy(board.MachineBoard):
                           ``tb.config["board.power.off_command"]``
     :type power_cmd_off: str
     """
-    def __init__(self, *,
-                 name: typing.Optional[str] = None,
-                 turn_on: bool = True,
-                 power_cmd_on: typing.Optional[str] = None,
-                 power_cmd_off: typing.Optional[str] = None,
-                ) -> None:
+
+    def __init__(
+        self,
+        *,
+        name: typing.Optional[str] = None,
+        turn_on: bool = True,
+        power_cmd_on: typing.Optional[str] = None,
+        power_cmd_off: typing.Optional[str] = None,
+    ) -> None:
         super().__init__()
         self.name = name
         self.powerup = turn_on
@@ -37,10 +41,9 @@ class MachineBoardDummy(board.MachineBoard):
 
         self.noenv: typing.Optional[tbot.machine.Machine] = None
 
-    def _setup(self,
-               tb: 'tbot.TBot',
-               previous: typing.Optional[machine.Machine] = None,
-              ) -> 'MachineBoardDummy':
+    def _setup(
+        self, tb: "tbot.TBot", previous: typing.Optional[machine.Machine] = None
+    ) -> "MachineBoardDummy":
         self.name = self.name or tb.config["board.name", "unknown"]
         self.boardname = self.name
         super()._setup(tb, previous)
@@ -56,17 +59,18 @@ class MachineBoardDummy(board.MachineBoard):
 
         return self
 
-    def _destruct(self, tb: 'tbot.TBot') -> None:
+    def _destruct(self, tb: "tbot.TBot") -> None:
         super()._destruct(tb)
         if isinstance(self.noenv, tbot.machine.Machine):
             self.noenv.exec0(self.power_cmd_off, log_show_stdout=False)
         else:
-            raise Exception("noenv shell not initialized correctly, board might still be on!")
+            raise Exception(
+                "noenv shell not initialized correctly, board might still be on!"
+            )
 
-    def _exec(self,
-              command: str,
-              stdout_handler: typing.Optional[tbot.log.LogStdoutHandler],
-             ) -> typing.Tuple[int, str]:
+    def _exec(
+        self, command: str, stdout_handler: typing.Optional[tbot.log.LogStdoutHandler]
+    ) -> typing.Tuple[int, str]:
         raise Exception("Cannot execute commands on a dummy board machine")
 
     @property

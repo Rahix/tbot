@@ -6,8 +6,8 @@ import re
 import paramiko
 import tbot
 
-def setup_channel(chan: paramiko.Channel,
-                  prompt: str) -> None:
+
+def setup_channel(chan: paramiko.Channel, prompt: str) -> None:
     """
     Setup a paramiko channel
 
@@ -25,19 +25,23 @@ def setup_channel(chan: paramiko.Channel,
     chan.invoke_shell()
 
     # Initialize remote shell
-    chan.send(f"""\
+    chan.send(
+        f"""\
 unset HISTFILE
 PROMPT_COMMAND=''
 PS1='{prompt}'
-""")
+"""
+    )
 
     read_to_prompt(chan, prompt)
 
-def read_to_prompt(chan: paramiko.Channel,
-                   prompt: str,
-                   stdout_handler: typing.Optional[tbot.log.LogStdoutHandler] = None,
-                   prompt_regex: bool = False,
-                  ) -> str:
+
+def read_to_prompt(
+    chan: paramiko.Channel,
+    prompt: str,
+    stdout_handler: typing.Optional[tbot.log.LogStdoutHandler] = None,
+    prompt_regex: bool = False,
+) -> str:
     """
     Read until the shell waits for further input
 
@@ -73,9 +77,9 @@ def read_to_prompt(chan: paramiko.Channel,
             buf_data = buf_data.decode("latin_1")
 
         # Fix '\r's, replace '\r\n' twice to avoid some glitches
-        buf_data = buf_data.replace('\r\n', '\n') \
-            .replace('\r\n', '\n') \
-            .replace('\r', '\n')
+        buf_data = (
+            buf_data.replace("\r\n", "\n").replace("\r\n", "\n").replace("\r", "\n")
+        )
 
         buf += buf_data
 
@@ -83,27 +87,30 @@ def read_to_prompt(chan: paramiko.Channel,
 
         if stdout_handler is not None:
             while "\n" in buf[last_newline:]:
-                line = buf[last_newline:].split('\n')[0]
+                line = buf[last_newline:].split("\n")[0]
                 if last_newline != 0:
                     stdout_handler.print(line)
                 last_newline += len(line) + 1
 
-        if (not prompt_regex and buf[-len(prompt):] == prompt) \
-            or (prompt_regex and re.search(expression, buf) is not None):
+        if (not prompt_regex and buf[-len(prompt) :] == prompt) or (
+            prompt_regex and re.search(expression, buf) is not None
+        ):
             # Print rest of last line to make sure nothing gets lost
             if stdout_handler is not None and "\n" not in buf[last_newline:]:
-                line = buf[last_newline:-len(prompt)]
+                line = buf[last_newline : -len(prompt)]
                 if line != "":
                     stdout_handler.print(line)
             break
 
     return buf
 
-def exec_command(chan: paramiko.Channel,
-                 prompt: str,
-                 command: str,
-                 stdout_handler: typing.Optional[tbot.log.LogStdoutHandler] = None,
-                ) -> str:
+
+def exec_command(
+    chan: paramiko.Channel,
+    prompt: str,
+    command: str,
+    stdout_handler: typing.Optional[tbot.log.LogStdoutHandler] = None,
+) -> str:
     """
     Execute a command and return it's output
 
@@ -119,19 +126,19 @@ def exec_command(chan: paramiko.Channel,
     :rtype: str
     """
     chan.send(f"{command}\n")
-    stdout = read_to_prompt(
-        chan,
-        prompt,
-        stdout_handler,
-    )[len(command)+1:-len(prompt)]
+    stdout = read_to_prompt(chan, prompt, stdout_handler)[
+        len(command) + 1 : -len(prompt)
+    ]
 
     return stdout
 
-def command_and_retval(chan: paramiko.Channel,
-                       prompt: str,
-                       command: str,
-                       stdout_handler: typing.Optional[tbot.log.LogStdoutHandler] = None,
-                      ) -> typing.Tuple[int, str]:
+
+def command_and_retval(
+    chan: paramiko.Channel,
+    prompt: str,
+    command: str,
+    stdout_handler: typing.Optional[tbot.log.LogStdoutHandler] = None,
+) -> typing.Tuple[int, str]:
     """
     Execute a command and return it's output and return value
 

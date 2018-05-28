@@ -10,19 +10,19 @@ from . import machine
 RST = tbot.log.has_color("0")
 BOLD = tbot.log.has_color("1")
 
-#pylint: disable=abstract-method
+# pylint: disable=abstract-method
 class MachineBoard(machine.Machine):
     """ Abstract base class for board machines """
+
     def __init__(self) -> None:
         super().__init__()
         self.boardname = None
         self.powerup = True
-        self._tb: typing.Optional['tbot.TBot'] = None
+        self._tb: typing.Optional["tbot.TBot"] = None
 
-    def _setup(self,
-               tb: 'tbot.TBot',
-               previous: typing.Optional[machine.Machine] = None,
-              ) -> 'MachineBoard':
+    def _setup(
+        self, tb: "tbot.TBot", previous: typing.Optional[machine.Machine] = None
+    ) -> "MachineBoard":
         super()._setup(tb, previous)
         self.boardname = self.boardname or tb.config["board.name", "unknown"]
         self._tb = tb
@@ -37,7 +37,7 @@ class MachineBoard(machine.Machine):
 
         return self
 
-    def _destruct(self, tb: 'tbot.TBot') -> None:
+    def _destruct(self, tb: "tbot.TBot") -> None:
         super()._destruct(tb)
         tbot.log.event(
             ty=["board", "poweroff"],
@@ -49,7 +49,9 @@ class MachineBoard(machine.Machine):
     def powercycle(self) -> None:
         """ Powercycle the board """
         if not isinstance(self._tb, tbot.TBot):
-            raise Exception("Board machine not initialized correctly, board might still be on!")
+            raise Exception(
+                "Board machine not initialized correctly, board might still be on!"
+            )
         self._destruct(self._tb)
         self._setup(self._tb, self)
 

@@ -12,25 +12,27 @@ KWARGS_LIST = [
     ("lab.user", "username"),
     ("lab.password", "password"),
     ("lab.keyfile", "key_filename"),
-    ]
+]
+
 
 class Machine(abc.ABC):
     """ Abstract base class for machines """
-    def _setup(self,
-               tb: 'tbot.TBot',
-               #pylint: disable=unused-argument
-               previous: 'typing.Optional[Machine]' = None,
-              ) -> 'Machine':
+
+    def _setup(
+        self,
+        tb: "tbot.TBot",
+        # pylint: disable=unused-argument
+        previous: "typing.Optional[Machine]" = None,
+    ) -> "Machine":
         return self
 
-    def _destruct(self, tb: 'tbot.TBot') -> None:
+    def _destruct(self, tb: "tbot.TBot") -> None:
         pass
 
     @abc.abstractmethod
-    def _exec(self,
-              command: str,
-              stdout_handler: typing.Optional[tbot.log.LogStdoutHandler],
-             ) -> typing.Tuple[int, str]:
+    def _exec(
+        self, command: str, stdout_handler: typing.Optional[tbot.log.LogStdoutHandler]
+    ) -> typing.Tuple[int, str]:
         pass
 
     @abc.abstractproperty
@@ -43,10 +45,9 @@ class Machine(abc.ABC):
         """ Unique name of this machine, eg ``"labhost-noenv"`` """
         pass
 
-    def exec(self,
-             command: str,
-             log_show: bool = True,
-             log_show_stdout: bool = True) -> typing.Tuple[int, str]:
+    def exec(
+        self, command: str, log_show: bool = True, log_show_stdout: bool = True
+    ) -> typing.Tuple[int, str]:
         """
         Execute a command on this machine
 
@@ -61,7 +62,7 @@ class Machine(abc.ABC):
         :rtype: tuple[int, str]
         """
         stdout_handler = tbot.log_events.shell_command(
-            machine=self.unique_machine_name.split('-'),
+            machine=self.unique_machine_name.split("-"),
             command=command,
             show=log_show,
             show_stdout=log_show_stdout,
@@ -81,22 +82,28 @@ class Machine(abc.ABC):
         :rtype: str
         """
         ret = self.exec(command, **kwargs)
-        assert ret[0] == 0, f"Command \"{command}\" failed:\n{ret[1]}"
+        assert ret[0] == 0, f'Command "{command}" failed:\n{ret[1]}'
         return ret[1]
+
 
 class MachineManager(typing.Dict[str, Machine]):
     """ A container to manage the list of available machines """
-    def __init__(self, tb: 'tbot.TBot', conn: typing.Optional[paramiko.SSHClient] = None) -> None:
+
+    def __init__(
+        self, tb: "tbot.TBot", conn: typing.Optional[paramiko.SSHClient] = None
+    ) -> None:
         if isinstance(conn, paramiko.SSHClient):
             self.connection = conn
         else:
             self.connection = paramiko.SSHClient()
             self.connection.load_system_host_keys()
 
-            kwargs = dict(filter(lambda arg: arg[1] is not None,
-                                 map(lambda arg:
-                                     (arg[1], tb.config[arg[0], None]),
-                                     KWARGS_LIST)))
+            kwargs = dict(
+                filter(
+                    lambda arg: arg[1] is not None,
+                    map(lambda arg: (arg[1], tb.config[arg[0], None]), KWARGS_LIST),
+                )
+            )
             # Paramiko can't handle pathlib.Path
             if "key_filename" in kwargs:
                 kwargs["key_filename"] = str(kwargs["key_filename"])
