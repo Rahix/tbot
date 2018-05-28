@@ -7,6 +7,16 @@ import paramiko
 import tbot
 
 
+class InvalidChannelState(Exception):
+    """ An invalid channel state """
+    pass
+
+
+class InvalidCommand(Exception):
+    """ An invalid channel state """
+    pass
+
+
 def setup_channel(chan: paramiko.Channel, prompt: str) -> None:
     """
     Setup a paramiko channel
@@ -102,6 +112,10 @@ def read_to_prompt(
                     stdout_handler.print(line)
             break
 
+        # Check if the channel has been closed
+        if buf_data == "" and chan.exit_status_ready():
+            return buf
+
     return buf
 
 
@@ -125,6 +139,13 @@ def exec_command(
     :returns: The output of the command
     :rtype: str
     """
+    if "\n" in command:
+        raise InvalidCommand(
+            f"""{command!r} contains a '\\n', which is not allowed.
+    Use multiple calls or a ';' to call multiple commands"""
+        )
+    if chan.exit_status_ready():
+        raise InvalidChannelState("Trying to execute command on a closed channel")
     chan.send(f"{command}\n")
     stdout = read_to_prompt(chan, prompt, stdout_handler)[
         len(command) + 1 : -len(prompt)
