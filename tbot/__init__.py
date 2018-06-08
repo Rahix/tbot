@@ -64,6 +64,14 @@ class TBot:
             raise Exception("BoardMachine is not a 'MachineBoard'")
         return boardmachine
 
+    @property
+    def buildshell(self) -> tbot.machine.MachineBuild:
+        """ The default board machine """
+        buildmachine = self.machines["buildhost"]
+        if not isinstance(buildmachine, tbot.machine.MachineBuild):
+            raise Exception("BuildMachine is not a 'MachineBuild'")
+        return buildmachine
+
     def call_then(
         self, tcs: typing.Union[str, typing.Callable], **kwargs: typing.Any
     ) -> typing.Callable:
