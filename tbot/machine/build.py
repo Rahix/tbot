@@ -5,6 +5,7 @@ Buildhost machine
 import random
 import time
 import typing
+import pathlib
 import paramiko
 import tbot
 from . import machine
@@ -26,6 +27,7 @@ class MachineBuild(machine.Machine):
         super().__init__()
         self.name = name or "default"
         self.prompt = f"TBOT-{random.randint(100000, 999999)}>"
+        self._workdir = None
 
         self.username = username
         self.password = password
@@ -50,6 +52,7 @@ class MachineBuild(machine.Machine):
         super()._setup(tb, previous)
 
         bhcfg = f"build.{self.name}."
+        self._workdir = tb.config[bhcfg + "workdir", None]
 
         self.ssh_command = self.ssh_command or tb.config[bhcfg + "ssh_command", None]
 
@@ -104,6 +107,12 @@ PS1='{self.prompt}'
         )
 
         return retcode, stdout
+
+    @property
+    def workdir(self) -> pathlib.PurePosixPath:
+        if self._workdir is None:
+            raise Exception("No workdir specified for this buildhost")
+        return self._workdir
 
     @property
     def common_machine_name(self) -> str:

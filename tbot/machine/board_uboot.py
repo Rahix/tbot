@@ -4,6 +4,7 @@ Board machine for U-Boot interaction
 """
 import random
 import typing
+import pathlib
 import paramiko
 import tbot
 from . import machine
@@ -160,6 +161,10 @@ class MachineBoardUBoot(board.MachineBoard):
         return shell_utils.command_and_retval(
             self.channel, self.prompt, command, stdout_handler
         )
+
+    @property
+    def workdir(self) -> pathlib.PurePosixPath:
+        raise Exception("UBoot does not have a workdir")
 
     @property
     def unique_machine_name(self) -> str:

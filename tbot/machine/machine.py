@@ -4,6 +4,7 @@ Machines
 """
 import abc
 import typing
+import pathlib
 import paramiko
 import tbot
 
@@ -43,6 +44,11 @@ class Machine(abc.ABC):
     @abc.abstractproperty
     def unique_machine_name(self) -> str:
         """ Unique name of this machine, eg ``"labhost-noenv"`` """
+        pass
+
+    @abc.abstractproperty
+    def workdir(self) -> pathlib.PurePosixPath:
+        """ Workdir where testcases can safely store data """
         pass
 
     def exec(

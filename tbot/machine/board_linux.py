@@ -2,6 +2,7 @@
 Board machine for Linux interaction
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 """
+import pathlib
 import random
 import time
 import typing
@@ -184,6 +185,10 @@ class MachineBoardLinux(board.MachineBoard):
         return shell_utils.command_and_retval(
             self.channel, self.prompt, command, stdout_handler
         )
+
+    @property
+    def workdir(self) -> pathlib.PurePosixPath:
+        return pathlib.PurePosixPath("/tmp")
 
     @property
     def unique_machine_name(self) -> str:

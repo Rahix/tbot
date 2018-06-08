@@ -4,6 +4,7 @@ Labhost machine with environment
 """
 import random
 import typing
+import pathlib
 import paramiko
 import tbot
 from . import machine
@@ -15,6 +16,7 @@ class MachineLabEnv(machine.Machine):
 
     def __init__(self, prompt: typing.Optional[str] = None) -> None:
         self.channel: typing.Optional[paramiko.Channel] = None
+        self._workdir = None
 
         # Set custom prompt to know when output ends
         self.prompt = f"TBOT-{random.randint(100000, 999999)}>"
@@ -28,6 +30,7 @@ class MachineLabEnv(machine.Machine):
     ) -> "MachineLabEnv":
         conn = tb.machines.connection
         self.channel = conn.get_transport().open_session()
+        self._workdir = tb.config["tbot.workdir", None]
 
         shell_utils.setup_channel(self.channel, self.prompt)
 
@@ -40,6 +43,12 @@ class MachineLabEnv(machine.Machine):
         return shell_utils.command_and_retval(
             self.channel, self.prompt, command, stdout_handler
         )
+
+    @property
+    def workdir(self) -> pathlib.PurePosixPath:
+        if self._workdir is None:
+            raise Exception("No workdir specified")
+        return self._workdir
 
     @property
     def common_machine_name(self) -> str:
