@@ -15,7 +15,7 @@ def config(cfg: Config) -> None:
 
     cfg["board"] = {
         "name": "at91sam9g45",
-        "toolchain": "cortexa8hf-neon",
+        "toolchain": "generic-armv7a-hf",
         "power": {
             "on_command": "remote_power at91sam9g45 on",
             "off_command": "remote_power at91sam9g45 off",

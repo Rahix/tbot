@@ -54,7 +54,7 @@ def toolchain_env(
     # We don't need to check if the toolchain exists because it has to
     # (You can't create a Toolchain() object without it existing)
 
-    tbot.log.debug(f"Setting up '{toolchain}' toolchain")
+    tbot.log.debug(f"Setting up '{toolchain.name}' toolchain")
 
     tbot.log.doc(
         f"""Setup the `{toolchain}` toolchain by calling its env script:
