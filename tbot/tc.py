@@ -1,6 +1,6 @@
 """ Dummies for pylint to shut up """
+import typing
 import pathlib
-import tbot
 
 
 class GitRepository(pathlib.PurePosixPath):
@@ -24,7 +24,7 @@ class Toolchain:
     Can be created with :func:`~tbot.builtin.toolchain.toolchain_get`
     """
 
-    def __init__(self, name: str, host: str, cfg: tbot.config.Config) -> None:
+    def __init__(self, name: str, host: str, cfg: typing.Any) -> None:
         self.name = name
         self.host = host
         self.env_setup_script = cfg[f"build.{host}.toolchains.{name}.env_setup_script"]

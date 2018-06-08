@@ -106,8 +106,8 @@ PS1='{self.prompt}'
 
     @property
     def common_machine_name(self) -> str:
-        """ Common name of this machine, always ``"buildhost"`` """
-        return "buildhost"
+        """ Common name of this machine, always ``"host"`` """
+        return "host"
 
     @property
     def unique_machine_name(self) -> str:

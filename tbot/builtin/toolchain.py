@@ -63,7 +63,7 @@ def toolchain_env(
 
     # Create an env shell
     with tb.machine(tbot.machine.MachineBuild(name=toolchain.host)) as tb:
-        tb.buildshell.exec0(f"unset LD_LIBRARY_PATH")
-        tb.buildshell.exec0(f"source {toolchain.env_setup_script}")
+        tb.shell.exec0(f"unset LD_LIBRARY_PATH")
+        tb.shell.exec0(f"source {toolchain.env_setup_script}")
 
         tb.call(and_then, **params)

@@ -43,8 +43,8 @@ class MachineLabEnv(machine.Machine):
 
     @property
     def common_machine_name(self) -> str:
-        """ Common name of this machine, always ``"labhost"`` """
-        return "labhost"
+        """ Common name of this machine, always ``"host"`` """
+        return "host"
 
     @property
     def unique_machine_name(self) -> str:

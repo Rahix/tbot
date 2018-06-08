@@ -53,8 +53,8 @@ class TBot:
 
     @property
     def shell(self) -> tbot.machine.Machine:
-        """ The default labhost machine """
-        return self.machines["labhost"]
+        """ The default host machine """
+        return self.machines["host"]
 
     @property
     def boardshell(self) -> tbot.machine.MachineBoard:
@@ -63,14 +63,6 @@ class TBot:
         if not isinstance(boardmachine, tbot.machine.MachineBoard):
             raise Exception("BoardMachine is not a 'MachineBoard'")
         return boardmachine
-
-    @property
-    def buildshell(self) -> tbot.machine.MachineBuild:
-        """ The default board machine """
-        buildmachine = self.machines["buildhost"]
-        if not isinstance(buildmachine, tbot.machine.MachineBuild):
-            raise Exception("BuildMachine is not a 'MachineBuild'")
-        return buildmachine
 
     def call_then(
         self, tcs: typing.Union[str, typing.Callable], **kwargs: typing.Any
