@@ -37,6 +37,9 @@ class MachineBuild(machine.Machine):
     def _setup(
         self, tb: "tbot.TBot", previous: typing.Optional[machine.Machine] = None
     ) -> "MachineBuild":
+        if self.name == "default":
+            self.name = tb.config["build.default"]
+
         if (
             previous is not self
             and isinstance(previous, MachineBuild)
@@ -46,8 +49,6 @@ class MachineBuild(machine.Machine):
 
         super()._setup(tb, previous)
 
-        if self.name == "default":
-            self.name = tb.config["build.default"]
         bhcfg = f"build.{self.name}."
 
         self.ssh_command = self.ssh_command or tb.config[bhcfg + "ssh_command", None]
