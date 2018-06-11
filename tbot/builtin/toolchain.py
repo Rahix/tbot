@@ -57,7 +57,7 @@ def toolchain_env(
     tbot.log.debug(f"Setting up '{toolchain.name}' toolchain")
 
     tbot.log.doc(
-        f"""Setup the `{toolchain}` toolchain by calling its env script:
+        f"""Setup the `{toolchain.name}` toolchain by calling its env script:
 """
     )
 

@@ -43,7 +43,7 @@ def uboot_build(
 
     tbot.log.doc(
         f"""
-We are using the `{toolchain}` toolchain and will compile \
+We are using the `{toolchain.name}` toolchain and will compile \
 U-Boot using the `{defconfig}` defconfig.
 """
     )
