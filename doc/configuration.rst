@@ -200,17 +200,36 @@ Linux
         },
     }
 
-Toolchains
-^^^^^^^^^^
+Build
+^^^^^
 
 ::
 
-    cfg["toolchains"] = {
-        # A sample toolchain available on this labhost. These will be referenced
-        # in the board config
-        "cortexa8hf-neon": {
-            # The env script which will be sourced to enable this toolchain
-            "env_setup_script" = "/path/to/sdk/environment-setup-cortexa8hf-neon-poky-linux-gnueabi",
+    cfg["build"] = {
+        # Default buildhost
+        "default": "labhost",
+        # Local buildhost for building on the labhost
+        "local": "labhost",
+        # A buildhost
+        "labhost": {
+            # SSH command for passwordless login on the buildhost
+            "ssh_command": "ssh myself@localhost",
+            # SCP command for passwordless file transfers to and from
+            # the buildhost
+            "scp_command": "scp",
+            # SCP address to be appended before remote paths
+            "scp_address": "myself@localhost",
+            # Workdir on the buildhost where TBot can store it's files
+            "workdir": pathlib.PurePosixPath("/tmp/tbot-build"),
+            # Toolchains that are available on this host
+            "toolchains": {
+                # A sample toolchain available on this labhost. These will be referenced
+                # in the board config
+                "cortexa8hf-neon": {
+                    # The env script which will be sourced to enable this toolchain
+                    "env_setup_script" = "/path/to/sdk/environment-setup-cortexa8hf-neon-poky-linux-gnueabi",
+                },
+            },
         },
     }
 
@@ -240,5 +259,7 @@ Board
             "name": "connect_at91sam9g45",
             # Command to open a rlogin like connection to the board
             "command": "connect at91sam9g45",
+            # Optional waittime after connecting but before powering on
+            "connect_wait_time": 0.5,
         },
     }
