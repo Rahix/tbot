@@ -48,30 +48,39 @@ def setup_tftpdir(
 def cp_to_tftpdir(
     tb: tbot.TBot,
     *,
-    name: typing.Union[str, pathlib.PurePosixPath],
+    source: pathlib.PurePosixPath,
     dest_name: typing.Optional[str] = None,
-    builddir: typing.Optional[pathlib.PurePosixPath] = None,
     tftpdir: tc.TftpDirectory,
 ) -> None:
-    """
-    Copy a file into the tftp folder
+    dest_path = tftpdir.path / (source.name if dest_name is None else dest_name)
 
-    :param name: Name of the file or path to the file
-    :type name: str or pathlib.PurePosixPath
-    :param dest_name: Name of the file inside the tftp folder, defaults to
-                      the filename of ``name``
-    :type dest_name: str
-    :param builddir: Where to find files if no full path is supplied, defaults to
-                     ``tb.config["uboot.builddir"]``
-    :type builddir: pathlib.PurePosixPath
-    :param tftpdir: Where to put the file
-    :type tftpdir: TftpDirectory
-    """
-    builddir = builddir or tb.config["uboot.builddir"]
+    tbot.log.debug(f"Copying '{source}' to '{dest_path}'")
 
-    source_path = builddir / name if isinstance(name, str) else name
-    dest_path = tftpdir.path / (name if dest_name is None else dest_name)
+    tb.shell.exec0(f"cp {source} {dest_path}")
 
-    tbot.log.debug(f"Copying '{source_path}' to '{dest_path}'")
 
-    tb.shell.exec0(f"cp {source_path} {dest_path}")
+@tbot.testcase
+def retrive_build_artifact(
+    tb: tbot.TBot,
+    *,
+    buildfile: pathlib.PurePosixPath,
+    buildhost: typing.Optional[str] = None,
+    scp_command: typing.Optional[str] = None,
+    scp_address: typing.Optional[str] = None,
+) -> pathlib.PurePosixPath:
+    buildhost = buildhost or tb.config["build.default", "<missing>"]
+    bhcfg = f"build.{buildhost}."
+    scp_command = scp_command or tb.config[bhcfg + "scp_command"]
+    scp_address = scp_address or tb.config[bhcfg + "scp_address"]
+
+    destination = tb.config["tbot.artifactsdir"] / buildfile.name
+    if not isinstance(destination, pathlib.PurePosixPath):
+        raise Exception("config error, tbot.artifactsdir must be a path")
+    tbot.log.debug(f"cp {buildfile} (build) -> {destination} (lab)")
+
+    tb.machines["labhost-noenv"].exec0(f"mkdir -p {destination.parent}")
+    tb.machines["labhost-noenv"].exec0(
+        f"{scp_command} {scp_address}:{buildfile} {destination}"
+    )
+
+    return destination

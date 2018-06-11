@@ -2,6 +2,8 @@
 P2020RDB-PCA board specific testcases
 -------------------------------------
 """
+import typing
+import pathlib
 import tbot
 
 
@@ -20,10 +22,10 @@ U-Boot on the P2020RDB-PCA board
 
     ubootdir = tb.call("uboot_checkout_and_build")
 
-    tb.call("p2020rdb_install_uboot")
+    uboot_binary = tb.call("p2020rdb_install_uboot", builddir=ubootdir)
 
     with tb.with_board_uboot() as tb:
-        tb.call("check_uboot_version", uboot_binary=ubootdir / "u-boot-with-spl.bin")
+        tb.call("check_uboot_version", uboot_binary=uboot_binary)
 
         env = tb.boardshell.exec0("printenv", log_show=False)
         tbot.log.doc_appendix(
@@ -33,19 +35,24 @@ U-Boot on the P2020RDB-PCA board
 ```""",
         )
 
-    toolchain = tb.call("toolchain_get")
-    tb.call("uboot_tests", builddir=ubootdir, toolchain=toolchain)
+    # toolchain = tb.call("toolchain_get")
+    # tb.call("uboot_tests", toolchain=toolchain)
 
 
 @tbot.testcase
 def p2020rdb_check_install(tb: tbot.TBot) -> None:
     """ Check if the U-Boot installation was successful """
     ubootdir = tb.call("uboot_checkout", clean=False)
-    tb.call("check_uboot_version", uboot_binary=ubootdir / "u-boot-with-spl.bin")
+    ubfile = tb.call(
+        "retrive_build_artifact", buildfile=ubootdir / "u-boot-with-spl.bin"
+    )
+    tb.call("check_uboot_version", uboot_binary=ubfile)
 
 
 @tbot.testcase
-def p2020rdb_install_uboot(tb: tbot.TBot) -> None:
+def p2020rdb_install_uboot(
+    tb: tbot.TBot, *, builddir: typing.Optional[tbot.tc.UBootRepository] = None
+) -> pathlib.PurePosixPath:
     """ Install U-Boot into NAND flash of the P2020RDB-PCA """
     tbot.log.doc(
         """
@@ -59,7 +66,15 @@ Copy U-Boot into your tftp directory:
     )
 
     tftpdir = tb.call("setup_tftpdir")
-    tb.call("cp_to_tftpdir", name="u-boot-with-spl.bin", tftpdir=tftpdir)
+
+    # Retrieve U-Boot from buildhost
+    builddir = builddir or tb.call("uboot_checkout", clean=False)
+    ubfile = tb.call(
+        "retrive_build_artifact", buildfile=builddir / "u-boot-with-spl.bin"
+    )
+    if not isinstance(ubfile, pathlib.PurePosixPath):
+        raise Exception("error in retrive_build_artifact")
+    tb.call("cp_to_tftpdir", source=ubfile, tftpdir=tftpdir)
 
     tbot.log.doc("Find out the size of the U-Boot binary, as we will need it later:\n")
 
@@ -86,3 +101,5 @@ Copy U-Boot into your tftp directory:
             tb.boardshell.exec0(f"nand write 10000000 0 {size}")
 
             tbot.log.doc("Powercycle the board and check the U-Boot version:\n")
+
+    return ubfile

@@ -52,34 +52,35 @@ def uboot_checkout(
     :rtype: UBootRepository
     """
 
-    builddir = builddir or tb.config["uboot.builddir"]
-    patchdir = patchdir or tb.config["uboot.patchdir", None]
-    repo = repo or tb.config["uboot.repository"]
+    with tb.machine(tbot.machine.MachineBuild()) as tb:
+        builddir = builddir or tb.shell.workdir / tb.config["uboot.builddir"]
+        patchdir = patchdir or tb.config["uboot.patchdir", None]
+        repo = repo or tb.config["uboot.repository"]
 
-    docstr = f"""In this document, we assume the following file locations:
+        docstr = f"""In this document, we assume the following file locations:
 
 * The build directory is `{builddir}`
 * The U-Boot repository is `{repo}`
 """
-    docstr += (
-        "(For you it will most likely be `git://git.denx.de/u-boot.git`)\n"
-        if repo != "git://git.denx.de/u-boot.git"
-        else ""
-    )
-    docstr += (
-        f"* Board specific patches can be found in `{patchdir}`\n"
-        if patchdir is not None
-        else ""
-    )
+        docstr += (
+            "(For you it will most likely be `git://git.denx.de/u-boot.git`)\n"
+            if repo != "git://git.denx.de/u-boot.git"
+            else ""
+        )
+        docstr += (
+            f"* Board specific patches can be found in `{patchdir}`\n"
+            if patchdir is not None
+            else ""
+        )
 
-    tbot.log.doc(docstr + "\n")
+        tbot.log.doc(docstr + "\n")
 
-    git_testcase = "git_clean_checkout" if clean else "git_dirty_checkout"
+        git_testcase = "git_clean_checkout" if clean else "git_dirty_checkout"
 
-    gitdir = tb.call(git_testcase, repo=repo, target=builddir)
-    if patchdir is not None and clean is True:
-        tb.call("git_apply_patches", gitdir=gitdir, patchdir=patchdir)
-    return tc.UBootRepository(gitdir)
+        gitdir = tb.call(git_testcase, repo=repo, target=builddir)
+        if patchdir is not None and clean is True:
+            tb.call("git_apply_patches", gitdir=gitdir, patchdir=patchdir)
+        return tc.UBootRepository(gitdir)
 
 
 @tbot.testcase

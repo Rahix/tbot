@@ -33,6 +33,8 @@ def config(cfg: Config) -> None:
         "default": "hercules",
         "pollux": {
             "ssh_command": f"ssh -i ~/.ssh/id_rsa_nopw {username}@localhost",
+            "scp_command": f"scp -i ~/.ssh/id_rsa_nopw",
+            "scp_address": f"{username}@localhost",
             "workdir": pathlib.PurePosixPath("/work") / username / "tbot-build",
             "toolchains": {
                 "cortexa8hf-neon": {
@@ -66,6 +68,8 @@ def config(cfg: Config) -> None:
         },
         "hercules": {
             "ssh_command": f"ssh -i ~/.ssh/id_rsa_nopw {username}@hercules",
+            "scp_command": f"scp -i ~/.ssh/id_rsa_nopw",
+            "scp_address": f"{username}@hercules",
             "workdir": pathlib.PurePosixPath("/work") / username / "tbot-build",
             "toolchains": {
                 "generic-powerpc-e500v2": {
