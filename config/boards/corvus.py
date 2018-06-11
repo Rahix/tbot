@@ -37,7 +37,7 @@ def config(cfg: Config) -> None:
     cfg["uboot"] = (
         {
             "defconfig": "corvus_defconfig",
-            "patchdir": pathlib.PurePosixPath("/home/hws/corvus_patches"),
+            "patchdir": pathlib.PurePosixPath("/home/hws/data/corvus_patches"),
             "test": {
                 "hooks": pathlib.PurePosixPath("/home/hws/hooks/corvus"),
                 "boardname": "corvus",

@@ -17,9 +17,7 @@ def config(cfg: Config) -> None:
     ]
 
     # uboot.builddir: U-Boot's repository clone, used to build U-Boot
-    cfg["uboot.builddir"] = cfg[
-        "uboot.builddir", cfg["tbot.workdir"] / f"uboot-{cfg['board.name']}"
-    ]
+    cfg["uboot.builddir"] = cfg["uboot.builddir", f"uboot-{cfg['board.name']}"]
 
     if cfg["tftp.boarddir", None] is not None:
         cfg["tftp.directory"] = cfg[
