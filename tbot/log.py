@@ -63,6 +63,7 @@ LOGFILE = None
 LOGLIST = list()
 LOGVERBOSITY = Verbosity.WARNING
 LOGNESTLAYER = 0
+LOG_DO_DOC = True
 
 
 def check_log() -> None:
@@ -158,6 +159,7 @@ def event(
     verbosity: Verbosity = Verbosity.INFO,
     dct: typing.Optional[typing.Dict[str, typing.Any]] = None,
     custom_dash: typing.Optional[str] = None,
+    fake: bool = False,
 ) -> LogStdoutHandler:
     """
     Create a new log event
@@ -173,6 +175,7 @@ def event(
     :type dct: dict
     :param custom_dash: Different prefix for the message when printed onscreen
     :type custom_dash: str
+    :param fake bool: Whether this is just a fake event that won't be logged
     :returns: A handler for the created log event
     :rtype: LogStdoutHandler
     """
@@ -195,7 +198,8 @@ def event(
         dct["message"] = msg
         stdout_handler.print(msg)
 
-    LOGLIST.append(dct)
+    if not fake:
+        LOGLIST.append(dct)
 
     return stdout_handler
 
@@ -226,7 +230,12 @@ def doc(text: str) -> LogStdoutHandler:
     :returns: A handler for the created log event
     :rtype: LogStdoutHandler
     """
-    return event(ty=["doc", "text"], verbosity=Verbosity.NEVER, dct={"text": text})
+    return event(
+        ty=["doc", "text"],
+        verbosity=Verbosity.NEVER,
+        dct={"text": text},
+        fake=not LOG_DO_DOC,
+    )
 
 
 def doc_appendix(title: str, text: str) -> LogStdoutHandler:
@@ -245,6 +254,7 @@ def doc_appendix(title: str, text: str) -> LogStdoutHandler:
         ty=["doc", "appendix"],
         verbosity=Verbosity.NEVER,
         dct={"title": title, "text": text},
+        fake=not LOG_DO_DOC,
     )
 
 

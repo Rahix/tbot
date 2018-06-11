@@ -31,6 +31,7 @@ def uboot_checkout(
     tb: tbot.TBot,
     *,
     clean: bool = True,
+    buildhost: typing.Optional[str] = None,
     builddir: typing.Optional[pathlib.PurePosixPath] = None,
     patchdir: typing.Optional[pathlib.PurePosixPath] = None,
     repo: typing.Optional[str] = None,
@@ -40,6 +41,7 @@ def uboot_checkout(
 
     :param clean: Whether an existing repository should be cleaned
     :type clean: bool
+    :param buildhost: Which buildhost should U-Boot be built on?
     :param builddir: Where to checkout U-Boot to, defaults to ``tb.config["uboot.builddir"]``
     :type builddir: pathlib.PurePosixPath
     :param patchdir: Optional U-Boot patches to be applied
@@ -52,7 +54,7 @@ def uboot_checkout(
     :rtype: UBootRepository
     """
 
-    with tb.machine(tbot.machine.MachineBuild()) as tb:
+    with tb.machine(tbot.machine.MachineBuild(name=buildhost)) as tb:
         builddir = builddir or tb.shell.workdir / tb.config["uboot.builddir"]
         patchdir = patchdir or tb.config["uboot.patchdir", None]
         repo = repo or tb.config["uboot.repository"]

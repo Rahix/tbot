@@ -35,8 +35,18 @@ U-Boot on the P2020RDB-PCA board
 ```""",
         )
 
-    # toolchain = tb.call("toolchain_get")
-    # tb.call("uboot_tests", toolchain=toolchain)
+    tbot.log.doc(
+        f"""\
+## Preparation for the U-Boot testsuite
+Because U-Boot was built on a separate buildhost previously, we need to checkout
+U-Boot again, this time on the labhost.
+"""
+    )
+    buildhost = tb.config["build.local"]
+    uboot_dir = tb.call("uboot_checkout", buildhost=buildhost, doc=False)
+    toolchain = tb.call("toolchain_get", buildhost=buildhost)
+
+    tb.call("uboot_tests", builddir=uboot_dir, toolchain=toolchain)
 
 
 @tbot.testcase
@@ -44,7 +54,7 @@ def p2020rdb_check_install(tb: tbot.TBot) -> None:
     """ Check if the U-Boot installation was successful """
     ubootdir = tb.call("uboot_checkout", clean=False)
     ubfile = tb.call(
-        "retrive_build_artifact", buildfile=ubootdir / "u-boot-with-spl.bin"
+        "retrieve_build_artifact", buildfile=ubootdir / "u-boot-with-spl.bin"
     )
     tb.call("check_uboot_version", uboot_binary=ubfile)
 
@@ -70,10 +80,10 @@ Copy U-Boot into your tftp directory:
     # Retrieve U-Boot from buildhost
     builddir = builddir or tb.call("uboot_checkout", clean=False)
     ubfile = tb.call(
-        "retrive_build_artifact", buildfile=builddir / "u-boot-with-spl.bin"
+        "retrieve_build_artifact", buildfile=builddir / "u-boot-with-spl.bin"
     )
     if not isinstance(ubfile, pathlib.PurePosixPath):
-        raise Exception("error in retrive_build_artifact")
+        raise Exception("error in retrieve_build_artifact")
     tb.call("cp_to_tftpdir", source=ubfile, tftpdir=tftpdir)
 
     tbot.log.doc("Find out the size of the U-Boot binary, as we will need it later:\n")

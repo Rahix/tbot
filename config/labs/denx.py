@@ -31,6 +31,7 @@ def config(cfg: Config) -> None:
 
     cfg["build"] = {
         "default": "hercules",
+        "local": "pollux",
         "pollux": {
             "ssh_command": f"ssh -i ~/.ssh/id_rsa_nopw {username}@localhost",
             "scp_command": f"scp -i ~/.ssh/id_rsa_nopw",

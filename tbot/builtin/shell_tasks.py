@@ -60,7 +60,7 @@ def cp_to_tftpdir(
 
 
 @tbot.testcase
-def retrive_build_artifact(
+def retrieve_build_artifact(
     tb: tbot.TBot,
     *,
     buildfile: pathlib.PurePosixPath,
@@ -78,9 +78,9 @@ def retrive_build_artifact(
         raise Exception("config error, tbot.artifactsdir must be a path")
     tbot.log.debug(f"cp {buildfile} (build) -> {destination} (lab)")
 
-    tb.machines["labhost-noenv"].exec0(f"mkdir -p {destination.parent}")
+    tb.machines["labhost-noenv"].exec0(f"mkdir -p {destination.parent}", log_show=False)
     tb.machines["labhost-noenv"].exec0(
-        f"{scp_command} {scp_address}:{buildfile} {destination}"
+        f"{scp_command} {scp_address}:{buildfile} {destination}", log_show=False
     )
 
     return destination

@@ -90,6 +90,7 @@ class TBot:
         tcs: typing.Union[str, typing.Callable],
         *,
         fail_ok: bool = False,
+        doc: bool = True,
         **kwargs: typing.Any,
     ) -> typing.Any:
         """
@@ -99,6 +100,7 @@ class TBot:
         :type tcs: str or typing.Callable
         :param fail_ok: Whether a failure in this testcase is tolerable
         :type fail_ok: bool
+        :param doc bool: Whether documentation should be generated in this testcase
         :param kwargs: Additional arguments for the testcase
         :type kwargs: dict
         :returns: The return value from the testcase
@@ -107,6 +109,8 @@ class TBot:
         tbot.log_events.testcase_begin(name)
         self.layer += 1
         tbot.log.set_layer(self.layer)
+        previous_doc = tbot.log.LOG_DO_DOC
+        tbot.log.LOG_DO_DOC = previous_doc and doc
         start_time = time.monotonic()
 
         try:
@@ -125,12 +129,14 @@ class TBot:
             run_duration = time.monotonic() - start_time
             tbot.log_events.testcase_end(name, run_duration, False, fail_ok)
             tbot.log.set_layer(self.layer)
+            tbot.log.LOG_DO_DOC = previous_doc
             raise
 
         self.layer -= 1
         run_duration = time.monotonic() - start_time
         tbot.log_events.testcase_end(name, run_duration, True)
         tbot.log.set_layer(self.layer)
+        tbot.log.LOG_DO_DOC = previous_doc
         return retval
 
     def machine(self, mach: tbot.machine.Machine) -> "TBot":
