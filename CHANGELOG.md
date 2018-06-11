@@ -10,11 +10,13 @@
 - Added `retrieve_build_artifact` and `tbot_clean_builddir` tasks
 - Added a new config key `build.local` that defines the buildhost that is the
   labhost itself
+- More tests in `check_config`
 
 ### Changed
 - `uboot_checkout` now checks out U-Boot onto the default buildhost by default
 - U-Boot is built on the buildhost by defalt, you need to use `retrieve_build_artifact`
   to copy binaries to the labhost
+- Renamed `tbot_check_config` to `check_config`
 
 ### Fixed
 - Removed an unnecessary shell check from U-Boot tests
