@@ -34,11 +34,16 @@ class TBot:
     """
 
     def __init__(
-        self, config: tbot.config.Config, testcases: dict, new: bool = True
+        self,
+        config: tbot.config.Config,
+        testcases: dict,
+        new: bool = True,
+        interactive: bool = False,
     ) -> None:
         self.config = config
         self.testcases = testcases
         self.layer = 0
+        self.interactive = interactive
 
         self.destruct_machines: typing.List[tbot.machine.Machine] = list()
 
@@ -149,7 +154,9 @@ class TBot:
             statement
         :rtype: TBot
         """
-        new_inst = TBot(self.config, self.testcases, False)
+        new_inst = TBot(
+            self.config, self.testcases, False, interactive=self.interactive
+        )
         new_inst.layer = self.layer
         new_inst.machines = tbot.machine.MachineManager(
             new_inst, self.machines.connection

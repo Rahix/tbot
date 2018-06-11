@@ -7,6 +7,10 @@
   people are using it
 - You can now disable documentation for a testcase by passing
   `doc=False` to `tb.call`
+- Added `-i/--interactive` commandline flag that will make TBot wait for user
+  confirmation for each command it wants to execute. Use this if you are unsure
+  whether your testcase will do anything harmful, because you can intervene if a
+  critical command has ie. wrong parameters
 - Added `retrieve_build_artifact` and `tbot_clean_builddir` tasks
 - Added a new config key `build.local` that defines the buildhost that is the
   labhost itself
