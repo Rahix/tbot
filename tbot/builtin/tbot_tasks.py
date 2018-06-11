@@ -13,9 +13,17 @@ def tbot_clean_workdir(tb: tbot.TBot) -> None:
     Clean TBot's workdir, utility testcase to remove
     TBot's files on the labhost
     """
-    workdir = tb.config["tbot.workdir"]
+    tb.shell.exec0(f"rm -rvf {tb.shell.workdir}")
 
-    tb.shell.exec0(f"rm -rvf {workdir}")
+
+@tbot.testcase
+def tbot_clean_builddir(tb: tbot.TBot) -> None:
+    """
+    Clean TBot's workdir, utility testcase to remove
+    TBot's files on the labhost
+    """
+    with tb.machine(tbot.machine.MachineBuild()) as tb:
+        tb.shell.exec0(f"rm -rvf {tb.shell.workdir}")
 
 
 @tbot.testcase
