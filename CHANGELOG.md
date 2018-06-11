@@ -1,6 +1,23 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- **Buildhosts:** This release adds the ability to build U-Boot/Linux
+  on a separate machine. This will reduce load on your labhost if multiple
+  people are using it
+- You can now disable documentation for a testcase by passing
+  `doc=False` to `tb.call`
+- Added `retrieve_build_artifact` and `tbot_clean_builddir` tasks
+- Added a new config key `build.local` that defines the buildhost that is the
+  labhost itself
+
+### Changed
+- `uboot_checkout` now checks out U-Boot onto the default buildhost by default
+- U-Boot is built on the buildhost by defalt, you need to use `retrieve_build_artifact`
+  to copy binaries to the labhost
+
+### Fixed
+- Removed an unnecessary shell check from U-Boot tests
 
 
 ## [0.2.4] - 2018-05-28
