@@ -69,7 +69,13 @@ class Machine(abc.ABC):
         :rtype: tuple[int, str]
         """
         if self._interactive:
-            input(f"{self.unique_machine_name!r}: {command!r} ?")
+            inp = input(f"{self.unique_machine_name!r}: {command!r} [Y/n]? ").lower()
+            if inp != "" and inp[0] != "y":
+                tbot.log.message(
+                    f"""\
+Skipping comand {command!r} ... Might cause unintended side effects!"""
+                )
+                return 0, ""
         stdout_handler = tbot.log_events.shell_command(
             machine=self.unique_machine_name.split("-"),
             command=command,
