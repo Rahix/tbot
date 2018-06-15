@@ -44,6 +44,7 @@ class TBot:
         self.testcases = testcases
         self.layer = 0
         self.interactive = interactive
+        self._old_inst: typing.Optional[TBot] = None
 
         self.destruct_machines: typing.List[tbot.machine.Machine] = list()
 
@@ -175,6 +176,8 @@ class TBot:
         new_inst.machines[mach.unique_machine_name] = new_mach
         if new_mach is not old_mach:
             new_inst.destruct_machines.append(new_mach)
+
+        new_inst._old_inst = self
         return new_inst
 
     def with_board_uboot(self) -> "TBot":
@@ -211,8 +214,15 @@ class TBot:
         for mach in self.destruct_machines:
             # pylint: disable=protected-access
             mach._destruct(self)
+        # Make sure, we don't destruct twice
+        self.destruct_machines = []
 
     def __exit__(
         self, exc_type: typing.Any, exc_value: typing.Any, trceback: typing.Any
     ) -> None:
         self.destruct()
+        # Hack to make this TBot behave like it's parent after the end of a with
+        # statement
+        if self._old_inst is not None:
+            self.machines = self._old_inst.machines
+            self.destruct_machines = self._old_inst.destruct_machines
