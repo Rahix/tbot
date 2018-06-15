@@ -68,6 +68,22 @@ def retrieve_build_artifact(
     scp_command: typing.Optional[str] = None,
     scp_address: typing.Optional[str] = None,
 ) -> pathlib.PurePosixPath:
+    """
+    Copy artifacts from the buildhost to the labhost
+
+    :param pathlib.PurePosixPath buildfile: File on the buildhost
+    :param str buildhost: Name of the buildhost if you do not want to use
+                          the default
+    :param str scp_command: SCP command to use for copying (eg ``scp -i <..>``),
+                            defaults to ``tb.config["build.<name>.scp_command"]``
+    :param str scp_address: Address of the form ``<user>@<host>`` of the buildhost,
+                            defaults to ``tb.config["build.<name>.scp_address"]``
+
+                            .. todo:: Make use of ``username`` and ``hostname`` \
+                                      parameters
+    :returns: Path where the file has been copied
+    :rtype: pathlib.PurePosixPath
+    """
     buildhost = buildhost or tb.config["build.default", "<missing>"]
     bhcfg = f"build.{buildhost}."
     scp_command = scp_command or tb.config[bhcfg + "scp_command"]

@@ -15,6 +15,7 @@
 - Added a new config key `build.local` that defines the buildhost that is the
   labhost itself
 - More tests in `check_config`
+- Better documentation
 
 ### Changed
 - `uboot_checkout` now checks out U-Boot onto the default buildhost by default

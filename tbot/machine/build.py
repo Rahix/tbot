@@ -13,7 +13,26 @@ from . import shell_utils
 
 
 class MachineBuild(machine.Machine):
-    """ Buildhost machine """
+    """
+    Buildhost machine
+
+    :param str name: Name of the buildhost, as found in the config. Defaults to
+                     the value of ``tb.config["build.default"]``
+    :param str username: Username on the buildhost, defaults to
+                         ``tb.config["build.<name>.username"]``
+    :param str password: Password on the buildhost, if passwordless login is not
+                         available, defaults to
+                         ``tb.config["build.<name>.password"]``
+
+                         .. todo:: Not implemented yet, you have to use\
+                            passwordless login
+    :param str hostname: Hostname of the buildhost, defaults to
+                         ``tb.config["build.<name>.hostname"]``
+    :param str ssh_command: If this parameter is not given, TBot will use
+                            ``ssh <username>@<hostname>``. If it is given,
+                            it will be used instead. This allows for custom
+                            ssh options like using a different key.
+    """
 
     def __init__(
         self,

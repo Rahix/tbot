@@ -203,10 +203,21 @@ current board. This makes it easier to write code to compile something.
         # Get the default toolchain for the current board
         toolchain = tb.call("toolchain_get")
 
+        buildhost_workdir = None
         @tb.call_then("toolchain_env", toolchain=toolchain)
         def build(tb: tbot.TBot) -> None:
             cc = tb.shell.exec0("echo $CC").strip()
             tbot.log.message(f"Compiler: '{cc}'")
+            # Build your project, for portability, do it inside
+            # "tb.shell.workdir"
+            buildhost_workdir = tb.shell.workdir / "my-project"
+            tb.shell.exec0(f"mkdir -p {buildhost_workdir}")
+
+        # Use this testcase to retrieve you build results
+        labhost_file = tb.call(
+            "retrieve_build_artifact",
+            buildfile=buildhost_workdir / "result.bin",
+        )
 
 .. highlight:: python
    :linenothreshold: 3

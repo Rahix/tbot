@@ -1,6 +1,6 @@
 """
-Interactive testcases for debugging
------------------------------------
+Interactive testcases for debugging & development
+-------------------------------------------------
 """
 import sys
 import shutil
@@ -43,13 +43,16 @@ def ishell(
 
     oldtty = termios.tcgetattr(sys.stdin)
     try:
-        tty.setraw(sys.stdin)
-        tty.setcbreak(sys.stdin)
+        tty.setraw(sys.stdin.fileno())
+        tty.setcbreak(sys.stdin.fileno())
 
         # Set to polling read
         mode = termios.tcgetattr(sys.stdin)
-        mode[6][termios.VMIN] = 0
-        mode[6][termios.VTIME] = 0
+        special_chars = mode[6]
+        if not isinstance(special_chars, list):
+            raise Exception("tcgetattr returned invalid mode")
+        special_chars[termios.VMIN] = b"\0"
+        special_chars[termios.VTIME] = b"\0"
         termios.tcsetattr(sys.stdin, termios.TCSAFLUSH, mode)
 
         channel.settimeout(0.0)
