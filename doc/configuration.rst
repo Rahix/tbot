@@ -86,6 +86,9 @@ Board configuration
 Available options:
 ------------------
 
+.. highlight:: python
+   :linenothreshold: 3
+
 Lab
 ^^^
 
@@ -94,7 +97,7 @@ Lab
     cfg["lab"] = {
         # Name of the lab, does not need to match file name
         "name": "local",
-        # Hostname that tbot will ssh to
+        # Hostname of the labhost
         "hostname": "localhost",
         # Optional port number
         "port": 22,
@@ -113,7 +116,7 @@ TBot
 ::
 
     cfg["tbot"] = {
-        # Where tbot should store it's files on the lab host
+        # Where tbot should store it's files on the labhost
         # (This is not enforced in any way)
         "workdir": "/home/me/tbotdir",
     }
@@ -150,6 +153,8 @@ U-Boot
         "repository": "git://git.denx.de/u-boot.git",
         # A directory containing patches to be applied over the U-Boot tree
         "patchdir": pathlib.PurePosixPath("/home/hws/Documents/corvus_patches"),
+        # which defconfig to use
+        "defconfig": "corvus_defconfig",
 
         "shell": {
             # U-Boot prompt to be expected (varies with defconfig)
@@ -200,17 +205,36 @@ Linux
         },
     }
 
-Toolchains
-^^^^^^^^^^
+Build
+^^^^^
 
 ::
 
-    cfg["toolchains"] = {
-        # A sample toolchain available on this labhost. These will be referenced
-        # in the board config
-        "cortexa8hf-neon": {
-            # The env script which will be sourced to enable this toolchain
-            "env_setup_script" = "/path/to/sdk/environment-setup-cortexa8hf-neon-poky-linux-gnueabi",
+    cfg["build"] = {
+        # Default buildhost
+        "default": "labhost",
+        # Local buildhost for building on the labhost
+        "local": "labhost",
+        # A buildhost
+        "labhost": {
+            # SSH command for passwordless login on the buildhost
+            "ssh_command": "ssh myself@localhost",
+            # SCP command for passwordless file transfers to and from
+            # the buildhost
+            "scp_command": "scp",
+            # SCP address to be appended before remote paths
+            "scp_address": "myself@localhost",
+            # Workdir on the buildhost where TBot can store it's files
+            "workdir": pathlib.PurePosixPath("/tmp/tbot-build"),
+            # Toolchains that are available on this host
+            "toolchains": {
+                # A sample toolchain available on this labhost. These will be referenced
+                # in the board config
+                "cortexa8hf-neon": {
+                    # The env script which will be sourced to enable this toolchain
+                    "env_setup_script" = "/path/to/sdk/environment-setup-cortexa8hf-neon-poky-linux-gnueabi",
+                },
+            },
         },
     }
 
@@ -225,8 +249,6 @@ Board
         # Name of the toolchain to be used. Toolchains are defined
         # in the lab config
         "toolchain": "cortexa8hf-neon",
-        # which U-Boot defconfig to use
-        "defconfig": "corvus_defconfig",
 
         "power": {
             # Command to power on the board
@@ -240,5 +262,7 @@ Board
             "name": "connect_at91sam9g45",
             # Command to open a rlogin like connection to the board
             "command": "connect at91sam9g45",
+            # Optional waittime after connecting but before powering on
+            "connect_wait_time": 0.5,
         },
     }

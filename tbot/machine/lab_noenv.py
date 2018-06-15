@@ -3,6 +3,7 @@ Labhost machine without environment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 """
 import typing
+import pathlib
 import paramiko
 import tbot
 from . import machine
@@ -13,6 +14,7 @@ class MachineLabNoEnv(machine.Machine):
 
     def __init__(self) -> None:
         super().__init__()
+        self._workdir = None
         self.conn: typing.Optional[paramiko.SSHClient] = None
 
     def _setup(
@@ -20,6 +22,7 @@ class MachineLabNoEnv(machine.Machine):
     ) -> "MachineLabNoEnv":
         self.conn = tb.machines.connection
         super()._setup(tb, previous)
+        self._workdir = tb.config["tbot.workdir", None]
         return self
 
     def _exec(
@@ -46,9 +49,15 @@ class MachineLabNoEnv(machine.Machine):
         return ret_code, output
 
     @property
+    def workdir(self) -> pathlib.PurePosixPath:
+        if self._workdir is None:
+            raise Exception("No workdir specified")
+        return self._workdir
+
+    @property
     def common_machine_name(self) -> str:
-        """ Common name of this machine, always ``"labhost"`` """
-        return "labhost"
+        """ Common name of this machine, always ``"host"`` """
+        return "host"
 
     @property
     def unique_machine_name(self) -> str:

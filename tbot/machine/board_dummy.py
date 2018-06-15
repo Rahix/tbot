@@ -3,6 +3,7 @@ Board machine dummy for just turning the board on and off
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 """
 import typing
+import pathlib
 import tbot
 from . import machine
 from . import board
@@ -79,6 +80,10 @@ class MachineBoardDummy(board.MachineBoard):
         self, command: str, stdout_handler: typing.Optional[tbot.log.LogStdoutHandler]
     ) -> typing.Tuple[int, str]:
         raise Exception("Cannot execute commands on a dummy board machine")
+
+    @property
+    def workdir(self) -> pathlib.PurePosixPath:
+        raise Exception("A dummy board does not have a workdir")
 
     @property
     def unique_machine_name(self) -> str:

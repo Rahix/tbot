@@ -23,6 +23,14 @@ def main() -> None:
     )
 
     parser.add_argument(
+        "-i",
+        "--interactive",
+        action="store_const",
+        const=True,
+        default=False,
+        help="Ask for each command before executing it",
+    )
+    parser.add_argument(
         "-p",
         "--param",
         type=str,
@@ -200,7 +208,7 @@ named "tc"',
 
     tbot.log.init_log(logfile, verbosity)
 
-    with tbot.TBot(config, testcases) as tb:
+    with tbot.TBot(config, testcases, interactive=args.interactive) as tb:
         print(
             f"\
 {tbot.log.has_color('33;1')}TBot{tbot.log.has_color('0')} starting ..."

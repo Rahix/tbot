@@ -13,14 +13,21 @@ def tbot_clean_workdir(tb: tbot.TBot) -> None:
     Clean TBot's workdir, utility testcase to remove
     TBot's files on the labhost
     """
-    workdir = tb.config["tbot.workdir"]
-
-    tb.shell.exec0(f"rm -rvf {workdir}")
+    tb.shell.exec0(f"rm -rvf {tb.shell.workdir}")
 
 
 @tbot.testcase
-# pylint: disable=pointless-statement
-def tbot_check_config(tb: tbot.TBot) -> None:
+def tbot_clean_builddir(tb: tbot.TBot) -> None:
+    """
+    Clean TBot's workdir, utility testcase to remove
+    TBot's files on the labhost
+    """
+    with tb.machine(tbot.machine.MachineBuild()) as tb:
+        tb.shell.exec0(f"rm -rvf {tb.shell.workdir}")
+
+
+@tbot.testcase
+def check_config(tb: tbot.TBot) -> None:
     """ Check validity of configuration """
     warnings = 0
 
@@ -47,8 +54,21 @@ def tbot_check_config(tb: tbot.TBot) -> None:
     has_workdir = check_exist(
         "tbot.workdir", pathlib.PurePosixPath, "No workdir specified"
     )
+    has_build = check_exist("build.default", str, "No default buildhost specified")
+    default_bhcfg = "build." + tb.config["build.default", None]
+    has_build_workdir = False
+    if has_build:
+        if tb.config[default_bhcfg, None] is None:
+            warning("Default buildhost is invalid")
+            has_build = False
+        else:
+            has_build_workdir = check_exist(
+                default_bhcfg + ".workdir",
+                pathlib.PurePosixPath,
+                "No build workdir specified",
+            )
     has_uboot_builddir = check_exist(
-        "uboot.builddir", pathlib.PurePosixPath, "No U-Boot builddir specified"
+        "uboot.builddir", str, "No U-Boot builddir specified"
     )
     has_tftproot = check_exist(
         "tftp.root", pathlib.PurePosixPath, "No TFTP root directory specified"
@@ -57,9 +77,20 @@ def tbot_check_config(tb: tbot.TBot) -> None:
         "tftp.directory", pathlib.PurePosixPath, "No TFTP subdirectory specified"
     )
 
-    toolchains = tb.config["toolchains", dict()]
-    if toolchains == dict():
-        warning(f"\x1B[33;1mWARNING:\x1B[0m No toolchains available")
+    has_toolchain = check_exist("board.toolchain", str, "No board toolchain specified")
+    no_toolchains = False
+    has_board_tc = False
+    if has_build:
+        toolchains = tb.config[default_bhcfg + ".toolchains", dict()]
+        if toolchains == dict():
+            warning(f"No toolchains available")
+            no_toolchains = True
+        board_tc = tb.config["board.toolchain", None]
+        has_board_tc = check_exist(
+            default_bhcfg + ".toolchains." + board_tc,
+            typing.Dict,
+            "Board toolchain does not exist",
+        )
 
     has_defconfig = check_exist(
         "uboot.defconfig",
@@ -68,7 +99,6 @@ def tbot_check_config(tb: tbot.TBot) -> None:
 you will not be able to\nbuild U-Boot for this board",
     )
 
-    has_toolchain = check_exist("board.toolchain", str, "No board toolchain specified")
     has_power = check_exist(
         "board.power",
         tbot.config.Config,
@@ -97,9 +127,10 @@ necessary but recommended\nfor easier log readability",
     tbot.log.message(f"Config checked, {warnings} warnings")
     tbot.log.message(
         f"""\x1B[1mSummary:\x1B[0m
-Workdir........: {'Y' if has_workdir else 'N - Building U-Boot will be impossible'}
+Workdir........: {'Y' if has_workdir else 'N - Most testcases need a workdir, please specify one'}
+Build-Workdir..: {'Y' if has_build_workdir else 'N - Building will be impossible'}
 
-U-Boot Build...: {'Y' if has_uboot_builddir
+U-Boot Build...: {'Y' if has_uboot_builddir and has_board_tc and has_build and not no_toolchains
 and has_toolchain and has_defconfig else 'N - Building U-Boot will be impossible'}
 U-Boot Connect.: {'Y' if has_power and has_connect else 'N - Connecting to U-Boot will be impossible'}
 U-Boot Tests...: {'Y' if has_uboot_builddir and has_ub_tests else 'N - Running U-Boot tests will be impossible'}

@@ -66,10 +66,10 @@ _tbot()
     local boardconfdir="${boardconfdir:-${confdir}/boards}"
 
     if [[ "$cur" == -* ]]; then
-        COMPREPLY=( $( compgen -W '-h -c -p -d -l -v -q
+        COMPREPLY=( $( compgen -W '-h -c -p -d -l -v -q -i
             --help --config --param --confdir --labconfdir
             --boardconfdir --tcdir --logfile --verbose
-            --quiet --list-testcases --list-labs
+            --quiet --interactive --list-testcases --list-labs
             --list-boards -vv -vvv -vvvv -qq -qqq -qqqq' -- "$cur" ) )
     else
         case $current_mode in
@@ -80,7 +80,7 @@ _tbot()
                     echo -n "${words[@]}"
                     return
                 fi
-                local labs=$(ls $labconfdir | grep \\.py | sed 's/\.py$//')
+                local labs=$(/bin/ls $labconfdir | grep \\.py | sed 's/\.py$//')
                 COMPREPLY=( $( compgen -W "$labs" -- "$cur") )
                 ;;
             2)  # BOARD
@@ -90,7 +90,7 @@ _tbot()
                     echo -n "${words[@]}"
                     return
                 fi
-                local boards=$(ls $boardconfdir | grep \\.py | sed 's/\.py$//')
+                local boards=$(/bin/ls $boardconfdir | grep \\.py | sed 's/\.py$//')
                 COMPREPLY=( $( compgen -W "$boards" -- "$cur") )
                 ;;
             *)  # TESTCASE

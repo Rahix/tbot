@@ -1,4 +1,5 @@
 """ Dummies for pylint to shut up """
+import typing
 import pathlib
 
 
@@ -17,9 +18,18 @@ class UnknownToolchainException(Exception):
     pass
 
 
-class Toolchain(str):
-    """ Dummy for pylint to shut up """
-    pass
+class Toolchain:
+    """
+    A meta object to represent a toolchain.
+    Can be created with :func:`~tbot.builtin.toolchain.toolchain_get`
+    """
+
+    def __init__(self, name: str, host: str, cfg: typing.Any) -> None:
+        self.name = name
+        self.host = host
+        self.env_setup_script = cfg[f"build.{host}.toolchains.{name}.env_setup_script"]
+        self.path = cfg[f"build.{host}.toolchains.{name}.path", None]
+        self.prefix = cfg[f"build.{host}.toolchains.{name}.prefix", None]
 
 
 class TftpDirectory:

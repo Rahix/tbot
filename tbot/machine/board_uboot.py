@@ -4,6 +4,8 @@ Board machine for U-Boot interaction
 """
 import random
 import typing
+import pathlib
+import time
 import paramiko
 import tbot
 from . import machine
@@ -108,6 +110,8 @@ class MachineBoardUBoot(board.MachineBoard):
         try:
             # Poweron the board
             self.channel.send(f"{self.connect_command}\n")
+            # Small timeout to hopefully fix boards booting too fast
+            time.sleep(tb.config["board.serial.connect_wait_time", 0.5])
 
             self.noenv.exec0(self.power_cmd_on, log_show_stdout=False)
 
@@ -160,6 +164,10 @@ class MachineBoardUBoot(board.MachineBoard):
         return shell_utils.command_and_retval(
             self.channel, self.prompt, command, stdout_handler
         )
+
+    @property
+    def workdir(self) -> pathlib.PurePosixPath:
+        raise Exception("UBoot does not have a workdir")
 
     @property
     def unique_machine_name(self) -> str:

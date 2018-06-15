@@ -4,6 +4,7 @@ Machines
 """
 import abc
 import typing
+import pathlib
 import paramiko
 import tbot
 
@@ -24,6 +25,7 @@ class Machine(abc.ABC):
         # pylint: disable=unused-argument
         previous: "typing.Optional[Machine]" = None,
     ) -> "Machine":
+        self._interactive = tb.interactive
         return self
 
     def _destruct(self, tb: "tbot.TBot") -> None:
@@ -45,6 +47,11 @@ class Machine(abc.ABC):
         """ Unique name of this machine, eg ``"labhost-noenv"`` """
         pass
 
+    @abc.abstractproperty
+    def workdir(self) -> pathlib.PurePosixPath:
+        """ Workdir where testcases can safely store data """
+        pass
+
     def exec(
         self, command: str, log_show: bool = True, log_show_stdout: bool = True
     ) -> typing.Tuple[int, str]:
@@ -61,6 +68,14 @@ class Machine(abc.ABC):
         :returns: A tuple of the return code and the output (stdout and stderr are merged)
         :rtype: tuple[int, str]
         """
+        if self._interactive:
+            inp = input(f"{self.unique_machine_name!r}: {command!r} [Y/n]? ").lower()
+            if inp != "" and inp[0] != "y":
+                tbot.log.message(
+                    f"""\
+Skipping comand {command!r} ... Might cause unintended side effects!"""
+                )
+                return 0, ""
         stdout_handler = tbot.log_events.shell_command(
             machine=self.unique_machine_name.split("-"),
             command=command,

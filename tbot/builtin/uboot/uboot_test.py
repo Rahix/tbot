@@ -9,12 +9,20 @@ from tbot import tc
 
 
 @tbot.testcase
-def just_uboot_tests(tb: tbot.TBot) -> None:
+def just_uboot_tests(tb: tbot.TBot, *, buildhost: typing.Optional[str] = None) -> None:
     """
     Run U-Boot tests on the currently existing (possibly dirty) U-Boot tree.
+
+    :param buildhost: The buildhost where U-Boot can be build AND tested.
+                      Usually this is a 'local' buildhost, which means,
+                      U-Boot is built on the labhost.
+    :type buildhost: str or None
     """
-    uboot_dir = tb.call("uboot_checkout", clean=False)
-    toolchain = tb.call("toolchain_get")
+    buildhost = buildhost or tb.config["build.local"]
+
+    uboot_dir = tb.call("uboot_checkout", clean=False, buildhost=buildhost)
+    toolchain = tb.call("toolchain_get", buildhost=buildhost)
+
     tb.call("uboot_tests", builddir=uboot_dir, toolchain=toolchain)
 
 
@@ -22,6 +30,7 @@ def just_uboot_tests(tb: tbot.TBot) -> None:
 def uboot_tests(
     tb: tbot.TBot,
     *,
+    buildhost: typing.Optional[str] = None,
     builddir: tc.UBootRepository,
     toolchain: tc.Toolchain,
     test_config: typing.Optional[pathlib.PurePosixPath] = None,
@@ -32,6 +41,10 @@ def uboot_tests(
     """
     Run U-Boot tests on real hardware
 
+    :param buildhost: The buildhost where U-Boot can be build AND tested.
+                      Usually this is a 'local' buildhost, which means,
+                      U-Boot is built on the labhost.
+    :type buildhost: str or None
     :param builddir: The U-Boot checkout that should be tested. Must be a
                      UBootRepository meta object
     :type builddir: UBootRepository
@@ -53,6 +66,7 @@ def uboot_tests(
                          to ``tb.config["uboot.test.maxfail"]``
     :type test_maxfail: int
     """
+    buildhost = buildhost or tb.config["build.local"]
     test_config = test_config or tb.config["uboot.test.config", None]
     test_hooks = test_hooks or tb.config["uboot.test.hooks"]
     test_boardname = test_boardname or tb.config["uboot.test.boardname"]
@@ -91,8 +105,6 @@ the U-Boot tree:
 
     def run_tests(tb: tbot.TBot) -> None:
         """ Actually run the testsuite """
-        assert tb.shell.unique_machine_name == "labhost-env", "Need an env shell!"
-
         tbot.log.doc(
             """Clean the workdir because the U-Boot testsuite won't \
 recompile if it is dirty.

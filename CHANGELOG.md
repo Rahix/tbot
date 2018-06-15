@@ -3,15 +3,45 @@
 ## [Unreleased]
 
 
+## [0.3.0] - 2018-06-15
+### Added
+- **Buildhosts:** This release adds the ability to build U-Boot/Linux
+  on a separate machine. This will reduce load on your labhost if multiple
+  people are using it
+- You can now disable documentation for a testcase by passing
+  `doc=False` to `tb.call`
+- Added `-i/--interactive` commandline flag that will make TBot wait for user
+  confirmation for each command it wants to execute. Use this if you are unsure
+  whether your testcase will do anything harmful, because you can intervene if a
+  critical command has ie. wrong parameters
+- Added `retrieve_build_artifact` and `tbot_clean_builddir` tasks
+- Added a new config key `build.local` that defines the buildhost that is the
+  labhost itself
+- More tests in `check_config`
+- Better documentation
+
+### Changed
+- `uboot_checkout` now checks out U-Boot onto the default buildhost by default
+- U-Boot is built on the buildhost by defalt, you need to use `retrieve_build_artifact`
+  to copy binaries to the labhost
+- Renamed `tbot_check_config` to `check_config`
+
+### Fixed
+- Removed an unnecessary shell check from U-Boot tests
+- Fixed TBot "leaking" from a with statement
+
+
 ## [0.2.4] - 2018-05-28
 ### Added
 - pre-commit hook config, run `pre-commit install` to use these
   hooks.
 - Checks for malformed commands (eg. running `exit` or a command that
   contains a `\n`)
+
 ### Changed
 - Use flake8 instead of pylint
 - Reformat using black
+
 ### Fixed
 - Fix the config not being properly installed and thus TBot not
   working outside a development environment

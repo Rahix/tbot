@@ -31,15 +31,17 @@ def uboot_checkout(
     tb: tbot.TBot,
     *,
     clean: bool = True,
+    buildhost: typing.Optional[str] = None,
     builddir: typing.Optional[pathlib.PurePosixPath] = None,
     patchdir: typing.Optional[pathlib.PurePosixPath] = None,
     repo: typing.Optional[str] = None,
 ) -> tc.UBootRepository:
     """
-    Create a checkout of U-Boot
+    Create a checkout of U-Boot **on the buildhost**
 
     :param clean: Whether an existing repository should be cleaned
     :type clean: bool
+    :param buildhost: Which buildhost should U-Boot be built on?
     :param builddir: Where to checkout U-Boot to, defaults to ``tb.config["uboot.builddir"]``
     :type builddir: pathlib.PurePosixPath
     :param patchdir: Optional U-Boot patches to be applied
@@ -52,34 +54,35 @@ def uboot_checkout(
     :rtype: UBootRepository
     """
 
-    builddir = builddir or tb.config["uboot.builddir"]
-    patchdir = patchdir or tb.config["uboot.patchdir", None]
-    repo = repo or tb.config["uboot.repository"]
+    with tb.machine(tbot.machine.MachineBuild(name=buildhost)) as tb:
+        builddir = builddir or tb.shell.workdir / tb.config["uboot.builddir"]
+        patchdir = patchdir or tb.config["uboot.patchdir", None]
+        repo = repo or tb.config["uboot.repository"]
 
-    docstr = f"""In this document, we assume the following file locations:
+        docstr = f"""In this document, we assume the following file locations:
 
 * The build directory is `{builddir}`
 * The U-Boot repository is `{repo}`
 """
-    docstr += (
-        "(For you it will most likely be `git://git.denx.de/u-boot.git`)\n"
-        if repo != "git://git.denx.de/u-boot.git"
-        else ""
-    )
-    docstr += (
-        f"* Board specific patches can be found in `{patchdir}`\n"
-        if patchdir is not None
-        else ""
-    )
+        docstr += (
+            "(For you it will most likely be `git://git.denx.de/u-boot.git`)\n"
+            if repo != "git://git.denx.de/u-boot.git"
+            else ""
+        )
+        docstr += (
+            f"* Board specific patches can be found in `{patchdir}`\n"
+            if patchdir is not None
+            else ""
+        )
 
-    tbot.log.doc(docstr + "\n")
+        tbot.log.doc(docstr + "\n")
 
-    git_testcase = "git_clean_checkout" if clean else "git_dirty_checkout"
+        git_testcase = "git_clean_checkout" if clean else "git_dirty_checkout"
 
-    gitdir = tb.call(git_testcase, repo=repo, target=builddir)
-    if patchdir is not None and clean is True:
-        tb.call("git_apply_patches", gitdir=gitdir, patchdir=patchdir)
-    return tc.UBootRepository(gitdir)
+        gitdir = tb.call(git_testcase, repo=repo, target=builddir)
+        if patchdir is not None and clean is True:
+            tb.call("git_apply_patches", gitdir=gitdir, patchdir=patchdir)
+        return tc.UBootRepository(gitdir)
 
 
 @tbot.testcase
