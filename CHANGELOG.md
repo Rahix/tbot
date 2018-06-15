@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Selftests are now run as a pre-commit hook
 
 
 ## [0.3.0] - 2018-06-15

@@ -18,7 +18,7 @@ def config(cfg: Config) -> None:
         "keyfile": home / ".ssh" / "id_rsa",
     }
 
-    cfg["tbot"] = {"workdir": pathlib.PurePosixPath(home) / "tbotdir"}
+    cfg["tbot"] = {"workdir": pathlib.PurePosixPath(home) / ".tbot-workdir"}
 
     cfg["tftp"] = {
         "root": pathlib.PurePosixPath("/tmp/tftp"),
