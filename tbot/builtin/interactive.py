@@ -10,7 +10,6 @@ import termios
 import tty
 import select
 import typing
-import pathlib
 import paramiko
 import tbot
 from tbot import tc
@@ -93,7 +92,7 @@ def ishell(
 def interactive_build(
     tb: tbot.TBot,
     *,
-    builddir: typing.Optional[pathlib.PurePosixPath] = None,
+    builddir: typing.Optional[str] = None,
     toolchain: typing.Optional[tc.Toolchain] = None,
 ) -> None:
     """
@@ -106,20 +105,20 @@ def interactive_build(
     :type toolchain: Toolchain
     """
 
-    builddir = builddir or tb.config["uboot.builddir"]
+    ubbuilddir = builddir or tb.config["uboot.builddir"]
     toolchain = toolchain or tb.call("toolchain_get")
 
     @tb.call_then("toolchain_env", toolchain=toolchain)
     def interactive_shell(tb: tbot.TBot) -> None:  # pylint: disable=unused-variable
         """ Actual interactive shell """
-        tb.shell.exec0(f"cd {builddir}")
+        tb.shell.exec0(f"cd {tb.shell.workdir / ubbuilddir}")
 
-        labhost_machine = tb.machines["labhost-env"]
-        if not isinstance(labhost_machine, tbot.machine.MachineLabEnv):
+        build_machine = tb.shell
+        if not isinstance(build_machine, tbot.machine.MachineBuild):
             raise Exception(
-                "labhost-env is not a MachineLabEnv, something is very wrong!"
+                "machine-build is not a MachineBuild, something is very wrong!"
             )
-        channel = labhost_machine.channel
+        channel = build_machine.channel
 
         def setup(ch: paramiko.Channel) -> None:
             """ Setup a custom prompt """
