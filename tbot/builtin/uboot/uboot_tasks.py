@@ -37,7 +37,7 @@ def uboot_checkout(
     repo: typing.Optional[str] = None,
 ) -> tc.UBootRepository:
     """
-    Create a checkout of U-Boot
+    Create a checkout of U-Boot **on the buildhost**
 
     :param clean: Whether an existing repository should be cleaned
     :type clean: bool
