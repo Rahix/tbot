@@ -2,20 +2,24 @@
 """
 Generate a JUnit XML file
 -------------------------
-WARNING: Very hacked together
+.. warning::
+   Because JUnit's design differs from TBot's a lot, the output is a little
+   bit unusual. It should show all information but not always where you would
+   expect to find it.
 """
 import json
 import sys
+import typing
 import junit_xml
 
 
 class TestcaseExecution:
     """ A Testcase Execution """
 
-    def __init__(self, name):
+    def __init__(self, name: str) -> None:
         self.name = name
         self.duration = 0
-        self.sub_steps = []
+        self.sub_steps: typing.List[typing.Union[TestcaseExecution, ShellStep]] = []
         self.success = True
         self.exc = None
         self.trace = None
@@ -24,12 +28,14 @@ class TestcaseExecution:
 class ShellStep:
     """ A Shell command execution """
 
-    def __init__(self, command, output):
+    def __init__(self, command: str, output: str) -> None:
         self.command = command
         self.output = output
 
 
-def parse_log(log):
+def parse_log(
+    log: typing.List[typing.Dict[str, typing.Any]]
+) -> typing.List[TestcaseExecution]:
     """ Parse json log """
     toplevels = []
 
@@ -75,16 +81,24 @@ def parse_log(log):
     return toplevels
 
 
-def toplevel_to_junit(num, toplevel):
+def toplevel_to_junit(
+    num: int, toplevel: TestcaseExecution
+) -> typing.List[junit_xml.TestCase]:
     """ Convert a toplevel testcase to junit testcases """
-    testcases = []
+    testcases: typing.List[junit_xml.TestCase] = []
     _, testcases = testcase_to_junit(
         f"{num:02} - {toplevel.name}", 0, toplevel.name, toplevel, True
     )
     return testcases
 
 
-def testcase_to_junit(toplevel, i, cls_path, testcase, is_toplevel=False):
+def testcase_to_junit(
+    toplevel: str,
+    i: int,
+    cls_path: str,
+    testcase: TestcaseExecution,
+    is_toplevel: bool = False,
+) -> typing.Tuple[int, typing.List[junit_xml.TestCase]]:
     """ Convert a testcase to junit testcases """
     testcases = []
     my_cls_path = cls_path if is_toplevel else f"{cls_path} -> {testcase.name}"
@@ -120,7 +134,7 @@ def testcase_to_junit(toplevel, i, cls_path, testcase, is_toplevel=False):
     return i, testcases
 
 
-def main():
+def main() -> None:
     """ Generate a JUnit XML file """
 
     try:
@@ -150,7 +164,7 @@ def main():
         sys.exit(1)
 
     toplevels = parse_log(log)
-    testcases = []
+    testcases: typing.List[junit_xml.TestCase] = []
     for i, toplevel in enumerate(toplevels):
         testcases += toplevel_to_junit(i, toplevel)
     print(
