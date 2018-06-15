@@ -88,6 +88,7 @@ def retrieve_build_artifact(
     bhcfg = f"build.{buildhost}."
     scp_command = scp_command or tb.config[bhcfg + "scp_command"]
     scp_address = scp_address or tb.config[bhcfg + "scp_address"]
+    # TODO: Use <username> and <hostname> if address is not provided
 
     destination = tb.config["tbot.artifactsdir"] / buildfile.name
     if not isinstance(destination, pathlib.PurePosixPath):

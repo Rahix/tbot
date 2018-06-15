@@ -50,6 +50,7 @@ class MachineBuild(machine.Machine):
 
         self.username = username
         self.password = password
+        # TODO: Actually use the password
         self.hostname = hostname
         self.ssh_command = ssh_command
 
