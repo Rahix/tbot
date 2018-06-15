@@ -25,6 +25,7 @@
 
 ### Fixed
 - Removed an unnecessary shell check from U-Boot tests
+- Fixed TBot "leaking" from a with statement
 
 
 ## [0.2.4] - 2018-05-28
