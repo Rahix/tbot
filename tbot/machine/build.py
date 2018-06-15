@@ -103,8 +103,9 @@ PS1='{self.prompt}'
             )
 
             shell_utils.read_to_prompt(self.channel, self.prompt)
-        except socket.error:
-            raise Exception("SSH connection to buildhost failed")
+        except socket.error as e:
+            e.args = (f"SSH connection to buildhost failed: {e}",)
+            raise
         except:  # noqa: E722
             raise
 
