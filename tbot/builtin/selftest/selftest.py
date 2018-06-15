@@ -29,3 +29,7 @@ def selftest(tb: tbot.TBot) -> None:
 
     tbot.log.message("Testing config ...")
     tb.call("selftest_config")
+
+    tbot.log.message("Testing buildhost ...")
+    tb.call("selftest_buildhost")
+    tb.call("selftest_buildhost_bad_ssh")
