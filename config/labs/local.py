@@ -44,6 +44,7 @@ def config(cfg: Config) -> None:
         "local": {
             "username": username,
             "hostname": "localhost",
+            "workdir": cfg["tbot.workdir"] / "build",
             "toolchains": {
                 "cortexa8hf-neon": sdk_armv7a_hf,
                 "generic-armv7a-hf": sdk_armv7a_hf,

@@ -76,19 +76,21 @@ def retrieve_build_artifact(
                           the default
     :param str scp_command: SCP command to use for copying (eg ``scp -i <..>``),
                             defaults to ``tb.config["build.<name>.scp_command"]``
+                            or ``"scp"``
     :param str scp_address: Address of the form ``<user>@<host>`` of the buildhost,
                             defaults to ``tb.config["build.<name>.scp_address"]``
-
-                            .. todo:: Make use of ``username`` and ``hostname`` \
-                                      parameters
+                            or ``"<username>@<hostname>"``
     :returns: Path where the file has been copied
     :rtype: pathlib.PurePosixPath
     """
     buildhost = buildhost or tb.config["build.default", "<missing>"]
     bhcfg = f"build.{buildhost}."
-    scp_command = scp_command or tb.config[bhcfg + "scp_command"]
-    scp_address = scp_address or tb.config[bhcfg + "scp_address"]
-    # TODO: Use <username> and <hostname> if address is not provided
+    scp_command = scp_command or tb.config[bhcfg + "scp_command", "scp"]
+    scp_address = scp_address or tb.config[bhcfg + "scp_address", None]
+    scp_address = (
+        scp_address
+        or tb.config[bhcfg + "username"] + "@" + tb.config[bhcfg + "hostname"]
+    )
 
     destination = tb.config["tbot.artifactsdir"] / buildfile.name
     if not isinstance(destination, pathlib.PurePosixPath):
