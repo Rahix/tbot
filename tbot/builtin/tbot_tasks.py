@@ -56,10 +56,17 @@ def check_config(tb: tbot.TBot) -> None:
     )
     has_build = check_exist("build.default", str, "No default buildhost specified")
     default_bhcfg = "build." + tb.config["build.default", None]
+    has_build_workdir = False
     if has_build:
         if tb.config[default_bhcfg, None] is None:
             warning("Default buildhost is invalid")
             has_build = False
+        else:
+            has_build_workdir = check_exist(
+                default_bhcfg + ".workdir",
+                pathlib.PurePosixPath,
+                "No build workdir specified",
+            )
     has_uboot_builddir = check_exist(
         "uboot.builddir", str, "No U-Boot builddir specified"
     )
@@ -120,7 +127,8 @@ necessary but recommended\nfor easier log readability",
     tbot.log.message(f"Config checked, {warnings} warnings")
     tbot.log.message(
         f"""\x1B[1mSummary:\x1B[0m
-Workdir........: {'Y' if has_workdir else 'N - Building U-Boot will be impossible'}
+Workdir........: {'Y' if has_workdir else 'N - Most testcases need a workdir, please specify one'}
+Build-Workdir..: {'Y' if has_build_workdir else 'N - Building will be impossible'}
 
 U-Boot Build...: {'Y' if has_uboot_builddir and has_board_tc and has_build and not no_toolchains
 and has_toolchain and has_defconfig else 'N - Building U-Boot will be impossible'}
