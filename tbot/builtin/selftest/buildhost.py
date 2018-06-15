@@ -16,6 +16,7 @@ def selftest_buildhost(tb: tbot.TBot) -> None:
                 ret = tb.shell.exec0("echo $FOOBAR123").strip()
                 assert ret == "314", "Environment is not persistent"
 
+            tb.shell.exec0(f"mkdir -p {buildfile.parent}")
             tb.shell.exec0(f"echo 'SCP'>{buildfile}")
 
         labhost_file = tb.call("retrieve_build_artifact", buildfile=buildfile)
