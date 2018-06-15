@@ -80,7 +80,7 @@ _tbot()
                     echo -n "${words[@]}"
                     return
                 fi
-                local labs=$(ls $labconfdir | grep \\.py | sed 's/\.py$//')
+                local labs=$(/bin/ls $labconfdir | grep \\.py | sed 's/\.py$//')
                 COMPREPLY=( $( compgen -W "$labs" -- "$cur") )
                 ;;
             2)  # BOARD
@@ -90,7 +90,7 @@ _tbot()
                     echo -n "${words[@]}"
                     return
                 fi
-                local boards=$(ls $boardconfdir | grep \\.py | sed 's/\.py$//')
+                local boards=$(/bin/ls $boardconfdir | grep \\.py | sed 's/\.py$//')
                 COMPREPLY=( $( compgen -W "$boards" -- "$cur") )
                 ;;
             *)  # TESTCASE
