@@ -1,9 +1,18 @@
-.. tbot logging
+.. _tbot-logging:
 
 Logging
 =======
 
-tbot create a ``json`` log file when run. By default, this is ``log/<lab>-<board>-<run>.json`` but this
+TBot logs to stdout and a logfile. The verbosity of stdout can be controlled with `-v`:
+
+* *Default*: Show when a testcase starts and ends, when the board powerstate changes and
+  messages from the testcases
+* ``-v``: Also show :func:`~tbot.log.debug` messages
+* ``-vv``: Show each command that is run
+* ``-vvv``: Add the output to each command that is run
+* ``-vvvv``: *Debug*, show everything that is received via SSH in it's raw form
+
+The logfile is formatted as ``json``. By default, this is ``log/<lab>-<board>-<run>.json`` but this
 can be changes using the ``-l`` commandline parameter. This file contains detailed information about what
 happened while running. It is structured as a json array of dictionaries containing information
 about events in the order they happened. An event might look like this::

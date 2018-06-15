@@ -6,8 +6,8 @@
 Welcome to TBot's documentation!
 ================================
 
-TBot is a test automation tool for embedded linux development. It can handle day to day routines to make a develper's life a lot easier
-and it can be used for automation of test running with CI.
+TBot is an automation tool for embedded development. It can handle day to day routines to make a develper's life easier
+and it can be used for automation of test using a CI.
 
 .. image:: _static/tbot.svg
 
@@ -24,7 +24,6 @@ and it can be used for automation of test running with CI.
    doc/builtins
    doc/example-workflow
    doc/examples
-
 
 Indices and tables
 ==================

@@ -86,6 +86,9 @@ Board configuration
 Available options:
 ------------------
 
+.. highlight:: python
+   :linenothreshold: 3
+
 Lab
 ^^^
 
@@ -94,7 +97,7 @@ Lab
     cfg["lab"] = {
         # Name of the lab, does not need to match file name
         "name": "local",
-        # Hostname that tbot will ssh to
+        # Hostname of the labhost
         "hostname": "localhost",
         # Optional port number
         "port": 22,
@@ -113,7 +116,7 @@ TBot
 ::
 
     cfg["tbot"] = {
-        # Where tbot should store it's files on the lab host
+        # Where tbot should store it's files on the labhost
         # (This is not enforced in any way)
         "workdir": "/home/me/tbotdir",
     }
@@ -150,6 +153,8 @@ U-Boot
         "repository": "git://git.denx.de/u-boot.git",
         # A directory containing patches to be applied over the U-Boot tree
         "patchdir": pathlib.PurePosixPath("/home/hws/Documents/corvus_patches"),
+        # which defconfig to use
+        "defconfig": "corvus_defconfig",
 
         "shell": {
             # U-Boot prompt to be expected (varies with defconfig)
@@ -244,8 +249,6 @@ Board
         # Name of the toolchain to be used. Toolchains are defined
         # in the lab config
         "toolchain": "cortexa8hf-neon",
-        # which U-Boot defconfig to use
-        "defconfig": "corvus_defconfig",
 
         "power": {
             # Command to power on the board
