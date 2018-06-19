@@ -17,4 +17,4 @@ if [ ! -z ${SELFTEST_KEY+x} ]; then
     PKEY_PARAM="-c lab.keyfile=\"${SELFTEST_KEY}\""
 fi
 
-python3 -c "__import__('tbot.main').main.main()" local corvus selftest $PORT_PARAM $USER_PARAM $PASS_PARAM $PKEY_PARAM
+python3 -c "__import__('tbot.main').main.main()" dummy-lab dummy-board selftest $PORT_PARAM $USER_PARAM $PASS_PARAM $PKEY_PARAM
