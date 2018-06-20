@@ -10,7 +10,11 @@ from tbot import tc
 
 @tbot.testcase
 def git_dirty_checkout(
-    tb: tbot.TBot, *, target: pathlib.PurePosixPath, repo: str
+    tb: tbot.TBot,
+    *,
+    target: pathlib.PurePosixPath,
+    repo: str,
+    rev: typing.Optional[str] = None,
 ) -> tc.GitRepository:
     """
     Checkout a git repo if it does not exist yet, but do not touch it
@@ -20,30 +24,25 @@ def git_dirty_checkout(
     :type target: pathlib.PurePosixPath
     :param repo: Where the git repository can be found
     :type repo: str
+    :param rev: Revision to checkout (ie. commit-id or branch name)
     :returns: The git repository as a meta object for testcases that need a git
               repository
     :rtype: GitRepository
     """
     tb.shell.exec0(f"mkdir -p {target}")
-    if (
-        not tb.shell.exec(
-            f"""\
-test -d {target / '.git'}""",
-            log_show=False,
-        )[0]
-        == 0
-    ):
-        tb.shell.exec0(
-            f"""\
-git clone {repo} {target}"""
-        )
+    if not tb.shell.exec(f"test -d {target / '.git'}", log_show=False)[0] == 0:
+        tb.shell.exec0(f"git clone {repo} {target}")
+        if rev is not None:
+            tb.shell.exec0(f"cd {target}; git checkout {rev}")
     else:
         tbot.log.debug("Repository already checked out ...")
 
         # Log a git clone for documentation generation
         stdout_handler = tbot.log_events.shell_command(
             machine=["labhost", "noenv"],
-            command=f"git clone {repo} {target}",
+            command=f"git clone {repo} {target}" + ""
+            if rev is None
+            else f"; cd {target}; git checkout {rev}",
             show=True,
             show_stdout=False,
         )
@@ -54,7 +53,11 @@ git clone {repo} {target}"""
 
 @tbot.testcase
 def git_clean_checkout(
-    tb: tbot.TBot, *, target: pathlib.PurePosixPath, repo: str
+    tb: tbot.TBot,
+    *,
+    target: pathlib.PurePosixPath,
+    repo: str,
+    rev: typing.Optional[str] = None,
 ) -> tc.GitRepository:
     """
     Checkout a git repo if it does not exist yet and make sure there are
@@ -64,6 +67,7 @@ def git_clean_checkout(
     :type target: pathlib.PurePosixPath
     :param repo: Where the git repository can be found
     :type repo: str
+    :param rev: Revision to checkout (ie. commit-id or branch name)
     :returns: The git repository as a meta object for testcases that need a git
               repository
     :rtype: GitRepository
@@ -73,30 +77,16 @@ def git_clean_checkout(
     tbot.log.doc(f"Checkout the git repository `{repo}`:\n")
 
     tb.shell.exec0(f"mkdir -p {target}")
-    if (
-        not tb.shell.exec(
-            f"""\
-test -d {target / '.git'}""",
-            log_show=False,
-        )[0]
-        == 0
-    ):
-        tb.shell.exec0(
-            f"""\
-git clone {repo} {target}"""
-        )
+    if not tb.shell.exec(f"test -d {target / '.git'}", log_show=False)[0] == 0:
+        tb.shell.exec0(f"git clone {repo} {target}")
+        if rev is not None:
+            tb.shell.exec0(f"cd {target}; git checkout {rev}")
     else:
         tbot.log.debug("Repository already checked out, cleaning ...")
         tb.shell.exec0(
-            f"""\
-cd {target}; git reset --hard origin; git clean -fdx""",
-            log_show=False,
+            f"cd {target}; git reset --hard origin; git clean -fdx", log_show=False
         )
-        tb.shell.exec0(
-            f"""\
-cd {target}; git pull""",
-            log_show=False,
-        )
+        tb.shell.exec0(f"cd {target}; git pull", log_show=False)
 
         # Log a git clone for documentation generation
         stdout_handler = tbot.log_events.shell_command(
@@ -106,6 +96,9 @@ cd {target}; git pull""",
             show_stdout=False,
         )
         stdout_handler.dct["exit_code"] = 0
+
+        if rev is not None:
+            tb.shell.exec0(f"cd {target}; git checkout {rev}")
 
     return tc.GitRepository(target)
 
