@@ -89,6 +89,16 @@ def ishell(
 
 
 @tbot.testcase
+def interactive_build_uboot(tb: tbot.TBot) -> None:
+    tb.call("interactive_build", builddir=tb.config["uboot.builddir"])
+
+
+@tbot.testcase
+def interactive_build_linux(tb: tbot.TBot) -> None:
+    tb.call("interactive_build", builddir=tb.config["linux.builddir"])
+
+
+@tbot.testcase
 def interactive_build(
     tb: tbot.TBot,
     *,
@@ -105,7 +115,7 @@ def interactive_build(
     :type toolchain: Toolchain
     """
 
-    ubbuilddir = builddir or tb.config["uboot.builddir"]
+    ubbuilddir = builddir or ""
     toolchain = toolchain or tb.call("toolchain_get")
 
     @tb.call_then("toolchain_env", toolchain=toolchain)
