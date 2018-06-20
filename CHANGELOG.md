@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 ### Added
+- Testcases for building Linux
+- `interactive_build_uboot` and `interactive_build_linux`
 - Selftests are now run as a pre-commit hook
 - A dummy lab and board for running selftests
   that are as generic as possible
