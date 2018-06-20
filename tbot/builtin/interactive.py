@@ -90,11 +90,19 @@ def ishell(
 
 @tbot.testcase
 def interactive_build_uboot(tb: tbot.TBot) -> None:
+    """
+    Open an interactive shell on the buildhost in the U-Boot builddir with
+    the toolchain enabled.
+    """
     tb.call("interactive_build", builddir=tb.config["uboot.builddir"])
 
 
 @tbot.testcase
 def interactive_build_linux(tb: tbot.TBot) -> None:
+    """
+    Open an interactive shell on the buildhost in the Linux builddir with
+    the toolchain enabled.
+    """
     tb.call("interactive_build", builddir=tb.config["linux.builddir"])
 
 
@@ -106,8 +114,7 @@ def interactive_build(
     toolchain: typing.Optional[tc.Toolchain] = None,
 ) -> None:
     """
-    Open an interactive shell in the U-Boot build directory with the toolchain
-    enabled.
+    Open an interactive shell on the buildhost with the toolchain enabled.
 
     :param builddir: Where U-Boot is located, defaults to ``tb.config["uboot.builddir"]``
     :type builddir: pathlib.PurePosixPath

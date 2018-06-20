@@ -36,5 +36,14 @@ Builtin Testcases
 .. automodule:: tbot.builtin.uboot.uboot_test
    :members:
 
+.. automodule:: tbot.builtin.linux.linux_exports
+   :members:
+
+.. automodule:: tbot.builtin.linux.linux_build
+   :members:
+
+.. automodule:: tbot.builtin.linux.linux_tasks
+   :members:
+
 .. automodule:: tbot.builtin.interactive
    :members:
