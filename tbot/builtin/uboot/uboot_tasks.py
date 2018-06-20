@@ -116,7 +116,7 @@ def uboot_checkout_and_build(
 
     tbot.log.doc(
         """
-## U-Boot checkout ##
+## U-Boot Checkout ##
 """
     )
 
@@ -129,7 +129,7 @@ def uboot_checkout_and_build(
 
     tbot.log.doc(
         """
-## U-Boot build ##
+## U-Boot Build ##
 """
     )
 
@@ -170,7 +170,7 @@ def uboot_checkout_and_prepare(
 
     tbot.log.doc(
         """
-## U-Boot checkout ##
+## U-Boot Checkout ##
 """
     )
 
@@ -183,7 +183,7 @@ def uboot_checkout_and_prepare(
 
     tbot.log.doc(
         """
-## U-Boot build ##
+## U-Boot Build ##
 """
     )
 

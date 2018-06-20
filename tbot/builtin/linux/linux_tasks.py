@@ -15,6 +15,13 @@ def check_linux_version(
     vmlinux: pathlib.PurePosixPath,
     buildhost: typing.Optional[str] = None,
 ) -> None:
+    """
+    Check whether the version of Linux running on the board is the same
+    as the one supplied as a binary file in vmlinux (on the buildhost).
+
+    :param pathlib.PurePosixPath vmlinux: Path to the U-Boot binary
+    :param str buildhost: Optional, which buildhost to use
+    """
     with tb.with_board_linux() as tb:
         version_board = tb.boardshell.exec0("cat /proc/version").strip()
         tbot.log.debug(f"Linux Version (on the board):\n{version_board}")
@@ -35,6 +42,22 @@ def linux_checkout(
     patchdir: typing.Optional[pathlib.PurePosixPath] = None,
     repo: typing.Optional[str] = None,
 ) -> tc.LinuxRepository:
+    """
+    Create a checkout of Linux **on the buildhost**
+
+    :param bool clean: Whether an existing repository should be cleaned
+    :param str buildhost: Which buildhost should U-Boot be built on?
+    :param pathlib.PurePosixPath builddir: Where to checkout Linux to,
+        defaults to ``wd / tb.config["linux.builddir"]``
+    :param patchdir: Optional Linux patches to be applied
+        ontop of the tree, defaults to ``tb.config["linux.patchdir"]``, supply a
+        nonexistent path to force ignoring the patches
+    :type patchdir: pathlib.PurePosixPath
+    :param repo: Where to get Linux from, defaults to ``tb.config["linux.repository"]``
+    :type repo: str
+    :returns: The Linux checkout as a meta object for other testcases
+    :rtype: LinuxRepository
+    """
     with tb.machine(tbot.machine.MachineBuild(name=buildhost)) as tb:
         builddir = builddir or tb.shell.workdir / tb.config["linux.builddir"]
         patchdir = patchdir or tb.config["linux.patchdir", None]
@@ -78,6 +101,25 @@ def linux_checkout_and_build(
     defconfig: typing.Optional[str] = None,
     image_type: typing.Optional[str] = None,
 ) -> tc.LinuxRepository:
+    """
+    Checkout Linux and build it
+
+    :param builddir: Where to checkout Linux to, defaults to
+        ``wd / tb.config["linux.builddir"]``
+    :type builddir: pathlib.PurePosixPath
+    :param patchdir: Optional patches to be applied
+        ontop of the tree, defaults to ``tb.config["linux.patchdir"]``, supply a
+        nonexistent path to force building without patches
+    :type patchdir: pathlib.PurePosixPath
+    :param repo: Where to get Linux from, defaults to ``tb.config["linux.repository"]``
+    :type repo: str
+    :param toolchain: What toolchain to use, defaults to ``tb.config["board.toolchain"]``
+    :type toolchain: Toolchain
+    :param defconfig: What defconfig to use, defaults to ``tb.config["linux.defconfig"]``
+    :type defconfig: str
+    :returns: The Linux checkout as a meta object for other testcases
+    :rtype: LinuxRepository
+    """
 
     tbot.log.doc(
         """
