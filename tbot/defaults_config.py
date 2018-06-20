@@ -19,6 +19,9 @@ def config(cfg: Config) -> None:
     # uboot.builddir: U-Boot's repository clone, used to build U-Boot
     cfg["uboot.builddir"] = cfg["uboot.builddir", f"uboot-{cfg['board.name']}"]
 
+    # linux.builddir: Linux's repository clone, used to build Linux
+    cfg["linux.builddir"] = cfg["linux.builddir", f"linux-{cfg['board.name']}"]
+
     # tbot.artifactsdir: Directory where TBot will store artifacts from last build
     cfg["tbot.artifactsdir"] = cfg[
         "tbot.artifactsdir", cfg["tbot.workdir"] / f"artifacts-{cfg['board.name']}"
