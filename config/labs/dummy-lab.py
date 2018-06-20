@@ -8,12 +8,15 @@ from tbot.config import Config
 
 
 def get_sshd_port() -> int:
-    with open("/etc/ssh/sshd_config") as f:
-        s = f.read()
-        m = re.search(r"^Port\s+(?P<port>\d+)", s, re.M)
-        if m is None:
-            raise Exception("Could not parse port from sshd_config")
-        return int(m.group("port"))
+    try:
+        with open("/etc/ssh/sshd_config") as f:
+            s = f.read()
+            m = re.search(r"^Port\s+(?P<port>\d+)", s, re.M)
+            if m is None:
+                raise Exception("Could not parse port from sshd_config")
+            return int(m.group("port"))
+    except PermissionError or IOError:
+        return 22
 
 
 def config(cfg: Config) -> None:
