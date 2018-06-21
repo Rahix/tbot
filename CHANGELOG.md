@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 ### Added
+- `tbot-mgr`: A script for managing TBot configs
 - Testcases for building Linux
 - `interactive_build_uboot` and `interactive_build_linux`
 - Selftests are now run as a pre-commit hook
