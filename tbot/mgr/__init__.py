@@ -8,8 +8,8 @@ import sys
 import argparse
 
 from tbot.mgr.new import new_or_init_cmd
-from tbot.mgr.board import add_board_cmd
-from tbot.mgr.lab import add_lab_cmd
+from tbot.mgr.board import add_board_cmd, add_board_dummy_cmd
+from tbot.mgr.lab import add_lab_cmd, add_lab_dummy_cmd
 
 
 def main() -> None:
@@ -97,6 +97,21 @@ def main() -> None:
         "-c", "--connect", help="Shell-command on the labhost to connect to board"
     )
 
+    # ------------- ADD DUMMY BOARD -------------
+    add_board_parser = add_subparsers.add_parser(
+        "dummy-board",
+        help="Add a new dummy board to the config in the current directory",
+        parents=[common_parser],
+    )
+    add_board_parser.add_argument(
+        "-n", "--name", help="Optional name (default is 'dummy-board')"
+    )
+    add_board_parser.add_argument(
+        "-l",
+        "--lab",
+        help="The lab that this board is available in (default is 'dummy-lab')",
+    )
+
     # ------------- ADD LAB -------------
     add_lab_parser = add_subparsers.add_parser(
         "lab",
@@ -127,6 +142,27 @@ def main() -> None:
         "-w", "--workdir", help="Directory on the labhost where TBot can store files"
     )
 
+    # ------------- ADD DUMMY LAB -------------
+    add_lab_parser = add_subparsers.add_parser(
+        "dummy-lab",
+        help="Add a new dummy lab to the config in the current directory",
+        parents=[common_parser],
+    )
+    add_lab_parser.add_argument(
+        "-n", "--name", help="Optional name (default is 'dummy-lab')"
+    )
+
+    # ------------- ADD DUMMY BOARD + LAB -------------
+    add_dummies_parser = add_subparsers.add_parser(
+        "dummies",
+        help="Add a new dummy board and lab to the config in the current directory",
+        parents=[common_parser],
+    )
+    add_dummies_parser.add_argument(
+        "-n", "--name", help="Optional name (default is 'dummy-lab'/'dummy-board')"
+    )
+    add_dummies_parser.add_argument("-l", "--lab", help="DO NOT USE")
+
     args = parser.parse_args()
 
     if args.cmd in ["new", "init"]:
@@ -134,8 +170,19 @@ def main() -> None:
     elif args.cmd in ["add"]:
         if args.add_cmd in ["board"]:
             add_board_cmd(args)
+        elif args.add_cmd in ["dummy-board"]:
+            add_board_dummy_cmd(args)
         elif args.add_cmd in ["lab"]:
             add_lab_cmd(args)
+        elif args.add_cmd in ["dummy-lab"]:
+            add_lab_dummy_cmd(args)
+        elif args.add_cmd in ["dummies"]:
+            n = args.name
+            args.name = f"{n}-lab"
+            add_lab_dummy_cmd(args)
+            args.name = f"{n}-board"
+            args.lab = f"{n}-lab"
+            add_board_dummy_cmd(args)
         else:
             print("Unknown subcommand (try -h)!")
             sys.exit(1)

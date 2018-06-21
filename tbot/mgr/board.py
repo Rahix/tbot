@@ -21,12 +21,12 @@ def config(cfg: Config) -> None:
     cfg["board"] = {
         "name": "$boardname", $toolchain
         "power": {
-            "on_command": "$oncommand",
-            "off_command": "$offcommand",
+            "on_command": $oncommand,
+            "off_command": $offcommand,
         },
         "serial": {
             "name": "serial-$boardname",
-            "command": "$connectcommand",
+            "command": $connectcommand,
         },
     }
 """
@@ -62,15 +62,35 @@ def add_board(
         headername=headername,
         labnames=repr(labs)[1:-1],
         toolchain=toolchain_src,
-        oncommand=oncmd,
-        offcommand=offcmd,
-        connectcommand=connectcmd,
+        oncommand=repr(oncmd),
+        offcommand=repr(offcmd),
+        connectcommand=repr(connectcmd),
     )
 
     with open(file, mode="w") as f:
         f.write(src)
 
     print(f"Config for {name} written to {file}.")
+
+
+def add_board_dummy_cmd(args: argparse.Namespace) -> None:
+    name = args.name or "dummy-board"
+    file = pathlib.Path.cwd() / "config" / "boards" / f"{name}.py"
+    lab = args.lab or "dummy-lab"
+
+    if file.exists() and not args.force:
+        print(f"Board {args.filename} already exists!")
+        sys.exit(1)
+
+    add_board(
+        file=file,
+        name=name,
+        labs=[lab],
+        toolchain="dummy-toolchain",
+        oncmd="echo POWER ON",
+        offcmd="echo POWER OFF",
+        connectcmd="sh\nPROMPT_COMMAND=\nPS1='U-Boot> ';sleep 0.1;echo 'Hit any key to stop autoboot: 00 ';read dummyvar",
+    )
 
 
 def add_board_cmd(args: argparse.Namespace) -> None:
@@ -84,6 +104,11 @@ def add_board_cmd(args: argparse.Namespace) -> None:
     if file.exists() and not args.force:
         print(f"Board {args.filename} already exists!")
         sys.exit(1)
+
+    if args.name is None and args.interactive:
+        name = input("Name to be used in config (leave empty for same as filename): ")
+        if name != "":
+            args.name = name
 
     labs = args.lab
     if args.default_lab:

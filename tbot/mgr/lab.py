@@ -33,7 +33,7 @@ def config(cfg: Config) -> None:
             "username": username,
             "hostname": "localhost",
             "workdir": cfg["tbot.workdir"] / "tbot-build",
-            "toolchains": {
+            "toolchains": {$toolchains
             },
         },
     }
@@ -50,6 +50,7 @@ def add_lab(
     ctype: typing.Optional[str] = None,
     cred: typing.Optional[str] = None,
     workdir: typing.Optional[str] = None,
+    toolchains: str = "",
 ) -> None:
     filename = file.stem
 
@@ -77,12 +78,32 @@ def add_lab(
         ctype=ctype or "keyfile",
         cred=cred or 'pathlib.Path.home() / ".ssh" / "id_rsa"',
         workdir=workdir,
+        toolchains=toolchains,
     )
 
     with open(file, mode="w") as f:
         f.write(src)
 
     print(f"Config for {name} written to {file}.")
+
+
+def add_lab_dummy_cmd(args: argparse.Namespace) -> None:
+    name = args.name or "dummy-lab"
+    file = pathlib.Path.cwd() / "config" / "labs" / f"{name}.py"
+
+    if file.exists() and not args.force:
+        print(f"Lab {args.filename} already exists!")
+        sys.exit(1)
+
+    add_lab(
+        file=file,
+        name=name,
+        hostname="localhost",
+        toolchains="""
+                "dummy-toolchain": {
+                    "env_setup_script": pathlib.PurePosixPath("/dev/null"),
+                },""",
+    )
 
 
 def add_lab_cmd(args: argparse.Namespace) -> None:
