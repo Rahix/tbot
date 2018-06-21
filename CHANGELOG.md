@@ -7,6 +7,7 @@
 - Selftests are now run as a pre-commit hook
 - A dummy lab and board for running selftests
   that are as generic as possible
+- ``linux.revision`` and ``uboot.revision`` config keys
 
 ### Changed
 - git testcases now have a `rev` parameter for checking out a specific
