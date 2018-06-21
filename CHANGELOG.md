@@ -13,6 +13,9 @@
 - git testcases now have a `rev` parameter for checking out a specific
   revision
 
+### Fixed
+- A crash while checking the config
+
 
 ## [0.3.0] - 2018-06-15
 ### Added
