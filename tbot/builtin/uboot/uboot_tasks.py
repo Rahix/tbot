@@ -35,6 +35,7 @@ def uboot_checkout(
     builddir: typing.Optional[pathlib.PurePosixPath] = None,
     patchdir: typing.Optional[pathlib.PurePosixPath] = None,
     repo: typing.Optional[str] = None,
+    rev: typing.Optional[str] = None,
 ) -> tc.UBootRepository:
     """
     Create a checkout of U-Boot **on the buildhost**
@@ -50,6 +51,8 @@ def uboot_checkout(
     :type patchdir: pathlib.PurePosixPath
     :param repo: Where to get U-Boot from, defaults to ``tb.config["uboot.repository"]``
     :type repo: str
+    :param str rev: Revision from the repo to be checked out, defaults to
+                    ``tb.config["uboot.revision", None]``
     :returns: The U-Boot checkout as a meta object for other testcases
     :rtype: UBootRepository
     """
@@ -58,6 +61,7 @@ def uboot_checkout(
         builddir = builddir or tb.shell.workdir / tb.config["uboot.builddir"]
         patchdir = patchdir or tb.config["uboot.patchdir", None]
         repo = repo or tb.config["uboot.repository"]
+        rev = rev or tb.config["uboot.revision", None]
 
         docstr = f"""In this document, we assume the following file locations:
 
@@ -79,7 +83,7 @@ def uboot_checkout(
 
         git_testcase = "git_clean_checkout" if clean else "git_dirty_checkout"
 
-        gitdir = tb.call(git_testcase, repo=repo, target=builddir)
+        gitdir = tb.call(git_testcase, repo=repo, target=builddir, rev=rev)
         if patchdir is not None and clean is True:
             tb.call("git_apply_patches", gitdir=gitdir, patchdir=patchdir)
         return tc.UBootRepository(gitdir)
@@ -92,6 +96,7 @@ def uboot_checkout_and_build(
     builddir: typing.Optional[pathlib.PurePosixPath] = None,
     patchdir: typing.Optional[pathlib.PurePosixPath] = None,
     repo: typing.Optional[str] = None,
+    rev: typing.Optional[str] = None,
     toolchain: typing.Optional[tc.Toolchain] = None,
     defconfig: typing.Optional[str] = None,
 ) -> tc.UBootRepository:
@@ -106,6 +111,8 @@ def uboot_checkout_and_build(
     :type patchdir: pathlib.PurePosixPath
     :param repo: Where to get U-Boot from, defaults to ``tb.config["uboot.repository"]``
     :type repo: str
+    :param str rev: Revision from the repo to be checked out, defaults to
+                    ``tb.config["uboot.revision", None]``
     :param toolchain: What toolchain to use, defaults to ``tb.config["board.toolchain"]``
     :type toolchain: Toolchain
     :param defconfig: What U-Boot defconfig to use, defaults to ``tb.config["uboot.defconfig"]``
@@ -121,7 +128,7 @@ def uboot_checkout_and_build(
     )
 
     ubootdir = tb.call(
-        "uboot_checkout", builddir=builddir, patchdir=patchdir, repo=repo
+        "uboot_checkout", builddir=builddir, patchdir=patchdir, repo=repo, rev=rev
     )
     assert isinstance(ubootdir, tc.UBootRepository)
 

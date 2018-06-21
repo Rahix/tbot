@@ -41,6 +41,7 @@ def linux_checkout(
     builddir: typing.Optional[pathlib.PurePosixPath] = None,
     patchdir: typing.Optional[pathlib.PurePosixPath] = None,
     repo: typing.Optional[str] = None,
+    rev: typing.Optional[str] = None,
 ) -> tc.LinuxRepository:
     """
     Create a checkout of Linux **on the buildhost**
@@ -55,6 +56,8 @@ def linux_checkout(
     :type patchdir: pathlib.PurePosixPath
     :param repo: Where to get Linux from, defaults to ``tb.config["linux.repository"]``
     :type repo: str
+    :param str rev: Revision from the repo to be checked out, defaults to
+                    ``tb.config["linux.revision", None]``
     :returns: The Linux checkout as a meta object for other testcases
     :rtype: LinuxRepository
     """
@@ -62,6 +65,7 @@ def linux_checkout(
         builddir = builddir or tb.shell.workdir / tb.config["linux.builddir"]
         patchdir = patchdir or tb.config["linux.patchdir", None]
         repo = repo or tb.config["linux.repository"]
+        rev = rev or tb.config["linux.revision", None]
 
         docstr = f"""In this document, we assume the following file locations:
 
@@ -84,7 +88,7 @@ def linux_checkout(
 
         git_testcase = "git_clean_checkout" if clean else "git_dirty_checkout"
 
-        gitdir = tb.call(git_testcase, repo=repo, target=builddir)
+        gitdir = tb.call(git_testcase, repo=repo, target=builddir, rev=rev)
         if patchdir is not None and clean is True:
             tb.call("git_apply_patches", gitdir=gitdir, patchdir=patchdir)
         return tc.LinuxRepository(gitdir)
@@ -97,6 +101,7 @@ def linux_checkout_and_build(
     builddir: typing.Optional[pathlib.PurePosixPath] = None,
     patchdir: typing.Optional[pathlib.PurePosixPath] = None,
     repo: typing.Optional[str] = None,
+    rev: typing.Optional[str] = None,
     toolchain: typing.Optional[tc.Toolchain] = None,
     defconfig: typing.Optional[str] = None,
     image_type: typing.Optional[str] = None,
@@ -113,6 +118,8 @@ def linux_checkout_and_build(
     :type patchdir: pathlib.PurePosixPath
     :param repo: Where to get Linux from, defaults to ``tb.config["linux.repository"]``
     :type repo: str
+    :param str rev: Revision from the repo to be checked out, defaults to
+                    ``tb.config["linux.revision", None]``
     :param toolchain: What toolchain to use, defaults to ``tb.config["board.toolchain"]``
     :type toolchain: Toolchain
     :param defconfig: What defconfig to use, defaults to ``tb.config["linux.defconfig"]``
@@ -128,7 +135,7 @@ def linux_checkout_and_build(
     )
 
     linuxdir = tb.call(
-        "linux_checkout", builddir=builddir, patchdir=patchdir, repo=repo
+        "linux_checkout", builddir=builddir, patchdir=patchdir, repo=repo, rev=rev
     )
     assert isinstance(linuxdir, tc.LinuxRepository)
 
