@@ -134,6 +134,31 @@ _tbot-mgr()
                 local subcommand="init"
                 return
                 ;;
+            "del")
+                local subcommand="del"
+                if [[ "$prev" == "del" ]]; then
+                    COMPREPLY=( $( compgen -W 'board lab' -- "$cur" ) )
+                    return
+                else
+                    local index=$(($index + 1))
+                    local current_word="${words[$index]}"
+
+                    case "$current_word" in
+                        "board")
+                            local subcommand="del-board"
+                            local boards=$(/bin/ls config/boards | grep \\.py | sed 's/\.py$//')
+                            COMPREPLY=( $( compgen -W "$boards" -- "$cur") )
+                            return
+                            ;;
+                        "lab")
+                            local subcommand="del-lab"
+                            local labs=$(/bin/ls config/labs | grep \\.py | sed 's/\.py$//')
+                            COMPREPLY=( $( compgen -W "$labs" -- "$cur") )
+                            return
+                            ;;
+                    esac
+                fi
+                ;;
             "add")
                 local subcommand="add"
                 if [[ "$prev" == "add" ]]; then
@@ -224,7 +249,7 @@ _tbot-mgr()
     if [[ "$cur" == -* ]]; then
         COMPREPLY=( $( compgen -W '-h --help' -- "$cur" ) )
     else
-        COMPREPLY=( $( compgen -W 'new init add' -- "$cur" ) )
+        COMPREPLY=( $( compgen -W 'new init del add' -- "$cur" ) )
     fi
 } &&
 complete -F _tbot-mgr tbot-mgr

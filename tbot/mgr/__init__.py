@@ -8,6 +8,7 @@ import sys
 import argparse
 
 from tbot.mgr.new import new_or_init_cmd
+from tbot.mgr.delete import del_cmd
 from tbot.mgr.board import add_board_cmd, add_board_dummy_cmd
 from tbot.mgr.lab import add_lab_cmd, add_lab_dummy_cmd
 
@@ -53,6 +54,16 @@ def main() -> None:
         help="Create TBot config files in the current directory",
         parents=[common_parser],
     )
+
+    # ------------- DELETE -------------
+    del_parser = subparsers.add_parser("del", help="Delete a board/lab")
+    del_subparsers = del_parser.add_subparsers(dest="del_cmd")
+
+    del_board_parser = del_subparsers.add_parser("board", help="Delete a board")
+    del_board_parser.add_argument("name", help="Name of the board to be deleted")
+
+    del_lab_parser = del_subparsers.add_parser("lab", help="Delete a lab")
+    del_lab_parser.add_argument("name", help="Name of the lab to be deleted")
 
     # ------------- ADD -------------
     add_parser = subparsers.add_parser(
@@ -167,6 +178,8 @@ def main() -> None:
 
     if args.cmd in ["new", "init"]:
         new_or_init_cmd(args)
+    elif args.cmd in ["del"]:
+        del_cmd(args)
     elif args.cmd in ["add"]:
         if args.add_cmd in ["board"]:
             add_board_cmd(args)
