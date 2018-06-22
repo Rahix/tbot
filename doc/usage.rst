@@ -3,6 +3,9 @@
 Commandline Usage
 =================
 
+TBot
+----
+
 .. code-block:: text
 
     usage: tbot [-h] [-i] [-p PARAM] [-c CONFIG] [--confdir CONFDIR]
@@ -49,3 +52,31 @@ Commandline Usage
       --list-testcases      List all testcases
       --list-labs           List all labs
       --list-boards         List all boards
+
+TBot Manager
+------------
+
+.. code-block:: text
+
+    usage: tbot-mgr [-h] {new,init,del,add} ...
+
+    Config manager for TBot
+
+    positional arguments:
+      {new,init,del,add}
+        new               Create a new directory with TBot config files
+                          usage: tbot-mgr new [-h] [-s] [-f] dirname
+
+        init              Create TBot config files in the current directory
+                          usage: tbot-mgr init [-h] [-s] [-f]
+
+        del               Delete a board/lab
+                          usage: tbot-mgr del [-h] {board,lab} <name>
+
+        add               Add a new board/lab to the config in the current
+                          directory
+                          usage: tbot-mgr add [-h] {board,dummy-board,lab,dummy-lab,dummies} ...
+
+
+    optional arguments:
+      -h, --help          show this help message and exit

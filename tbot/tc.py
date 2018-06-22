@@ -13,6 +13,11 @@ class UBootRepository(pathlib.PurePosixPath):
     pass
 
 
+class LinuxRepository(pathlib.PurePosixPath):
+    """ Dummy for pylint to shut up """
+    pass
+
+
 class UnknownToolchainException(Exception):
     """ Dummy for pylint to shut up """
     pass

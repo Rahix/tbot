@@ -3,7 +3,7 @@
 Example Testcases
 =================
 
-.. automodule:: tc.board_p2020rdb
+.. automodule:: tc.demo_bisect
    :members:
 
 .. automodule:: tc.test_boardshell

@@ -86,11 +86,12 @@ def check_config(tb: tbot.TBot) -> None:
             warning(f"No toolchains available")
             no_toolchains = True
         board_tc = tb.config["board.toolchain", None]
-        has_board_tc = check_exist(
-            default_bhcfg + ".toolchains." + board_tc,
-            typing.Dict,
-            "Board toolchain does not exist",
-        )
+        if board_tc is not None:
+            has_board_tc = check_exist(
+                default_bhcfg + ".toolchains." + board_tc,
+                typing.Dict,
+                "Board toolchain does not exist",
+            )
 
     has_defconfig = check_exist(
         "uboot.defconfig",

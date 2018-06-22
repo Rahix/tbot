@@ -5,6 +5,62 @@
 
 Getting Started
 ===============
+
+TBot Project Structure
+----------------------
+First of all you need to create a new TBot project. TBot has a handy
+tool for doing so called ``tbot-mgr``. To start a new project use the
+following command::
+
+    ~$ tbot-mgr new test-tbot-project
+
+``tbot-mgr`` will create a new folder called ``test-tbot-project`` and
+a few subfolders below it that TBot expects. The structure of a TBot
+project looks like this::
+
+    +-test-tbot-project/
+      +-config/
+      | +-boards/
+      | | +-board1.py
+      | | +-board2.py
+      | +-labs/
+      |   +-lab1.py
+      |   +-lab2.py
+      +-tc/
+        +-testcases1.py
+        +-testcases2.py
+
+``config/boards/`` contains a file for each board in your project,
+``config/labs/`` contains a file for each lab in your project.
+
+``tc/`` contains files that will be read by TBot when collecting testcases.
+You can write as many testcases in one file as you want.
+
+First TBot Usage
+----------------
+Now would be a good time to test if TBot actually works. To do so, use
+``tbot-mgr`` to create a dummy board and lab::
+
+    ~/test-tbot-project$ tbot-mgr add dummies
+
+And then run TBot's selftests::
+
+    ~/test-tbot-project$ tbot dummy-lab dummy-board selftest -v
+
+What you can see now is what the output of TBot while running a testcase looks like.
+``-v`` controls the verbosity level.
+
+.. note::
+    The dummy-lab that ``tbot-mgr`` just created is a lab that will try to connect to
+    localhost via ssh. This means you **have to** have an sshd running. If your ssh
+    daemon runs with a config that does not use the default settings, please adjust the
+    file ``test-tbot-project/config/labs/dummy-lab.py`` accordingly.
+
+If all went well, the last line of TBot's output should mention a success. If that is
+the case, you are set for writing your own testcases:
+
+Testcases
+---------
 The main concept of TBot is, that everything is a testcase. Testcases
 can call other testcases like you would call a function to do a certain
 task. For example the :func:`~tbot.builtin.uboot.uboot_tasks.uboot_checkout_and_build`
@@ -254,3 +310,40 @@ also see all commands that are run. Another ``v``: ``-vvv`` will also show the o
 
 .. seealso::
    More information on logging can be found under :ref:`tbot-logging` or in the module itself: :mod:`tbot.log`
+
+Configuration
+-------------
+All of the above can be used with the dummy config that we created in the beginning. But it would be way more interesting
+to to all this using actual hardware. For that, you first need to set up configuration.
+
+Start by creating a lab config. If you have a remote labhost where your board is connected, use::
+
+    $ tbot-mgr add lab
+
+and follow the instructions on screen.
+
+If your board and it's power is directly connected to your own computer, you can use
+
+    **TODO**
+
+
+To check your lab config, create a dummy-board and run TBot's selftests::
+
+    $ tbot-mgr add dummy-board -n <my-lab>-dummy -l <my-lab>
+    $ tbot <my-lab> <my-lab>-dummy selftest
+
+If those pass, you are done. If not, open ``config/labs/<my-lab>.py`` and adjust it
+so the tests pass. See :ref:`tbot-cfg-opts` for available config keys.
+
+Next we need to create a board config. Use::
+
+    $ tbot-mgr add board -l <my-lab>
+
+to do so.Run selftests again, this time using your board to verify your board config::
+
+    $ tbot <my-lab> <my-board> selftest
+
+This of course requires your board to already have a version of U-Boot installed. TBot can't do this first setup for you,
+but you could write a testcase for installing a new version of U-Boot that you compiled using ``uboot_checkout_and_build`` ;)
+
+If something fails, adjust ``config/boards/<my-board>.py``, see :ref:`tbot-cfg-opts` for available config keys.

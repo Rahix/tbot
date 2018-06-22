@@ -3,6 +3,24 @@
 ## [Unreleased]
 
 
+## [0.3.1] - 2018-06-22
+### Added
+- `tbot-mgr`: A script for managing TBot configs
+- Testcases for building Linux
+- `interactive_build_uboot` and `interactive_build_linux`
+- Selftests are now run as a pre-commit hook
+- A dummy lab and board for running selftests
+  that are as generic as possible
+- ``linux.revision`` and ``uboot.revision`` config keys
+
+### Changed
+- git testcases now have a `rev` parameter for checking out a specific
+  revision
+
+### Fixed
+- A crash while checking the config
+
+
 ## [0.3.0] - 2018-06-15
 ### Added
 - **Buildhosts:** This release adds the ability to build U-Boot/Linux

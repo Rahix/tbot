@@ -22,3 +22,9 @@ repos:
       entry: mypy
       files: ^.*\.py$
       exclude: ^(conf|setup)\.py$
+-   repo: local
+    hooks:
+    - id: tests
+      name: TBot Selftest
+      language: system
+      entry: ./selftest.sh

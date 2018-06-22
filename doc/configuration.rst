@@ -68,23 +68,16 @@ or specify a custom one on the commandline::
 As with commandline testcase parameters, TBot will evaluate everything after the ``=`` as a python
 expression using *eval*.
 
-Examples:
----------
+Examples
+--------
 
-Lab configuration
-^^^^^^^^^^^^^^^^^
+**TODO**
 
-.. automodule:: config.labs.local
-   :members:
 
-Board configuration
-^^^^^^^^^^^^^^^^^^^
+.. _tbot-cfg-opts:
 
-.. automodule:: config.boards.corvus
-   :members:
-
-Available options:
-------------------
+Available options
+-----------------
 
 .. highlight:: python
    :linenothreshold: 3
