@@ -40,7 +40,7 @@ def selftest_buildhost_bad_ssh(tb: tbot.TBot) -> None:
             )
         ) as tb:
             raise Exception(
-                "Somehow TBot thinks that it just succeeded connecting to\
+                "Somehow TBot thinks that it just succeeded connecting to \
 a host that does not exist"
             )
     except socket.error:
