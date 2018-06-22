@@ -17,6 +17,9 @@
 - git testcases now have a `rev` parameter for checking out a specific
   revision
 
+### Removed
+- DENX specific configs
+
 ### Fixed
 - A crash while checking the config
 
