@@ -13,7 +13,7 @@ def get_sshd_port() -> int:
             s = f.read()
             m = re.search(r"^Port\s+(?P<port>\d+)", s, re.M)
             if m is None:
-                raise Exception("Could not parse port from sshd_config")
+                return 22
             return int(m.group("port"))
     except PermissionError or IOError:
         return 22
