@@ -32,6 +32,19 @@ def config(cfg: Config) -> None:
     # A directory on the labhost where TBot can store files
     cfg["tbot.workdir"] = $workdir
 
+
+    cfg["uboot"] = {
+        # Where to fetch U-Boot from
+        "repository": "git://git.denx.de/u-boot.git",
+        # Whether the labhost has python virtualenv installed
+        "test.use_venv": True,
+    }
+
+    cfg["linux"] = {
+        # Where to fetch linux from
+        "repository": "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git",
+    }
+
     # Configuration for buildhosts
     cfg["build"] = {
         # Default buildhost that will be used if no other is specified

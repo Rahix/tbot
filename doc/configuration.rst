@@ -183,6 +183,12 @@ Linux
 ::
 
     cfg["linux"] = {
+        # Where to fetch Linux from. Use a local mirror to reduce network load
+        "repository": "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git",
+        # A directory containing patches to be applied over the Linux tree
+        "patchdir": pathlib.PurePosixPath("/home/hws/Documents/corvus_patches"),
+        # Which defconfig to use
+        "defconfig": "example_defconfig",
         # U-Boot command to boot Linux, may be multiple commands separated by '\n'
         "boot_command": "boot",
         "shell": {
