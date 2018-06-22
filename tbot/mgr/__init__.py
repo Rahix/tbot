@@ -177,7 +177,7 @@ def main() -> None:
         elif args.add_cmd in ["dummy-lab"]:
             add_lab_dummy_cmd(args)
         elif args.add_cmd in ["dummies"]:
-            n = args.name
+            n = args.name or "dummy"
             args.name = f"{n}-lab"
             add_lab_dummy_cmd(args)
             args.name = f"{n}-board"
