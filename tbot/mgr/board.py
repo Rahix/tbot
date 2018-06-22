@@ -15,20 +15,75 @@ from tbot.config import Config
 def config(cfg: Config) -> None:
     \"\"\" Board config \"\"\"
 
+    # Ensure this board is only used in a lab where it is supported
     if cfg["lab.name"] not in [$labnames]:
         raise Exception(\"\"\"board $boardname: Only availabe in $labnames lab(s)!\"\"\")
 
+    # Board config
     cfg["board"] = {
         "name": "$boardname", $toolchain
+        # Power commands (run on the labhost)
         "power": {
+            # Command to turn power on for the board
             "on_command": $oncommand,
+            # Command to turn power off for the board
             "off_command": $offcommand,
         },
+        # Serial connection (via labhost)
         "serial": {
+            # Identifier for this serial connection
             "name": "serial-$boardname",
+            # Command to open a serial connection, ie rlogin or picocom
             "command": $connectcommand,
         },
     }
+
+    # U-Boot config
+    # cfg["uboot"] = {
+    #     # U-Boot defconfig for your board
+    #     "defconfig": "${boardname}_defconfig",
+    #     # Optional directory on the buildhost containing patches
+    #     "patchdir": pathlib.PurePosixPath("/path/to/patches/"),
+    #     "shell": {
+    #         # The Prompt configured in the defconfig
+    #         "prompt": "=> ",
+    #     },
+    #     # Configuration for the U-Boot testsuite
+    #     "test": {
+    #         # Directory containing the board hooks
+    #         "hooks": pathlib.PurePosixPath("/path/to/hooksdir/"),
+    #         # Optional config file
+    #         "config": pathlib.PurePosixPath(
+    #             "/path/to/u_boot_boardenv_${boardname}.py"
+    #         ),
+    #         # Boardname for the testsuite
+    #         "boardname": "$boardname",
+    #     },
+    # }
+
+    # Linux config
+    # cfg["linux"] = {
+    #     # Linux defconfig
+    #     "defconfig": "${boardname}_defconfig",
+    #     # Optional directory on the buildhost containing patches
+    #     "patchdir": pathlib.PurePosixPath("/path/to/patches/"),
+    #     # Command to boot linux from U-Boot
+    #     # Can be multiple commands separated by \\n
+    #     "boot_command": "run bootcmd",
+    #     "shell": {
+    #         # Username for logging into linux on the board
+    #         "username": "root",
+    #         "password": "",
+    #         # Prompt to wait for that indicated TBot can send
+    #         # the username
+    #         "login_prompt": "generic-powerpc-e500v2 login: ",
+    #         # Time to wait before sending password
+    #         "login_timeout": 1,
+    #     },
+    # }
+
+    # TFTP config
+    # cfg["tftp"] = {"boarddir": "$boardname"}
 """
 )
 
@@ -70,7 +125,7 @@ def add_board(
     with open(file, mode="w") as f:
         f.write(src)
 
-    print(f"Config for {name} written to {file}.")
+    print(f"Config for {name} written to {file}")
 
 
 def add_board_dummy_cmd(args: argparse.Namespace) -> None:
