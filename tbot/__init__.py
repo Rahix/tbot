@@ -21,13 +21,10 @@ class TBot:
     """
     Main class of TBot, you usually do not need to instanciate this yourself
 
-    :param config: A configuration to be used
-    :type config: tbot.config.Config
-    :param testcases: Testcases available to this instance
-    :type testcases: dict
-    :param new: Whether this is a new instance that should create a noenv machine.
+    :param tbot.config.Config config: A configuration to be used
+    :param dict testcases: Testcases available to this instance
+    :param bool new: Whether this is a new instance that should create a noenv machine.
         Always ``True`` unless you know what you are doing.
-    :type new: bool
     :ivar config: :class:`tbot.config.Config()`
     :ivar testcases: All available testcases
     :ivar machines: All available machines :class:`tbot.machine.machine.MachineManager()`
@@ -78,8 +75,7 @@ class TBot:
 
         :param tcs: The testcase to call
         :type tcs: str or typing.Callable
-        :param kwargs: Additional arguments for the testcase
-        :type kwargs: dict
+        :param dict kwargs: Additional arguments for the testcase
         :returns: The decorated function
         :rtype: typing.Callable
         """
@@ -104,11 +100,9 @@ class TBot:
 
         :param tcs: The testcase to be called. Can either be a string or a callable
         :type tcs: str or typing.Callable
-        :param fail_ok: Whether a failure in this testcase is tolerable
-        :type fail_ok: bool
-        :param doc bool: Whether documentation should be generated in this testcase
-        :param kwargs: Additional arguments for the testcase
-        :type kwargs: dict
+        :param bool fail_ok: Whether a failure in this testcase is tolerable
+        :param bool doc: Whether documentation should be generated in this testcase
+        :param dict kwargs: Additional arguments for the testcase
         :returns: The return value from the testcase
         """
         name = tcs if isinstance(tcs, str) else f"@{tcs.__name__}"
@@ -149,8 +143,7 @@ class TBot:
         """
         Create a new TBot instance with a new machine
 
-        :param mach: The machine to be added in the new instance
-        :type mach: tbot.machine.machine.Machine
+        :param tbot.machine.machine.Machine mach: The machine to be added in the new instance
         :returns: The new TBot instance, which has to be used inside a with
             statement
         :rtype: TBot

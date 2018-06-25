@@ -116,10 +116,8 @@ def interactive_build(
     """
     Open an interactive shell on the buildhost with the toolchain enabled.
 
-    :param builddir: Where U-Boot is located, defaults to ``tb.config["uboot.builddir"]``
-    :type builddir: pathlib.PurePosixPath
-    :param toolchain: Which toolchain to use, defaults to ``tb.config["board.toolchain"]``
-    :type toolchain: Toolchain
+    :param pathlib.PurePosixPath builddir: Where U-Boot is located, defaults to ``tb.config["uboot.builddir"]``
+    :param Toolchain toolchain: Which toolchain to use, defaults to ``tb.config["board.toolchain"]``
     """
 
     ubbuilddir = builddir or ""

@@ -29,14 +29,10 @@ def uboot_build(
     """
     Build U-Boot
 
-    :param builddir: Where to build U-Boot
-    :type builddir: UBootRepository
-    :param toolchain: Which toolchain to use
-    :type toolchain: Toolchain
-    :param defconfig: What U-Boot defconfig to use, defaults to ``tb.config["uboot.defconfig"]``
-    :type defconfig: str
-    :param do_compile: Whether we should actually run ``make`` or skip it
-    :type do_compile: bool
+    :param UBootRepository builddir: Where to build U-Boot
+    :param Toolchain toolchain: Which toolchain to use
+    :param str defconfig: What U-Boot defconfig to use, defaults to ``tb.config["uboot.defconfig"]``
+    :param bool do_compile: Whether we should actually run ``make`` or skip it
     """
 
     defconfig = defconfig or tb.config["uboot.defconfig"]

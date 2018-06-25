@@ -17,27 +17,20 @@ from . import shell_utils
 class MachineBoardUBoot(board.MachineBoard):
     """ Board machine for U-Boot interaction
 
-    :param name: Name of the shell (eg ``someboard-uboot``), defaults to
+    :param str name: Name of the shell (eg ``someboard-uboot``), defaults to
                  ``tb.config["board.serial.name"]``
-    :type name: str
-    :param boardname: Name of the board, defaults to ``tb.config["board.name"]``
-    :type boardname: str
-    :param power_cmd_on: Command to poweron the board, defaults to
+    :param str boardname: Name of the board, defaults to ``tb.config["board.name"]``
+    :param str power_cmd_on: Command to poweron the board, defaults to
                          ``tb.config["board.power.on_command"]``
-    :type power_cmd_on: str
-    :param power_cmd_off: Command to poweroff the board, defaults to
+    :param str power_cmd_off: Command to poweroff the board, defaults to
                           ``tb.config["board.power.off_command"]``
-    :type power_cmd_off: str
-    :param connect_command: Command to connect to the board with a tool that behaves similar
+    :param str connect_command: Command to connect to the board with a tool that behaves similar
                             to rlogin, defaults to ``tb.config["board.serial.command"]``
-    :type connect_command: str
-    :param autoboot_prompt: The U-Boot autoboot prompt that is expected on the board, defaults to
+    :param str autoboot_prompt: The U-Boot autoboot prompt that is expected on the board, defaults to
             ``tb.config["uboot.shell.autoboot-prompt"]`` or ``"Hit any key to stop autoboot: <x> "``
             (interpreted as a regular expression)
-    :type autoboot_prompt: str
-    :param prompt: The U-Boot prompt that is expected on the board, defaults to
+    :param str prompt: The U-Boot prompt that is expected on the board, defaults to
                    ``tb.config["uboot.shell.prompt"]`` or ``"U-Boot> "``
-    :type prompt: str
     """
     # pylint: disable=too-many-arguments
     def __init__(

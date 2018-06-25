@@ -16,12 +16,10 @@ def has_unicode(with_unicode: str, without_unicode: str) -> str:
     returns the ``with_unicode`` string, if it doesn't, returns
     the ``without_unicode`` string.
 
-    :param with_unicode: String to be returned, if the terminal does
+    :param str with_unicode: String to be returned, if the terminal does
                          support unicode
-    :type with_unicode: str
-    :param without_unicode: String to be returned, if the terminal does
+    :param str without_unicode: String to be returned, if the terminal does
                             not support unicode
-    :type without_unicode: str
     :rtype: str
     """
     if sys.stdout.encoding == "UTF-8":
@@ -34,8 +32,7 @@ def has_color(seq: str) -> str:
     Check color support and return the escape sequence for this color
     code if enabled.
 
-    :param seq: The color code, eg ``"1;31"``
-    :type seq: str
+    :param str seq: The color code, eg ``"1;31"``
     :rtype: str
     """
     if True:
@@ -109,8 +106,7 @@ class LogStdoutHandler:
         """
         Change the verbosity of this log event
 
-        :param new_verbosity: The new verbosity
-        :type new_verbosity: Verbosity
+        :param Verbosity new_verbosity: The new verbosity
         """
         global LOGVERBOSITY  # pylint: disable=global-statement
         self.do_output = new_verbosity <= LOGVERBOSITY
@@ -120,8 +116,7 @@ class LogStdoutHandler:
         Print some text to stdout provided the verbosity is high enough.
         Also, add the text to the dict in case a `key` was set.
 
-        :param msg: The text
-        :type msg: str
+        :param str msg: The text
         """
         # Add to log event
         if self.key is not None:
@@ -164,18 +159,13 @@ def event(
     """
     Create a new log event
 
-    :param ty: The type of this log event
-    :type ty: [str]
-    :param msg: An optional message intended for being printed on the screen
-    :type msg: str
-    :param verbosity: Optional verbosity of this event (defaults to ``INFO``)
-    :type verbosity: Verbosity
-    :param dct: A dictionary of payload for this logevent. Can't contain keys
+    :param list[str] ty: The type of this log event
+    :param str msg: An optional message intended for being printed on the screen
+    :param Verbosity verbosity: Optional verbosity of this event (defaults to ``INFO``)
+    :param dict dct: A dictionary of payload for this logevent. Can't contain keys
                 named ``"type"``, ``"time"``, ``"message"``, or ``"verbosity"``.
-    :type dct: dict
-    :param custom_dash: Different prefix for the message when printed onscreen
-    :type custom_dash: str
-    :param fake bool: Whether this is just a fake event that won't be logged
+    :param str custom_dash: Different prefix for the message when printed onscreen
+    :param bool fake: Whether this is just a fake event that won't be logged
     :returns: A handler for the created log event
     :rtype: LogStdoutHandler
     """
@@ -208,10 +198,8 @@ def message(msg: str, verbosity: Verbosity = Verbosity.INFO) -> LogStdoutHandler
     """
     Print a message
 
-    :param msg: The message
-    :type msg: str
-    :param verbosity: Optional verbosity for this message
-    :type verbosity: Verbosity
+    :param str msg: The message
+    :param Verbosity verbosity: Optional verbosity for this message
     :returns: A handler for the created log event
     :rtype: LogStdoutHandler
     """
@@ -225,8 +213,7 @@ def doc(text: str) -> LogStdoutHandler:
     Add a log event that contains text for the documentation generator.
     ``text`` should be formatted in Markdown.
 
-    :param text: The documentation fragment
-    :type text: str (Markdown)
+    :param str text: The documentation fragment
     :returns: A handler for the created log event
     :rtype: LogStdoutHandler
     """
@@ -243,10 +230,8 @@ def doc_appendix(title: str, text: str) -> LogStdoutHandler:
     Add a log event that contains an appendix for the documentation generator.
     ``text`` should be formatted in Markdown.
 
-    :param title: The appendix's title
-    :type title: str
-    :param text: The appendix's body
-    :type text: str (Markdown)
+    :param str title: The appendix's title
+    :param str text: The appendix's body
     :returns: A handler for the created log event
     :rtype: LogStdoutHandler
     """
@@ -262,8 +247,7 @@ def debug(msg: str) -> LogStdoutHandler:
     """
     Print a debug message
 
-    :param msg: The message
-    :type msg: str
+    :param str msg: The message
     :returns: A handler for the created log event
     :rtype: LogStdoutHandler
     """
@@ -277,8 +261,7 @@ def oververbose(msg: str) -> LogStdoutHandler:
 
     Will not create a new log event.
 
-    :param msg: The message
-    :type msg: sttr
+    :param str msg: The message
     :returns: A handler for the message
     :rtype: LogStdoutHandler
     """
@@ -306,9 +289,8 @@ def init_log(
 
     :param filename: The file the log should be written to (in json format)
     :type filename: pathlib.Path or str
-    :param verbosity: The minimun verbosity for messages that are printed
+    :param Verbosity verbosity: The minimun verbosity for messages that are printed
                       to stdout
-    :type verbosity: Verbosity
     """
     global LOGFILE  # pylint: disable=global-statement
     global LOGVERBOSITY  # pylint: disable=global-statement

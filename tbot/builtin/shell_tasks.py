@@ -18,12 +18,10 @@ def setup_tftpdir(
     """
     Setup the tftp directory
 
-    :param root: Optional path to the TFTP root directory, defaults to
+    :param pathlib.PurePosixPath root: Optional path to the TFTP root directory, defaults to
                     ``tb.config["tftp.root"]``
-    :type root: pathlib.PurePosixPath
-    :param subdir: Optional subdir path inside the TFTP directory (has a
+    :param pathlib.PurePosixPath subdir: Optional subdir path inside the TFTP directory (has a
                    default value in ``config/tbot.py``)
-    :type subdir: pathlib.PurePosixPath
     :returns: The TFTP directory as a meta object
     :rtype: TftpDirectory
     """

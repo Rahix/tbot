@@ -13,10 +13,9 @@ def just_uboot_tests(tb: tbot.TBot, *, buildhost: typing.Optional[str] = None) -
     """
     Run U-Boot tests on the currently existing (possibly dirty) U-Boot tree.
 
-    :param buildhost: The buildhost where U-Boot can be build AND tested.
+    :param str buildhost: The buildhost where U-Boot can be build AND tested.
                       Usually this is a 'local' buildhost, which means,
                       U-Boot is built on the labhost.
-    :type buildhost: str or None
     """
     buildhost = buildhost or tb.config["build.local"]
 
@@ -41,30 +40,23 @@ def uboot_tests(
     """
     Run U-Boot tests on real hardware
 
-    :param buildhost: The buildhost where U-Boot can be build AND tested.
+    :param str buildhost: The buildhost where U-Boot can be build AND tested.
                       Usually this is a 'local' buildhost, which means,
                       U-Boot is built on the labhost.
-    :type buildhost: str or None
-    :param builddir: The U-Boot checkout that should be tested. Must be a
+    :param UBootRepository builddir: The U-Boot checkout that should be tested. Must be a
                      UBootRepository meta object
-    :type builddir: UBootRepository
-    :param toolchain: What toolchain to use (The testsuite rebuilds the
+    :param Toolchain toolchain: What toolchain to use (The testsuite rebuilds the
                       U-Boot binary)
-    :type toolchain: Toolchain
-    :param test_config: An optional config file for the testsuite,
+    :param pathlib.PurePosixPath test_config: An optional config file for the testsuite,
                         defaults to ``tb.config["uboot.test.config"]``
-    :type test_config: pathlib.PurePosixPath
-    :param test_hooks: Path to the U-Boot python testsuite hooks for the
+    :param pathlib.PurePosixPath test_hooks: Path to the U-Boot python testsuite hooks for the
                        currently selected board, defaults to
                        ``tb.config["uboot.test.hooks"]``
-    :type test_hooks: pathlib.PurePosixPath
-    :param test_boardname: Name of the board, usually the name of the defconfig minus
+    :param str test_boardname: Name of the board, usually the name of the defconfig minus
                            the ``"_defconfig"``, defaults to
                            ``tb.config["uboot.test.boardname"]``
-    :type test_boardname: str
-    :param test_maxfail: Maximum number of failed tests before aborting, defaults
+    :param int test_maxfail: Maximum number of failed tests before aborting, defaults
                          to ``tb.config["uboot.test.maxfail"]``
-    :type test_maxfail: int
     """
     buildhost = buildhost or tb.config["build.local"]
     test_config = test_config or tb.config["uboot.test.config", None]

@@ -20,10 +20,8 @@ def git_dirty_checkout(
     Checkout a git repo if it does not exist yet, but do not touch it
     if it already exists
 
-    :param target: Where to clone the repository to
-    :type target: pathlib.PurePosixPath
-    :param repo: Where the git repository can be found
-    :type repo: str
+    :param pathlib.PurePosixPath target: Where to clone the repository to
+    :param str repo: Where the git repository can be found
     :param rev: Revision to checkout (ie. commit-id or branch name)
     :returns: The git repository as a meta object for testcases that need a git
               repository
@@ -63,10 +61,8 @@ def git_clean_checkout(
     Checkout a git repo if it does not exist yet and make sure there are
     no artifacts left from previous builds.
 
-    :param target: Where to clone the repository to
-    :type target: pathlib.PurePosixPath
-    :param repo: Where the git repository can be found
-    :type repo: str
+    :param pathlib.PurePosixPath target: Where to clone the repository to
+    :param str repo: Where the git repository can be found
     :param rev: Revision to checkout (ie. commit-id or branch name)
     :returns: The git repository as a meta object for testcases that need a git
               repository
@@ -110,10 +106,8 @@ def git_apply_patches(
     """
     Apply patchfiles inside patchdir onto the git repository in gitdir.
 
-    :param gitdir: The git repositories meta object
-    :type gitdir: GitRepository
-    :param patchdir: Path to the folder containing the patches
-    :type patchdir: pathlib.PurePosixPath
+    :param GitRepository gitdir: The git repositories meta object
+    :param pathlib.PurePosixPath patchdir: Path to the folder containing the patches
     """
 
     tbot.log.debug(f"Applying patches in '{patchdir}' to '{gitdir}'")
@@ -168,14 +162,11 @@ def git_bisect(
     commit) and ``good``. Whether a commit is good or bad is decided by calling
     the ``and_then`` testcase.
 
-    :param gitdir: Meta object of the git repository that is supposed to be bisected
-    :type gitdir: GitRepository
-    :param good: The good commit
-    :type good: str
+    :param GitRepository gitdir: Meta object of the git repository that is supposed to be bisected
+    :param str good: The good commit
     :param and_then: A testcase that decides whether a commit is good or bad
     :type and_then: str or typing.Callable
-    :param params: Additional parameters for the ``and_then`` testcase
-    :type params: dict
+    :param dict params: Additional parameters for the ``and_then`` testcase
     :returns: The first bad commit
     :rtype: str
     """
