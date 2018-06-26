@@ -66,10 +66,10 @@ _tbot()
     local boardconfdir="${boardconfdir:-${confdir}/boards}"
 
     if [[ "$cur" == -* ]]; then
-        COMPREPLY=( $( compgen -W '-h -c -p -d -l -v -q -i
+        COMPREPLY=( $( compgen -W '-h -c -p -d -l -v -q -i -s
             --help --config --param --confdir --labconfdir
             --boardconfdir --tcdir --logfile --verbose
-            --quiet --interactive --list-testcases --list-labs
+            --quiet --interactive --show --list-testcases --list-labs
             --list-boards -vv -vvv -vvvv -qq -qqq -qqqq' -- "$cur" ) )
     else
         case $current_mode in
