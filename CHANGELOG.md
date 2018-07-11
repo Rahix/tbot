@@ -6,6 +6,7 @@
   config options
 - `-s`, `--show` command line option to get information about
   testcases
+- `warning` and `error` log message functions
 
 
 ## [0.3.1] - 2018-06-22

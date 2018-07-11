@@ -42,6 +42,7 @@ def has_color(seq: str) -> str:
 
 class Verbosity(enum.IntEnum):
     """ Logger verbosity level """
+
     ALL = -1
     ERROR = 0
     WARNING = 1
@@ -205,6 +206,32 @@ def message(msg: str, verbosity: Verbosity = Verbosity.INFO) -> LogStdoutHandler
     """
     return event(
         ty=["msg", str(verbosity)], msg=msg, verbosity=verbosity, dct={"text": msg}
+    )
+
+
+def warning(msg: str) -> LogStdoutHandler:
+    """
+    Print a warning message
+
+    :param str msg: The message
+    :returns: A handler for the created log event
+    :rtype: LogStdoutHandler
+    """
+    return message(
+        has_color("33;1") + "Warning" + has_color("0") + ": " + msg, Verbosity.WARNING
+    )
+
+
+def error(msg: str) -> LogStdoutHandler:
+    """
+    Print an error message
+
+    :param str msg: The message
+    :returns: A handler for the created log event
+    :rtype: LogStdoutHandler
+    """
+    return message(
+        has_color("31;1") + "Error" + has_color("0") + ": " + msg, Verbosity.ERROR
     )
 
 
