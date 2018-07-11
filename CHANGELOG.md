@@ -8,6 +8,13 @@
   testcases
 - `warning` and `error` log message functions
 
+### Changes
+- Removed `ssh_command` and added `ssh_flags` instead. This allows TBot
+  to have more control over ssh
+
+### Fixed
+- Fixed TBot hanging when SSH asks for a password
+
 
 ## [0.3.1] - 2018-06-22
 ### Added
