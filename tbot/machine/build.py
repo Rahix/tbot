@@ -76,10 +76,17 @@ class MachineBuild(machine.Machine):
         self._workdir = tb.config[bhcfg + "workdir", None]
 
         self.ssh_command = self.ssh_command or tb.config[bhcfg + "ssh_command", None]
+        self.password = self.password or tb.config[bhcfg + "password", None]
+
+        if self.password is not None:
+            tbot.log.warning(
+                """\
+A password was specified for connecting to the buildhost, but TBot
+does not support this yet. Expect errors!"""
+            )
 
         if self.ssh_command is None:
             self.username = self.username or tb.config[bhcfg + "username"]
-            self.password = self.password or tb.config[bhcfg + "password", None]
             self.hostname = self.hostname or tb.config[bhcfg + "hostname"]
 
             self.ssh_command = f"ssh {self.username}@{self.hostname}"
