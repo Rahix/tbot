@@ -25,6 +25,7 @@ TBot
     optional arguments:
       -h, --help            show this help message and exit
       -i, --interactive     Ask for each command before executing it
+      -s, --show            Show info about the selected testcases
       -p PARAM, --param PARAM
                             Set a testcase parameter. Argument must be of the form
                             <param-name>=<python-expression>. WARNING: Uses eval!

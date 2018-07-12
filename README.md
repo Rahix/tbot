@@ -22,6 +22,15 @@ python3 setup.py develop --user
 
 if you intend to work on TBot itself.
 
+### Troubleshooting ###
+If the installation does not work, most likely it is an error when installing paramiko. I recommend installing
+paramiko through your distros package manager (eg. `python3-paramiko` for Fedora). If your distros version of
+paramiko is too old, you will then need to install paramiko with pip (after installing the distro package):
+
+```
+pip3 install --user paramiko
+```
+
 ## Example ##
 The most simple structure of directory that contains just enough information for TBot to be used looks like this:
 

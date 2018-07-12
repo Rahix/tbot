@@ -50,12 +50,10 @@ def linux_checkout(
     :param str buildhost: Which buildhost should U-Boot be built on?
     :param pathlib.PurePosixPath builddir: Where to checkout Linux to,
         defaults to ``wd / tb.config["linux.builddir"]``
-    :param patchdir: Optional Linux patches to be applied
+    :param pathlib.PurePosixPath patchdir: Optional Linux patches to be applied
         ontop of the tree, defaults to ``tb.config["linux.patchdir"]``, supply a
         nonexistent path to force ignoring the patches
-    :type patchdir: pathlib.PurePosixPath
-    :param repo: Where to get Linux from, defaults to ``tb.config["linux.repository"]``
-    :type repo: str
+    :param str repo: Where to get Linux from, defaults to ``tb.config["linux.repository"]``
     :param str rev: Revision from the repo to be checked out, defaults to
                     ``tb.config["linux.revision", None]``
     :returns: The Linux checkout as a meta object for other testcases
@@ -109,21 +107,16 @@ def linux_checkout_and_build(
     """
     Checkout Linux and build it
 
-    :param builddir: Where to checkout Linux to, defaults to
+    :param pathlib.PurePosixPath builddir: Where to checkout Linux to, defaults to
         ``wd / tb.config["linux.builddir"]``
-    :type builddir: pathlib.PurePosixPath
-    :param patchdir: Optional patches to be applied
+    :param pathlib.PurePosixPath patchdir: Optional patches to be applied
         ontop of the tree, defaults to ``tb.config["linux.patchdir"]``, supply a
         nonexistent path to force building without patches
-    :type patchdir: pathlib.PurePosixPath
-    :param repo: Where to get Linux from, defaults to ``tb.config["linux.repository"]``
-    :type repo: str
+    :param str repo: Where to get Linux from, defaults to ``tb.config["linux.repository"]``
     :param str rev: Revision from the repo to be checked out, defaults to
                     ``tb.config["linux.revision", None]``
-    :param toolchain: What toolchain to use, defaults to ``tb.config["board.toolchain"]``
-    :type toolchain: Toolchain
-    :param defconfig: What defconfig to use, defaults to ``tb.config["linux.defconfig"]``
-    :type defconfig: str
+    :param Toolchain toolchain: What toolchain to use, defaults to ``tb.config["board.toolchain"]``
+    :param str defconfig: What defconfig to use, defaults to ``tb.config["linux.defconfig"]``
     :returns: The Linux checkout as a meta object for other testcases
     :rtype: LinuxRepository
     """

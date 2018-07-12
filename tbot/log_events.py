@@ -18,8 +18,7 @@ def testcase_begin(name: str) -> tbot.log.LogStdoutHandler:
     """
     Log event for when a testcase is called
 
-    :param name: Name of the testcase
-    :type name: str
+    :param str name: Name of the testcase
     :returns: A handler for the created log event
     :rtype: LogStdoutHandler
     """
@@ -37,14 +36,10 @@ def testcase_end(
     """
     Log event for when a testcase is done
 
-    :param name: Name of the testcase
-    :type name: str
-    :param duration: Duration of the testcase's execution
-    :type duration: float (seconds)
-    :param success: Whether the testcase was successful
-    :type success: bool
-    :param fail_ok: Whether a failure is acceptable for this testcase
-    :type fail_ok: bool
+    :param str name: Name of the testcase
+    :param float duration: Duration of the testcase's execution in seconds
+    :param bool success: Whether the testcase was successful
+    :param bool fail_ok: Whether a failure is acceptable for this testcase
     :returns: A handler for the created log event
     :rtype: LogStdoutHandler
     """
@@ -73,8 +68,7 @@ def tbot_done(success: bool) -> tbot.log.LogStdoutHandler:
     """
     Log event for TBot being done with running testcases
 
-    :param success: Whether this run of TBot was successful
-    :type success: bool
+    :param bool success: Whether this run of TBot was successful
     :returns: A handler for the created log event
     :rtype: LogStdoutHandler
     """
@@ -94,10 +88,8 @@ def exception(name: str, trace: str) -> tbot.log.LogStdoutHandler:
     """
     Log event for exceptions
 
-    :param name: Name of the exception
-    :type name: str
-    :param trace: Traceback of the exception
-    :type trace: str
+    :param str name: Name of the exception
+    :param str trace: Traceback of the exception
     :returns: A handler for the created log event
     :rtype: LogStdoutHandler
     """
@@ -134,15 +126,11 @@ def shell_command(
         handler.dct["exit_code"] = 0
 
 
-    :param machine: Unique name of the machine as a list
-    :type machine: list[str]
-    :param command: The command that was executed itself
-    :type command: str
-    :param show: Whether this command should be shown in documentation
-    :type show: bool
-    :param show_stdout: Whether this commands output should be shown in
+    :param list[str] machine: Unique name of the machine as a list
+    :param str command: The command that was executed itself
+    :param bool show: Whether this command should be shown in documentation
+    :param bool show_stdout: Whether this commands output should be shown in
                         documentation
-    :type show_stdout: bool
     :returns: A handler for the created log event
     :rtype: LogStdoutHandler
     """

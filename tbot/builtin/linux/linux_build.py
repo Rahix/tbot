@@ -49,15 +49,11 @@ def linux_build(
     """
     Build Linux
 
-    :param builddir: Where to build Linux
-    :type builddir: LinuxRepository
-    :param toolchain: Which toolchain to use
-    :type toolchain: Toolchain
-    :param defconfig: What Linux defconfig to use, defaults to ``tb.config["linux.defconfig"]``
-    :type defconfig: str
+    :param LinuxRepository builddir: Where to build Linux
+    :param Toolchain toolchain: Which toolchain to use
+    :param str defconfig: What Linux defconfig to use, defaults to ``tb.config["linux.defconfig"]``
     :param str image_type: What type of image should be build (eg. ``uImage`` or ``zImage``)
-    :param do_compile: Whether we should actually run ``make`` or skip it
-    :type do_compile: bool
+    :param bool do_compile: Whether we should actually run ``make`` or skip it
     """
     defconfig = defconfig or tb.config["linux.defconfig"]
     image_type = image_type or tb.config["linux.image_type", "zImage"]

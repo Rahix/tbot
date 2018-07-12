@@ -17,26 +17,19 @@ from . import shell_utils
 class MachineBoardLinux(board.MachineBoard):
     """ Board machine for Linux interaction
 
-    :param name: Name of the shell (eg ``someboard-bash``), defaults to
+    :param str name: Name of the shell (eg ``someboard-bash``), defaults to
                  ``tb.config["linux.shell.name"]``
-    :type name: str
-    :param boardname: Name of the board, defaults to ``tb.config["board.name"]``
-    :type boardname: str
-    :param boot_command: U-Boot command to boot linux. May be multiple commands
+    :param str boardname: Name of the board, defaults to ``tb.config["board.name"]``
+    :param str boot_command: U-Boot command to boot linux. May be multiple commands
                          separated by newlines, defaults to
                          ``tb.config["linux.boot_command"]``
-    :type boot_command: str
-    :param login_prompt: The string to wait for before sending the username,
+    :param str login_prompt: The string to wait for before sending the username,
                          defaults to ``tb.config["linux.shell.login_prompt"]``
-    :type login_prompt: str
-    :param login_timeout: The time to wait after entering login credentials,
+    :param float login_timeout: The time to wait after entering login credentials,
                           defaults to ``tb.config["linux.shell.login_timeout"]``
-    :type login_timeout: float
-    :param username: Username, defaults to ``tb.config["linux.shell.username"]``
-    :type username: str
-    :param password: Password, use ``""`` if no password is required,
+    :param str username: Username, defaults to ``tb.config["linux.shell.username"]``
+    :param str password: Password, use ``""`` if no password is required,
                      defaults to ``tb.config["linux.shell.password"]``
-    :type password: str
     """
     # pylint: disable=too-many-arguments
     def __init__(

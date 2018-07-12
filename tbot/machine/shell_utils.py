@@ -21,10 +21,8 @@ def setup_channel(chan: paramiko.Channel, prompt: str) -> None:
     """
     Setup a paramiko channel
 
-    :param chan: The channel to be set up
-    :type chan: paramiko.channel.Channel
-    :param prompt: The prompt that should be used, has to be very unique!
-    :type prompt: str
+    :param paramiko.channel.Channel chan: The channel to be set up
+    :param str prompt: The prompt that should be used, has to be very unique!
     :returns: Nothing
     :rtype: None
     """
@@ -55,18 +53,14 @@ def read_to_prompt(
     """
     Read until the shell waits for further input
 
-    :param chan: Channel to read from
-    :type chan: paramiko.channel.Channel
-    :param prompt: Prompt to be waited for
-    :type prompt: str
-    :param stdout_handler: Optional stdout handler to write output lines to
-    :type stdout_handler: tbot.log.LogStdoutHandler
-    :returns: The read string (including the prompt)
-    :param prompt_regex: Wether the prompt string is to be interpreted as
+    :param paramiko.channel.Channel chan: Channel to read from
+    :param str prompt: Prompt to be waited for
+    :param tbot.log.LogStdoutHandler stdout_handler: Optional stdout handler to write output lines to
+    :param bool prompt_regex: Wether the prompt string is to be interpreted as
                          a regular expression (read_to_prompt will add a $
                          to the end of your expression to ensure it only
                          matches the end of the output)
-    :type prompt_regex: bool
+    :returns: The read string (including the prompt)
     :rtype: str
     """
     buf = ""
@@ -128,14 +122,10 @@ def exec_command(
     """
     Execute a command and return it's output
 
-    :param chan: Channel to execute this command on
-    :type chan: paramiko.channel.Channel
-    :param prompt: Prompt to be expected
-    :type prompt: str
-    :param command: Command to be executed (no trailing ``\\n``)
-    :type command: str
-    :param stdout_handler: Optional stdout handler to write output lines to
-    :type stdout_handler: tbot.log.LogStdoutHandler
+    :param paramiko.channel.Channel chan: Channel to execute this command on
+    :param str prompt: Prompt to be expected
+    :param str command: Command to be executed (no trailing ``\\n``)
+    :param tbot.log.LogStdoutHandler stdout_handler: Optional stdout handler to write output lines to
     :returns: The output of the command
     :rtype: str
     """
@@ -163,14 +153,10 @@ def command_and_retval(
     """
     Execute a command and return it's output and return value
 
-    :param chan: Channel to execute this command on
-    :type chan: paramiko.channel.Channel
-    :param prompt: Prompt to be expected
-    :type prompt: str
-    :param command: Command to be executed (no trailing ``\\n``)
-    :type command: str
-    :param stdout_handler: Optional stdout handler to write output lines to
-    :type stdout_handler: tbot.log.LogStdoutHandler
+    :param paramiko.channel.Channel chan: Channel to execute this command on
+    :param str prompt: Prompt to be expected
+    :param str command: Command to be executed (no trailing ``\\n``)
+    :param tbot.log.LogStdoutHandler stdout_handler: Optional stdout handler to write output lines to
     :returns: The return-code and output of the command
     :rtype: tuple[int, str]
     """

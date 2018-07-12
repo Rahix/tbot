@@ -19,23 +19,57 @@ def config(cfg: Config) -> None:
 
     cfg["lab"] = {
         "name": "$labname",
+        # Hostname/IP of this labhost
         "hostname": "$hostname",
+        # Optional port
+        # "port": 22,
+        # User for logging in
         "user": username,
+        # Password/Keyfile for authenticating
         "$ctype": $cred,
     }
 
+    # A directory on the labhost where TBot can store files
     cfg["tbot.workdir"] = $workdir
 
+
+    cfg["uboot"] = {
+        # Where to fetch U-Boot from
+        "repository": "git://git.denx.de/u-boot.git",
+        # Whether the labhost has python virtualenv installed
+        "test.use_venv": True,
+    }
+
+    cfg["linux"] = {
+        # Where to fetch linux from
+        "repository": "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git",
+    }
+
+    # Configuration for buildhosts
     cfg["build"] = {
+        # Default buildhost that will be used if no other is specified
         "default": "$labname",
+        # Buildhost that is the labhost, needed for U-Boot tests
         "local": "$labname",
+        # $labname (local) buildhost
         "$labname": {
+            # Same credentials as before. Add a custom ssh command with a keyfile
+            # that requires no password if you don't have passwordless login on
+            # localhost on the labhost by default
             "username": username,
             "hostname": "localhost",
+            # We can build in a subdir of our workdir
             "workdir": cfg["tbot.workdir"] / "tbot-build",
+            # Toolchains available on this host
             "toolchains": {$toolchains
+                # "toolchain-name": {
+                #     # A script that will set environment variables for this toolchain
+                #     # eg. $$ARCH, $$CC, $$CFLAGS, ...
+                #     "env_setup_script": pathlib.PurePosixPath("/path/to/tc-setup-script"),
+                # },
             },
         },
+        # Add another buildhost here if you want to build on a different machine than the labhost
     }
 """
 )
@@ -84,7 +118,7 @@ def add_lab(
     with open(file, mode="w") as f:
         f.write(src)
 
-    print(f"Config for {name} written to {file}.")
+    print(f"Config for {name} written to {file}")
 
 
 def add_lab_dummy_cmd(args: argparse.Namespace) -> None:

@@ -36,7 +36,7 @@ def selftest_buildhost_bad_ssh(tb: tbot.TBot) -> None:
     try:
         with tb.machine(
             tbot.machine.MachineBuild(
-                name="custom_fail", ssh_command="ssh nobody@nonexistant-host"
+                name="custom_fail", hostname="nonexistant-host", username="nobody"
             )
         ) as tb:
             raise Exception(

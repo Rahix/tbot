@@ -4,3 +4,4 @@ _build/
 log/
 *.pyc
 .mypy_cache/
+dist/

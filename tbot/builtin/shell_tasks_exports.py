@@ -12,10 +12,8 @@ class TftpDirectory:
     A meta object to represent the tftp directory.
     Can be created with :func:`~tbot.builtin.shell_tasks.setup_tftpdir`
 
-    :param root: TFTP root directory
-    :type root: pathlib.PurePosixPath
-    :param subdir: TFTP sub-directory
-    :type subdir: pathlib.PurePosixPath
+    :param pathlib.PurePosixPath root: TFTP root directory
+    :param pathlib.PurePosixPath subdir: TFTP sub-directory
 
     :ivar root: TFTP root directory
     :ivar subdir: TFTP sub-directory, this is what you should use on the board

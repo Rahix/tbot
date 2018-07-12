@@ -14,8 +14,7 @@ def check_uboot_version(tb: tbot.TBot, *, uboot_binary: pathlib.PurePosixPath) -
     Check whether the version of U-Boot running on the board is the same
     as the one supplied as a binary file in uboot_bin.
 
-    :param uboot_binary: Path to the U-Boot binary
-    :type uboot_binary: pathlib.PurePosixPath
+    :param pathlib.PurePosixPath uboot_binary: Path to the U-Boot binary
     """
     with tb.with_board_uboot() as tb:
         strings = tb.shell.exec0(
@@ -40,17 +39,13 @@ def uboot_checkout(
     """
     Create a checkout of U-Boot **on the buildhost**
 
-    :param clean: Whether an existing repository should be cleaned
-    :type clean: bool
-    :param buildhost: Which buildhost should U-Boot be built on?
-    :param builddir: Where to checkout U-Boot to, defaults to ``tb.config["uboot.builddir"]``
-    :type builddir: pathlib.PurePosixPath
-    :param patchdir: Optional U-Boot patches to be applied
+    :param bool clean: Whether an existing repository should be cleaned
+    :param str buildhost: Which buildhost should U-Boot be built on?
+    :param pathlib.PurePosixPath builddir: Where to checkout U-Boot to, defaults to ``tb.config["uboot.builddir"]``
+    :param pathlib.PurePosixPath patchdir: Optional U-Boot patches to be applied
         ontop of the tree, defaults to ``tb.config["uboot.patchdir"]``, supply a
         nonexistent path to force ignoring the patches
-    :type patchdir: pathlib.PurePosixPath
-    :param repo: Where to get U-Boot from, defaults to ``tb.config["uboot.repository"]``
-    :type repo: str
+    :param str repo: Where to get U-Boot from, defaults to ``tb.config["uboot.repository"]``
     :param str rev: Revision from the repo to be checked out, defaults to
                     ``tb.config["uboot.revision", None]``
     :returns: The U-Boot checkout as a meta object for other testcases
@@ -103,20 +98,15 @@ def uboot_checkout_and_build(
     """
     Checkout U-Boot and build it
 
-    :param builddir: Where to checkout U-Boot to, defaults to ``tb.config["uboot.builddir"]``
-    :type builddir: pathlib.PurePosixPath
-    :param patchdir: Optional U-Boot patches to be applied
+    :param pathlib.PurePosixPath builddir: Where to checkout U-Boot to, defaults to ``tb.config["uboot.builddir"]``
+    :param pathlib.PurePosixPath patchdir: Optional U-Boot patches to be applied
         ontop of the tree, defaults to ``tb.config["uboot.patchdir"]``, supply a
         nonexistent path to force building without patches
-    :type patchdir: pathlib.PurePosixPath
-    :param repo: Where to get U-Boot from, defaults to ``tb.config["uboot.repository"]``
-    :type repo: str
+    :param str repo: Where to get U-Boot from, defaults to ``tb.config["uboot.repository"]``
     :param str rev: Revision from the repo to be checked out, defaults to
                     ``tb.config["uboot.revision", None]``
-    :param toolchain: What toolchain to use, defaults to ``tb.config["board.toolchain"]``
-    :type toolchain: Toolchain
-    :param defconfig: What U-Boot defconfig to use, defaults to ``tb.config["uboot.defconfig"]``
-    :type defconfig: str
+    :param Toolchain toolchain: What toolchain to use, defaults to ``tb.config["board.toolchain"]``
+    :param str defconfig: What U-Boot defconfig to use, defaults to ``tb.config["uboot.defconfig"]``
     :returns: The U-Boot checkout as a meta object for other testcases
     :rtype: UBootRepository
     """
@@ -159,18 +149,13 @@ def uboot_checkout_and_prepare(
     Checkout U-Boot and prepare for building it (ie in an interactive session
     using ``interactive_build``)
 
-    :param builddir: Where to checkout U-Boot to, defaults to ``tb.config["uboot.builddir"]``
-    :type builddir: pathlib.PurePosixPath
-    :param patchdir: Optional U-Boot patches to be applied
+    :param pathlib.PurePosixPath builddir: Where to checkout U-Boot to, defaults to ``tb.config["uboot.builddir"]``
+    :param pathlib.PurePosixPath patchdir: Optional U-Boot patches to be applied
         ontop of the tree, defaults to ``tb.config["uboot.patchdir"]``, supply a
         nonexistent path to force building without patches
-    :type patchdir: pathlib.PurePosixPath
-    :param repo: Where to get U-Boot from, defaults to ``tb.config["uboot.repository"]``
-    :type repo: str
-    :param toolchain: What toolchain to use, defaults to ``tb.config["board.toolchain"]``
-    :type toolchain: Toolchain
-    :param defconfig: What U-Boot defconfig to use, defaults to ``tb.config["uboot.defconfig"]``
-    :type defconfig: str
+    :param str repo: Where to get U-Boot from, defaults to ``tb.config["uboot.repository"]``
+    :param Toolchain toolchain: What toolchain to use, defaults to ``tb.config["board.toolchain"]``
+    :param str defconfig: What U-Boot defconfig to use, defaults to ``tb.config["uboot.defconfig"]``
     :returns: The U-Boot checkout as a meta object for other testcases
     :rtype: UBootRepository
     """

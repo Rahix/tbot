@@ -29,10 +29,9 @@ class MachineBuild(machine.Machine):
                             passwordless login
     :param str hostname: Hostname of the buildhost, defaults to
                          ``tb.config["build.<name>.hostname"]``
-    :param str ssh_command: If this parameter is not given, TBot will use
-                            ``ssh <username>@<hostname>``. If it is given,
-                            it will be used instead. This allows for custom
-                            ssh options like using a different key.
+    :param str ssh_flags: Flags to be passed to ssh. This allows for custom
+                          ssh options like using a different key. Defaults to
+                          ``tb.config["build.<name>.ssh_flags"]``
     """
 
     def __init__(
@@ -42,7 +41,7 @@ class MachineBuild(machine.Machine):
         username: typing.Optional[str] = None,
         password: typing.Optional[str] = None,
         hostname: typing.Optional[str] = None,
-        ssh_command: typing.Optional[str] = None,
+        ssh_flags: typing.Optional[str] = None,
     ) -> None:
         super().__init__()
         self.name = name or "default"
@@ -53,7 +52,7 @@ class MachineBuild(machine.Machine):
         self.password = password
         # TODO: Actually use the password
         self.hostname = hostname
-        self.ssh_command = ssh_command
+        self.ssh_flags = ssh_flags
 
         self.channel: typing.Optional[paramiko.Channel] = None
 
@@ -75,14 +74,22 @@ class MachineBuild(machine.Machine):
         bhcfg = f"build.{self.name}."
         self._workdir = tb.config[bhcfg + "workdir", None]
 
-        self.ssh_command = self.ssh_command or tb.config[bhcfg + "ssh_command", None]
+        self.ssh_flags = self.ssh_flags or tb.config[bhcfg + "ssh_flags", ""]
+        self.password = self.password or tb.config[bhcfg + "password", None]
 
-        if self.ssh_command is None:
-            self.username = self.username or tb.config[bhcfg + "username"]
-            self.password = self.password or tb.config[bhcfg + "password", None]
-            self.hostname = self.hostname or tb.config[bhcfg + "hostname"]
+        if self.password is not None:
+            tbot.log.warning(
+                """\
+A password was specified for connecting to the buildhost, but TBot
+does not support this yet. Expect errors!"""
+            )
 
-            self.ssh_command = f"ssh {self.username}@{self.hostname}"
+        self.username = self.username or tb.config[bhcfg + "username"]
+        self.hostname = self.hostname or tb.config[bhcfg + "hostname"]
+
+        ssh_command = (
+            f"ssh -o BatchMode=yes {self.ssh_flags} {self.username}@{self.hostname}"
+        )
 
         try:
             prompt = f"TBOT-{random.randint(100000, 999999)}>"
@@ -91,7 +98,7 @@ class MachineBuild(machine.Machine):
 
             shell_utils.setup_channel(self.channel, prompt)
 
-            self.channel.send(f"{self.ssh_command}; exit\n")
+            self.channel.send(f"{ssh_command}; exit\n")
 
             time.sleep(2)
 
@@ -104,7 +111,9 @@ PS1='{self.prompt}'
 
             shell_utils.read_to_prompt(self.channel, self.prompt)
         except socket.error as e:
-            e.args = (f"SSH connection to buildhost failed: {e}",)
+            e.args = (
+                f"SSH connection to buildhost failed: {e} (probably failed to log in)",
+            )
             raise
         except:  # noqa: E722
             raise

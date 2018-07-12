@@ -6,7 +6,7 @@ import argparse
 
 
 # pylint: disable=too-many-locals, too-many-branches
-def main() -> None:
+def main() -> None:  # noqa: C901
     """ Main entry point of tbot """
     parser = argparse.ArgumentParser(
         prog="tbot", description="A test tool for embedded linux development"
@@ -29,6 +29,14 @@ def main() -> None:
         const=True,
         default=False,
         help="Ask for each command before executing it",
+    )
+    parser.add_argument(
+        "-s",
+        "--show",
+        action="store_const",
+        const=True,
+        default=False,
+        help="Show info about the selected testcases",
     )
     parser.add_argument(
         "-p",
@@ -188,6 +196,25 @@ named "tc"',
     if args.list_testcases:
         for tc in testcases:
             print(tc)
+        return
+
+    if args.show:
+        import textwrap
+        import inspect
+
+        for i, tc in enumerate(args.testcase):
+            if i != 0:
+                print("=================================================")
+            test = testcases[tc]
+            bright = tbot.log.has_color("1")
+            cyan = tbot.log.has_color("36")
+            reset = tbot.log.has_color("0")
+            print(f'{bright}Testcase "{cyan}{tc}{reset}{bright}"{reset}:')
+            print(f"------------------")
+            sig = tc + str(inspect.signature(test))
+            print(f"{bright}SIGNATURE:{reset} {sig}")
+            print(f"{bright}DOCSTRING:{reset}")
+            print(textwrap.dedent(test.__doc__ or "No docstring available :/").strip())
         return
 
     verbosity = tbot.log.Verbosity(

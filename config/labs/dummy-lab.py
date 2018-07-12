@@ -42,7 +42,9 @@ def config(cfg: Config) -> None:
     cfg["build"] = {
         "default": "local",
         "local": {
-            "ssh_command": f"ssh -p {sshd_port} {username}@localhost",
+            "hostname": "localhost",
+            "username": username,
+            "ssh_flags": f"-p {sshd_port}",
             "scp_command": f"scp -P {sshd_port}",
             "scp_address": f"{username}@localhost",
             "workdir": cfg["tbot.workdir"] / "build",

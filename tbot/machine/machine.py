@@ -58,13 +58,10 @@ class Machine(abc.ABC):
         """
         Execute a command on this machine
 
-        :param command: The command to be executed, no newline at the end
-        :type command: str
-        :param log_show: Whether documentation backends should include this command
-        :type log_show: bool
-        :param log_show_stdout: Whether documentation backends should include the stdout
+        :param str command: The command to be executed, no newline at the end
+        :param bool log_show: Whether documentation backends should include this command
+        :param bool log_show_stdout: Whether documentation backends should include the stdout
             of this command
-        :type log_show_stdout: bool
         :returns: A tuple of the return code and the output (stdout and stderr are merged)
         :rtype: tuple[int, str]
         """
@@ -90,8 +87,7 @@ Skipping comand {command!r} ... Might cause unintended side effects!"""
         """
         Execute a command and expect it to return with 0
 
-        :param command: The command to be executed, no newline at the end
-        :type command: str
+        :param str command: The command to be executed, no newline at the end
         :param kwargs: Passed through to Machine.exec
         :returns: The output (stdout and stderr are merged)
         :rtype: str

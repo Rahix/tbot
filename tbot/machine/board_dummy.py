@@ -13,16 +13,13 @@ class MachineBoardDummy(board.MachineBoard):
     """
     Board machine dummy for just turning the board on and off
 
-    :param turn_on: Whether to turn on the board or just turn it off in the end.
+    :param bool turn_on: Whether to turn on the board or just turn it off in the end.
         Useful for example for the U-Boot test suite which expects the board to
         be off in the beginning but still needs a manual poweroff once it's done.
-    :type turn_on: bool
-    :param power_cmd_on: The command for turning on the board, defaults to
+    :param str power_cmd_on: The command for turning on the board, defaults to
                          ``tb.config["board.power.on_command"]``
-    :type power_cmd_on: str
-    :param power_cmd_off: The command for turning off the board, defaults to
+    :param str power_cmd_off: The command for turning off the board, defaults to
                           ``tb.config["board.power.off_command"]``
-    :type power_cmd_off: str
     """
 
     def __init__(

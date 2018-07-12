@@ -17,8 +17,7 @@ def toolchain_get(
     """
     Get a toolchain and ensure it exists
 
-    :param name: Name of the toolchain, defaults to ``tb.config["board.toolchain"]``
-    :type name: str
+    :param str name: Name of the toolchain, defaults to ``tb.config["board.toolchain"]``
     :returns: The toolchain meta object to be passed to testcases that need a toolchain
     :rtype: Toolchain
     """
@@ -41,12 +40,10 @@ def toolchain_env(
     """
     Setup a toolchain environment and call a testcase inside
 
-    :param toolchain: Which toolchain to use
-    :type toolchain: Toolchain
+    :param Toolchain toolchain: Which toolchain to use
     :param and_then: What testcase to call inside the env
     :type and_then: str or typing.Callable
-    :param params: Parameters for the testcase
-    :type params: dict
+    :param dict params: Parameters for the testcase
     """
     if params is None:
         params = dict()
