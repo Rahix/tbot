@@ -14,6 +14,7 @@
 
 ### Fixed
 - Fixed TBot hanging when SSH asks for a password
+- Fixed git bisecting
 
 
 ## [0.3.1] - 2018-06-22

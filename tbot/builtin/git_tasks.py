@@ -215,7 +215,7 @@ cd {gitdir}; git show | grep -E '^commit [0-9a-zA-Z]+$'"
             tb.call(try_commit, and_then=and_then, params=params)
             commits = tb.shell.exec0(
                 f"\
-cd {gitdir}; git bisect visualize | grep -E '^commit [0-9a-zA-Z]+$'"
+cd {gitdir}; git bisect visualize | grep -E '^commit [0-9a-zA-Z]+$' --color=never"
             ).split("\n")[:-1]
             if len(commits) == 1:
                 bad_commit = commits[0][len("commit ") :]
