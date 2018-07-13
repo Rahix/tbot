@@ -316,6 +316,8 @@ Configuration
 All of the above can be used with the dummy config that we created in the beginning. But it would be way more interesting
 to to all this using actual hardware. For that, you first need to set up configuration.
 
+.. highlight:: shell
+
 Start by creating a lab config. If you have a remote labhost where your board is connected, use::
 
     $ tbot-mgr add lab
