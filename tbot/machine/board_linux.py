@@ -135,11 +135,13 @@ class MachineBoardLinux(board.MachineBoard):
             time.sleep(self.login_timeout)
 
             # Make linux aware of new terminal size
-            self.channel.send("stty cols 200\nstty rows 200\nsh")
+            self.channel.send("unset HISTFILE\nstty cols 200\nstty rows 200\nsh")
 
             # Set PROMPT
             self.prompt = f"TBOT-LINUX-{random.randint(11111,99999)}>"
-            self.channel.send(f"\nPROMPT_COMMAND=\nPS1='{self.prompt}'\n")
+            self.channel.send(
+                f"\nunset HISTFILE\nPROMPT_COMMAND=\nPS1='{self.prompt}'\n"
+            )
             boot_stdout += shell_utils.read_to_prompt(
                 self.channel, self.prompt, stdout_handler
             )

@@ -17,7 +17,11 @@ def config(cfg: Config) -> None:
         "serial": {
             "name": "local-ub",
             # Fake connect. Also contains a read call to simulate autoboot abort
-            "command": "sh\nPROMPT_COMMAND=\nPS1='U-Boot> ';sleep 0.1;echo 'Autoboot: ';read dummyvar",
+            "command": """\
+sh
+unset HISTFILE
+PROMPT_COMMAND=
+PS1='U-Boot> ';sleep 0.1;echo 'Autoboot: ';read dummyvar""",
         },
     }
 

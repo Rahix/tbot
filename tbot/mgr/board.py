@@ -144,7 +144,11 @@ def add_board_dummy_cmd(args: argparse.Namespace) -> None:
         toolchain="dummy-toolchain",
         oncmd="echo POWER ON",
         offcmd="echo POWER OFF",
-        connectcmd="sh\nPROMPT_COMMAND=\nPS1='U-Boot> ';sleep 0.1;echo 'Hit any key to stop autoboot: 00 ';read dummyvar",
+        connectcmd="""\
+sh
+unset HISTFILE
+PROMPT_COMMAND=
+PS1='U-Boot> ';sleep 0.1;echo 'Autoboot: ';read dummyvar""",
     )
 
 
