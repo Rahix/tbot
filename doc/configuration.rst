@@ -152,8 +152,10 @@ U-Boot
         "shell": {
             # U-Boot prompt to be expected (varies with defconfig)
             "prompt": "U-Boot> ",
-            # Timeout before stopping autoboot in seconds
-            "timeout": 4,
+            # Autoboot Prompt (regex)
+            "autoboot-prompt": r"Hit any key to stop autoboot:\s+\d+\s+",
+            # Autoboot Interception Key Sequence
+            "autoboot-keys": "\n",
         },
 
         "test": {

@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- `uboot.shell.autboot-keys`: Custom key sequence for intercepting
+  autoboot
 ### Fixed
 - Fixed TBot still clogging the user's history with commands
 
