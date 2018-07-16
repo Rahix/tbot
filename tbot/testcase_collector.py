@@ -2,6 +2,7 @@
 Tescase collector
 -----------------
 """
+import sys
 import pathlib
 import typing
 import itertools
@@ -59,12 +60,18 @@ def get_testcases(
     normal_sources = (
         source for source in sources if not source.stem.endswith("_exports")
     )
+    # Keep the original path for restoring
+    old_sys_path = sys.path
     # First load export sources then continue with normal
     for source in itertools.chain(export_sources, normal_sources):
-        module_spec = importlib.util.spec_from_file_location(source.stem, str(source))
+        module_spec = importlib.util.spec_from_file_location(
+            name=source.stem, location=str(source)
+        )
         module = importlib.util.module_from_spec(module_spec)
         if isinstance(module_spec.loader, importlib.abc.Loader):
+            sys.path = old_sys_path + [str(source.parent)]
             module_spec.loader.exec_module(module)
+            sys.path = old_sys_path
             # Load exports
             if source.stem.endswith("_exports") and "EXPORT" in module.__dict__:
                 for k in module.__dict__["EXPORT"]:

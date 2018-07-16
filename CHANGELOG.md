@@ -10,6 +10,7 @@
 
 ### Fixed
 - Fixed TBot still clogging the user's history with commands
+- Fixed testcase files not being able to import local submodules
 
 
 ## [0.3.2] - 2018-07-22
