@@ -218,13 +218,14 @@ Build
         "local": "labhost",
         # A buildhost
         "labhost": {
+            # Hostname of the buildhost
+            "hostname": "localhost",
+            # Username for logging in on the buildhost (via ssh)
+            "username": "my-username",
             # Optional SSH flags
             "ssh_flags": "-i different/key.pub",
-            # SCP command for passwordless file transfers to and from
-            # the buildhost
-            "scp_command": "scp -i different/key.pub",
-            # SCP address to be appended before remote paths
-            "scp_address": "myself@localhost",
+            # Optional SCP flags
+            "scp_flags": "-i different/key.pub",
             # Workdir on the buildhost where TBot can store it's files
             "workdir": pathlib.PurePosixPath("/tmp/tbot-build"),
             # Toolchains that are available on this host

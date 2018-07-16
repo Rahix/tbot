@@ -45,8 +45,7 @@ def config(cfg: Config) -> None:
             "hostname": "localhost",
             "username": username,
             "ssh_flags": f"-p {sshd_port}",
-            "scp_command": f"scp -P {sshd_port}",
-            "scp_address": f"{username}@localhost",
+            "scp_flags": f"-P {sshd_port}",
             "workdir": cfg["tbot.workdir"] / "build",
             "toolchains": {
                 "dummy": {

@@ -63,7 +63,7 @@ def retrieve_build_artifact(
     *,
     buildfile: pathlib.PurePosixPath,
     buildhost: typing.Optional[str] = None,
-    scp_command: typing.Optional[str] = None,
+    scp_flags: typing.Optional[str] = None,
     scp_address: typing.Optional[str] = None,
 ) -> pathlib.PurePosixPath:
     """
@@ -72,19 +72,18 @@ def retrieve_build_artifact(
     :param pathlib.PurePosixPath buildfile: File on the buildhost
     :param str buildhost: Name of the buildhost if you do not want to use
                           the default
-    :param str scp_command: SCP command to use for copying (eg ``scp -i <..>``),
-                            defaults to ``tb.config["build.<name>.scp_command"]``
-                            or ``"scp"``
-    :param str scp_address: Address of the form ``<user>@<host>`` of the buildhost,
-                            defaults to ``tb.config["build.<name>.scp_address"]``
-                            or ``"<username>@<hostname>"``
+    :param str scp_flags: SCP flags to be added to scp commands, defaults to
+                          ``tb.config["build.<name>.scp_flags"]``
+    :param str scp_address: Address of the form ``<user>@<host>``
+                            of the buildhost, defaults to
+                            \
+``tb.config["build.<name>.username"]+"@"+tb.config["build.<name>.hostname"]``
     :returns: Path where the file has been copied
     :rtype: pathlib.PurePosixPath
     """
     buildhost = buildhost or tb.config["build.default", "<missing>"]
     bhcfg = f"build.{buildhost}."
-    scp_command = scp_command or tb.config[bhcfg + "scp_command", "scp"]
-    scp_address = scp_address or tb.config[bhcfg + "scp_address", None]
+    scp_flags = scp_flags or tb.config[bhcfg + "scp_flags", ""]
     scp_address = (
         scp_address
         or tb.config[bhcfg + "username"] + "@" + tb.config[bhcfg + "hostname"]
@@ -97,7 +96,7 @@ def retrieve_build_artifact(
 
     tb.machines["labhost-noenv"].exec0(f"mkdir -p {destination.parent}", log_show=False)
     tb.machines["labhost-noenv"].exec0(
-        f"{scp_command} {scp_address}:{buildfile} {destination}", log_show=False
+        f"scp {scp_flags} {scp_address}:{buildfile} {destination}", log_show=False
     )
 
     return destination
