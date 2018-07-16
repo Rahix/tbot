@@ -4,6 +4,10 @@
 ### Added
 - `uboot.shell.autboot-keys`: Custom key sequence for intercepting
   autoboot
+
+### Changed
+- Made scp config settings consistent with ssh settings
+
 ### Fixed
 - Fixed TBot still clogging the user's history with commands
 
@@ -16,7 +20,7 @@
   testcases
 - `warning` and `error` log message functions
 
-### Changes
+### Changed
 - Removed `ssh_command` and added `ssh_flags` instead. This allows TBot
   to have more control over ssh
 
