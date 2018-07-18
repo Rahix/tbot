@@ -3,14 +3,17 @@
 ## [Unreleased]
 ### Added
 - `uboot.shell.autboot-keys`: Custom key sequence for intercepting
-  autoboot
+  autoboot (#9)
+- Warning if an invalid testcase file is in the path (TBot no longer
+  refuses to do anything, in this case)
 
 ### Changed
-- Made scp config settings consistent with ssh settings
+- Made scp config settings consistent with ssh settings (#10)
 
 ### Fixed
-- Fixed TBot still clogging the user's history with commands
+- Fixed TBot still clogging the user's history with commands (#7)
 - Fixed testcase files not being able to import local submodules
+- Fixed TBot errors being shown when attempting testcase completion (#11)
 
 
 ## [0.3.2] - 2018-07-22
