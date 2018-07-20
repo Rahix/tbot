@@ -29,6 +29,8 @@ class MachineBoardUBoot(board.MachineBoard):
     :param str autoboot_prompt: The U-Boot autoboot prompt that is expected on the board, defaults to
             ``tb.config["uboot.shell.autoboot-prompt"]`` or ``"Hit any key to stop autoboot: <x> "``
             (interpreted as a regular expression)
+    :param str autoboot_keys: The key sequence to stop autoboot, defaults to
+                              ``tb.config["uboot.shell.autoboot-keys"]`` or ``"\\n"``
     :param str prompt: The U-Boot prompt that is expected on the board, defaults to
                    ``tb.config["uboot.shell.prompt"]`` or ``"U-Boot> "``
     """
@@ -42,6 +44,7 @@ class MachineBoardUBoot(board.MachineBoard):
         power_cmd_off: typing.Optional[str] = None,
         connect_command: typing.Optional[str] = None,
         autoboot_prompt: typing.Optional[str] = None,
+        autoboot_keys: typing.Optional[str] = None,
         prompt: typing.Optional[str] = None,
     ) -> None:
         super().__init__()
@@ -54,6 +57,7 @@ class MachineBoardUBoot(board.MachineBoard):
 
         self.prompt = f"TBOT-BS-START-{random.randint(11111,99999)}>"
         self.autoboot_prompt = autoboot_prompt
+        self.autoboot_keys = autoboot_keys
         self.uboot_prompt = prompt
 
         self.channel: typing.Optional[paramiko.Channel] = None
@@ -90,6 +94,9 @@ class MachineBoardUBoot(board.MachineBoard):
                 "uboot.shell.autoboot-prompt", r"Hit any key to stop autoboot:\s+\d+\s+"
             ]
         )
+        self.autoboot_keys = (
+            self.autoboot_keys or tb.config["uboot.shell.autoboot-keys", "\n"]
+        )
         self.uboot_prompt = (
             self.uboot_prompt or tb.config["uboot.shell.prompt", "U-Boot> "]
         )
@@ -123,7 +130,7 @@ class MachineBoardUBoot(board.MachineBoard):
                 prompt_regex=True,
                 stdout_handler=stdout_handler,
             )
-            self.channel.send("\n")
+            self.channel.send(self.autoboot_keys)
             self.prompt = self.uboot_prompt
             boot_stdout += shell_utils.read_to_prompt(self.channel, self.prompt)
         except:  # noqa: E722
