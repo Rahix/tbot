@@ -98,7 +98,7 @@ _tbot()
                 # a small amount of time (10 seconds)
                 local cache_age=$(($(date +%s) - ${__tbot_testcase_cache_time:-0}))
                 if [[ -z $__tbot_testcase_cache || $cache_age -gt 10 ]]; then
-                    __tbot_testcase_cache=$(tbot none none --list-testcases ${tcdirs_additional} 2>/dev/null)
+                    __tbot_testcase_cache=$(tbot none none --list-testcases none ${tcdirs_additional} 2>/dev/null)
                     __tbot_testcase_cache_time=$(date +%s)
                 fi
                 COMPREPLY=( $( compgen -W "$__tbot_testcase_cache" -- "$cur") )
