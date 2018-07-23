@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Fixed
+- Fixed TBot ignoring failures while applying patches (#13)
 
 
 ## [0.3.3] - 2018-07-20
