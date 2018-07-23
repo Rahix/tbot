@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- Better error message when testcase does not exist
+
 ### Fixed
 - Fixed TBot ignoring failures while applying patches (#13)
 - Fixed -d not being allowed between board and testcase (#6)

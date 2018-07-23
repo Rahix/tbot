@@ -269,7 +269,7 @@ LOG:   "{logfile}\"""",
                     if tc in testcases:
                         tb.call(tc, **params)
                     else:
-                        raise Exception("Testcase not found")
+                        raise Exception(f"Testcase {tc!r} not found")
             else:
 
                 @tb.call
