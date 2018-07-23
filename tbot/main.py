@@ -17,8 +17,8 @@ def main() -> None:  # noqa: C901
     parser.add_argument(
         "testcase",
         type=str,
-        nargs="*",
-        default=None,
+        action="append",
+        default=[],
         help='name of the testcase to run (default: "uboot_checkout_and_build")',
     )
 
