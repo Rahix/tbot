@@ -16,6 +16,28 @@ import tbot.config
 from tbot.testcase_collector import testcase  # noqa: F401
 
 
+class TestcaseFailure(Exception):
+    """
+    A testcase detected an error condition
+
+    Raise this exception if an error occured, that
+    was manually detected (don't raise it in an except block,
+    use the original exception there)
+    """
+    pass
+
+
+class InvalidUsageException(Exception):
+    """
+    A testcase/utility was invoked with incorrect arguments
+
+    Raise this exception if your testcase was called with incorrect
+    parameters (=programmer error). Preferably ensure correct calling
+    by using type annotations.
+    """
+    pass
+
+
 # pylint: disable=too-many-instance-attributes
 class TBot:
     """
@@ -64,7 +86,7 @@ class TBot:
         """ The default board machine """
         boardmachine = self.machines["board"]
         if not isinstance(boardmachine, tbot.machine.MachineBoard):
-            raise Exception("BoardMachine is not a 'MachineBoard'")
+            raise InvalidUsageException("BoardMachine is not a 'MachineBoard'")
         return boardmachine
 
     def call_then(

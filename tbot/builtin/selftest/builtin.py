@@ -16,7 +16,9 @@ def selftest_builtin_errors(tb: tbot.TBot) -> None:
     except tc.UnknownToolchainException:
         tbot.log.debug("Catched unknown toolchain exception")
     else:
-        raise Exception("toolchain_env did not raise an UnknownToolchainException")
+        raise tbot.TestcaseFailure(
+            "toolchain_env did not raise an UnknownToolchainException"
+        )
 
 
 @tbot.testcase

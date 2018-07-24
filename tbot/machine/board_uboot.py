@@ -105,7 +105,7 @@ class MachineBoardUBoot(board.MachineBoard):
         self.noenv = tb.machines["labhost-noenv"]
 
         if self.noenv is None:
-            raise Exception("no-env shell does not exist")
+            raise tbot.InvalidUsageException("no-env shell does not exist")
 
         try:
             # Poweron the board
@@ -154,7 +154,7 @@ class MachineBoardUBoot(board.MachineBoard):
         if isinstance(self.channel, paramiko.Channel):
             self.channel.close()
         else:
-            raise Exception("Channel not initilized")
+            raise tbot.InvalidUsageException("Channel not initilized")
 
     def _exec(
         self, command: str, stdout_handler: typing.Optional[tbot.log.LogStdoutHandler]
@@ -167,7 +167,7 @@ class MachineBoardUBoot(board.MachineBoard):
 
     @property
     def workdir(self) -> pathlib.PurePosixPath:
-        raise Exception("UBoot does not have a workdir")
+        raise tbot.InvalidUsageException("UBoot does not have a workdir")
 
     @property
     def unique_machine_name(self) -> str:

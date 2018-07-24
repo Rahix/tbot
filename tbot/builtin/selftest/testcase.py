@@ -21,15 +21,17 @@ def selftest_testcase_calling(tb: tbot.TBot) -> None:
 def selftest_test_failures(tb: tbot.TBot) -> None:
     """ Test a failing testcase """
 
+    class MyException(Exception):
+        pass
+
     def a_failing_testcase(_tb: tbot.TBot) -> None:
         """ A testcase that fails """
-        raise Exception("failure?")
+        raise MyException()
 
     did_raise = False
     try:
         tb.call(a_failing_testcase, fail_ok=True)
-    except Exception as e:  # pylint: disable=broad-except
-        assert e.args[0] == "failure?", "Testcase raised wrong exception"
+    except MyException:
         did_raise = True
     assert did_raise is True, "Testcase did not raise an exception"
 

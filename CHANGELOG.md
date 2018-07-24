@@ -1,8 +1,12 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- `TestcaseFailure` & `InvalidUsageException` exceptions
+
 ### Changed
 - Better error message when testcase does not exist
+- More explicit exceptions
 
 ### Fixed
 - Fixed TBot ignoring failures while applying patches (#13)

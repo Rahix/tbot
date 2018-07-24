@@ -5,6 +5,7 @@ Board machine dummy for just turning the board on and off
 import typing
 import pathlib
 import tbot
+import tbot.config
 from . import machine
 from . import board
 
@@ -44,7 +45,7 @@ class MachineBoardDummy(board.MachineBoard):
     ) -> "MachineBoardDummy":
         self.name = self.name or tb.config["board.name", "unknown"]
         if not isinstance(self.name, str):
-            raise Exception(f"Invalid name: {self.name!r}")
+            raise tbot.config.InvalidConfigException(f"Invalid name: {self.name!r}")
         self.boardname = self.name
         super()._setup(tb, previous)
 
@@ -55,7 +56,7 @@ class MachineBoardDummy(board.MachineBoard):
         self.noenv = tb.machines["labhost-noenv"]
 
         if self.noenv is None:
-            raise Exception("no-env shell does not exist")
+            raise tbot.InvalidUsageException("no-env shell does not exist")
 
         if self.powerup:
             self.noenv.exec0(self.power_cmd_on, log_show_stdout=False)
@@ -76,11 +77,13 @@ class MachineBoardDummy(board.MachineBoard):
     def _exec(
         self, command: str, stdout_handler: typing.Optional[tbot.log.LogStdoutHandler]
     ) -> typing.Tuple[int, str]:
-        raise Exception("Cannot execute commands on a dummy board machine")
+        raise tbot.InvalidUsageException(
+            "Cannot execute commands on a dummy board machine"
+        )
 
     @property
     def workdir(self) -> pathlib.PurePosixPath:
-        raise Exception("A dummy board does not have a workdir")
+        raise tbot.InvalidUsageException("A dummy board does not have a workdir")
 
     @property
     def unique_machine_name(self) -> str:

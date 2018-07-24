@@ -277,6 +277,24 @@ LOG:   "{logfile}\"""",
                     """ Default testcase is building U-Boot """
                     tb.call("uboot_checkout_and_build", **params)
 
+        except tbot.TestcaseFailure as f:
+            tbot.log.message(traceback.format_exc(), tbot.log.Verbosity.DEBUG)
+            tbot.log.message(
+                f"{tbot.log.has_color('31')}Testcase Failure{tbot.log.has_color('0')}: {f}",
+                tbot.log.Verbosity.ERROR,
+            )
+        except tbot.InvalidUsageException as e:
+            tbot.log.message(traceback.format_exc(), tbot.log.Verbosity.ERROR)
+            e_str = (
+                f" > {tbot.log.has_color('1')}"
+                + f"\n > {tbot.log.has_color('1')}".join(str(e).split("\n"))
+            )
+            tbot.log.message(
+                f"""\
+{tbot.log.has_color('31;1')}A programmer made a mistake{tbot.log.has_color('0')}:
+{e_str}""",
+                tbot.log.Verbosity.ERROR,
+            )
         except Exception:  # pylint: disable=broad-except
             tbot.log.message(traceback.format_exc(), tbot.log.Verbosity.ERROR)
         except KeyboardInterrupt:

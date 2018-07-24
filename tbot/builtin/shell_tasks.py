@@ -5,6 +5,7 @@ Common shell operations
 import pathlib
 import typing
 import tbot
+from tbot import config
 from tbot import tc
 
 
@@ -29,9 +30,9 @@ def setup_tftpdir(
     subdir = subdir or tb.config["tftp.directory"]
 
     if not isinstance(root, pathlib.PurePosixPath):
-        raise Exception("Configuation error: 'tftp.root' must be a PurePosixPath!")
+        raise config.InvalidConfigException("'tftp.root' must be a PurePosixPath!")
     if not isinstance(subdir, pathlib.PurePosixPath):
-        raise Exception("Configuation error: 'tftp.directory' must be a PurePosixPath!")
+        raise config.InvalidConfigException("'tftp.directory' must be a PurePosixPath!")
 
     tftpdir = tc.TftpDirectory(root, subdir)
 
@@ -91,7 +92,9 @@ def retrieve_build_artifact(
 
     destination = tb.config["tbot.artifactsdir"] / buildfile.name
     if not isinstance(destination, pathlib.PurePosixPath):
-        raise Exception("config error, tbot.artifactsdir must be a path")
+        raise config.InvalidConfigException(
+            "'tbot.artifactsdir' must be a PurePosixPath"
+        )
     tbot.log.debug(f"cp {buildfile} (build) -> {destination} (lab)")
 
     tb.machines["labhost-noenv"].exec0(f"mkdir -p {destination.parent}", log_show=False)
