@@ -1,4 +1,5 @@
 import abc
+import typing
 import pathlib
 import paramiko
 from tbot.machine import linux
@@ -52,3 +53,18 @@ class LabHost(linux.LinuxMachine):
 
     def _obtain_channel(self) -> paramiko.Channel:
         return self.client.get_transport().open_session()
+
+    # Override exec and exec0 so the signatures are typechecked
+    def exec(
+        self,
+        *args: "typing.Union[str, linux.Path[LabHost]]",
+        stdout: "typing.Optional[linux.Path[LabHost]]" = None,
+    ) -> typing.Tuple[int, str]:
+        return super().exec(*args, stdout=stdout)
+
+    def exec0(
+        self,
+        *args: "typing.Union[str, linux.Path[LabHost]]",
+        stdout: "typing.Optional[linux.Path[LabHost]]" = None,
+    ) -> str:
+        return super().exec0(*args, stdout=stdout)
