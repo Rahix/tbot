@@ -13,7 +13,7 @@ NESTING = 0
 
 
 def _nest(after: str = u("├─", "+-")) -> str:
-    return c("".join(itertools.repeat(u("│   ", "|   "), NESTING)) + after).dark
+    return str(c("".join(itertools.repeat(u("│   ", "|   "), NESTING)) + after).dark)
 
 
 def testcase_begin(name: str) -> None:

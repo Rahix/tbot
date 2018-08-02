@@ -47,5 +47,8 @@ class LabHost(linux.LinuxMachine):
             key_filename=key_file,
         )
 
+    def destroy(self) -> None:
+        self.client.close()
+
     def _obtain_channel(self) -> paramiko.Channel:
         return self.client.get_transport().open_session()
