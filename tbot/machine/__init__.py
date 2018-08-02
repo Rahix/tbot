@@ -1,14 +1,11 @@
-# flake8: noqa
-"""
-TBot machines framework
-"""
-from .machine import Machine, MachineManager
-from .board import MachineBoard
+import abc
 
-from .lab_noenv import MachineLabNoEnv
-from .lab_env import MachineLabEnv
-from .build import MachineBuild
 
-from .board_uboot import MachineBoardUBoot
-from .board_linux import MachineBoardLinux
-from .board_dummy import MachineBoardDummy
+class Machine(abc.ABC):
+    """Connect to a machine (host, board, etc.)."""
+
+    @property
+    @abc.abstractmethod
+    def name(self) -> str:
+        """Return the name of this machine."""
+        pass
