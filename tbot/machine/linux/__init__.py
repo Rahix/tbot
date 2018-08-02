@@ -2,6 +2,7 @@ import abc
 import typing
 import shlex
 import paramiko
+from tbot import log
 from tbot import machine
 from tbot.machine.linux.path import Path
 
@@ -82,7 +83,7 @@ class LinuxMachine(machine.Machine):
         if s[-1].name == "exec0":
             s = s[:-1]
         f = s[-1]
-        print(f"COMMAND: {command} (called by {f.name})")
+        log.command(self.name, command)
 
         channel.exec_command(command)
 
