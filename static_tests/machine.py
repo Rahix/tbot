@@ -24,6 +24,18 @@ class DummyLinuxMach(linux.LinuxMachine):
     def _obtain_channel(self) -> linux.paramiko.Channel:
         raise NotImplementedError()
 
+    def exec0(
+        self,
+        *args: "typing.Union[str, linux.Path[DummyLinuxMach]]",
+        stdout: "typing.Optional[linux.Path[DummyLinuxMach]]" = None,
+    ) -> str: ...
+
+    def exec(
+        self,
+        *args: "typing.Union[str, linux.Path[DummyLinuxMach]]",
+        stdout: "typing.Optional[linux.Path[DummyLinuxMach]]" = None,
+    ) -> typing.Tuple[int, str]: ...
+
 
 class DummyLinuxMach2(linux.LinuxMachine):
     name = "dummy-linux"
@@ -38,9 +50,6 @@ class DummyLinuxMach2(linux.LinuxMachine):
 
     def _obtain_channel(self) -> linux.paramiko.Channel:
         raise NotImplementedError()
-
-    def exec0(self, *args: "typing.Optional[str, linux.Path[DummyLinuxMach2]]", stdout="linux.Path[DummyLinuxMach2]") -> str: ...
-    def exec(self, *args: "typing.Optional[str, linux.Path[DummyLinuxMach2]]", stdout="linux.Path[DummyLinuxMach2]") -> typing.Tuple[int, str]: ...
 
 
 def test_dummy() -> None:

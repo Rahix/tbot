@@ -1,8 +1,8 @@
 from tbot.machine.linux import path
 import machine
 
-def annotated(p: path.Path[machine.DummyLinuxMach2]) -> None:
-    pass
+def annotated(p: path.Path[machine.DummyLinuxMach2]) -> str:
+    return p.host.exec0("cat", p)
 
 def invalid_path() -> None:
     mach = machine.DummyMach()
