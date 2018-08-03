@@ -49,11 +49,12 @@ class LinuxMachine(machine.Machine):
                 arg = arg._local_str()
 
             command += f"{shlex.quote(arg)} "
+
         if isinstance(stdout, Path):
             if stdout.host is not self:
                 raise Exception(f"{self!r}: Provided {stdout!r} is not associated with this host")
-                stdout_file = stdout._local_str()
-                command += f">{shlex.quote(stdout_file)}"
+            stdout_file = stdout._local_str()
+            command += f">{shlex.quote(stdout_file)}"
 
         return command
 
@@ -78,11 +79,6 @@ class LinuxMachine(machine.Machine):
 
         command = self.build_command(*args, stdout=stdout)
 
-        import traceback
-        s = traceback.extract_stack()[:-1]
-        if s[-1].name == "exec0":
-            s = s[:-1]
-        f = s[-1]
         log.command(self.name, command)
 
         channel.exec_command(command)
