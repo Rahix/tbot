@@ -10,7 +10,7 @@ def cat_file(f: linux.Path) -> str:
 @tbot.testcase
 def test_devel() -> None:
     from config.labs import dummy
-    with dummy.DummyLab() as lh:
+    with dummy.DummyLabLocal() as lh:
         v = cat_file(linux.Path(lh, "/proc/version")).strip()
         tbot.log.message(f"Version: {v}")
 
@@ -36,15 +36,14 @@ def test_devel() -> None:
 @tbot.testcase
 def test_channel_use() -> None:
     from tbot.machine.channel import subprocess
-    from config.labs import dummy
-    # chan = paramiko.ParamikoChannel(lh._obtain_channel())
     chan = subprocess.SubprocessChannel()
-    tbot.log.message(repr(chan))
 
-    o = chan.raw_command("dmesg")
+    res, out = chan.raw_command_with_retval("true")
+
+    tbot.log.message(f"Exit-Code: {res}, Output: {out!r}")
 
     chan.close()
 
 
 if __name__ == "__main__":
-    test_channel_use()
+    test_devel()

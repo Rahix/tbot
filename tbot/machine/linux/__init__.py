@@ -1,9 +1,9 @@
 import abc
 import typing
 import shlex
-import paramiko
 from tbot import log
 from tbot import machine
+from tbot.machine import channel
 from tbot.machine.linux.path import Path
 
 
@@ -21,7 +21,7 @@ class LinuxMachine(machine.Machine):
         pass
 
     @abc.abstractmethod
-    def _obtain_channel(self) -> paramiko.Channel:
+    def _obtain_channel(self) -> channel.Channel:
         pass
 
     def build_command(
@@ -81,10 +81,7 @@ class LinuxMachine(machine.Machine):
 
         log.command(self.name, command)
 
-        channel.exec_command(command)
-
-        out = channel.recv(1000000).decode()
-        ret = channel.recv_exit_status()
+        ret, out = channel.raw_command_with_retval(command)
 
         return ret, out
 

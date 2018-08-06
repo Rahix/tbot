@@ -2,7 +2,7 @@ import time
 import fcntl
 import os
 import subprocess
-from tbot.machine import channel
+from . import channel
 
 
 class SubprocessChannel(channel.Channel):

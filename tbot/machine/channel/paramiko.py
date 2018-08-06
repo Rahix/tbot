@@ -1,6 +1,6 @@
 import time
 import paramiko
-from tbot.machine import channel
+from . import channel
 
 
 class ParamikoChannel(channel.Channel):

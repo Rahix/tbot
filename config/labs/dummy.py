@@ -16,14 +16,24 @@ def get_sshd_port() -> int:
         return 22
 
 
-class DummyLab(lab.LabHost):
-    name = "local"
+class DummyLabSSH(lab.SSHLabHost):
+    name = "local-ssh"
     hostname = "localhost"
     port = get_sshd_port()
     username = getpass.getuser()
 
     @property
-    def workdir(self) -> "linux.path.Path[DummyLab]":
+    def workdir(self) -> "linux.path.Path[DummyLabSSH]":
+        p = linux.path.Path(self, "/tmp/tbot-dir")
+        self.exec0("mkdir", "-p", p)
+        return p
+
+
+class DummyLabLocal(lab.LocalLabHost):
+    name = "local"
+
+    @property
+    def workdir(self) -> "linux.path.Path[DummyLabLocal]":
         p = linux.path.Path(self, "/tmp/tbot-dir")
         self.exec0("mkdir", "-p", p)
         return p
