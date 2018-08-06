@@ -40,12 +40,10 @@ def test_board() -> None:
     from config.boards import dummy as dummy_board
     with dummy_lab.DummyLabLocal() as lh:
         with dummy_board.DummyBoard(lh) as bd:
-            with dummy_board.DummyBoardMachine(bd) as b:
-                b.channel.send("uname -n\n")
-                import time
-                time.sleep(1)
-                res = b.channel.recv()
-                tbot.log.message(res)
+            with dummy_board.DummyBoardUBoot(bd) as b:
+                b.tmp_cmd("echo Hello")
+                b.tmp_cmd("version")
+                b.tmp_cmd("printenv bootcmd")
 
 
 if __name__ == "__main__":

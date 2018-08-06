@@ -89,19 +89,21 @@ PS1='{TBOT_PROMPT}'
 
         return buf
 
-    def raw_command(self, command: str) -> str:
+    def raw_command(self, command: str, *, prompt: str = TBOT_PROMPT) -> str:
         self.send(f"{command}\n")
-        out = self.read_until_prompt(TBOT_PROMPT)[
-            len(command) + 1 : -len(TBOT_PROMPT)
+        out = self.read_until_prompt(prompt)[
+            len(command) + 1 : -len(prompt)
         ]
         return out
 
     def raw_command_with_retval(
         self,
         command: str,
+        *,
+        prompt: str = TBOT_PROMPT,
         retval_check_cmd: str = "echo $?",
     ) -> typing.Tuple[int, str]:
-        out = self.raw_command(command)
+        out = self.raw_command(command, prompt=prompt)
 
         retval = int(self.raw_command(retval_check_cmd).strip())
 
