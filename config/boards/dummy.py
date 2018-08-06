@@ -4,10 +4,10 @@ from tbot.machine import board
 
 class DummyBoard(board.Board):
     def poweron(self) -> None:
-        self.lh.exec0("ssh", "pollux", "remote_power", "harald-desk", "on")
+        self.lh.exec0("echo", "Power ON")
 
     def poweroff(self) -> None:
-        self.lh.exec0("ssh", "pollux", "remote_power", "harald-desk", "off")
+        self.lh.exec0("echo", "Power OFF")
 
 
 class DummyBoardMachine(board.BoardMachine[DummyBoard]):

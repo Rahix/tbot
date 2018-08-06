@@ -55,4 +55,8 @@ class SubprocessChannel(channel.Channel):
         return s
 
     def close(self) -> None:
-        self.p.kill()
+        self.p.terminate()
+        try:
+            self.p.wait(2)
+        except subprocess.TimeoutExpired:
+            self.p.kill()
