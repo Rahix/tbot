@@ -1,6 +1,5 @@
 import time
 import paramiko
-import tbot
 from tbot.machine import channel
 
 
@@ -26,7 +25,6 @@ class ParamikoChannel(channel.Channel):
             if b == 0:
                 raise channel.ChannelClosedException()
             c += b
-            tbot.log.message(f"Sent {c}/{length} bytes")
 
     def recv(self) -> str:
         # Wait until at least one byte is available
@@ -36,7 +34,6 @@ class ParamikoChannel(channel.Channel):
         buf = b""
         while self.ch.recv_ready():
             buf = self.ch.recv(1000)
-            tbot.log.message(f"Received {len(buf)} bytes")
 
         if buf == b"":
             raise channel.ChannelClosedException()

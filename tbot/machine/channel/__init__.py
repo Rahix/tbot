@@ -12,13 +12,13 @@ class ChannelClosedException(Exception):
 
 class Channel(abc.ABC):
     @abc.abstractmethod
-    def send(self, d: str) -> None:
+    def send(self, data: str) -> None:
         """
         Send data to the target of this channel.
 
         Should raise an exception if the channel is no longer available.
 
-        :param str d: The bytes that should be sent
+        :param str data: The string that should be sent
         """
         pass
 

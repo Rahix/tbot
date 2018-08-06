@@ -35,17 +35,15 @@ def test_devel() -> None:
 
 @tbot.testcase
 def test_channel_use() -> None:
-    from tbot.machine import channel
-    from tbot.machine.channel import paramiko
+    from tbot.machine.channel import subprocess
     from config.labs import dummy
-    with dummy.DummyLab() as lh:
-        chan = paramiko.ParamikoChannel(lh._obtain_channel())
-        tbot.log.message(repr(chan))
+    # chan = paramiko.ParamikoChannel(lh._obtain_channel())
+    chan = subprocess.SubprocessChannel()
+    tbot.log.message(repr(chan))
 
-        o = chan.raw_command("uname -a")
-        tbot.log.message(repr(o))
-        o = chan.raw_command("lsb_release -a")
-        tbot.log.message(repr(o))
+    o = chan.raw_command("dmesg")
+
+    chan.close()
 
 
 if __name__ == "__main__":
