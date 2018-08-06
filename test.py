@@ -35,16 +35,18 @@ def test_devel() -> None:
 
 
 @tbot.testcase
-def test_channel_use() -> None:
-    from tbot.machine.channel import subprocess
-    chan = subprocess.SubprocessChannel()
-
-    res, out = chan.raw_command_with_retval("true")
-
-    tbot.log.message(f"Exit-Code: {res}, Output: {out!r}")
-
-    chan.close()
+def test_board() -> None:
+    from config.labs import dummy as dummy_lab
+    from config.boards import dummy as dummy_board
+    with dummy_lab.DummyLabLocal() as lh:
+        with dummy_board.DummyBoard(lh) as bd:
+            with dummy_board.DummyBoardMachine(bd) as b:
+                b.channel.send("uname -n\n")
+                import time
+                time.sleep(1)
+                res = b.channel.recv()
+                tbot.log.message(res)
 
 
 if __name__ == "__main__":
-    test_devel()
+    test_board()

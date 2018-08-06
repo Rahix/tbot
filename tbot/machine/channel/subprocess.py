@@ -1,38 +1,48 @@
 import time
-import fcntl
+import pty
 import os
+import fcntl
 import subprocess
 from . import channel
 
 
 class SubprocessChannel(channel.Channel):
     def __init__(self) -> None:
+        self.pty_master, pty_slave = pty.openpty()
+
         self.p = subprocess.Popen(
             ["bash", "--norc", "-i"],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
+            stdin=pty_slave,
+            stdout=pty_slave,
+            stderr=pty_slave,
         )
 
-        # Make stdout nonblocking
-        flags = fcntl.fcntl(self.p.stdout, fcntl.F_GETFL)
+        flags = fcntl.fcntl(self.pty_master, fcntl.F_GETFL)
         flags = flags | os.O_NONBLOCK
-        fcntl.fcntl(self.p.stdout, fcntl.F_SETFL, flags)
+        fcntl.fcntl(self.pty_master, fcntl.F_SETFL, flags)
 
         super().__init__()
 
     def send(self, data: str) -> None:
-        self.p.stdin.write(data.encode("utf-8"))
-        self.p.stdin.flush()
+        os.write(self.pty_master, data.encode("utf-8"))
 
     def recv(self) -> str:
         buf = b""
 
-        while buf == b"":
-            new = self.p.stdout.read()
-            if new is not None:
-                buf = new
-            time.sleep(0.1)
+        waiting = True
+        while waiting:
+            try:
+                buf = os.read(self.pty_master, 1000)
+            except BlockingIOError:
+                time.sleep(0.1)
+            else:
+                waiting = False
+
+        try:
+            while True:
+                buf += os.read(self.pty_master, 1000)
+        except BlockingIOError:
+            pass
 
         s: str
         try:

@@ -76,7 +76,7 @@ PS1='{TBOT_PROMPT}'
             while "\n" in buf[last_nl:]:
                 line = buf[last_nl:].split("\n")[0]
                 if last_nl > 0:
-                    tbot.log.message(f">> {line}")
+                    tbot.log.message(f"   >> {line}")
                 last_nl += len(line) + 1
 
             if (not regex and buf[-len(prompt):] == prompt) or (
@@ -84,7 +84,7 @@ PS1='{TBOT_PROMPT}'
             ):
                 last_line = buf[last_nl:-len(prompt)]
                 if last_line != "":
-                    tbot.log.message(f">> {last_line}")
+                    tbot.log.message(f"   >> {last_line}")
                 break
 
         return buf
