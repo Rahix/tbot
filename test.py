@@ -10,7 +10,8 @@ def cat_file(f: linux.Path) -> str:
 @tbot.testcase
 def test_devel() -> None:
     from config.labs import dummy
-    with dummy.DummyLabLocal() as lh:
+    with dummy.DummyLabSSH() as lh:
+        tbot.log.message(f"Host: {lh!r}")
         v = cat_file(linux.Path(lh, "/proc/version")).strip()
         tbot.log.message(f"Version: {v}")
 

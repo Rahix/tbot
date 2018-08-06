@@ -2,10 +2,12 @@ import abc
 import typing
 import pathlib
 import paramiko
-from tbot.machine import linux
+from tbot.machine import linux  # noqa: F401
 from tbot.machine import channel
 from tbot.machine.linux import auth
 from . import lab
+
+SLH = typing.TypeVar("SLH", bound="SSHLabHost")
 
 
 class SSHLabHost(lab.LabHost):
@@ -28,7 +30,7 @@ class SSHLabHost(lab.LabHost):
         return 22
 
     def __repr__(self) -> str:
-        return f"<{self.__class__.__name__} host: {self.hostname!r}>"
+        return f"<{self.__class__.__name__} {self.username}@{self.hostname}:{self.port}>"
 
     def __init__(self) -> None:
         self.client = paramiko.SSHClient()
@@ -57,3 +59,21 @@ class SSHLabHost(lab.LabHost):
 
     def _obtain_channel(self) -> channel.Channel:
         return self.channel
+
+    def new_channel(self) -> channel.Channel:
+        return channel.ParamikoChannel(self.client.get_transport().open_session())
+
+    # Override exec and exec0 so the signatures are typechecked
+    def exec(
+        self,
+        *args: "typing.Union[str, linux.Path[SLH]]",
+        stdout: "typing.Optional[linux.Path[SLH]]" = None,
+    ) -> typing.Tuple[int, str]:
+        return super().exec(*args, stdout=stdout)
+
+    def exec0(
+        self,
+        *args: "typing.Union[str, linux.Path[SLH]]",
+        stdout: "typing.Optional[linux.Path[SLH]]" = None,
+    ) -> str:
+        return super().exec0(*args, stdout=stdout)
