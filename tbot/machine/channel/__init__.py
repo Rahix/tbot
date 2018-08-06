@@ -1,7 +1,13 @@
+import re
 import abc
 import typing
+import tbot
 
 TBOT_PROMPT = "TBOT-VEJPVC1QUk9NUFQK$ "
+
+
+class ChannelClosedException(Exception):
+    pass
 
 
 class Channel(abc.ABC):
@@ -42,6 +48,7 @@ class Channel(abc.ABC):
         """
         Initialize this channel so it is ready to receive commands.
         """
+
         # Ensure we don't make history
         self.send(
             f"""\
@@ -54,10 +61,40 @@ PS1='{TBOT_PROMPT}'
         self.read_until_prompt(TBOT_PROMPT)
 
     def read_until_prompt(self, prompt: str, regex: bool = False) -> str:
-        raise NotImplementedError()
+        expr = f"{prompt}$" if regex else "^$"
+        last_nl = 0
+        buf = ""
+
+        while True:
+            buf += (
+                self.recv()
+                .replace("\r\n", "\n")
+                .replace("\r\n", "\n")
+                .replace("\r", "\n")
+            )
+
+            while "\n" in buf[last_nl:]:
+                line = buf[last_nl:].split("\n")[0]
+                if last_nl > 0:
+                    tbot.log.message(f">> {line}")
+                last_nl += len(line) + 1
+
+            if (not regex and buf[-len(prompt):] == prompt) or (
+                regex and re.search(expr, buf) is not None
+            ):
+                last_line = buf[last_nl:-len(prompt)]
+                if last_line != "":
+                    tbot.log.message(f">> {last_line}")
+                break
+
+        return buf
 
     def raw_command(self, command: str) -> str:
-        raise NotImplementedError()
+        self.send(f"{command}\n")
+        out = self.read_until_prompt(TBOT_PROMPT)[
+            len(command) + 1 : -len(TBOT_PROMPT)
+        ]
+        return out
 
     def raw_command_with_retval(
         self,

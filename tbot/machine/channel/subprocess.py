@@ -18,5 +18,11 @@ class SubprocessChannel(channel.Channel):
         flags = flags | os.O_NONBLOCK
         fcntl.fcntl(self.p.stdout, fcntl.F_SETFL, flags)
 
+    def send(self, d: str) -> None:
+        raise NotImplementedError()
+
+    def recv(self) -> str:
+        raise NotImplementedError()
+
     def close(self) -> None:
         self.p.kill()
