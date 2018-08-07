@@ -69,6 +69,9 @@ class EventIO(io.StringIO):
         # TODO: Write Log Event
         super().close()
 
+    def __enter__(self) -> "EventIO":
+        return self
+
 
 def testcase_begin(name: str) -> None:
     global NESTING

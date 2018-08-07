@@ -2,7 +2,6 @@ import abc
 import io
 import re
 import typing
-import tbot
 
 TBOT_PROMPT = "TBOT-VEJPVC1QUk9NUFQK$ "
 
@@ -12,7 +11,7 @@ class ChannelClosedException(Exception):
 
 
 class SkipStream(io.StringIO):
-    def __init__(self, stream: io.TextIOBase, n: int) -> None:
+    def __init__(self, stream: typing.TextIO, n: int) -> None:
         self.stream = stream
         self.n = n
 
@@ -85,7 +84,7 @@ PS1='{TBOT_PROMPT}'
         prompt: str,
         *,
         regex: bool = False,
-        stream: typing.Optional[io.TextIOBase] = None,
+        stream: typing.Optional[typing.TextIO] = None,
     ) -> str:
         expr = f"{prompt}$" if regex else "^$"
         buf = ""
@@ -116,7 +115,7 @@ PS1='{TBOT_PROMPT}'
         command: str,
         *,
         prompt: str = TBOT_PROMPT,
-        stream: typing.Optional[io.TextIOBase] = None,
+        stream: typing.Optional[typing.TextIO] = None,
     ) -> str:
         self.send(f"{command}\n")
         if stream:
@@ -132,7 +131,7 @@ PS1='{TBOT_PROMPT}'
         *,
         prompt: str = TBOT_PROMPT,
         retval_check_cmd: str = "echo $?",
-        stream: typing.Optional[io.TextIOBase] = None,
+        stream: typing.Optional[typing.TextIO] = None,
     ) -> typing.Tuple[int, str]:
         out = self.raw_command(command, prompt=prompt, stream=stream)
 
