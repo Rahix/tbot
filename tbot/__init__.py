@@ -1,7 +1,8 @@
 import typing
 from tbot import log
-from tbot.machine.linux import lab
-from tbot.machine import board
+
+from . import selectable
+from .selectable import acquire_lab, acquire_board, acquire_uboot  # noqa: F401
 
 F = typing.TypeVar("F", bound=typing.Callable[..., typing.Any])
 
@@ -21,15 +22,3 @@ def testcase(tc: F) -> F:
 
     wrapped._tbot_testcase = True  # type: ignore
     return typing.cast(F, wrapped)
-
-
-def acquire_lab() -> lab.LabHost:
-    raise NotImplementedError("Maybe you haven't set a lab?")
-
-
-def acquire_board(lh: lab.LabHost) -> board.Board:
-    raise NotImplementedError("Maybe you haven't set a board?")
-
-
-def acquire_uboot(board: board.Board) -> board.UBootMachine:
-    raise NotImplementedError("Maybe you haven't set a board?")

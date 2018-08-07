@@ -29,9 +29,11 @@ def main() -> None:
         from config.labs import dummy as lab
         from config.boards import dummy as board
 
-        tbot.acquire_lab = lambda: lab.LAB()
-        tbot.acquire_board = lambda lh: board.BOARD(lh)
-        tbot.acquire_uboot = lambda b: board.UBOOT(b)
+        # Set the actual selected types, needs to be ignored by mypy
+        # beause this is obviously not good python
+        tbot.selectable.LabHost = lab.LAB  # type: ignore
+        tbot.selectable.Board = board.BOARD  # type: ignore
+        tbot.selectable.UBootMachine = board.UBOOT  # type: ignore
 
         import test2
 
