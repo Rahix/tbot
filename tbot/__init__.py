@@ -17,6 +17,7 @@ def testcase(tc: F) -> F:
             raise
         log.testcase_end()
         return result
+    wrapped._tbot_testcase = True  # type: ignore
     return typing.cast(F, wrapped)
 
 

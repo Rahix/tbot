@@ -11,6 +11,9 @@ def main() -> None:
     tbot.acquire_uboot = lambda b: board.UBOOT(b)
 
     import test2
-    test2.test_imports()
+
+    for n, candy in test2.__dict__.items():
+        if hasattr(candy, "_tbot_testcase"):
+            tbot.log.message(f"Testcase: {n}")
 
     tbot.log.EventIO(tbot.log.c("SUCCESS").green.bold, nest_first=tbot.log.u("└─", "\\-"))
