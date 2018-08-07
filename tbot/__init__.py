@@ -21,15 +21,12 @@ def testcase(tc: F) -> F:
 
 
 def acquire_lab() -> lab.LabHost:
-    from config.labs.dummy import DummyLabLocal
-    return DummyLabLocal()
+    raise NotImplementedError("Maybe you haven't set a lab?")
 
 
 def acquire_board(lh: lab.LabHost) -> board.Board:
-    from config.boards.dummy import DummyBoard
-    return DummyBoard(lh)
+    raise NotImplementedError("Maybe you haven't set a board?")
 
 
 def acquire_uboot(board: board.Board) -> board.UBootMachine:
-    from config.boards.dummy import DummyBoardUBoot
-    return DummyBoardUBoot(board)
+    raise NotImplementedError("Maybe you haven't set a board?")

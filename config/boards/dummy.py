@@ -21,9 +21,9 @@ class DummyBoardMachine(board.BoardMachine[DummyBoard]):
         return chan
 
 
-class DummyBoardUBoot(DummyBoardMachine, board.UBootMachine[DummyBoard]):
+class DummyBoardUBoot(DummyBoardMachine, board.UBootMachine):
     prompt = "U-Boot> "
 
 
-# class DummyBoardLinux(board.BoardLinux[DummyBoardMachine]):
-#     ...
+BOARD = DummyBoard
+UBOOT = DummyBoardUBoot

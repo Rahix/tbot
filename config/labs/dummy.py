@@ -37,3 +37,6 @@ class DummyLabLocal(lab.LocalLabHost):
         p = linux.path.Path(self, "/tmp/tbot-dir")
         self.exec0("mkdir", "-p", p)
         return p
+
+
+LAB = DummyLabLocal

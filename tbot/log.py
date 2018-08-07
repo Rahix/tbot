@@ -22,7 +22,7 @@ def _nest(after: typing.Optional[str] = None) -> str:
 class EventIO(io.StringIO):
     def __init__(
         self,
-        initial: typing.Optional[str] = None,
+        initial: typing.Union[str, c, None] = None,
         *,
         nest_first: typing.Optional[str] = None,
     ) -> None:
@@ -34,7 +34,7 @@ class EventIO(io.StringIO):
         self.nest_first = nest_first
 
         if initial:
-            self.writeln(initial)
+            self.writeln(str(initial))
 
     def _print_lines(self, last: bool = False) -> None:
         buf = self.getvalue()[self.cursor:]
@@ -54,7 +54,7 @@ class EventIO(io.StringIO):
         if last and buf != "":
             print(nest_def + buf)
 
-    def writeln(self, s: str) -> int:
+    def writeln(self, s: typing.Union[str, c]) -> int:
         return self.write(s + "\n")
 
     def write(self, s: str) -> int:
@@ -100,4 +100,4 @@ def command(mach: str, cmd: str) -> EventIO:
 
 
 def message(msg: str) -> None:
-    print(_nest() + msg)
+    EventIO(msg)
