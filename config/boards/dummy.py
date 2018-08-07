@@ -3,6 +3,8 @@ from tbot.machine import board
 
 
 class DummyBoard(board.Board):
+    name = "at91sam9g45"
+
     def poweron(self) -> None:
         self.lh.exec0("ssh", "pollux", "remote_power", "at91sam9g45", "on")
 

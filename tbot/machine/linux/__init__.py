@@ -79,9 +79,9 @@ class LinuxMachine(machine.Machine):
 
         command = self.build_command(*args, stdout=stdout)
 
-        log.command(self.name, command)
+        ev = log.command(self.name, command)
 
-        ret, out = channel.raw_command_with_retval(command)
+        ret, out = channel.raw_command_with_retval(command, stream=ev)
 
         return ret, out
 

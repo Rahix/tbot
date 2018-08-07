@@ -46,5 +46,13 @@ def test_board() -> None:
                 b.tmp_cmd("printenv bootcmd")
 
 
+@tbot.testcase
+def test_ev() -> None:
+    from tbot import log
+    ev = log.EventIO()
+    ev.write("Hello World\nFoo")
+    ev.write(" Bar\nHello World")
+
+
 if __name__ == "__main__":
     test_board()

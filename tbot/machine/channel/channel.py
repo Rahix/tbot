@@ -1,5 +1,6 @@
-import re
 import abc
+import io
+import re
 import typing
 import tbot
 
@@ -8,6 +9,25 @@ TBOT_PROMPT = "TBOT-VEJPVC1QUk9NUFQK$ "
 
 class ChannelClosedException(Exception):
     pass
+
+
+class SkipStream(io.StringIO):
+    def __init__(self, stream: io.TextIOBase, n: int) -> None:
+        self.stream = stream
+        self.n = n
+
+    def write(self, s: str) -> int:
+        if self.n > 0:
+            if self.n > len(s):
+                self.n -= len(s)
+                return len(s)
+            else:
+                s = s[self.n:]
+                n = self.n
+                self.n = 0
+                return self.stream.write(s) + n
+        else:
+            return self.stream.write(s)
 
 
 class Channel(abc.ABC):
@@ -60,38 +80,48 @@ PS1='{TBOT_PROMPT}'
 
         self.read_until_prompt(TBOT_PROMPT)
 
-    def read_until_prompt(self, prompt: str, regex: bool = False) -> str:
+    def read_until_prompt(
+        self,
+        prompt: str,
+        *,
+        regex: bool = False,
+        stream: typing.Optional[io.TextIOBase] = None,
+    ) -> str:
         expr = f"{prompt}$" if regex else "^$"
-        last_nl = 0
         buf = ""
 
         while True:
-            buf += (
+            new = (
                 self.recv()
                 .replace("\r\n", "\n")
                 .replace("\r\n", "\n")
                 .replace("\r", "\n")
             )
 
-            while "\n" in buf[last_nl:]:
-                line = buf[last_nl:].split("\n")[0]
-                if last_nl > 0:
-                    tbot.log.message(f"   >> {line}")
-                last_nl += len(line) + 1
+            buf += new
 
             if (not regex and buf[-len(prompt):] == prompt) or (
                 regex and re.search(expr, buf) is not None
             ):
-                last_line = buf[last_nl:-len(prompt)]
-                if last_line != "":
-                    tbot.log.message(f"   >> {last_line}")
+                if stream:
+                    stream.write(new[:-len(prompt)])
                 break
+            elif stream:
+                stream.write(new)
 
         return buf
 
-    def raw_command(self, command: str, *, prompt: str = TBOT_PROMPT) -> str:
+    def raw_command(
+        self,
+        command: str,
+        *,
+        prompt: str = TBOT_PROMPT,
+        stream: typing.Optional[io.TextIOBase] = None,
+    ) -> str:
         self.send(f"{command}\n")
-        out = self.read_until_prompt(prompt)[
+        if stream:
+            stream = SkipStream(stream, len(command) + 1)
+        out = self.read_until_prompt(prompt, stream=stream)[
             len(command) + 1 : -len(prompt)
         ]
         return out
@@ -102,8 +132,9 @@ PS1='{TBOT_PROMPT}'
         *,
         prompt: str = TBOT_PROMPT,
         retval_check_cmd: str = "echo $?",
+        stream: typing.Optional[io.TextIOBase] = None,
     ) -> typing.Tuple[int, str]:
-        out = self.raw_command(command, prompt=prompt)
+        out = self.raw_command(command, prompt=prompt, stream=stream)
 
         retval = int(self.raw_command(retval_check_cmd).strip())
 

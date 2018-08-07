@@ -1,9 +1,16 @@
 import abc
 import contextlib
+import typing
+import tbot
 from tbot.machine.linux import lab
 
 
 class Board(contextlib.AbstractContextManager):
+    @property
+    @abc.abstractmethod
+    def name(self) -> str:
+        pass
+
     @abc.abstractmethod
     def poweron(self) -> None:
         pass
@@ -14,11 +21,15 @@ class Board(contextlib.AbstractContextManager):
 
     def __init__(self, lh: lab.LabHost) -> None:
         self.lh = lh
+        self.ev = tbot.log.EventIO()
 
     def __enter__(self) -> "Board":
+        self.ev.writeln(tbot.log.c("POWERON").bold + f" ({self.name})")
+        self.ev.prefix = "   <> "
         self.poweron()
         return self
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:  # type: ignore
         """Cleanup this machine instance."""
+        tbot.log.EventIO(tbot.log.c("POWEROFF").bold + f" ({self.name})")
         self.poweroff()
