@@ -4,10 +4,10 @@ from tbot.machine import board
 
 class DummyBoard(board.Board):
     def poweron(self) -> None:
-        self.lh.exec0("ssh", "pollux", "remote_power", "fipad-b3", "on")
+        self.lh.exec0("ssh", "pollux", "remote_power", "at91sam9g45", "on")
 
     def poweroff(self) -> None:
-        self.lh.exec0("ssh", "pollux", "remote_power", "fipad-b3", "off")
+        self.lh.exec0("ssh", "pollux", "remote_power", "at91sam9g45", "off")
 
 
 class DummyBoardMachine(board.BoardMachine[DummyBoard]):
@@ -15,12 +15,12 @@ class DummyBoardMachine(board.BoardMachine[DummyBoard]):
 
     def connect(self) -> channel.Channel:
         chan = self.board.lh.new_channel()
-        chan.send("rlogin metis -l fipad-b3\n")
+        chan.send("rlogin ts3 -l at91sam9g45\n")
         return chan
 
 
 class DummyBoardUBoot(DummyBoardMachine, board.UBootMachine[DummyBoard]):
-    prompt = "=> "
+    prompt = "U-Boot> "
 
 
 # class DummyBoardLinux(board.BoardLinux[DummyBoardMachine]):
