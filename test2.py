@@ -3,6 +3,12 @@ from tbot.machine import linux
 
 
 @tbot.testcase
+def foo_bar() -> None:
+    with tbot.acquire_lab() as lh:
+        lh.exec0("lsb_release", "-a")
+
+
+@tbot.testcase
 def test_imports() -> None:
     with tbot.acquire_lab() as lh:
         path = linux.Path(lh, "/tmp")
