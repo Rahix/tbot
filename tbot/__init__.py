@@ -1,7 +1,7 @@
 import typing
 from tbot import log
 from tbot.machine.linux import lab
-# from tbot.machine import board
+from tbot.machine import board
 
 F = typing.TypeVar('F', bound=typing.Callable[..., typing.Any])
 
@@ -23,3 +23,13 @@ def testcase(tc: F) -> F:
 def acquire_lab() -> lab.LabHost:
     from config.labs.dummy import DummyLabLocal
     return DummyLabLocal()
+
+
+def acquire_board(lh: lab.LabHost) -> board.Board:
+    from config.boards.dummy import DummyBoard
+    return DummyBoard(lh)
+
+
+def acquire_uboot(board: board.Board) -> board.UBootMachine:
+    from config.boards.dummy import DummyBoardUBoot
+    return DummyBoardUBoot(board)

@@ -25,6 +25,9 @@ class Board(contextlib.AbstractContextManager):
         self.lh = lh
         self.ev = tbot.log.EventIO()
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.lh!r})"
+
     def __enter__(self: Self) -> Self:
         self.ev.writeln(tbot.log.c("POWERON").bold + f" ({self.name})")
         self.ev.prefix = "   <> "

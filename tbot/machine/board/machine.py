@@ -16,5 +16,8 @@ class BoardMachine(machine.Machine, typing.Generic[B]):
         self.board = board
         self.channel = self.connect()
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.board!r})"
+
     def destroy(self) -> None:
         self.channel.close()
