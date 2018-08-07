@@ -22,7 +22,7 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
         self._host = host
 
     @property
-    def host(self) -> "linux.LinuxMachine":
+    def host(self) -> H:
         """Return the host associated with this path."""
         return self._host
 

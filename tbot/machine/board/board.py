@@ -4,6 +4,8 @@ import typing
 import tbot
 from tbot.machine.linux import lab
 
+Self = typing.TypeVar("Self", bound="Board")
+
 
 class Board(contextlib.AbstractContextManager):
     @property
@@ -23,7 +25,7 @@ class Board(contextlib.AbstractContextManager):
         self.lh = lh
         self.ev = tbot.log.EventIO()
 
-    def __enter__(self) -> "Board":
+    def __enter__(self: Self) -> Self:
         self.ev.writeln(tbot.log.c("POWERON").bold + f" ({self.name})")
         self.ev.prefix = "   <> "
         self.poweron()

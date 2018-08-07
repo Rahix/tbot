@@ -23,18 +23,3 @@ class LocalLabHost(lab.LabHost):
 
     def new_channel(self) -> channel.Channel:
         return channel.SubprocessChannel()
-
-    # Override exec and exec0 so the signatures are typechecked
-    def exec(
-        self,
-        *args: "typing.Union[str, linux.Path[LLH]]",
-        stdout: "typing.Optional[linux.Path[LLH]]" = None,
-    ) -> typing.Tuple[int, str]:
-        return super().exec(*args, stdout=stdout)
-
-    def exec0(
-        self,
-        *args: "typing.Union[str, linux.Path[LLH]]",
-        stdout: "typing.Optional[linux.Path[LLH]]" = None,
-    ) -> str:
-        return super().exec0(*args, stdout=stdout)

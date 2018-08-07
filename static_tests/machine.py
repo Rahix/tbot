@@ -1,6 +1,6 @@
-import typing
 from tbot import machine
 from tbot.machine import linux
+from tbot.machine import channel
 
 
 class DummyMach(machine.Machine):
@@ -21,20 +21,8 @@ class DummyLinuxMach(linux.LinuxMachine):
     def destroy(self) -> None:
         pass
 
-    def _obtain_channel(self) -> linux.paramiko.Channel:
+    def _obtain_channel(self) -> channel.Channel:
         raise NotImplementedError()
-
-    def exec0(
-        self,
-        *args: "typing.Union[str, linux.Path[DummyLinuxMach]]",
-        stdout: "typing.Optional[linux.Path[DummyLinuxMach]]" = None,
-    ) -> str: ...
-
-    def exec(
-        self,
-        *args: "typing.Union[str, linux.Path[DummyLinuxMach]]",
-        stdout: "typing.Optional[linux.Path[DummyLinuxMach]]" = None,
-    ) -> typing.Tuple[int, str]: ...
 
 
 class DummyLinuxMach2(linux.LinuxMachine):
@@ -48,7 +36,7 @@ class DummyLinuxMach2(linux.LinuxMachine):
     def destroy(self) -> None:
         pass
 
-    def _obtain_channel(self) -> linux.paramiko.Channel:
+    def _obtain_channel(self) -> channel.Channel:
         raise NotImplementedError()
 
 

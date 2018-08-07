@@ -6,6 +6,8 @@ from tbot import machine
 from tbot.machine import channel
 from tbot.machine.linux.path import Path
 
+Self = typing.TypeVar("Self", bound="LinuxMachine")
+
 
 class LinuxMachine(machine.Machine):
     @property
@@ -16,7 +18,7 @@ class LinuxMachine(machine.Machine):
 
     @property
     @abc.abstractmethod
-    def workdir(self) -> Path:
+    def workdir(self: Self) -> Path[Self]:
         """Return a path where testcases can store data on this host."""
         pass
 
@@ -59,9 +61,9 @@ class LinuxMachine(machine.Machine):
         return command
 
     def exec(
-        self,
-        *args: typing.Union[str, Path],
-        stdout: typing.Optional[Path] = None,
+        self: Self,
+        *args: typing.Union[str, Path[Self]],
+        stdout: typing.Optional[Path[Self]] = None,
     ) -> typing.Tuple[int, str]:
         """
         Run a command on this machine.
@@ -85,9 +87,9 @@ class LinuxMachine(machine.Machine):
         return ret, out
 
     def exec0(
-        self,
-        *args: typing.Union[str, Path],
-        stdout: typing.Optional[Path] = None,
+        self: Self,
+        *args: typing.Union[str, Path[Self]],
+        stdout: typing.Optional[Path[Self]] = None,
     ) -> str:
         """
         Run a command on this machine and ensure it succeeds.
