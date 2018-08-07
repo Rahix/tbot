@@ -1,5 +1,7 @@
 import typing
 from tbot import log
+from tbot.machine.linux import lab
+# from tbot.machine import board
 
 F = typing.TypeVar('F', bound=typing.Callable[..., typing.Any])
 
@@ -16,3 +18,8 @@ def testcase(tc: F) -> F:
         log.testcase_end()
         return result
     return typing.cast(F, wrapped)
+
+
+def acquire_lab() -> lab.LabHost:
+    from config.labs.dummy import DummyLabLocal
+    return DummyLabLocal()

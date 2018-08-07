@@ -1,5 +1,8 @@
 import abc
 import contextlib
+import typing
+
+Self = typing.TypeVar("Self", bound="Machine")
 
 
 class Machine(contextlib.AbstractContextManager):
@@ -15,6 +18,9 @@ class Machine(contextlib.AbstractContextManager):
     def destroy(self) -> None:
         """Destroy and cleanup this machine instance."""
         pass
+
+    def __enter__(self: Self) -> Self:
+        return self
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:  # type: ignore
         """Cleanup this machine instance."""
