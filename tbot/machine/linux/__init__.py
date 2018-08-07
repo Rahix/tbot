@@ -10,6 +10,7 @@ Self = typing.TypeVar("Self", bound="LinuxMachine")
 
 
 class LinuxMachine(machine.Machine):
+
     @property
     @abc.abstractmethod
     def username(self) -> str:
@@ -27,9 +28,7 @@ class LinuxMachine(machine.Machine):
         pass
 
     def build_command(
-        self,
-        *args: typing.Union[str, Path],
-        stdout: typing.Optional[Path] = None,
+        self, *args: typing.Union[str, Path], stdout: typing.Optional[Path] = None
     ) -> str:
         """
         Build the string representation of a command.
@@ -46,7 +45,9 @@ class LinuxMachine(machine.Machine):
         for arg in args:
             if isinstance(arg, Path):
                 if arg.host is not self:
-                    raise Exception(f"{self!r}: Provided {arg!r} is not associated with this host")
+                    raise Exception(
+                        f"{self!r}: Provided {arg!r} is not associated with this host"
+                    )
 
                 arg = arg._local_str()
 
@@ -54,7 +55,9 @@ class LinuxMachine(machine.Machine):
 
         if isinstance(stdout, Path):
             if stdout.host is not self:
-                raise Exception(f"{self!r}: Provided {stdout!r} is not associated with this host")
+                raise Exception(
+                    f"{self!r}: Provided {stdout!r} is not associated with this host"
+                )
             stdout_file = stdout._local_str()
             command += f">{shlex.quote(stdout_file)}"
 

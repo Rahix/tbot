@@ -3,11 +3,12 @@ from tbot import log
 from tbot.machine.linux import lab
 from tbot.machine import board
 
-F = typing.TypeVar('F', bound=typing.Callable[..., typing.Any])
+F = typing.TypeVar("F", bound=typing.Callable[..., typing.Any])
 
 
 def testcase(tc: F) -> F:
     """Decorate a function to make it a testcase."""
+
     def wrapped(*args: typing.Any, **kwargs: typing.Any) -> typing.Any:
         log.testcase_begin(tc.__name__)
         try:
@@ -17,6 +18,7 @@ def testcase(tc: F) -> F:
             raise
         log.testcase_end()
         return result
+
     wrapped._tbot_testcase = True  # type: ignore
     return typing.cast(F, wrapped)
 

@@ -20,6 +20,7 @@ def _nest(after: typing.Optional[str] = None) -> str:
 
 
 class EventIO(io.StringIO):
+
     def __init__(
         self,
         initial: typing.Union[str, c, None] = None,
@@ -37,7 +38,7 @@ class EventIO(io.StringIO):
             self.writeln(str(initial))
 
     def _print_lines(self, last: bool = False) -> None:
-        buf = self.getvalue()[self.cursor:]
+        buf = self.getvalue()[self.cursor :]
 
         prefix = self.prefix or ""
         nest_first = _nest(self.nest_first) + prefix

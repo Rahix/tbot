@@ -12,7 +12,9 @@ class UBootMachine(machine.BoardMachine, typing.Generic[machine.B]):
         super().__init__(board)
 
         with board.ev:
-            self.channel.read_until_prompt(self.autoboot_prompt, regex=True, stream=board.ev)
+            self.channel.read_until_prompt(
+                self.autoboot_prompt, regex=True, stream=board.ev
+            )
         self.channel.send(self.autoboot_keys)
         self.channel.read_until_prompt(self.prompt)
 

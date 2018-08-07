@@ -10,15 +10,9 @@ def main() -> None:
 
     subparsers = parser.add_subparsers(dest="subcommand")
 
-    subparsers.add_parser(
-        "list-testcases",
-        help="List all available testcases",
-    )
+    subparsers.add_parser("list-testcases", help="List all available testcases")
 
-    run_parser = subparsers.add_parser(
-        "run",
-        help="Run a testcase",
-    )
+    run_parser = subparsers.add_parser("run", help="Run a testcase")
 
     run_parser.add_argument("testcase")
 
@@ -45,6 +39,8 @@ def main() -> None:
 
         tc()
 
-        tbot.log.EventIO(tbot.log.c("SUCCESS").green.bold, nest_first=tbot.log.u("└─", "\\-"))
+        tbot.log.EventIO(
+            tbot.log.c("SUCCESS").green.bold, nest_first=tbot.log.u("└─", "\\-")
+        )
     else:
         parser.error("Invalid subcommand")

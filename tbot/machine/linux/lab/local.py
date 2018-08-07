@@ -8,6 +8,7 @@ LLH = typing.TypeVar("LLH", bound="LocalLabHost")
 
 
 class LocalLabHost(lab.LabHost):
+
     @property
     def username(self) -> str:
         return getpass.getuser()

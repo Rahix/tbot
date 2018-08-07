@@ -8,6 +8,7 @@ Self = typing.TypeVar("Self", bound="Board")
 
 
 class Board(contextlib.AbstractContextManager):
+
     @property
     @abc.abstractmethod
     def name(self) -> str:

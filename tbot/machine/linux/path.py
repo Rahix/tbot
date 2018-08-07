@@ -6,6 +6,7 @@ H = typing.TypeVar("H", bound="linux.LinuxMachine")
 
 
 class Path(pathlib.PurePosixPath, typing.Generic[H]):
+
     def __new__(cls, host: H, *args: typing.Any) -> "Path":
         """
         Create a new path instance.

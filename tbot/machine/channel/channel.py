@@ -11,6 +11,7 @@ class ChannelClosedException(Exception):
 
 
 class SkipStream(io.StringIO):
+
     def __init__(self, stream: typing.TextIO, n: int) -> None:
         self.stream = stream
         self.n = n
@@ -21,7 +22,7 @@ class SkipStream(io.StringIO):
                 self.n -= len(s)
                 return len(s)
             else:
-                s = s[self.n:]
+                s = s[self.n :]
                 n = self.n
                 self.n = 0
                 return self.stream.write(s) + n
@@ -30,6 +31,7 @@ class SkipStream(io.StringIO):
 
 
 class Channel(abc.ABC):
+
     @abc.abstractmethod
     def send(self, data: str) -> None:
         """
@@ -99,11 +101,11 @@ PS1='{TBOT_PROMPT}'
 
             buf += new
 
-            if (not regex and buf[-len(prompt):] == prompt) or (
+            if (not regex and buf[-len(prompt) :] == prompt) or (
                 regex and re.search(expr, buf) is not None
             ):
                 if stream:
-                    stream.write(new[:-len(prompt)])
+                    stream.write(new[: -len(prompt)])
                 break
             elif stream:
                 stream.write(new)

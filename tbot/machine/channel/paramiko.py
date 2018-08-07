@@ -4,6 +4,7 @@ from . import channel
 
 
 class ParamikoChannel(channel.Channel):
+
     def __init__(self, ch: paramiko.Channel) -> None:
         self.ch = ch
 

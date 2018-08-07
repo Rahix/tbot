@@ -4,6 +4,7 @@ from tbot.machine import channel
 
 
 class LabHost(linux.LinuxMachine):
+
     @abc.abstractmethod
     def new_channel(self) -> channel.Channel:
         """

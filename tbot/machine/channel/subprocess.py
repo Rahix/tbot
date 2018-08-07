@@ -7,6 +7,7 @@ from . import channel
 
 
 class SubprocessChannel(channel.Channel):
+
     def __init__(self) -> None:
         self.pty_master, pty_slave = pty.openpty()
 

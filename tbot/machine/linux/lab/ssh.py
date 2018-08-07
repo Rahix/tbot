@@ -11,6 +11,7 @@ SLH = typing.TypeVar("SLH", bound="SSHLabHost")
 
 
 class SSHLabHost(lab.LabHost):
+
     @property
     @abc.abstractmethod
     def hostname(self) -> str:
@@ -20,9 +21,7 @@ class SSHLabHost(lab.LabHost):
     @property
     def authenticator(self) -> auth.Authenticator:
         """Return an authenticator that allows logging in on the labhost."""
-        return auth.PrivateKeyAuthenticator(
-            pathlib.Path.home() / ".ssh" / "id_rsa",
-        )
+        return auth.PrivateKeyAuthenticator(pathlib.Path.home() / ".ssh" / "id_rsa")
 
     @property
     def port(self) -> int:
@@ -30,7 +29,9 @@ class SSHLabHost(lab.LabHost):
         return 22
 
     def __repr__(self) -> str:
-        return f"<{self.__class__.__name__} {self.username}@{self.hostname}:{self.port}>"
+        return (
+            f"<{self.__class__.__name__} {self.username}@{self.hostname}:{self.port}>"
+        )
 
     def __init__(self) -> None:
         self.client = paramiko.SSHClient()
@@ -46,13 +47,12 @@ class SSHLabHost(lab.LabHost):
             key_file = str(authenticator.key)
 
         self.client.connect(
-            self.hostname,
-            port=self.port,
-            password=password,
-            key_filename=key_file,
+            self.hostname, port=self.port, password=password, key_filename=key_file
         )
 
-        self.channel = channel.ParamikoChannel(self.client.get_transport().open_session())
+        self.channel = channel.ParamikoChannel(
+            self.client.get_transport().open_session()
+        )
 
     def destroy(self) -> None:
         self.client.close()

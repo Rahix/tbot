@@ -8,6 +8,7 @@ B = typing.TypeVar("B", bound=board.Board)
 
 
 class BoardMachine(machine.Machine, typing.Generic[B]):
+
     @abc.abstractmethod
     def connect(self) -> channel.Channel:
         pass
