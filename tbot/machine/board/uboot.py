@@ -1,14 +1,17 @@
 import typing
 import tbot
 from . import machine
+from . import board
+
+B = typing.TypeVar("B", bound=board.Board)
 
 
-class UBootMachine(machine.BoardMachine, typing.Generic[machine.B]):
+class UBootMachine(machine.BoardMachine, typing.Generic[B]):
     autoboot_prompt = r"Hit any key to stop autoboot:\s+\d+\s+"
     autoboot_keys = "\n"
     prompt = "U-Boot> "
 
-    def __init__(self, board: machine.B) -> None:
+    def __init__(self, board: B) -> None:
         super().__init__(board)
 
         with board.ev:
