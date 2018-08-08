@@ -14,11 +14,6 @@ def u(with_unicode: str, without_unicode: str) -> str:
 NESTING = 0
 
 
-def _nest(after: typing.Optional[str] = None) -> str:
-    after = after or u("├─", "+-")
-    return str(c("".join(itertools.repeat(u("│   ", "|   "), NESTING)) + after).dark)
-
-
 class EventIO(io.StringIO):
 
     def __init__(
@@ -32,28 +27,30 @@ class EventIO(io.StringIO):
         self.cursor = 0
         self.first = True
         self.prefix: typing.Optional[str] = None
-        self.nest_first = nest_first
+        self.nest_first = nest_first or u("├─", "+-")
 
         if initial:
             self.writeln(str(initial))
 
+    def _prefix(self) -> str:
+        after = self.nest_first if self.first else u("│ ", "| ")
+        self.first = False
+        prefix: str = self.prefix or ""
+        return str(c("".join(itertools.repeat(u("│   ", "|   "), NESTING)) + after).dark) + prefix
+
     def _print_lines(self, last: bool = False) -> None:
         buf = self.getvalue()[self.cursor :]
 
-        prefix = self.prefix or ""
-        nest_first = _nest(self.nest_first) + prefix
-        nest_def = _nest(u("│ ", "| ")) + prefix
         while "\n" in buf:
-            nest = nest_first if self.first else nest_def
             line = buf.split("\n", maxsplit=1)[0]
-            print(nest + line)
+            print(self._prefix() + line)
             length = len(line) + 1
             self.cursor += length
             buf = buf[length:]
             self.first = False
 
         if last and buf != "":
-            print(nest_def + buf)
+            print(self._prefix() + buf)
 
     def writeln(self, s: typing.Union[str, c]) -> int:
         return self.write(s + "\n")
