@@ -1,3 +1,4 @@
+import typing
 import tbot
 from tbot.machine import linux
 
@@ -24,10 +25,20 @@ def test_imports() -> None:
 
 @tbot.testcase
 def reentrant() -> None:
+    tbot.log.message("Calling clean ...")
+    reentrant_pattern()
+
+    tbot.log.message("Calling nested ...")
     with tbot.acquire_lab() as lh:
-        with tbot.acquire_board(lh) as b:
-            with b as b2:
-                assert b is b2
+        reentrant_pattern(lh)
+
+
+@tbot.testcase
+def reentrant_pattern(
+    lh: typing.Optional[linux.LabHost] = None,
+) -> None:
+    with lh or tbot.acquire_lab() as lh:
+        lh.exec0("lsb_release", "-a")
 
 
 if __name__ == "__main__":
