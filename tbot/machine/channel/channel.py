@@ -65,7 +65,7 @@ class Channel(abc.ABC):
         """
         pass
 
-    def __init__(self) -> None:
+    def initialize(self) -> None:
         """
         Initialize this channel so it is ready to receive commands.
         """
@@ -80,6 +80,9 @@ PS1='{TBOT_PROMPT}'
         )
 
         self.read_until_prompt(TBOT_PROMPT)
+
+    def __init__(self) -> None:
+        self.initialize()
 
     def read_until_prompt(
         self,
