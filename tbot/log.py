@@ -36,7 +36,10 @@ class EventIO(io.StringIO):
         after = self.nest_first if self.first else u("│ ", "| ")
         self.first = False
         prefix: str = self.prefix or ""
-        return str(c("".join(itertools.repeat(u("│   ", "|   "), NESTING)) + after).dark) + prefix
+        return (
+            str(c("".join(itertools.repeat(u("│   ", "|   "), NESTING)) + after).dark)
+            + prefix
+        )
 
     def _print_lines(self, last: bool = False) -> None:
         buf = self.getvalue()[self.cursor :]
