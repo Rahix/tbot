@@ -9,6 +9,7 @@ import pathlib
 import socket
 import paramiko
 import tbot
+import tbot.config
 from . import machine
 from . import shell_utils
 
@@ -137,7 +138,9 @@ PS1='{self.prompt}'
     @property
     def workdir(self) -> pathlib.PurePosixPath:
         if self._workdir is None:
-            raise Exception("No workdir specified for this buildhost")
+            raise tbot.config.InvalidConfigException(
+                "No workdir specified for this buildhost"
+            )
         return self._workdir
 
     @property

@@ -134,11 +134,12 @@ find {patchdir} -name '*.patch'""",
     tbot.log.debug(f"The following patches were found:\n    -> {dbg_str}")
 
     for patch in patchfiles:
-        tb.shell.exec0(
-            f"""\
-cd {gitdir}; git am -3 {patch}""",
-            log_show_stdout=False,
-        )
+        # TODO: Allow skipping failing patches
+        ret, _ = tb.shell.exec(f"cd {gitdir}; git am -3 {patch}", log_show_stdout=False)
+        if ret != 0:  # Patch failed
+            tb.shell.exec0(f"cd {gitdir}; git am --abort", log_show_stdout=False)
+            raise tbot.TestcaseFailure(f"Failed to apply patch {patch}")
+
         patchfile = tb.shell.exec0(f"cat {patch}", log_show=False)
         tbot.log.doc_appendix(
             f"Patch {patch.split('/')[-1]}",
@@ -174,10 +175,9 @@ def git_bisect(
     if params is None:
         params = dict()
 
-    if and_then is None:
-        raise Exception(
-            "No test for deciding whether a commit is good or bad was provided"
-        )
+    assert (
+        and_then is not None
+    ), "No test for deciding whether a commit is good or bad was provided"
 
     assert isinstance(gitdir, pathlib.PurePosixPath)
     assert isinstance(good, str)

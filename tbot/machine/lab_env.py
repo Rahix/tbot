@@ -7,6 +7,7 @@ import typing
 import pathlib
 import paramiko
 import tbot
+import tbot.config
 from . import machine
 from . import shell_utils
 
@@ -47,7 +48,7 @@ class MachineLabEnv(machine.Machine):
     @property
     def workdir(self) -> pathlib.PurePosixPath:
         if self._workdir is None:
-            raise Exception("No workdir specified")
+            raise tbot.config.InvalidConfigException("No workdir specified")
         return self._workdir
 
     @property

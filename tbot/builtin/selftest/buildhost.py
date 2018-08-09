@@ -39,7 +39,7 @@ def selftest_buildhost_bad_ssh(tb: tbot.TBot) -> None:
                 name="custom_fail", hostname="nonexistant-host", username="nobody"
             )
         ) as tb:
-            raise Exception(
+            raise tbot.TestcaseFailure(
                 "Somehow TBot thinks that it just succeeded connecting to \
 a host that does not exist"
             )

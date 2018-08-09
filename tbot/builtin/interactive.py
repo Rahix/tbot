@@ -49,7 +49,7 @@ def ishell(
         mode = termios.tcgetattr(sys.stdin)
         special_chars = mode[6]
         if not isinstance(special_chars, list):
-            raise Exception("tcgetattr returned invalid mode")
+            raise tbot.TestcaseFailure("tcgetattr returned invalid mode")
         special_chars[termios.VMIN] = b"\0"
         special_chars[termios.VTIME] = b"\0"
         termios.tcsetattr(sys.stdin, termios.TCSAFLUSH, mode)
@@ -130,7 +130,7 @@ def interactive_build(
 
         build_machine = tb.shell
         if not isinstance(build_machine, tbot.machine.MachineBuild):
-            raise Exception(
+            raise tbot.InvalidUsageException(
                 "machine-build is not a MachineBuild, something is very wrong!"
             )
         channel = build_machine.channel
@@ -157,10 +157,10 @@ def interactive_uboot(tb: tbot.TBot) -> None:
     with tb.with_board_uboot() as tb:
         boardshell = tb.boardshell
         if not isinstance(boardshell, tbot.machine.MachineBoardUBoot):
-            raise Exception("boardshell is not a U-Boot machine")
+            raise tbot.InvalidUsageException("boardshell is not a U-Boot machine")
         channel = boardshell.channel
         if not isinstance(channel, paramiko.Channel):
-            raise Exception("channel is not a paramiko channel")
+            raise tbot.InvalidUsageException("channel is not a paramiko channel")
         print("U-Boot Shell (CTRL-D to exit):")
         ishell(channel, abort="\x04")
         channel.send("\n")
@@ -178,10 +178,10 @@ def interactive_linux(tb: tbot.TBot) -> None:
     with tb.with_board_linux() as tb:
         boardshell = tb.boardshell
         if not isinstance(boardshell, tbot.machine.MachineBoardLinux):
-            raise Exception("boardshell is not a Linux machine")
+            raise tbot.InvalidUsageException("boardshell is not a Linux machine")
         channel = boardshell.channel
         if not isinstance(channel, paramiko.Channel):
-            raise Exception("channel is not a paramiko channel")
+            raise tbot.InvalidUsageException("channel is not a paramiko channel")
 
         def setup(ch: paramiko.Channel) -> None:
             """ Setup a custom prompt """

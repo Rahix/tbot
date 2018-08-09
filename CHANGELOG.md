@@ -3,6 +3,19 @@
 ## [Unreleased]
 
 
+## [0.3.4] - 2018-08-09
+### Added
+- `TestcaseFailure` & `InvalidUsageException` exceptions
+
+### Changed
+- Better error message when testcase does not exist
+- More explicit exceptions
+
+### Fixed
+- Fixed TBot ignoring failures while applying patches (#13)
+- Fixed -d not being allowed between board and testcase (#6)
+
+
 ## [0.3.3] - 2018-07-20
 ### Added
 - `uboot.shell.autboot-keys`: Custom key sequence for intercepting

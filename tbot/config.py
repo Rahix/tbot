@@ -10,6 +10,11 @@ class ConfigAssignException(Exception):
     pass
 
 
+class InvalidConfigException(Exception):
+    """ The configuration provided is not valid for this test """
+    pass
+
+
 class Config(dict):
     """
     A TBot configuration
