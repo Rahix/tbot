@@ -1,4 +1,5 @@
 import argparse
+import traceback
 import tbot
 
 
@@ -39,10 +40,19 @@ def main() -> None:
 
         tc = test2.__dict__[args.testcase]
 
-        tc()
+        try:
+            tc()
+        except Exception as e:
+            with tbot.log.EventIO(tbot.log.c("Exception").red.bold + ":") as ev:
+                ev.prefix = "  "
+                ev.write(traceback.format_exc())
 
-        tbot.log.EventIO(
-            tbot.log.c("SUCCESS").green.bold, nest_first=tbot.log.u("└─", "\\-")
-        )
+            tbot.log.EventIO(
+                tbot.log.c("FAILURE").red.bold, nest_first=tbot.log.u("└─", "\\-")
+            )
+        else:
+            tbot.log.EventIO(
+                tbot.log.c("SUCCESS").green.bold, nest_first=tbot.log.u("└─", "\\-")
+            )
     else:
         parser.error("Invalid subcommand")
