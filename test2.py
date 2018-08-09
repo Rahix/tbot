@@ -22,5 +22,13 @@ def test_imports() -> None:
                 tbot.log.message(f"{ub!r}")
 
 
+@tbot.testcase
+def reentrant() -> None:
+    with tbot.acquire_lab() as lh:
+        with tbot.acquire_board(lh) as b:
+            with b as b2:
+                assert b is b2
+
+
 if __name__ == "__main__":
     test_imports()

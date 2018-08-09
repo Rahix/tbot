@@ -25,14 +25,18 @@ class Board(contextlib.AbstractContextManager):
     def __init__(self, lh: lab.LabHost) -> None:
         self.lh = lh
         self.ev = tbot.log.EventIO()
+        self.on = False
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.lh!r})"
 
     def __enter__(self: Self) -> Self:
+        if self.on:
+            raise RuntimeError("Board already powered on!")
         self.ev.writeln(tbot.log.c("POWERON").bold + f" ({self.name})")
         self.ev.prefix = "   <> "
         self.poweron()
+        self.on = True
         return self
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:  # type: ignore
