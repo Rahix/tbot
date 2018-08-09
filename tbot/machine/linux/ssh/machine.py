@@ -11,12 +11,12 @@ class SSHMachine(linux.LinuxMachine):
     @property
     @abc.abstractmethod
     def hostname(self) -> str:
-        """Return the hostname of this lab."""
+        """Return the hostname of this machine."""
         pass
 
     @property
     def authenticator(self) -> auth.Authenticator:
-        """Return an authenticator that allows logging in on the labhost."""
+        """Return an authenticator that allows logging in on this machine."""
         return auth.PrivateKeyAuthenticator(pathlib.Path.home() / ".ssh" / "id_rsa")
 
     @property
@@ -26,7 +26,7 @@ class SSHMachine(linux.LinuxMachine):
 
     def __repr__(self) -> str:
         return (
-            f"<{self.__class__.__name__} {self.username}@{self.hostname}:{self.port}>"
+            f"<{self.__class__.__name__} {self.username}@{self.hostname}:{self.port} (Lab: {self.labhost!r}>"
         )
 
     def connect(self) -> channel.Channel:
@@ -54,3 +54,9 @@ class SSHMachine(linux.LinuxMachine):
         self.labhost = labhost
 
         self.channel = self.connect()
+
+    def _obtain_channel(self) -> channel.Channel:
+        return self.channel
+
+    def destroy(self) -> None:
+        self.channel.close()

@@ -41,5 +41,25 @@ def reentrant_pattern(
         lh.exec0("lsb_release", "-a")
 
 
+@tbot.testcase
+def ssh_machine(
+    lh: typing.Optional[linux.LabHost] = None,
+) -> None:
+    class MySSHMachine(linux.SSHMachine):
+        name = "hercules-ssh"
+        username = "hws"
+        hostname = "hercules"
+
+        @property
+        def workdir(self) -> "linux.Path[MySSHMachine]":
+            return linux.Path(self, "/tmp")
+
+    with lh or tbot.acquire_lab() as lh:
+        with MySSHMachine(lh) as ssh:
+            ssh.exec0("uname", "-a")
+
+            tbot.log.message(repr(ssh))
+
+
 if __name__ == "__main__":
     test_imports()
