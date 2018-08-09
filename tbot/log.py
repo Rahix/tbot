@@ -62,13 +62,17 @@ class EventIO(io.StringIO):
 
         return res
 
+    def __enter__(self) -> "EventIO":
+        return self
+
     def close(self) -> None:
         self._print_lines(last=True)
         # TODO: Write Log Event
         super().close()
 
-    def __enter__(self) -> "EventIO":
-        return self
+    def __del__(self) -> None:
+        if not self.closed:
+            self.close()
 
 
 def testcase_begin(name: str) -> None:
