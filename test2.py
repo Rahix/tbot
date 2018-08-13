@@ -61,5 +61,75 @@ def ssh_machine(
             tbot.log.message(repr(ssh))
 
 
+@tbot.testcase
+def testsuite(
+    *args: typing.Callable,
+) -> None:
+    errors: typing.List[Exception] = []
+
+    for test in args:
+        try:
+            test()
+        except Exception as e:
+            errors.append(e)
+
+    if errors != []:
+        raise Exception(f"{len(errors)}/{len(args)} tests failed")
+
+
+@tbot.testcase
+def a() -> None:
+    pass
+
+
+@tbot.testcase
+def b() -> None:
+    pass
+
+
+@tbot.testcase
+def c() -> None:
+    raise Exception("Error")
+
+
+@tbot.testcase
+def d() -> None:
+    pass
+
+
+@tbot.testcase
+def e() -> None:
+    raise Exception("Again :(")
+
+
+@tbot.testcase
+def f() -> None:
+    pass
+
+
+@tbot.testcase
+def g() -> None:
+    pass
+
+
+@tbot.testcase
+def h() -> None:
+    raise RuntimeError("Error")
+
+
+@tbot.testcase
+def abc() -> None:
+    testsuite(
+        a,
+        b,
+        c,
+        d,
+        e,
+        f,
+        g,
+        h,
+    )
+
+
 if __name__ == "__main__":
     test_imports()
