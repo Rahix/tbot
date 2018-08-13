@@ -37,7 +37,7 @@ def main() -> None:
 
     flags = [
         (["--list-testcases"], "List all testcases in the current search path."),
-        (["--labs"], "List all available labs."),
+        (["--list-labs"], "List all available labs."),
         (["--list-boards"], "List all available boards."),
         (["-s", "--show"], "Show testcase signatures instead of running them."),
         (["-i", "--interactive"], "Prompt before running each command."),
@@ -50,7 +50,14 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    print(repr(args))
+    if args.list_labs:
+        raise NotImplementedError()
+
+    if args.list_boards:
+        raise NotImplementedError()
+
+    if args.list_testcases:
+        raise NotImplementedError()
 
     return
 
