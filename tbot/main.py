@@ -9,15 +9,50 @@ def main() -> None:
         description="Test and development automation tool, tailored for embedded needs",
     )
 
-    subparsers = parser.add_subparsers(dest="subcommand")
+    parser.add_argument(
+        "testcase",
+        nargs="*",
+        action="append",
+        default=[],
+        help="Testcase that should be run.",
+    )
 
-    subparsers.add_parser("list-testcases", help="List all available testcases")
+    parser.add_argument("-b", "--board", help="Use this board instead of the default.")
 
-    run_parser = subparsers.add_parser("run", help="Run a testcase")
+    parser.add_argument("-l", "--lab", help="Use this lab instead of the default.")
 
-    run_parser.add_argument("testcase")
+    parser.add_argument(
+        "-T",
+        action="append",
+        default=[],
+        help="Add a directory to the testcase search path.",
+    )
+
+    parser.add_argument(
+        "-t",
+        action="append",
+        default=[],
+        help="Add a file to the testcase search path.",
+    )
+
+    flags = [
+        (["--list-testcases"], "List all testcases in the current search path."),
+        (["--labs"], "List all available labs."),
+        (["--list-boards"], "List all available boards."),
+        (["-s", "--show"], "Show testcase signatures instead of running them."),
+        (["-i", "--interactive"], "Prompt before running each command."),
+    ]
+
+    for flag_names, flag_help in flags:
+        parser.add_argument(
+            *flag_names, action="store_const", const=True, default=False, help=flag_help
+        )
 
     args = parser.parse_args()
+
+    print(repr(args))
+
+    return
 
     if args.subcommand == "list-testcases":
         import test2
