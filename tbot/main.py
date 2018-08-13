@@ -45,7 +45,7 @@ def main() -> None:
 
     for flag_names, flag_help in flags:
         parser.add_argument(
-            *flag_names, action="store_const", const=True, default=False, help=flag_help
+            *flag_names, action="store_true", help=flag_help
         )
 
     args = parser.parse_args()
