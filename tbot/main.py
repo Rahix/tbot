@@ -108,7 +108,7 @@ def main() -> None:
         )
         tbot.selectable.LabHost = lab.LAB  # type: ignore
     except:
-        pass
+        tbot.selectable.LabHost = tbot.machine.linux.lab.LocalLabHost  # type: ignore
 
     try:
         board = loader.load_module(pathlib.Path.cwd() / "config" / "boards" / "dummy.py")

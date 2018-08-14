@@ -6,6 +6,7 @@ H = typing.TypeVar("H", bound="linux.LinuxMachine")
 
 
 class Path(pathlib.PurePosixPath, typing.Generic[H]):
+    __slots__ = ("_host",)
 
     def __new__(cls, host: H, *args: typing.Any) -> "Path":
         """
