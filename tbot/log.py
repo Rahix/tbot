@@ -12,6 +12,7 @@ def u(with_unicode: str, without_unicode: str) -> str:
 
 
 NESTING = 0
+INTERACTIVE = False
 
 
 class EventIO(io.StringIO):
@@ -100,6 +101,10 @@ def testcase_end(success: bool = True) -> None:
 def command(mach: str, cmd: str) -> EventIO:
     ev = EventIO("[" + c(mach).yellow + "] " + c(cmd).dark)
     ev.prefix = "   ## "
+
+    if INTERACTIVE:
+        if input(c("OK [Y/n]? ").magenta).upper() not in ("", "Y"):
+            raise RuntimeError("Aborted by user")
 
     return ev
 

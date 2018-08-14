@@ -1,7 +1,7 @@
+from tbot import log
 import pathlib
 import argparse
 import traceback
-import tbot
 
 
 def main() -> None:
@@ -84,18 +84,22 @@ def main() -> None:
 
         for i, name in enumerate(args.testcase):
             if i != 0:
-                print(tbot.log.c("\n=================================\n").dark)
+                print(log.c("\n=================================\n").dark)
             func = testcases[name]
             signature = name + str(inspect.signature(func))
-            print(tbot.log.c(signature).bold.yellow)
-            print(tbot.log.c(f"----------------").dark)
-            print(tbot.log.c(textwrap.dedent(func.__doc__ or "No docstring available.").strip()).green)
+            print(log.c(signature).bold.yellow)
+            print(log.c(f"----------------").dark)
+            print(log.c(textwrap.dedent(func.__doc__ or "No docstring available.").strip()).green)
         return
 
-    print(tbot.log.c("TBot").yellow.bold + " starting ...")
+    if args.interactive:
+        log.INTERACTIVE = True
+
+    print(log.c("TBot").yellow.bold + " starting ...")
     from config.labs import dummy as lab
     from config.boards import dummy as board
 
+    import tbot
     # Set the actual selected types, needs to be ignored by mypy
     # beause this is obviously not good python
     tbot.selectable.LabHost = lab.LAB  # type: ignore
@@ -106,14 +110,14 @@ def main() -> None:
         for tc in args.testcase:
             testcases[tc]()
     except Exception as e:
-        with tbot.log.EventIO(tbot.log.c("Exception").red.bold + ":") as ev:
+        with log.EventIO(tbot.log.c("Exception").red.bold + ":") as ev:
             ev.prefix = "  "
             ev.write(traceback.format_exc())
 
-        tbot.log.EventIO(
+        log.EventIO(
             tbot.log.c("FAILURE").red.bold, nest_first=tbot.log.u("└─", "\\-")
         )
     else:
-        tbot.log.EventIO(
+        log.EventIO(
             tbot.log.c("SUCCESS").green.bold, nest_first=tbot.log.u("└─", "\\-")
         )
