@@ -13,8 +13,6 @@ def main() -> None:
     parser.add_argument(
         "testcase",
         nargs="*",
-        action="append",
-        default=[],
         help="Testcase that should be run.",
     )
 
@@ -80,42 +78,42 @@ def main() -> None:
             print(tc)
         return
 
-    return
+    if args.show:
+        import textwrap
+        import inspect
 
-    if args.subcommand == "list-testcases":
-        import test2
+        for i, name in enumerate(args.testcase):
+            if i != 0:
+                print(tbot.log.c("\n=================================\n").dark)
+            func = testcases[name]
+            signature = name + str(inspect.signature(func))
+            print(tbot.log.c(signature).bold.yellow)
+            print(tbot.log.c(f"----------------").dark)
+            print(tbot.log.c(textwrap.dedent(func.__doc__ or "No docstring available.").strip()).green)
+        return
 
-        for n, f in test2.__dict__.items():
-            if hasattr(f, "_tbot_testcase"):
-                print(n)
-    elif args.subcommand == "run":
-        print(tbot.log.c("TBot").yellow.bold + " starting ...")
-        from config.labs import dummy as lab
-        from config.boards import dummy as board
+    print(tbot.log.c("TBot").yellow.bold + " starting ...")
+    from config.labs import dummy as lab
+    from config.boards import dummy as board
 
-        # Set the actual selected types, needs to be ignored by mypy
-        # beause this is obviously not good python
-        tbot.selectable.LabHost = lab.LAB  # type: ignore
-        tbot.selectable.Board = board.BOARD  # type: ignore
-        tbot.selectable.UBootMachine = board.UBOOT  # type: ignore
+    # Set the actual selected types, needs to be ignored by mypy
+    # beause this is obviously not good python
+    tbot.selectable.LabHost = lab.LAB  # type: ignore
+    tbot.selectable.Board = board.BOARD  # type: ignore
+    tbot.selectable.UBootMachine = board.UBOOT  # type: ignore
 
-        import test2
+    try:
+        for tc in args.testcase:
+            testcases[tc]()
+    except Exception as e:
+        with tbot.log.EventIO(tbot.log.c("Exception").red.bold + ":") as ev:
+            ev.prefix = "  "
+            ev.write(traceback.format_exc())
 
-        tc = test2.__dict__[args.testcase]
-
-        try:
-            tc()
-        except Exception as e:
-            with tbot.log.EventIO(tbot.log.c("Exception").red.bold + ":") as ev:
-                ev.prefix = "  "
-                ev.write(traceback.format_exc())
-
-            tbot.log.EventIO(
-                tbot.log.c("FAILURE").red.bold, nest_first=tbot.log.u("└─", "\\-")
-            )
-        else:
-            tbot.log.EventIO(
-                tbot.log.c("SUCCESS").green.bold, nest_first=tbot.log.u("└─", "\\-")
-            )
+        tbot.log.EventIO(
+            tbot.log.c("FAILURE").red.bold, nest_first=tbot.log.u("└─", "\\-")
+        )
     else:
-        parser.error("Invalid subcommand")
+        tbot.log.EventIO(
+            tbot.log.c("SUCCESS").green.bold, nest_first=tbot.log.u("└─", "\\-")
+        )

@@ -54,5 +54,10 @@ def test_ev() -> None:
     ev.write(" Bar\nHello World")
 
 
+@tbot.testcase
+def abc() -> None:
+    pass
+
+
 if __name__ == "__main__":
     test_board()

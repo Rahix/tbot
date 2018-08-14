@@ -119,6 +119,9 @@ def h() -> None:
 
 @tbot.testcase
 def abc() -> None:
+    """
+    Run abc testsuite
+    """
     testsuite(
         a,
         b,
