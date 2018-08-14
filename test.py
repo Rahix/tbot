@@ -41,9 +41,8 @@ def test_board() -> None:
     with dummy_lab.DummyLabLocal() as lh:
         with dummy_board.DummyBoard(lh) as bd:
             with dummy_board.DummyBoardUBoot(bd) as b:
-                b.tmp_cmd("echo Hello")
-                b.tmp_cmd("version")
-                b.tmp_cmd("printenv bootcmd")
+                b.exec0("version")
+                b.exec0("echo", linux.Path(lh, "/tftpboot/at91sam9g45/tbot-hws/boot.bin"))
 
 
 @tbot.testcase

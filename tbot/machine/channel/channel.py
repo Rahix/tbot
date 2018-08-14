@@ -140,6 +140,6 @@ PS1='{TBOT_PROMPT}'
     ) -> typing.Tuple[int, str]:
         out = self.raw_command(command, prompt=prompt, stream=stream)
 
-        retval = int(self.raw_command(retval_check_cmd).strip())
+        retval = int(self.raw_command(retval_check_cmd, prompt=prompt).strip())
 
         return retval, out
