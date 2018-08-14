@@ -22,5 +22,5 @@ def testcase(tc: F) -> F:
         log.testcase_end()
         return result
 
-    wrapped._tbot_testcase = True  # type: ignore
+    setattr(wrapped, "_tbot_testcase", None)
     return typing.cast(F, wrapped)
