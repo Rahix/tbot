@@ -5,6 +5,7 @@ from tbot import log
 from tbot import machine
 from tbot.machine import channel
 from .path import Path
+from .special import Special
 
 Self = typing.TypeVar("Self", bound="LinuxMachine")
 
@@ -28,7 +29,7 @@ class LinuxMachine(machine.Machine):
         pass
 
     def build_command(
-        self, *args: typing.Union[str, Path], stdout: typing.Optional[Path] = None
+        self, *args: typing.Union[str, Special, Path[Self]], stdout: typing.Optional[Path[Self]] = None
     ) -> str:
         """
         Build the string representation of a command.
@@ -51,7 +52,10 @@ class LinuxMachine(machine.Machine):
 
                 arg = arg._local_str()
 
-            command += f"{shlex.quote(arg)} "
+            if isinstance(arg, Special):
+                command += arg.resolve_string() + " "
+            else:
+                command += f"{shlex.quote(arg)} "
 
         if isinstance(stdout, Path):
             if stdout.host is not self:
@@ -59,13 +63,13 @@ class LinuxMachine(machine.Machine):
                     f"{self!r}: Provided {stdout!r} is not associated with this host"
                 )
             stdout_file = stdout._local_str()
-            command += f">{shlex.quote(stdout_file)}"
+            command += f">{shlex.quote(stdout_file)} "
 
-        return command
+        return command[:-1]
 
     def exec(
         self: Self,
-        *args: typing.Union[str, Path[Self]],
+        *args: typing.Union[str, Special, Path[Self]],
         stdout: typing.Optional[Path[Self]] = None,
     ) -> typing.Tuple[int, str]:
         """
@@ -91,7 +95,7 @@ class LinuxMachine(machine.Machine):
 
     def exec0(
         self: Self,
-        *args: typing.Union[str, Path[Self]],
+        *args: typing.Union[str, Special, Path[Self]],
         stdout: typing.Optional[Path[Self]] = None,
     ) -> str:
         """
