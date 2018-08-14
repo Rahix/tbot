@@ -72,12 +72,15 @@ def collect_testcases(
     testcases: typing.Dict[str, typing.Callable] = {}
 
     for f in files:
-        module = load_module(f)
+        try:
+            module = load_module(f)
 
-        for name, func in module.__dict__.items():
-            if hasattr(func, "_tbot_testcase"):
-                if name in testcases:
-                    raise KeyError(f"A testcase named {name!r} already exists: {func!r}")
-                testcases[name] = func
+            for name, func in module.__dict__.items():
+                if hasattr(func, "_tbot_testcase"):
+                    if name in testcases:
+                        raise Exception(f"{func.__module__!r}: A testcase named {name!r} already exists in {(testcases[name]).__module__!r}")
+                    testcases[name] = func
+        except:
+            pass
 
     return testcases

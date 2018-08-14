@@ -96,19 +96,26 @@ def main() -> None:
         log.INTERACTIVE = True
 
     print(log.c("TBot").yellow.bold + " starting ...")
-    lab = loader.load_module(
-        pathlib.Path(args.lab).resolve()
-        if args.lab
-        else pathlib.Path.cwd() / "config" / "labs" / "dummy.py"
-    )
-    board = loader.load_module(pathlib.Path.cwd() / "config" / "boards" / "dummy.py")
 
     import tbot
     # Set the actual selected types, needs to be ignored by mypy
     # beause this is obviously not good python
-    tbot.selectable.LabHost = lab.LAB  # type: ignore
-    tbot.selectable.Board = board.BOARD  # type: ignore
-    tbot.selectable.UBootMachine = board.UBOOT  # type: ignore
+    try:
+        lab = loader.load_module(
+            pathlib.Path(args.lab).resolve()
+            if args.lab
+            else pathlib.Path.cwd() / "config" / "labs" / "dummy.py"
+        )
+        tbot.selectable.LabHost = lab.LAB  # type: ignore
+    except:
+        pass
+
+    try:
+        board = loader.load_module(pathlib.Path.cwd() / "config" / "boards" / "dummy.py")
+        tbot.selectable.Board = board.BOARD  # type: ignore
+        tbot.selectable.UBootMachine = board.UBOOT  # type: ignore
+    except:
+        pass
 
     try:
         for tc in args.testcase:
