@@ -60,8 +60,8 @@ def main() -> None:
     if args.list_boards:
         raise NotImplementedError()
 
-    from tbot import collector
-    files = collector.get_file_list(
+    from tbot import loader
+    files = loader.get_file_list(
         (pathlib.Path(d).absolute() for d in args.tcdirs),
         (pathlib.Path(f).absolute() for f in args.tcfiles),
     )
@@ -71,7 +71,7 @@ def main() -> None:
             print(f"{f}")
         return
 
-    testcases = collector.collect_testcases(files)
+    testcases = loader.collect_testcases(files)
 
     if args.list_testcases:
         for tc in testcases:
@@ -96,8 +96,8 @@ def main() -> None:
         log.INTERACTIVE = True
 
     print(log.c("TBot").yellow.bold + " starting ...")
-    from config.labs import dummy as lab
-    from config.boards import dummy as board
+    lab = loader.load_module(pathlib.Path.cwd() / "config" / "labs" / "dummy.py")
+    board = loader.load_module(pathlib.Path.cwd() / "config" / "boards" / "dummy.py")
 
     import tbot
     # Set the actual selected types, needs to be ignored by mypy

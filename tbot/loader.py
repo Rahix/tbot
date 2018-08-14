@@ -40,27 +40,33 @@ def get_file_list(
             raise FileNotFoundError(str(f))
 
 
+def load_module(p: pathlib.Path) -> importlib.types.ModuleType:
+    default_sys_path = sys.path
+    try:
+        module_spec = importlib.util.spec_from_file_location(
+            name=p.stem,
+            location=str(p),
+        )
+        module = importlib.util.module_from_spec(module_spec)
+        if not isinstance(module_spec.loader, importlib.abc.Loader):
+            raise TypeError(f"Invalid module spec {module_spec!r}")
+        sys.path = default_sys_path + [str(p.parent)]
+        module_spec.loader.exec_module(module)
+    except:
+        raise
+    finally:
+        sys.path = default_sys_path
+
+    return module
+
+
 def collect_testcases(
     files: typing.Iterable[pathlib.Path],
 ) -> typing.Dict[str, typing.Callable]:
     testcases: typing.Dict[str, typing.Callable] = {}
 
-    default_sys_path = sys.path
     for f in files:
-        try:
-            module_spec = importlib.util.spec_from_file_location(
-                name=f.stem,
-                location=str(f),
-            )
-            module = importlib.util.module_from_spec(module_spec)
-            if not isinstance(module_spec.loader, importlib.abc.Loader):
-                raise TypeError(f"Invalid module spec {module_spec!r}")
-            sys.path = default_sys_path + [str(f.parent)]
-            module_spec.loader.exec_module(module)
-        except:
-            raise
-        finally:
-            sys.path = default_sys_path
+        module = load_module(f)
 
         for name, func in module.__dict__.items():
             if hasattr(func, "_tbot_testcase"):
