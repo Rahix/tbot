@@ -62,8 +62,8 @@ def main() -> None:
 
     from tbot import loader
     files = loader.get_file_list(
-        (pathlib.Path(d).absolute() for d in args.tcdirs),
-        (pathlib.Path(f).absolute() for f in args.tcfiles),
+        (pathlib.Path(d).resolve() for d in args.tcdirs),
+        (pathlib.Path(f).resolve() for f in args.tcfiles),
     )
 
     if args.list_files:
@@ -97,7 +97,7 @@ def main() -> None:
 
     print(log.c("TBot").yellow.bold + " starting ...")
     lab = loader.load_module(
-        pathlib.Path(args.lab).absolute()
+        pathlib.Path(args.lab).resolve()
         if args.lab
         else pathlib.Path.cwd() / "config" / "labs" / "dummy.py"
     )
