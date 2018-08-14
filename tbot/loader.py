@@ -4,8 +4,11 @@ import pathlib
 import typing
 
 
-def list_dir(d: pathlib.Path) -> typing.Generator[pathlib.Path, None, None]:
+def list_dir(d: pathlib.Path, recurse: bool = False) -> typing.Generator[pathlib.Path, None, None]:
     for f in d.iterdir():
+        if recurse and f.is_dir() and f.name != "__pycache__":
+            for subf in list_dir(f, recurse):
+                yield subf
         if f.suffix == ".py":
             yield f
 
@@ -14,6 +17,9 @@ def get_file_list(
     dirs: typing.Iterable[pathlib.Path],
     files: typing.Iterable[pathlib.Path],
 ) -> typing.Generator[pathlib.Path, None, None]:
+    builtins = pathlib.Path(__file__).parent / "builtin"
+    for f in list_dir(builtins, True):
+        yield f
     tcpy = pathlib.Path.cwd() / "tc.py"
     if tcpy.is_file():
         yield tcpy
