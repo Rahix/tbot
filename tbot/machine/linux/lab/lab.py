@@ -1,4 +1,5 @@
 import abc
+import typing
 from tbot.machine import linux
 from tbot.machine import channel
 
@@ -14,6 +15,10 @@ class LabHost(linux.LinuxMachine):
         :returns: A new channel to this lab host
         """
         pass
+
+    @property
+    def default_build(self) -> typing.Type[linux.BuildMachine]:
+        raise KeyError("No default build machine available!")
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}()"
