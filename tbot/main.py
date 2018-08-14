@@ -1,3 +1,4 @@
+import pathlib
 import argparse
 import traceback
 import tbot
@@ -23,6 +24,8 @@ def main() -> None:
 
     parser.add_argument(
         "-T",
+        metavar="TC-DIR",
+        dest="tcdirs",
         action="append",
         default=[],
         help="Add a directory to the testcase search path.",
@@ -30,6 +33,8 @@ def main() -> None:
 
     parser.add_argument(
         "-t",
+        metavar="TC-FILE",
+        dest="tcfiles",
         action="append",
         default=[],
         help="Add a file to the testcase search path.",
@@ -39,6 +44,7 @@ def main() -> None:
         (["--list-testcases"], "List all testcases in the current search path."),
         (["--list-labs"], "List all available labs."),
         (["--list-boards"], "List all available boards."),
+        (["--list-files"], "List all testcase files."),
         (["-s", "--show"], "Show testcase signatures instead of running them."),
         (["-i", "--interactive"], "Prompt before running each command."),
     ]
@@ -56,8 +62,23 @@ def main() -> None:
     if args.list_boards:
         raise NotImplementedError()
 
+    from tbot import collector
+    files = collector.get_file_list(
+        (pathlib.Path(d).absolute() for d in args.tcdirs),
+        (pathlib.Path(f).absolute() for f in args.tcfiles),
+    )
+
+    if args.list_files:
+        for f in files:
+            print(f"{f}")
+        return
+
+    testcases = collector.collect_testcases(files)
+
     if args.list_testcases:
-        raise NotImplementedError()
+        for tc in testcases:
+            print(tc)
+        return
 
     return
 
