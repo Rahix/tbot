@@ -134,5 +134,13 @@ def abc() -> None:
     )
 
 
+@tbot.testcase
+def uname(
+    lh: typing.Optional[linux.LabHost] = None,
+) -> None:
+    with lh or tbot.acquire_lab() as lh:
+        lh.exec0("uname", "-a")
+
+
 if __name__ == "__main__":
     test_imports()
