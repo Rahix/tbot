@@ -25,7 +25,7 @@ class PasswordAuthenticator(Authenticator):
 class PrivateKeyAuthenticator(Authenticator):
     """Authenticate using a private key."""
 
-    def __init__(self, key: pathlib.Path) -> None:
+    def __init__(self, key: pathlib.PurePath) -> None:
         """
         Initialize this authenticator with a path to a private key.
 

@@ -38,4 +38,4 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
         return f"{self._host.name}:{super().__str__()}"
 
     def __repr__(self) -> str:
-        return f"Path({self._host!r}, {super().__str__()!r})"
+        return f"{self.__class__.__name__}({self._host!r}, {super().__str__()!r})"
