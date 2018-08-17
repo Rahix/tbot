@@ -15,7 +15,8 @@ class BuildMachine(linux.LinuxMachine):
 
         tc.enable(self)
 
-    def __init__(self, arch: str) -> None:
+    def __init__(self, arch: typing.Optional[str] = None) -> None:
         super().__init__()
 
-        self.enable(arch)
+        if arch is not None:
+            self.enable(arch)

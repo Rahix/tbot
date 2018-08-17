@@ -17,9 +17,14 @@ class Env(Special):
         return f"${{{self.name}}}"
 
 
-class _Pipe(Special):
+class _Static(Special):
+    __slots__ = ("string",)
+
+    def __init__(self, string: str) -> None:
+        self.string = string
+
     def resolve_string(self) -> str:
-        return "|"
+        return self.string
 
 
-Pipe = _Pipe()
+Pipe = _Static("|")
