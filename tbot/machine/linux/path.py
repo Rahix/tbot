@@ -1,3 +1,6 @@
+import os
+import errno
+import stat
 import typing
 import pathlib
 from tbot.machine import linux  # noqa: F401
@@ -27,6 +30,74 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
     def host(self) -> H:
         """Return the host associated with this path."""
         return self._host
+
+    def stat(self) -> os.stat_result:
+        ec, stat_str = self.host.exec("stat", "-t", self)
+        if ec != 0:
+            raise OSError(errno.ENOENT, f"Can't stat {self}")
+
+        stat_res = stat_str[len(self._local_str()) + 1:].split(" ")
+
+        return os.stat_result((
+            int(stat_res[2], 16),
+            int(stat_res[6]),
+            0,
+            int(stat_res[7]),
+            int(stat_res[3]),
+            int(stat_res[4]),
+            int(stat_res[0]),
+            int(stat_res[10]),
+            int(stat_res[11]),
+            int(stat_res[12]),
+        ))
+
+    def exists(self) -> bool:
+        if self.host.exec0("test", "-e", self) == 0:
+            return True
+        else:
+            return False
+
+    def is_dir(self) -> bool:
+        try:
+            return stat.S_ISDIR(self.stat().st_mode)
+        except OSError:
+            return False
+
+    def is_file(self) -> bool:
+        try:
+            return stat.S_ISREG(self.stat().st_mode)
+        except OSError:
+            return False
+
+    def is_symlink(self) -> bool:
+        try:
+            return stat.S_ISLNK(self.stat().st_mode)
+        except OSError:
+            return False
+
+    def is_block_device(self) -> bool:
+        try:
+            return stat.S_ISBLK(self.stat().st_mode)
+        except OSError:
+            return False
+
+    def is_char_device(self) -> bool:
+        try:
+            return stat.S_ISCHR(self.stat().st_mode)
+        except OSError:
+            return False
+
+    def is_fifo(self) -> bool:
+        try:
+            return stat.S_ISFIFO(self.stat().st_mode)
+        except OSError:
+            return False
+
+    def is_socket(self) -> bool:
+        try:
+            return stat.S_ISSOCK(self.stat().st_mode)
+        except OSError:
+            return False
 
     def __truediv__(self, key: typing.Any) -> "Path[H]":
         return Path(self._host, super().__truediv__(key))
