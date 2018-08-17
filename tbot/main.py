@@ -132,3 +132,7 @@ def main() -> None:
         log.EventIO(
             tbot.log.c("SUCCESS").green.bold, nest_first=tbot.log.u("└─", "\\-")
         )
+
+
+if __name__ == "__main__":
+    main()
