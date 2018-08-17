@@ -1,6 +1,5 @@
 import os
 import errno
-import stat
 import typing
 import pathlib
 from tbot.machine import linux  # noqa: F401
@@ -52,52 +51,28 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
         ))
 
     def exists(self) -> bool:
-        if self.host.exec("test", "-e", self)[0] == 0:
-            return True
-        else:
-            return False
+        return self.host.exec("test", "-e", self)[0] == 0
 
     def is_dir(self) -> bool:
-        try:
-            return stat.S_ISDIR(self.stat().st_mode)
-        except OSError:
-            return False
+        return self.host.exec("test", "-d", self)[0] == 0
 
     def is_file(self) -> bool:
-        try:
-            return stat.S_ISREG(self.stat().st_mode)
-        except OSError:
-            return False
+        return self.host.exec("test", "-f", self)[0] == 0
 
     def is_symlink(self) -> bool:
-        try:
-            return stat.S_ISLNK(self.stat().st_mode)
-        except OSError:
-            return False
+        return self.host.exec("test", "-h", self)[0] == 0
 
     def is_block_device(self) -> bool:
-        try:
-            return stat.S_ISBLK(self.stat().st_mode)
-        except OSError:
-            return False
+        return self.host.exec("test", "-b", self)[0] == 0
 
     def is_char_device(self) -> bool:
-        try:
-            return stat.S_ISCHR(self.stat().st_mode)
-        except OSError:
-            return False
+        return self.host.exec("test", "-c", self)[0] == 0
 
     def is_fifo(self) -> bool:
-        try:
-            return stat.S_ISFIFO(self.stat().st_mode)
-        except OSError:
-            return False
+        return self.host.exec("test", "-p", self)[0] == 0
 
     def is_socket(self) -> bool:
-        try:
-            return stat.S_ISSOCK(self.stat().st_mode)
-        except OSError:
-            return False
+        return self.host.exec("test", "-S", self)[0] == 0
 
     def __truediv__(self, key: typing.Any) -> "Path[H]":
         return Path(self._host, super().__truediv__(key))
