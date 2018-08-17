@@ -52,8 +52,7 @@ def am(git: GitRepository[H], patch: linux.Path[H]) -> int:
         try:
             h.exec0("git", "-C", git, "am", "-3", patch)
         except:
-            raise
-        else:
             h.exec0("git", "-C", git, "am", "--abort")
+            raise
 
     return 0
