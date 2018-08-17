@@ -52,7 +52,7 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
         ))
 
     def exists(self) -> bool:
-        if self.host.exec0("test", "-e", self) == 0:
+        if self.host.exec("test", "-e", self)[0] == 0:
             return True
         else:
             return False

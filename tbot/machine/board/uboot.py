@@ -44,5 +44,8 @@ class UBootMachine(machine.BoardMachine, typing.Generic[B]):
 
     def exec0(self, *args: typing.Union[str, linux.Path[linux.LabHost]]) -> str:
         ret, out = self.exec(*args)
-        assert ret == 0, "Command failed!"
+
+        if ret != 0:
+            raise tbot.machine.CommandFailedException(self, self.build_command(*args), out)
+
         return out

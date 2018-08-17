@@ -17,9 +17,13 @@ def stat(
 ) -> None:
     with lh or tbot.acquire_lab() as lh:
         symlink = lh.workdir / "symlink"
+        if symlink.exists():
+            lh.exec0("rm", symlink)
         lh.exec0("ln", "-s", "/proc/version", symlink)
 
         fifo = lh.workdir / "fifo"
+        if fifo.exists():
+            lh.exec0("rm", fifo)
         lh.exec0("mkfifo", fifo)
 
         for p in [

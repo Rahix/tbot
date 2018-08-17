@@ -111,5 +111,8 @@ class LinuxMachine(machine.Machine):
         :rtype: str
         """
         ret, out = self.exec(*args, stdout=stdout)
-        assert ret == 0, "Command failed!"
+
+        if ret != 0:
+            raise machine.CommandFailedException(self, self.build_command(*args), out)
+
         return out
