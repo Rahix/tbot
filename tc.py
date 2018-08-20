@@ -15,4 +15,8 @@ def interactive(
     lh: typing.Optional[tbot.machine.linux.LinuxMachine] = None,
 ) -> None:
     with lh or tbot.acquire_lab() as lh:
-        lh.attach_interactive()
+        res1 = lh.exec0("uname", "-a")
+        lh.interactive()
+        res2 = lh.exec0("uname", "-a")
+
+        assert res1 == res2

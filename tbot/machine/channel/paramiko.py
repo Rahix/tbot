@@ -1,3 +1,4 @@
+import typing
 import shutil
 import time
 import paramiko
@@ -43,10 +44,22 @@ class ParamikoChannel(channel.Channel):
         s: str
         try:
             s = buf.decode("utf-8")
-        except UnicodeDecodeError:
-            # Fall back to latin-1 if unicode decoding fails ... This is not perfect
-            # but it does not stop a test run just because of an invalid character
-            s = buf.decode("latin_1")
+        except UnicodeDecodeError as e:
+            if e.start > len(buf) - 4:
+                # The failure occured at the end of the string, most likely because
+                # only half of a unicode char was written
+                for _ in range(6):
+                    time.sleep(0.05)
+                    buf += self.ch.recv(1)
+                    try:
+                        s = buf.decode("utf-8")
+                        break
+                    except UnicodeDecodeError:
+                        pass
+            else:
+                # Fall back to latin-1 if unicode decoding fails ... This is not perfect
+                # but it does not stop a test run just because of an invalid character
+                s = buf.decode("latin_1")
 
         return s
 
@@ -56,11 +69,11 @@ class ParamikoChannel(channel.Channel):
     def fileno(self) -> int:
         return self.ch.fileno()
 
-    def attach_interactive(self) -> None:
+    def attach_interactive(self, end_magic: typing.Optional[str] = None) -> None:
         try:
             size = shutil.get_terminal_size()
             self.ch.resize_pty(size.columns, size.lines, 1024, 1024)
             self.ch.settimeout(0.0)
-            interactive.interactive_shell(self)
+            interactive.interactive_shell(self, end_magic)
         finally:
             self.ch.settimeout(None)

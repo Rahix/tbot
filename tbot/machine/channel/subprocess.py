@@ -1,3 +1,4 @@
+import typing
 import time
 import pty
 import os
@@ -65,6 +66,6 @@ class SubprocessChannel(channel.Channel):
     def fileno(self) -> int:
         return self.pty_master
 
-    def attach_interactive(self) -> None:
+    def attach_interactive(self, end_magic: typing.Optional[str] = None) -> None:
         from . import interactive
-        interactive.interactive_shell(self)
+        interactive.interactive_shell(self, end_magic)

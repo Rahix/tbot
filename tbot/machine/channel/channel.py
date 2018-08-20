@@ -70,7 +70,7 @@ class Channel(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def attach_interactive(self) -> None:
+    def attach_interactive(self, end_magic: typing.Optional[str] = None) -> None:
         pass
 
     def initialize(self) -> None:

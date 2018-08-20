@@ -122,9 +122,17 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         size = shutil.get_terminal_size()
         channel.raw_command("set -o emacs")
         channel.raw_command(f"stty cols {size.columns}; stty rows {size.lines}")
-        channel.send(f'bash\nPROMPT_COMMAND=""; PS1="\\[\\033[36m\\]{self.name}: \\[\\033[32m\\]\\w\\[\\033[0m\\]> "\n')
+        channel.send(f"""\
+bash
+PROMPT_COMMAND=""; PS1="INTERACTIVE-END-7c6b27e74b439292c07b917241686a7f"
+bash
+PROMPT_COMMAND=""; PS1="\\[\\033[36m\\]{self.name}: \\[\\033[32m\\]\\w\\[\\033[0m\\]> "
+""")
         channel.read_until_prompt("> ")
         channel.send("\n")
         log.message("Entering interactive shell ...")
 
-        channel.attach_interactive()
+        channel.attach_interactive(end_magic="INTERACTIVE-END-7c6b27e74b439292c07b917241686a7f")
+
+        log.message("Exiting interactive shell ...")
+        channel.raw_command("exit\n")
