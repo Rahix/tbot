@@ -8,8 +8,7 @@ class ParamikoChannel(channel.Channel):
     def __init__(self, ch: paramiko.Channel) -> None:
         self.ch = ch
 
-        self.ch.get_pty("xterm-256color")
-        self.ch.resize_pty(80, 25, 1024, 1024)
+        self.ch.get_pty("xterm-256color", 80, 25, 1024, 1024)
         self.ch.invoke_shell()
 
         super().__init__()

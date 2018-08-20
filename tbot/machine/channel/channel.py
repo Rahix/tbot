@@ -70,19 +70,15 @@ class Channel(abc.ABC):
         Initialize this channel so it is ready to receive commands.
         """
 
+        # Set proper prompt
+        self.raw_command(f"PROMPT_COMMAND=''; PS1='{TBOT_PROMPT}'")
         # Ensure we don't make history
-        self.send(
-            f"""\
-unset HISTFILE
-PROMPT_COMMAND=''
-set +o vi
-set +o emacs
-PS2=''
-PS1='{TBOT_PROMPT}'
-"""
-        )
-
-        self.read_until_prompt(TBOT_PROMPT)
+        self.raw_command("unset HISTFILE")
+        # Disable line editing
+        self.raw_command("set +o vi")
+        self.raw_command("set +o emacs")
+        # Ensure multiline commands work
+        self.raw_command("PS2=''")
 
     def __init__(self) -> None:
         self.initialize()
