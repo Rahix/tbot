@@ -25,6 +25,9 @@ def selftest_path_integrity(
         assert p.parent.is_dir()
         lh.exec0("uname", "-a", stdout=p)
         assert p.is_file()
+        lh.exec0("rm", "-r", p.parent)
+        assert not p.exists()
+        assert not p.parent.exists()
 
 
 @tbot.testcase
