@@ -1,9 +1,7 @@
-import typing
 import shutil
 import time
 import paramiko
 from . import channel
-from . import interactive
 
 
 class ParamikoChannel(channel.Channel):
@@ -69,11 +67,10 @@ class ParamikoChannel(channel.Channel):
     def fileno(self) -> int:
         return self.ch.fileno()
 
-    def attach_interactive(self, end_magic: typing.Optional[str] = None) -> None:
-        try:
-            size = shutil.get_terminal_size()
-            self.ch.resize_pty(size.columns, size.lines, 1024, 1024)
-            self.ch.settimeout(0.0)
-            interactive.interactive_shell(self, end_magic)
-        finally:
-            self.ch.settimeout(None)
+    def _interactive_setup(self) -> None:
+        size = shutil.get_terminal_size()
+        self.ch.resize_pty(size.columns, size.lines, 1024, 1024)
+        self.ch.settimeout(0.0)
+
+    def _interactive_teardown(self) -> None:
+        self.ch.settimeout(None)
