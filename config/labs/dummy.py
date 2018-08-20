@@ -39,4 +39,4 @@ class DummyLabLocal(lab.LocalLabHost):
         return p
 
 
-LAB = DummyLabLocal
+LAB = DummyLabSSH

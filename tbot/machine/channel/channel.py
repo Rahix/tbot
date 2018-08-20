@@ -75,8 +75,10 @@ class Channel(abc.ABC):
             f"""\
 unset HISTFILE
 PROMPT_COMMAND=''
-PS1='{TBOT_PROMPT}'
+set +o vi
+set +o emacs
 PS2=''
+PS1='{TBOT_PROMPT}'
 """
         )
 

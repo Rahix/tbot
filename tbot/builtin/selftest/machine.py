@@ -41,6 +41,10 @@ def selftest_machine_shell(
     out = m.exec0("printf", "Hello\nWorld")
     assert out == "Hello\nWorld"
 
+    s = "_".join(map(lambda i: f"{i:02}", range(100)))
+    out = m.exec0("echo", s)
+    assert out == f"{s}\n"
+
     tbot.log.message("Testing return codes ...")
     r, _ = m.exec("true")
     assert r == 0

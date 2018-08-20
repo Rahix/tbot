@@ -103,8 +103,6 @@ def main() -> None:
     try:
         lab = loader.load_module(
             pathlib.Path(args.lab).resolve()
-            if args.lab
-            else pathlib.Path.cwd() / "config" / "labs" / "dummy.py"
         )
         tbot.selectable.LabHost = lab.LAB  # type: ignore
     except:
