@@ -61,3 +61,10 @@ class SubprocessChannel(channel.Channel):
             self.p.wait(2)
         except subprocess.TimeoutExpired:
             self.p.kill()
+
+    def fileno(self) -> int:
+        return self.pty_master
+
+    def attach_interactive(self) -> None:
+        from . import interactive
+        interactive.interactive_shell(self)

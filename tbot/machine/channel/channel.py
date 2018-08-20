@@ -65,6 +65,14 @@ class Channel(abc.ABC):
         """
         pass
 
+    @abc.abstractmethod
+    def fileno(self) -> int:
+        pass
+
+    @abc.abstractmethod
+    def attach_interactive(self) -> None:
+        pass
+
     def initialize(self) -> None:
         """
         Initialize this channel so it is ready to receive commands.

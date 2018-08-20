@@ -1,6 +1,7 @@
 import abc
 import typing
 import shlex
+import shutil
 from tbot import log
 from tbot import machine
 from tbot.machine import channel
@@ -10,7 +11,7 @@ from .special import Special
 Self = typing.TypeVar("Self", bound="LinuxMachine")
 
 
-class LinuxMachine(machine.Machine):
+class LinuxMachine(machine.Machine, machine.InteractiveMachine):
 
     @property
     @abc.abstractmethod
@@ -114,3 +115,16 @@ class LinuxMachine(machine.Machine):
             raise machine.CommandFailedException(self, self.build_command(*args), out)
 
         return out
+
+    def interactive(self) -> None:
+        channel = self._obtain_channel()
+
+        size = shutil.get_terminal_size()
+        channel.raw_command("set -o emacs")
+        channel.raw_command(f"stty cols {size.columns}; stty rows {size.lines}")
+        channel.send(f'bash\nPROMPT_COMMAND=""; PS1="\\[\\033[36m\\]{self.name}: \\[\\033[32m\\]\\w\\[\\033[0m\\]> "\n')
+        channel.read_until_prompt("> ")
+        channel.send("\n")
+        log.message("Entering interactive shell ...")
+
+        channel.attach_interactive()

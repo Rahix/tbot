@@ -31,3 +31,9 @@ class Machine(contextlib.AbstractContextManager):
         self._rc -= 1
         if self._rc == 0:
             self.destroy()
+
+
+class InteractiveMachine(abc.ABC):
+    @abc.abstractmethod
+    def interactive(self) -> None:
+        pass
