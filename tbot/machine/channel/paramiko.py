@@ -33,7 +33,7 @@ class ParamikoChannel(channel.Channel):
 
         buf = b""
         while self.ch.recv_ready():
-            buf = self.ch.recv(1000)
+            buf += self.ch.recv(1000)
 
         if buf == b"":
             raise channel.ChannelClosedException()
