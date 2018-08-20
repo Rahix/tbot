@@ -46,9 +46,7 @@ class LinuxMachine(machine.Machine):
         for arg in args:
             if isinstance(arg, Path):
                 if arg.host is not self:
-                    raise Exception(
-                        f"{self!r}: Provided {arg!r} is not associated with this host"
-                    )
+                    raise machine.WrongHostException(self, arg)
 
                 arg = arg._local_str()
 
