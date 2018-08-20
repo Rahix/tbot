@@ -3,6 +3,8 @@ from tbot.machine import linux
 
 from tbot.builtin import tbot_builtins
 
+from .path import selftest_stat, selftest_path_integrity
+
 
 @tbot.testcase
 def selftest_uname(lh: linux.LabHost) -> None:
@@ -20,5 +22,7 @@ def selftest() -> None:
         tbot_builtins.testsuite(
             selftest_uname,
             selftest_user,
+            selftest_stat,
+            selftest_path_integrity,
             lh=lh,
         )

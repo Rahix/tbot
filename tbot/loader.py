@@ -17,9 +17,9 @@ def get_file_list(
     dirs: typing.Iterable[pathlib.Path],
     files: typing.Iterable[pathlib.Path],
 ) -> typing.Generator[pathlib.Path, None, None]:
-    builtins = pathlib.Path(__file__).parent / "builtin"
-    for f in list_dir(builtins, True):
-        yield f
+    builtins = pathlib.Path(__file__).parent / "builtin" / "callable.py"
+    if builtins.is_file():
+        yield builtins
     tcpy = pathlib.Path.cwd() / "tc.py"
     if tcpy.is_file():
         yield tcpy
@@ -81,6 +81,7 @@ def collect_testcases(
                         raise Exception(f"{func.__module__!r}: A testcase named {name!r} already exists in {(testcases[name]).__module__!r}")
                     testcases[name] = func
         except:
-            pass
+            print(f"Failed to load {f}")
+            raise
 
     return testcases
