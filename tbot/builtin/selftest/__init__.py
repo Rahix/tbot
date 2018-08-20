@@ -4,8 +4,8 @@ from tbot.machine import linux
 
 from tbot.builtin import tbot_builtins
 
-from .path import selftest_stat, selftest_path_integrity
-from .machine import selftest_reentrant
+from .path import *
+from .machine import *
 
 
 @tbot.testcase
@@ -28,10 +28,9 @@ def selftest_user(
 def selftest() -> None:
     with tbot.acquire_lab() as lh:
         tbot_builtins.testsuite(
-            selftest_reentrant,
-            selftest_uname,
-            selftest_user,
-            selftest_stat,
+            selftest_machine_reentrant,
+            selftest_machine_labhost_shell,
+            selftest_path_stat,
             selftest_path_integrity,
             lh=lh,
         )
