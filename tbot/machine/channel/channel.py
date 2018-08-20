@@ -76,6 +76,7 @@ class Channel(abc.ABC):
 unset HISTFILE
 PROMPT_COMMAND=''
 PS1='{TBOT_PROMPT}'
+PS2=''
 """
         )
 
