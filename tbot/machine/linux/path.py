@@ -74,6 +74,10 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
     def is_socket(self) -> bool:
         return self.host.exec("test", "-S", self)[0] == 0
 
+    @property
+    def parent(self) -> "Path[H]":
+        return Path(self._host, super().parent)
+
     def __truediv__(self, key: typing.Any) -> "Path[H]":
         return Path(self._host, super().__truediv__(key))
 
