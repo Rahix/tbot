@@ -19,9 +19,15 @@ class Machine(contextlib.AbstractContextManager):
         """Destroy and cleanup this machine instance."""
         pass
 
+    def __init__(self) -> None:
+        self._rc = 0
+
     def __enter__(self: Self) -> Self:
+        self._rc += 1
         return self
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:  # type: ignore
         """Cleanup this machine instance."""
-        self.destroy()
+        self._rc -= 1
+        if self._rc == 0:
+            self.destroy()

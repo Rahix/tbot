@@ -34,6 +34,7 @@ class SSHLabHost(lab.LabHost):
         )
 
     def __init__(self) -> None:
+        super().__init__()
         self.client = paramiko.SSHClient()
         self.client.load_system_host_keys()
 

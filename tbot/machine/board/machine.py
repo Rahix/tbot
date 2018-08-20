@@ -14,6 +14,7 @@ class BoardMachine(machine.Machine, typing.Generic[B]):
         pass
 
     def __init__(self, board: B) -> None:
+        super().__init__()
         self.board = board
         self.channel = self.connect()
 

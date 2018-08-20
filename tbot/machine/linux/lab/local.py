@@ -21,6 +21,7 @@ class LocalLabHost(lab.LabHost):
         return getpass.getuser()
 
     def __init__(self) -> None:
+        super().__init__()
         self.channel = channel.SubprocessChannel()
 
     def destroy(self) -> None:

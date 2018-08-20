@@ -51,6 +51,7 @@ class SSHMachine(linux.LinuxMachine):
         return chan
 
     def __init__(self, labhost: linux.LabHost) -> None:
+        super().__init__()
         self.labhost = labhost
 
         self.channel = self.connect()
