@@ -8,7 +8,7 @@ from tbot.machine import linux
 B = typing.TypeVar("B", bound=board.Board)
 
 
-class UBootMachine(machine.BoardMachine, typing.Generic[B]):
+class UBootMachine(machine.BoardMachine, tbot.machine.InteractiveMachine, typing.Generic[B]):
     autoboot_prompt = r"Hit any key to stop autoboot:\s+\d+\s+"
     autoboot_keys = "\n"
     prompt = "U-Boot> "
@@ -49,3 +49,11 @@ class UBootMachine(machine.BoardMachine, typing.Generic[B]):
             raise tbot.machine.CommandFailedException(self, self.build_command(*args), out)
 
         return out
+
+    def interactive(self) -> None:
+        tbot.log.message("Entering interactive shell (CTRL+D to exit) ...")
+
+        self.channel.send("\n")
+        self.channel.attach_interactive()
+
+        tbot.log.message("Exiting interactive shell ...")
