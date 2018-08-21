@@ -1,5 +1,7 @@
 import abc
+import collections
 import io
+import itertools
 import re
 import select
 import sys
@@ -66,6 +68,10 @@ class Channel(abc.ABC):
     def attach_interactive(self, end_magic: typing.Union[str, bytes, None] = None) -> None:
         end_magic_bytes = end_magic.encode("utf-8") if isinstance(end_magic, str) else end_magic
 
+        end_ring_buffer: typing.Deque[int] = collections.deque(
+            maxlen=len(end_magic_bytes) if end_magic_bytes is not None else 1
+        )
+
         oldtty = termios.tcgetattr(sys.stdin)
         try:
             tty.setraw(sys.stdin.fileno())
@@ -85,8 +91,13 @@ class Channel(abc.ABC):
 
                 if self in r:
                     data = self.recv()
-                    if data == end_magic_bytes:
-                        break
+                    if isinstance(end_magic_bytes, bytes):
+                        end_ring_buffer.extend(data)
+                        for a, b in itertools.zip_longest(end_ring_buffer, end_magic_bytes):
+                            if a != b:
+                                break
+                        else:
+                            break
                     sys.stdout.buffer.write(data)
                     sys.stdout.buffer.flush()
                 if sys.stdin in r:
@@ -100,18 +111,20 @@ class Channel(abc.ABC):
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, oldtty)
             self._interactive_teardown()
 
-    def initialize(self) -> None:
+    def initialize(self, *, minimal: bool = False) -> None:
         """
         Initialize this channel so it is ready to receive commands.
         """
 
         # Set proper prompt
-        self.raw_command(f"PROMPT_COMMAND=''; PS1='{TBOT_PROMPT}'")
+        self.send("PROMPT_COMMAND=''\n")
+        self.raw_command(f"PS1='{TBOT_PROMPT}'")
         # Ensure we don't make history
         self.raw_command("unset HISTFILE")
-        # Disable line editing
-        self.raw_command("set +o vi")
-        self.raw_command("set +o emacs")
+        if not minimal:
+            # Disable line editing
+            self.raw_command("set +o vi")
+            self.raw_command("set +o emacs")
         # Ensure multiline commands work
         self.raw_command("PS2=''")
 
