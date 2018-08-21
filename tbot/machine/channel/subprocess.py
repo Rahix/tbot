@@ -1,5 +1,4 @@
 import typing
-import time
 import pty
 import os
 import fcntl
@@ -18,6 +17,7 @@ class SubprocessChannel(channel.Channel):
             stdin=pty_slave,
             stdout=pty_slave,
             stderr=pty_slave,
+            start_new_session=True,
         )
 
         flags = fcntl.fcntl(self.pty_master, fcntl.F_GETFL)
