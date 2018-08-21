@@ -100,19 +100,21 @@ def main() -> None:
     import tbot
     # Set the actual selected types, needs to be ignored by mypy
     # beause this is obviously not good python
-    try:
+    if args.lab is not None:
         lab = loader.load_module(
             pathlib.Path(args.lab).resolve()
         )
         tbot.selectable.LabHost = lab.LAB  # type: ignore
-    except:
+    else:
         tbot.selectable.LabHost = tbot.machine.linux.lab.LocalLabHost  # type: ignore
 
-    try:
-        board = loader.load_module(pathlib.Path.cwd() / "config" / "boards" / "dummy.py")
+    if args.board is not None:
+        board = loader.load_module(
+            pathlib.Path(args.board).resolve()
+        )
         tbot.selectable.Board = board.BOARD  # type: ignore
         tbot.selectable.UBootMachine = board.UBOOT  # type: ignore
-    except:
+    else:
         pass
 
     try:
