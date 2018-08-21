@@ -113,8 +113,10 @@ def main() -> None:
             pathlib.Path(args.board).resolve()
         )
         tbot.selectable.Board = board.BOARD  # type: ignore
-        tbot.selectable.UBootMachine = board.UBOOT  # type: ignore
-        tbot.selectable.LinuxMachine = board.LINUX  # type: ignore
+        if hasattr(board, "UBOOT"):
+            tbot.selectable.UBootMachine = board.UBOOT  # type: ignore
+        if hasattr(board, "LINUX"):
+            tbot.selectable.LinuxMachine = board.LINUX  # type: ignore
     else:
         pass
 
