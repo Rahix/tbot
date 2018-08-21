@@ -82,17 +82,19 @@ class Channel(abc.ABC):
 
             while True:
                 r, _, _ = select.select([self, sys.stdin], [], [])
+
                 if self in r:
-                    data_string = self.recv()
-                    if data_string == end_magic_bytes:
+                    data = self.recv()
+                    if data == end_magic_bytes:
                         break
-                    sys.stdout.buffer.write(data_string)
+                    sys.stdout.buffer.write(data)
                     sys.stdout.buffer.flush()
                 if sys.stdin in r:
-                    data_string = sys.stdin.buffer.read(4096)
-                    if end_magic is None and data_string == "\x04":
+                    data = sys.stdin.buffer.read(4096)
+                    if end_magic is None and data == b"\x04":
                         break
-                    self.send(data_string)
+                    self.send(data)
+
             sys.stdout.write("\r\n")
         finally:
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, oldtty)
