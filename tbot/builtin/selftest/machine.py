@@ -31,21 +31,30 @@ def selftest_machine_labhost_shell(
 @tbot.testcase
 def selftest_machine_shell(
     m: linux.LinuxMachine,
+    shell: str = "bash",
 ) -> None:
+    # Capabilities
+    cap = []
+    if shell == "bash":
+        cap.extend(["printf"])
+    if shell in ["ash", "dash"]:
+        cap.extend(["printf"])
+
     tbot.log.message("Testing command output ...")
     out = m.exec0("echo", "Hello World")
     assert out == "Hello World\n", repr(out)
 
-    out = m.exec0("printf", "Hello World")
-    assert out == "Hello World", repr(out)
+    if "printf" in cap:
+        out = m.exec0("printf", "Hello World")
+        assert out == "Hello World", repr(out)
 
-    out = m.exec0("printf", "Hello\\nWorld")
-    assert out == "Hello\nWorld", repr(out)
+        out = m.exec0("printf", "Hello\\nWorld")
+        assert out == "Hello\nWorld", repr(out)
 
-    out = m.exec0("printf", "Hello\nWorld")
-    assert out == "Hello\nWorld", repr(out)
+        out = m.exec0("printf", "Hello\nWorld")
+        assert out == "Hello\nWorld", repr(out)
 
-    s = "_".join(map(lambda i: f"{i:02}", range(100)))
+    s = "_".join(map(lambda i: f"{i:02}", range(80)))
     out = m.exec0("echo", s)
     assert out == f"{s}\n", repr(out)
 

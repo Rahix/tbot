@@ -9,7 +9,6 @@ from . import uboot
 from . import board
 
 B = typing.TypeVar("B", bound=board.Board)
-U = typing.TypeVar("U", bound=uboot.UBootMachine)
 Self = typing.TypeVar("Self", bound="LinuxMachine")
 
 
