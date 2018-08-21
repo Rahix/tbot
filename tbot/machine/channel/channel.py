@@ -37,27 +37,11 @@ class SkipStream(io.StringIO):
 class Channel(abc.ABC):
 
     @abc.abstractmethod
-    def send(self, data: str) -> None:
-        """
-        Send data to the target of this channel.
-
-        Should raise an exception if the channel is no longer available.
-
-        :param str data: The string that should be sent
-        """
+    def send(self, data: typing.Union[bytes, str]) -> None:
         pass
 
     @abc.abstractmethod
-    def recv(self) -> str:
-        """
-        Receive data from this channel.
-
-        Should raise an exception if the channel is no longer available.
-
-        :rtype: str
-        :returns: String that have been read from this channel. Must block until
-                  at least one byte is available.
-        """
+    def recv(self) -> bytes:
         pass
 
     @abc.abstractmethod
@@ -79,7 +63,9 @@ class Channel(abc.ABC):
     def _interactive_teardown(self) -> None:
         pass
 
-    def attach_interactive(self, end_magic: typing.Optional[str] = None) -> None:
+    def attach_interactive(self, end_magic: typing.Union[str, bytes, None] = None) -> None:
+        end_magic_bytes = end_magic.encode("utf-8") if isinstance(end_magic, str) else end_magic
+
         oldtty = termios.tcgetattr(sys.stdin)
         try:
             tty.setraw(sys.stdin.fileno())
@@ -98,12 +84,12 @@ class Channel(abc.ABC):
                 r, _, _ = select.select([self, sys.stdin], [], [])
                 if self in r:
                     data_string = self.recv()
-                    if data_string == end_magic:
+                    if data_string == end_magic_bytes:
                         break
-                    sys.stdout.write(data_string)
-                    sys.stdout.flush()
+                    sys.stdout.buffer.write(data_string)
+                    sys.stdout.buffer.flush()
                 if sys.stdin in r:
-                    data_string = sys.stdin.read(4096)
+                    data_string = sys.stdin.buffer.read(4096)
                     if end_magic is None and data_string == "\x04":
                         break
                     self.send(data_string)
@@ -143,21 +129,29 @@ class Channel(abc.ABC):
         while True:
             new = (
                 self.recv()
-                .replace("\r\n", "\n")
-                .replace("\r\n", "\n")
-                .replace("\r", "\n")
+                .replace(b"\r\n", b"\n")
+                .replace(b"\r\n", b"\n")
+                .replace(b"\r", b"\n")
             )
 
-            buf += new
+            decoded = ""
+            while True:
+                try:
+                    decoded += new.decode("utf-8")
+                    break
+                except UnicodeDecodeError:
+                    new += self.recv()
+
+            buf += decoded
 
             if (not regex and buf[-len(prompt) :] == prompt) or (
                 regex and re.search(expr, buf) is not None
             ):
                 if stream:
-                    stream.write(new[: -len(prompt)])
+                    stream.write(decoded[: -len(prompt)])
                 break
             elif stream:
-                stream.write(new)
+                stream.write(decoded)
 
         return buf
 
@@ -168,7 +162,7 @@ class Channel(abc.ABC):
         prompt: str = TBOT_PROMPT,
         stream: typing.Optional[typing.TextIO] = None,
     ) -> str:
-        self.send(f"{command}\n")
+        self.send(f"{command}\n".encode("utf-8"))
         if stream:
             stream = SkipStream(stream, len(command) + 1)
         out = self.read_until_prompt(prompt, stream=stream)[

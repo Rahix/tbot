@@ -1,5 +1,5 @@
+import typing
 import shutil
-import time
 import paramiko
 from . import channel
 
@@ -14,52 +14,27 @@ class ParamikoChannel(channel.Channel):
 
         super().__init__()
 
-    def send(self, data: str) -> None:
-        if data == "":
-            return
+    def send(self, data: typing.Union[bytes, str]) -> None:
+        data = data if isinstance(data, bytes) else data.encode("utf-8")
 
-        data_bytes = data.encode("utf-8")
-        length = len(data_bytes)
+        length = len(data)
         c = 0
         while c < length:
-            b = self.ch.send(data_bytes[c:])
+            b = self.ch.send(data[c:])
             if b == 0:
                 raise channel.ChannelClosedException()
             c += b
 
-    def recv(self) -> str:
-        # Wait until at least one byte is available
-        while not self.ch.recv_ready():
-            time.sleep(0.1)
+    def recv(self) -> bytes:
+        buf = self.ch.recv(1024)
 
-        buf = b""
         while self.ch.recv_ready():
-            buf += self.ch.recv(1000)
+            buf += self.ch.recv(1024)
 
         if buf == b"":
             raise channel.ChannelClosedException()
 
-        s: str
-        try:
-            s = buf.decode("utf-8")
-        except UnicodeDecodeError as e:
-            if e.start > len(buf) - 4:
-                # The failure occured at the end of the string, most likely because
-                # only half of a unicode char was written
-                for _ in range(6):
-                    time.sleep(0.05)
-                    buf += self.ch.recv(1)
-                    try:
-                        s = buf.decode("utf-8")
-                        break
-                    except UnicodeDecodeError:
-                        pass
-            else:
-                # Fall back to latin-1 if unicode decoding fails ... This is not perfect
-                # but it does not stop a test run just because of an invalid character
-                s = buf.decode("latin_1")
-
-        return s
+        return buf
 
     def close(self) -> None:
         self.ch.close()

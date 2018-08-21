@@ -1,7 +1,9 @@
+import typing
 import time
 import pty
 import os
 import fcntl
+import select
 import subprocess
 from . import channel
 
@@ -24,43 +26,35 @@ class SubprocessChannel(channel.Channel):
 
         super().__init__()
 
-    def send(self, data: str) -> None:
-        os.write(self.pty_master, data.encode("utf-8"))
+    def send(self, data: typing.Union[bytes, str]) -> None:
+        data = data if isinstance(data, bytes) else data.encode("utf-8")
 
-    def recv(self) -> str:
+        length = len(data)
+        c = 0
+        while c < length:
+            b = os.write(self.pty_master, data[c:])
+            if b == 0:
+                raise channel.ChannelClosedException()
+            c += b
+
+    def recv(self) -> bytes:
         buf = b""
 
-        waiting = True
-        while waiting:
-            try:
-                buf = os.read(self.pty_master, 1000)
-            except BlockingIOError:
-                time.sleep(0.1)
-            else:
-                waiting = False
+        r, _, _ = select.select([self.pty_master], [], [])
+        if self.pty_master in r:
+            buf = os.read(self.pty_master, 1024)
 
         try:
             while True:
-                buf += os.read(self.pty_master, 1000)
+                buf += os.read(self.pty_master, 1024)
         except BlockingIOError:
             pass
 
-        s: str
-        try:
-            s = buf.decode("utf-8")
-        except UnicodeDecodeError:
-            # Fall back to latin-1 if unicode decoding fails ... This is not perfect
-            # but it does not stop a test run just because of an invalid character
-            s = buf.decode("latin_1")
-
-        return s
+        return buf
 
     def close(self) -> None:
-        self.p.terminate()
-        try:
-            self.p.wait(2)
-        except subprocess.TimeoutExpired:
-            self.p.kill()
+        self.p.kill()
+        self.p.kill()
 
     def fileno(self) -> int:
         return self.pty_master
