@@ -15,6 +15,9 @@ class ParamikoChannel(channel.Channel):
         super().__init__()
 
     def send(self, data: typing.Union[bytes, str]) -> None:
+        if self.ch.exit_status_ready():
+            raise channel.ChannelClosedException()
+
         data = data if isinstance(data, bytes) else data.encode("utf-8")
 
         length = len(data)

@@ -1,5 +1,6 @@
 import typing
 import tbot
+from tbot.machine import channel
 from tbot.machine import linux
 
 __all__ = ["selftest_machine_reentrant", "selftest_machine_labhost_shell"]
@@ -24,7 +25,10 @@ def selftest_machine_labhost_shell(
     with lh or tbot.acquire_lab() as lh:
         selftest_machine_shell(lh)
 
+        selftest_machine_channel(lh.new_channel())
 
+
+@tbot.testcase
 def selftest_machine_shell(
     m: linux.LinuxMachine,
 ) -> None:
@@ -51,3 +55,27 @@ def selftest_machine_shell(
 
     r, _ = m.exec("false")
     assert r == 1
+
+
+@tbot.testcase
+def selftest_machine_channel(
+    ch: channel.Channel,
+) -> None:
+    out = ch.raw_command("echo Hello World")
+    assert out == "Hello World\n"
+
+    ch.close()
+
+    raised = False
+    try:
+        ch.send("\n")
+    except channel.ChannelClosedException:
+        raised = True
+    assert raised
+
+    raised = False
+    try:
+        ch.recv()
+    except channel.ChannelClosedException:
+        raised = True
+    assert raised

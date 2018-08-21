@@ -27,6 +27,9 @@ class SubprocessChannel(channel.Channel):
         super().__init__()
 
     def send(self, data: typing.Union[bytes, str]) -> None:
+        if self.p.returncode is not None:
+            raise channel.ChannelClosedException()
+
         data = data if isinstance(data, bytes) else data.encode("utf-8")
 
         length = len(data)
@@ -38,6 +41,9 @@ class SubprocessChannel(channel.Channel):
             c += b
 
     def recv(self) -> bytes:
+        if self.p.returncode is not None:
+            raise channel.ChannelClosedException()
+
         buf = b""
 
         r, _, _ = select.select([self.pty_master], [], [])
@@ -54,7 +60,7 @@ class SubprocessChannel(channel.Channel):
 
     def close(self) -> None:
         self.p.kill()
-        self.p.kill()
+        self.p.wait()
 
     def fileno(self) -> int:
         return self.pty_master
