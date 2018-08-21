@@ -111,7 +111,7 @@ class Channel(abc.ABC):
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, oldtty)
             self._interactive_teardown()
 
-    def initialize(self, *, minimal: bool = False) -> None:
+    def initialize(self, *, shell: str = "bash") -> None:
         """
         Initialize this channel so it is ready to receive commands.
         """
@@ -121,10 +121,16 @@ class Channel(abc.ABC):
         self.raw_command(f"PS1='{TBOT_PROMPT}'")
         # Ensure we don't make history
         self.raw_command("unset HISTFILE")
-        if not minimal:
-            # Disable line editing
+        # Disable line editing
+        if shell == "bash":
             self.raw_command("set +o vi")
             self.raw_command("set +o emacs")
+        # elif shell == "ash" or shell == "dash":
+            # self.raw_command("set +o interactive")
+        else:
+            # No shell specific behaviour known, try
+            # making the terminal really wide
+            self.raw_command("stty cols 1024")
         # Ensure multiline commands work
         self.raw_command("PS2=''")
 

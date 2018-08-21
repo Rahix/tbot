@@ -16,12 +16,17 @@ class UBootMachine(machine.BoardMachine, tbot.machine.InteractiveMachine, typing
     def __init__(self, board: B) -> None:
         super().__init__(board)
 
+        self.channel = self.connect()
+
         with board.ev:
             self.channel.read_until_prompt(
                 self.autoboot_prompt, regex=True, stream=board.ev
             )
         self.channel.send(self.autoboot_keys)
         self.channel.read_until_prompt(self.prompt)
+
+    def destroy(self) -> None:
+        self.channel.close()
 
     def build_command(self, *args: typing.Union[str, linux.Path[linux.LabHost]]) -> str:
         command = ""

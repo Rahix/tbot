@@ -114,6 +114,7 @@ def main() -> None:
         )
         tbot.selectable.Board = board.BOARD  # type: ignore
         tbot.selectable.UBootMachine = board.UBOOT  # type: ignore
+        tbot.selectable.LinuxMachine = board.LINUX  # type: ignore
     else:
         pass
 

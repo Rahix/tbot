@@ -1,3 +1,4 @@
+import typing
 from tbot.machine.linux import lab
 from tbot.machine import board
 
@@ -39,3 +40,16 @@ def acquire_uboot(board: Board) -> UBootMachine:
     if hasattr(UBootMachine, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a board?")
     return UBootMachine(board)  # type: ignore
+
+
+class LinuxMachine(board.LinuxMachine):
+    """
+    Dummy type that will be replaced by the actual Linux machine at runtime.
+    """
+    _unselected = True
+
+
+def acquire_linux(b: typing.Union[Board, UBootMachine]) -> LinuxMachine:
+    if hasattr(LinuxMachine, "_unselected"):
+        raise NotImplementedError("Maybe you haven't set a board?")
+    return LinuxMachine(b)  # type: ignore

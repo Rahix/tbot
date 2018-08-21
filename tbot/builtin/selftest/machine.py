@@ -34,20 +34,20 @@ def selftest_machine_shell(
 ) -> None:
     tbot.log.message("Testing command output ...")
     out = m.exec0("echo", "Hello World")
-    assert out == "Hello World\n"
+    assert out == "Hello World\n", repr(out)
 
     out = m.exec0("printf", "Hello World")
-    assert out == "Hello World"
+    assert out == "Hello World", repr(out)
 
     out = m.exec0("printf", "Hello\\nWorld")
-    assert out == "Hello\nWorld"
+    assert out == "Hello\nWorld", repr(out)
 
     out = m.exec0("printf", "Hello\nWorld")
-    assert out == "Hello\nWorld"
+    assert out == "Hello\nWorld", repr(out)
 
     s = "_".join(map(lambda i: f"{i:02}", range(100)))
     out = m.exec0("echo", s)
-    assert out == f"{s}\n"
+    assert out == f"{s}\n", repr(out)
 
     tbot.log.message("Testing return codes ...")
     r, _ = m.exec("true")
