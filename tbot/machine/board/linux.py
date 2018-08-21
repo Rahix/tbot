@@ -26,7 +26,7 @@ class LinuxMachine(machine.BoardMachine, linux.LinuxMachine, typing.Generic[B]):
 
     @property
     @abc.abstractmethod
-    def password(self) -> str:
+    def password(self) -> typing.Optional[str]:
         pass
 
     @abc.abstractmethod
@@ -41,8 +41,9 @@ class LinuxMachine(machine.BoardMachine, linux.LinuxMachine, typing.Generic[B]):
             chan.read_until_prompt(self.login_prompt, stream=ev)
 
         chan.send(self.username + "\n")
-        chan.read_until_prompt("word: ")
-        chan.send(self.password + "\n")
+        if self.password is not None:
+            chan.read_until_prompt("word: ")
+            chan.send(self.password + "\n")
         time.sleep(self.login_timeout)
         chan.initialize(shell=self.shell)
 
