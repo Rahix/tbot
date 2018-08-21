@@ -72,6 +72,8 @@ class Channel(abc.ABC):
             maxlen=len(end_magic_bytes) if end_magic_bytes is not None else 1
         )
 
+        previous = b""
+
         oldtty = termios.tcgetattr(sys.stdin)
         try:
             tty.setraw(sys.stdin.fileno())
@@ -104,6 +106,10 @@ class Channel(abc.ABC):
                     data = sys.stdin.buffer.read(4096)
                     if end_magic is None and data == b"\x04":
                         break
+                    if end_magic is not None:
+                        if data == b"." and previous == b"~":
+                            break
+                        previous = data
                     self.send(data)
 
             sys.stdout.write("\r\n")
