@@ -14,9 +14,11 @@ Self = typing.TypeVar("Self", bound="LinuxMachine")
 
 class LinuxMachine(machine.BoardMachine, linux.LinuxMachine, typing.Generic[B]):
     boot_command = "run bootcmd"
-    shell = "ash"
     login_prompt = "login: "
     login_timeout = 1.0
+
+    # Most boards use busybox which has ash built-in
+    shell = "ash"
 
     @property
     def workdir(self: Self) -> "linux.Path[Self]":
