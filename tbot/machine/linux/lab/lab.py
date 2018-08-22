@@ -15,10 +15,10 @@ class LabHost(linux.LinuxMachine):
 
     def new_channel(self: Self, *args: typing.Union[str, special.Special, linux.Path[Self]]) -> channel.Channel:
         chan = self._new_channel()
-        if args != []:
+        if args != ():
             chan.send(self.build_command(*args) + "\n")
-        # Read back the command we just sent
-        chan.recv()
+            # Read back the command we just sent
+            chan.recv()
         return chan
 
     @property
