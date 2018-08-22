@@ -18,7 +18,7 @@ def list_dir(
 def get_file_list(
     dirs: typing.Iterable[pathlib.Path], files: typing.Iterable[pathlib.Path]
 ) -> typing.Generator[pathlib.Path, None, None]:
-    builtins = pathlib.Path(__file__).parent / "builtin" / "callable.py"
+    builtins = pathlib.Path(__file__).parent / "tc" / "callable.py"
     if builtins.is_file():
         yield builtins
     tcpy = pathlib.Path.cwd() / "tc.py"

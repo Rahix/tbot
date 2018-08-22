@@ -55,16 +55,16 @@ def selftest_machine_shell(m: typing.Union[linux.LinuxMachine, board.UBootMachin
 
     tbot.log.message("Testing return codes ...")
     r, _ = m.exec("true")
-    assert r == 0
+    assert r == 0, repr(r)
 
     r, _ = m.exec("false")
-    assert r == 1
+    assert r == 1, repr(r)
 
 
 @tbot.testcase
-def selftest_machine_channel(ch: channel.Channel,) -> None:
+def selftest_machine_channel(ch: channel.Channel) -> None:
     out = ch.raw_command("echo Hello World")
-    assert out == "Hello World\n"
+    assert out == "Hello World\n", repr(out)
 
     ch.close()
 

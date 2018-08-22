@@ -2,7 +2,7 @@ import typing
 import tbot
 from tbot.machine import linux
 
-from tbot.builtin import tbot_builtins
+from tbot import tc
 
 from .path import *
 from .machine import *
@@ -23,7 +23,7 @@ def selftest_user(lh: typing.Optional[linux.LabHost] = None,) -> None:
 @tbot.testcase
 def selftest() -> None:
     with tbot.acquire_lab() as lh:
-        tbot_builtins.testsuite(
+        tc.testsuite(
             selftest_machine_reentrant,
             selftest_machine_labhost_shell,
             selftest_path_stat,
