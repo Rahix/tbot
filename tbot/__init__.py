@@ -2,13 +2,17 @@ import typing
 import functools
 from tbot import log
 
-from . import selectable  # noqa: F401
-from .selectable import (
-    acquire_lab,
-    acquire_board,
-    acquire_uboot,
-    acquire_linux,
-)  # noqa: F401
+from . import selectable
+from .selectable import acquire_lab, acquire_board, acquire_uboot, acquire_linux
+
+__all__ = (
+    "selectable",
+    "acquire_lab",
+    "acquire_board",
+    "acquire_uboot",
+    "acquire_linux",
+    "testcase",
+)
 
 F = typing.TypeVar("F", bound=typing.Callable[..., typing.Any])
 

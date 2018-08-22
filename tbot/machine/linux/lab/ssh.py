@@ -2,7 +2,6 @@ import abc
 import typing
 import pathlib
 import paramiko
-from tbot.machine import linux  # noqa: F401
 from tbot.machine import channel
 from tbot.machine.linux import auth
 from . import lab

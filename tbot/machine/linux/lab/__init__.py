@@ -1,3 +1,5 @@
-from .lab import LabHost  # noqa: F401
-from .local import LocalLabHost  # noqa: F401
-from .ssh import SSHLabHost  # noqa: F401
+from .lab import LabHost
+from .local import LocalLabHost
+from .ssh import SSHLabHost
+
+__all__ = ("LabHost", "LocalLabHost", "SSHLabHost")

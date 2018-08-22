@@ -1,2 +1,9 @@
-from .machine import Machine, InteractiveMachine  # noqa: F401
-from .error import CommandFailedException, WrongHostException  # noqa: F401
+from .machine import Machine, InteractiveMachine
+from .error import CommandFailedException, WrongHostException
+
+__all__ = (
+    "Machine",
+    "InteractiveMachine",
+    "CommandFailedException",
+    "WrongHostException",
+)

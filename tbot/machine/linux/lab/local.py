@@ -1,6 +1,6 @@
 import typing
 import getpass
-from tbot.machine import linux  # noqa: F401
+from tbot.machine import linux
 from tbot.machine import channel
 from . import lab
 

@@ -1,1 +1,3 @@
-from .machine import SSHMachine  # noqa: F401
+from .machine import SSHMachine
+
+__all__ = ("SSHMachine",)
