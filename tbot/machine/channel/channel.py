@@ -72,7 +72,7 @@ class Channel(abc.ABC):
             maxlen=len(end_magic_bytes) if end_magic_bytes is not None else 1
         )
 
-        previous = b""
+        previous: typing.Deque[int] = collections.deque(maxlen=3)
 
         oldtty = termios.tcgetattr(sys.stdin)
         try:
@@ -104,12 +104,15 @@ class Channel(abc.ABC):
                     sys.stdout.buffer.flush()
                 if sys.stdin in r:
                     data = sys.stdin.buffer.read(4096)
+                    previous.extend(data)
                     if end_magic is None and data == b"\x04":
                         break
                     if end_magic is not None:
-                        if data == b"." and previous == b"~":
+                        for a, b in itertools.zip_longest(previous, b"\r~."):
+                            if a != b:
+                                break
+                        else:
                             break
-                        previous = data
                     self.send(data)
 
             sys.stdout.write("\r\n")
