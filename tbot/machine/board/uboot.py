@@ -9,20 +9,27 @@ B = typing.TypeVar("B", bound=board.Board)
 
 
 class UBootMachine(
-    machine.BoardMachine, tbot.machine.InteractiveMachine, typing.Generic[B]
+    machine.BoardMachine[B], tbot.machine.InteractiveMachine
 ):
     autoboot_prompt = r"Hit any key to stop autoboot:\s+\d+\s+"
     autoboot_keys = "\n"
     prompt = "U-Boot> "
 
+    @property
+    def name(self) -> str:
+        return self.board.name + "-uboot"
+
     def __init__(self, board: B) -> None:
         super().__init__(board)
 
-        self.channel = self.connect()
+        if board.channel is not None:
+            self.channel = board.channel
+        else:
+            raise RuntimeError("{board!r} does not support a serial connection!")
 
-        with board.ev:
+        with board.boot_ev:
             self.channel.read_until_prompt(
-                self.autoboot_prompt, regex=True, stream=board.ev
+                self.autoboot_prompt, regex=True, stream=board.boot_ev
             )
         self.channel.send(self.autoboot_keys)
         self.channel.read_until_prompt(self.prompt)

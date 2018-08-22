@@ -2,23 +2,24 @@ import abc
 import time
 import typing
 import tbot
+from tbot.machine import board
 from tbot.machine import linux
 from tbot.machine import channel
-from . import machine
-from . import uboot
-from . import board
 
 B = typing.TypeVar("B", bound=board.Board)
 Self = typing.TypeVar("Self", bound="LinuxMachine")
 
 
-class LinuxMachine(machine.BoardMachine, linux.LinuxMachine, typing.Generic[B]):
-    boot_command = "run bootcmd"
+class LinuxMachine(board.BoardMachine[B], linux.LinuxMachine):
     login_prompt = "login: "
     login_timeout = 1.0
 
     # Most boards use busybox which has ash built-in
     shell = "ash"
+
+    @property
+    def name(self) -> str:
+        return self.board.name + "-linux"
 
     @property
     def workdir(self: Self) -> "linux.Path[Self]":
@@ -30,8 +31,8 @@ class LinuxMachine(machine.BoardMachine, linux.LinuxMachine, typing.Generic[B]):
         pass
 
     @abc.abstractmethod
-    def __init__(self, b: typing.Union[B, uboot.UBootMachine[B]]) -> None:
-        super().__init__(b.board if isinstance(b, uboot.UBootMachine) else b)
+    def __init__(self, b: typing.Union[B, board.UBootMachine[B]]) -> None:
+        super().__init__(b.board if isinstance(b, board.UBootMachine) else b)
 
     def boot_to_shell(self) -> None:
         chan = self._obtain_channel()
@@ -48,19 +49,21 @@ class LinuxMachine(machine.BoardMachine, linux.LinuxMachine, typing.Generic[B]):
         chan.initialize(shell=self.shell)
 
 
-class LinuxWithUBootMachine(LinuxMachine, typing.Generic[B]):
+class LinuxWithUBootMachine(LinuxMachine[B]):
+    boot_command = "run bootcmd"
 
+    @property
     @abc.abstractmethod
-    def init_uboot(self, board: B) -> uboot.UBootMachine[B]:
+    def uboot(self) -> typing.Type[board.UBootMachine[B]]:
         pass
 
-    def __init__(self, b: typing.Union[B, uboot.UBootMachine[B]]) -> None:
+    def __init__(self, b: typing.Union[B, board.UBootMachine[B]]) -> None:
         super().__init__(b)
-        if isinstance(b, uboot.UBootMachine):
+        if isinstance(b, board.UBootMachine):
             self.ub = None
             self.channel = b.channel
         else:
-            self.ub = self.init_uboot(b)
+            self.ub = self.uboot(b)
             self.channel = self.ub.channel
 
         self.channel.send(self.boot_command + "\n")
@@ -74,14 +77,17 @@ class LinuxWithUBootMachine(LinuxMachine, typing.Generic[B]):
         return self.channel
 
 
-class LinuxStandaloneMachine(LinuxMachine, typing.Generic[B]):
+class LinuxStandaloneMachine(LinuxMachine[B]):
 
-    def __init__(self, b: typing.Union[B, uboot.UBootMachine[B]]) -> None:
+    def __init__(self, b: typing.Union[B, board.UBootMachine[B]]) -> None:
         super().__init__(b)
-        if isinstance(b, uboot.UBootMachine):
+        if isinstance(b, board.UBootMachine):
             raise RuntimeError(f"{self!r} does not support booting from UBoot")
 
-        self.channel = self.connect()
+        if self.board.channel is not None:
+            self.channel = self.board.channel
+        else:
+            raise RuntimeError("{board!r} does not support a serial connection!")
 
         self.boot_to_shell()
 

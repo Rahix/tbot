@@ -2,7 +2,8 @@ import abc
 import contextlib
 import typing
 import tbot
-from tbot.machine.linux import lab
+from tbot.machine import linux
+from tbot.machine import channel
 
 Self = typing.TypeVar("Self", bound="Board")
 
@@ -22,9 +23,13 @@ class Board(contextlib.AbstractContextManager):
     def poweroff(self) -> None:
         pass
 
-    def __init__(self, lh: lab.LabHost) -> None:
+    def connect(self) -> typing.Optional[channel.Channel]:
+        return None
+
+    def __init__(self, lh: linux.LabHost) -> None:
         self.lh = lh
-        self.ev = tbot.log.EventIO()
+        self.boot_ev = tbot.log.EventIO()
+        self.channel = self.connect()
         self.on = False
 
     def __repr__(self) -> str:
@@ -33,8 +38,8 @@ class Board(contextlib.AbstractContextManager):
     def __enter__(self: Self) -> Self:
         if self.on:
             raise RuntimeError("Board already powered on!")
-        self.ev.writeln(tbot.log.c("POWERON").bold + f" ({self.name})")
-        self.ev.prefix = "   <> "
+        self.boot_ev.writeln(tbot.log.c("POWERON").bold + f" ({self.name})")
+        self.boot_ev.prefix = "   <> "
         self.poweron()
         self.on = True
         return self
