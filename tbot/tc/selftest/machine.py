@@ -60,6 +60,28 @@ def selftest_machine_shell(m: typing.Union[linux.LinuxMachine, board.UBootMachin
     r, _ = m.exec("false")
     assert r == 1, repr(r)
 
+    if isinstance(m, linux.LinuxMachine):
+        tbot.log.message("Testing env vars ...")
+        m.exec0("export", "TBOT_TEST_ENV_VAR=121212")
+        out = m.exec0("echo", linux.Env("TBOT_TEST_ENV_VAR"))
+        assert out == "121212\n", repr(out)
+
+        tbot.log.message("Testing redirection ...")
+        f = m.workdir / ".redir_test.txt"
+        if f.exists():
+            m.exec0("rm", f)
+
+        m.exec0("echo", "Some data\nAnd some more", stdout=f)
+
+        out = m.exec0("cat", f)
+        assert out == "Some data\nAnd some more\n", repr(out)
+
+    if isinstance(m, board.UBootMachine):
+        tbot.log.message("Testing env vars ...")
+        m.exec0("setenv", "TBOT_TEST", "Lorem ipsum dolor sit amet")
+        out = m.exec0("printenv", "TBOT_TEST")
+        assert out == "TBOT_TEST=Lorem ipsum dolor sit amet\n", repr(out)
+
 
 @tbot.testcase
 def selftest_machine_channel(ch: channel.Channel) -> None:
