@@ -2,6 +2,7 @@ import typing
 import tbot
 from tbot.machine import channel
 from tbot.machine import linux
+from tbot.machine import board
 
 __all__ = ["selftest_machine_reentrant", "selftest_machine_labhost_shell"]
 
@@ -25,13 +26,14 @@ def selftest_machine_labhost_shell(lh: typing.Optional[linux.LabHost] = None,) -
 
 
 @tbot.testcase
-def selftest_machine_shell(m: linux.LinuxMachine, shell: str = "bash") -> None:
+def selftest_machine_shell(m: typing.Union[linux.LinuxMachine, board.UBootMachine]) -> None:
     # Capabilities
     cap = []
-    if shell == "bash":
-        cap.extend(["printf"])
-    if shell in ["ash", "dash"]:
-        cap.extend(["printf"])
+    if isinstance(m, linux.LinuxMachine):
+        if m.shell == "bash":
+            cap.extend(["printf"])
+        if m.shell in ["ash", "dash"]:
+            cap.extend(["printf"])
 
     tbot.log.message("Testing command output ...")
     out = m.exec0("echo", "Hello World")
