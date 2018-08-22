@@ -66,8 +66,12 @@ class Channel(abc.ABC):
     def _interactive_teardown(self) -> None:
         pass
 
-    def attach_interactive(self, end_magic: typing.Union[str, bytes, None] = None) -> None:
-        end_magic_bytes = end_magic.encode("utf-8") if isinstance(end_magic, str) else end_magic
+    def attach_interactive(
+        self, end_magic: typing.Union[str, bytes, None] = None
+    ) -> None:
+        end_magic_bytes = (
+            end_magic.encode("utf-8") if isinstance(end_magic, str) else end_magic
+        )
 
         end_ring_buffer: typing.Deque[int] = collections.deque(
             maxlen=len(end_magic_bytes) if end_magic_bytes is not None else 1
@@ -96,7 +100,9 @@ class Channel(abc.ABC):
                     data = self.recv()
                     if isinstance(end_magic_bytes, bytes):
                         end_ring_buffer.extend(data)
-                        for a, b in itertools.zip_longest(end_ring_buffer, end_magic_bytes):
+                        for a, b in itertools.zip_longest(
+                            end_ring_buffer, end_magic_bytes
+                        ):
                             if a != b:
                                 break
                         else:
@@ -135,7 +141,7 @@ class Channel(abc.ABC):
             self.raw_command("set +o vi")
             self.raw_command("set +o emacs")
         # elif shell == "ash" or shell == "dash":
-            # self.raw_command("set +o interactive")
+        #     self.raw_command("set +o interactive")
         else:
             # No shell specific behaviour known, try
             # making the terminal really wide

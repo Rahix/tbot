@@ -4,7 +4,9 @@ import pathlib
 import typing
 
 
-def list_dir(d: pathlib.Path, recurse: bool = False) -> typing.Generator[pathlib.Path, None, None]:
+def list_dir(
+    d: pathlib.Path, recurse: bool = False
+) -> typing.Generator[pathlib.Path, None, None]:
     for f in d.iterdir():
         if recurse and f.is_dir() and f.name != "__pycache__":
             for subf in list_dir(f, recurse):
@@ -14,8 +16,7 @@ def list_dir(d: pathlib.Path, recurse: bool = False) -> typing.Generator[pathlib
 
 
 def get_file_list(
-    dirs: typing.Iterable[pathlib.Path],
-    files: typing.Iterable[pathlib.Path],
+    dirs: typing.Iterable[pathlib.Path], files: typing.Iterable[pathlib.Path]
 ) -> typing.Generator[pathlib.Path, None, None]:
     builtins = pathlib.Path(__file__).parent / "builtin" / "callable.py"
     if builtins.is_file():
@@ -50,8 +51,7 @@ def load_module(p: pathlib.Path) -> importlib.types.ModuleType:
     default_sys_path = sys.path
     try:
         module_spec = importlib.util.spec_from_file_location(
-            name=p.stem,
-            location=str(p),
+            name=p.stem, location=str(p)
         )
         module = importlib.util.module_from_spec(module_spec)
         if not isinstance(module_spec.loader, importlib.abc.Loader):
@@ -78,7 +78,9 @@ def collect_testcases(
             for name, func in module.__dict__.items():
                 if hasattr(func, "_tbot_testcase"):
                     if name in testcases:
-                        raise Exception(f"{func.__module__!r}: A testcase named {name!r} already exists in {(testcases[name]).__module__!r}")
+                        raise Exception(
+                            f"{func.__module__!r}: A testcase named {name!r} already exists in {(testcases[name]).__module__!r}"
+                        )
                     testcases[name] = func
         except:
             print(f"Failed to load {f}")

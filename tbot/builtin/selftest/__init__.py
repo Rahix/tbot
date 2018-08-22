@@ -9,17 +9,13 @@ from .machine import *
 
 
 @tbot.testcase
-def selftest_uname(
-    lh: typing.Optional[linux.LabHost] = None,
-) -> None:
+def selftest_uname(lh: typing.Optional[linux.LabHost] = None,) -> None:
     with lh or tbot.acquire_lab() as lh:
         lh.exec0("uname", "-a")
 
 
 @tbot.testcase
-def selftest_user(
-    lh: typing.Optional[linux.LabHost] = None,
-) -> None:
+def selftest_user(lh: typing.Optional[linux.LabHost] = None,) -> None:
     with lh or tbot.acquire_lab() as lh:
         lh.exec0("echo", linux.Env("USER"))
 

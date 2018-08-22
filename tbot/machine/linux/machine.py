@@ -31,7 +31,9 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         pass
 
     def build_command(
-        self, *args: typing.Union[str, Special, Path[Self]], stdout: typing.Optional[Path[Self]] = None
+        self,
+        *args: typing.Union[str, Special, Path[Self]],
+        stdout: typing.Optional[Path[Self]] = None,
     ) -> str:
         """
         Build the string representation of a command.
@@ -127,18 +129,22 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         size = shutil.get_terminal_size()
         channel.raw_command("set -o emacs")
         channel.raw_command(f"stty cols {size.columns}; stty rows {size.lines}")
-        channel.send(f"""\
+        channel.send(
+            f"""\
 {self.shell}
 unset HISTFILE
 PROMPT_COMMAND=""
 PS1="{endstr}"
-""")
+"""
+        )
         channel.read_until_prompt(endstr)
-        channel.send(f"""\
+        channel.send(
+            f"""\
 {self.shell}
 PROMPT_COMMAND=""
 PS1="\\[\\033[36m\\]{self.name}: \\[\\033[32m\\]\\w\\[\\033[0m\\]> "
-""")
+"""
+        )
         channel.read_until_prompt("> ")
         channel.send("\n")
         log.message("Entering interactive shell ...")

@@ -3,10 +3,7 @@ import tbot
 
 
 @tbot.testcase
-def testsuite(
-    *args: typing.Callable,
-    **kwargs: typing.Any,
-) -> None:
+def testsuite(*args: typing.Callable, **kwargs: typing.Any) -> None:
     errors: typing.List[Exception] = []
 
     for test in args:

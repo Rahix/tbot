@@ -49,6 +49,7 @@ class LinuxMachine(machine.BoardMachine, linux.LinuxMachine, typing.Generic[B]):
 
 
 class LinuxWithUBootMachine(LinuxMachine, typing.Generic[B]):
+
     @abc.abstractmethod
     def init_uboot(self, board: B) -> uboot.UBootMachine[B]:
         pass
@@ -74,6 +75,7 @@ class LinuxWithUBootMachine(LinuxMachine, typing.Generic[B]):
 
 
 class LinuxStandaloneMachine(LinuxMachine, typing.Generic[B]):
+
     def __init__(self, b: typing.Union[B, uboot.UBootMachine[B]]) -> None:
         super().__init__(b)
         if isinstance(b, uboot.UBootMachine):

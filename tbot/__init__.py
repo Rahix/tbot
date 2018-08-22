@@ -3,7 +3,12 @@ import functools
 from tbot import log
 
 from . import selectable  # noqa: F401
-from .selectable import acquire_lab, acquire_board, acquire_uboot, acquire_linux  # noqa: F401
+from .selectable import (
+    acquire_lab,
+    acquire_board,
+    acquire_uboot,
+    acquire_linux,
+)  # noqa: F401
 
 F = typing.TypeVar("F", bound=typing.Callable[..., typing.Any])
 

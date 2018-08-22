@@ -11,7 +11,12 @@ class GitRepository(linux.Path[H]):
 
 
 @tbot.testcase
-def checkout(url: str, target: linux.Path[H], clean: bool = True, rev: typing.Optional[str] = None) -> GitRepository[H]:
+def checkout(
+    url: str,
+    target: linux.Path[H],
+    clean: bool = True,
+    rev: typing.Optional[str] = None,
+) -> GitRepository[H]:
     h = target.host
 
     already_cloned = h.exec("test", "-d", target / ".git")[0] == 0
@@ -38,8 +43,7 @@ def am(git: GitRepository[H], patch: linux.Path[H]) -> int:
     if h.exec("test", "-d", patch)[0] == 0:
         files = [
             linux.Path(h, p)
-            for p
-            in h.exec0("find", patch, "-name", "*.patch").strip("\n").split("\n")
+            for p in h.exec0("find", patch, "-name", "*.patch").strip("\n").split("\n")
         ]
 
         files.sort()

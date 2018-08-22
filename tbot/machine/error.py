@@ -3,7 +3,14 @@ from tbot import machine
 
 
 class CommandFailedException(Exception):
-    def __init__(self, host: machine.Machine, command: str, stdout: typing.Optional[str], *args: typing.Any) -> None:
+
+    def __init__(
+        self,
+        host: machine.Machine,
+        command: str,
+        stdout: typing.Optional[str],
+        *args: typing.Any,
+    ) -> None:
         super().__init__(*args)
         self.host = host
         self.command = command
@@ -14,6 +21,7 @@ class CommandFailedException(Exception):
 
 
 class WrongHostException(Exception):
+
     def __init__(self, host: machine.Machine, arg: typing.Any) -> None:
         super().__init__()
         self.host = host

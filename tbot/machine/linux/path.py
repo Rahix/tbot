@@ -35,20 +35,22 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
         if ec != 0:
             raise OSError(errno.ENOENT, f"Can't stat {self}")
 
-        stat_res = stat_str[len(self._local_str()) + 1:].split(" ")
+        stat_res = stat_str[len(self._local_str()) + 1 :].split(" ")
 
-        return os.stat_result((
-            int(stat_res[2], 16),
-            int(stat_res[6]),
-            0,
-            int(stat_res[7]),
-            int(stat_res[3]),
-            int(stat_res[4]),
-            int(stat_res[0]),
-            int(stat_res[10]),
-            int(stat_res[11]),
-            int(stat_res[12]),
-        ))
+        return os.stat_result(
+            (
+                int(stat_res[2], 16),
+                int(stat_res[6]),
+                0,
+                int(stat_res[7]),
+                int(stat_res[3]),
+                int(stat_res[4]),
+                int(stat_res[0]),
+                int(stat_res[10]),
+                int(stat_res[11]),
+                int(stat_res[12]),
+            )
+        )
 
     def exists(self) -> bool:
         return self.host.exec("test", "-e", self)[0] == 0

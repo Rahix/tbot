@@ -8,7 +8,9 @@ from tbot.machine import linux
 B = typing.TypeVar("B", bound=board.Board)
 
 
-class UBootMachine(machine.BoardMachine, tbot.machine.InteractiveMachine, typing.Generic[B]):
+class UBootMachine(
+    machine.BoardMachine, tbot.machine.InteractiveMachine, typing.Generic[B]
+):
     autoboot_prompt = r"Hit any key to stop autoboot:\s+\d+\s+"
     autoboot_keys = "\n"
     prompt = "U-Boot> "
@@ -38,12 +40,16 @@ class UBootMachine(machine.BoardMachine, tbot.machine.InteractiveMachine, typing
 
         return command[:-1]
 
-    def exec(self, *args: typing.Union[str, linux.Path[linux.LabHost]]) -> typing.Tuple[int, str]:
+    def exec(
+        self, *args: typing.Union[str, linux.Path[linux.LabHost]]
+    ) -> typing.Tuple[int, str]:
         command = self.build_command(*args)
 
         with tbot.log.command(self.name, command) as ev:
             ev.prefix = "   >> "
-            ret, out = self.channel.raw_command_with_retval(command, prompt=self.prompt, stream=ev)
+            ret, out = self.channel.raw_command_with_retval(
+                command, prompt=self.prompt, stream=ev
+            )
 
         return ret, out
 
@@ -51,7 +57,9 @@ class UBootMachine(machine.BoardMachine, tbot.machine.InteractiveMachine, typing
         ret, out = self.exec(*args)
 
         if ret != 0:
-            raise tbot.machine.CommandFailedException(self, self.build_command(*args), out)
+            raise tbot.machine.CommandFailedException(
+                self, self.build_command(*args), out
+            )
 
         return out
 

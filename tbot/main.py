@@ -10,11 +10,7 @@ def main() -> None:
         description="Test and development automation tool, tailored for embedded needs",
     )
 
-    parser.add_argument(
-        "testcase",
-        nargs="*",
-        help="Testcase that should be run.",
-    )
+    parser.add_argument("testcase", nargs="*", help="Testcase that should be run.")
 
     parser.add_argument("-b", "--board", help="Use this board instead of the default.")
 
@@ -48,9 +44,7 @@ def main() -> None:
     ]
 
     for flag_names, flag_help in flags:
-        parser.add_argument(
-            *flag_names, action="store_true", help=flag_help
-        )
+        parser.add_argument(*flag_names, action="store_true", help=flag_help)
 
     args = parser.parse_args()
 
@@ -61,6 +55,7 @@ def main() -> None:
         raise NotImplementedError()
 
     from tbot import loader
+
     files = loader.get_file_list(
         (pathlib.Path(d).resolve() for d in args.tcdirs),
         (pathlib.Path(f).resolve() for f in args.tcfiles),
@@ -89,7 +84,11 @@ def main() -> None:
             signature = name + str(inspect.signature(func))
             print(log.c(signature).bold.yellow)
             print(log.c(f"----------------").dark)
-            print(log.c(textwrap.dedent(func.__doc__ or "No docstring available.").strip()).green)
+            print(
+                log.c(
+                    textwrap.dedent(func.__doc__ or "No docstring available.").strip()
+                ).green
+            )
         return
 
     if args.interactive:
@@ -98,20 +97,17 @@ def main() -> None:
     print(log.c("TBot").yellow.bold + " starting ...")
 
     import tbot
+
     # Set the actual selected types, needs to be ignored by mypy
     # beause this is obviously not good python
     if args.lab is not None:
-        lab = loader.load_module(
-            pathlib.Path(args.lab).resolve()
-        )
+        lab = loader.load_module(pathlib.Path(args.lab).resolve())
         tbot.selectable.LabHost = lab.LAB  # type: ignore
     else:
         tbot.selectable.LabHost = tbot.machine.linux.lab.LocalLabHost  # type: ignore
 
     if args.board is not None:
-        board = loader.load_module(
-            pathlib.Path(args.board).resolve()
-        )
+        board = loader.load_module(pathlib.Path(args.board).resolve())
         tbot.selectable.Board = board.BOARD  # type: ignore
         if hasattr(board, "UBOOT"):
             tbot.selectable.UBootMachine = board.UBOOT  # type: ignore
@@ -128,9 +124,7 @@ def main() -> None:
             ev.prefix = "  "
             ev.write(traceback.format_exc())
 
-        log.EventIO(
-            tbot.log.c("FAILURE").red.bold, nest_first=tbot.log.u("└─", "\\-")
-        )
+        log.EventIO(tbot.log.c("FAILURE").red.bold, nest_first=tbot.log.u("└─", "\\-"))
     else:
         log.EventIO(
             tbot.log.c("SUCCESS").green.bold, nest_first=tbot.log.u("└─", "\\-")

@@ -8,9 +8,7 @@ __all__ = ["selftest_path_integrity", "selftest_path_stat"]
 
 
 @tbot.testcase
-def selftest_path_integrity(
-    lh: typing.Optional[linux.LabHost] = None,
-) -> None:
+def selftest_path_integrity(lh: typing.Optional[linux.LabHost] = None,) -> None:
     with lh or tbot.acquire_lab() as lh:
         p = lh.workdir / "folder" / "file.txt"
 
@@ -33,9 +31,7 @@ def selftest_path_integrity(
 
 
 @tbot.testcase
-def selftest_path_stat(
-    lh: typing.Optional[linux.LabHost] = None,
-) -> None:
+def selftest_path_stat(lh: typing.Optional[linux.LabHost] = None,) -> None:
     with lh or tbot.acquire_lab() as lh:
         tbot.log.message("Setting up test files ...")
         symlink = lh.workdir / "symlink"

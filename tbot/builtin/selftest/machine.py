@@ -7,9 +7,7 @@ __all__ = ["selftest_machine_reentrant", "selftest_machine_labhost_shell"]
 
 
 @tbot.testcase
-def selftest_machine_reentrant(
-    lh: typing.Optional[linux.LabHost] = None,
-) -> None:
+def selftest_machine_reentrant(lh: typing.Optional[linux.LabHost] = None,) -> None:
     with lh or tbot.acquire_lab() as lh:
         with lh as h1:
             assert h1.exec0("echo", "FooBar") == "FooBar\n"
@@ -19,9 +17,7 @@ def selftest_machine_reentrant(
 
 
 @tbot.testcase
-def selftest_machine_labhost_shell(
-    lh: typing.Optional[linux.LabHost] = None,
-) -> None:
+def selftest_machine_labhost_shell(lh: typing.Optional[linux.LabHost] = None,) -> None:
     with lh or tbot.acquire_lab() as lh:
         selftest_machine_shell(lh)
 
@@ -29,10 +25,7 @@ def selftest_machine_labhost_shell(
 
 
 @tbot.testcase
-def selftest_machine_shell(
-    m: linux.LinuxMachine,
-    shell: str = "bash",
-) -> None:
+def selftest_machine_shell(m: linux.LinuxMachine, shell: str = "bash") -> None:
     # Capabilities
     cap = []
     if shell == "bash":
@@ -67,9 +60,7 @@ def selftest_machine_shell(
 
 
 @tbot.testcase
-def selftest_machine_channel(
-    ch: channel.Channel,
-) -> None:
+def selftest_machine_channel(ch: channel.Channel,) -> None:
     out = ch.raw_command("echo Hello World")
     assert out == "Hello World\n"
 

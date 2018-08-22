@@ -2,6 +2,7 @@ import abc
 
 
 class Special(abc.ABC):
+
     @abc.abstractmethod
     def resolve_string(self) -> str:
         pass

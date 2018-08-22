@@ -34,6 +34,7 @@ class Machine(contextlib.AbstractContextManager):
 
 
 class InteractiveMachine(abc.ABC):
+
     @abc.abstractmethod
     def interactive(self) -> None:
         pass
