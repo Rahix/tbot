@@ -26,7 +26,9 @@ def selftest_machine_labhost_shell(lh: typing.Optional[linux.LabHost] = None,) -
 
 
 @tbot.testcase
-def selftest_machine_shell(m: typing.Union[linux.LinuxMachine, board.UBootMachine]) -> None:
+def selftest_machine_shell(
+    m: typing.Union[linux.LinuxMachine, board.UBootMachine]
+) -> None:
     # Capabilities
     cap = []
     if isinstance(m, linux.LinuxMachine):

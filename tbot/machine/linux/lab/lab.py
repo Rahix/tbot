@@ -13,7 +13,9 @@ class LabHost(linux.LinuxMachine):
     def _new_channel(self) -> channel.Channel:
         pass
 
-    def new_channel(self: Self, *args: typing.Union[str, special.Special, linux.Path[Self]]) -> channel.Channel:
+    def new_channel(
+        self: Self, *args: typing.Union[str, special.Special, linux.Path[Self]]
+    ) -> channel.Channel:
         chan = self._new_channel()
         if args != ():
             chan.send(self.build_command(*args) + "\n")

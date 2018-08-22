@@ -9,9 +9,7 @@ from . import special
 B = typing.TypeVar("B", bound=board.Board)
 
 
-class UBootMachine(
-    board.BoardMachine[B], machine.InteractiveMachine
-):
+class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
     autoboot_prompt = r"Hit any key to stop autoboot:\s+\d+\s+"
     autoboot_keys = "\n"
     prompt = "U-Boot> "
@@ -38,7 +36,9 @@ class UBootMachine(
     def destroy(self) -> None:
         self.channel.close()
 
-    def build_command(self, *args: typing.Union[str, special.Special, linux.Path[linux.LabHost]]) -> str:
+    def build_command(
+        self, *args: typing.Union[str, special.Special, linux.Path[linux.LabHost]]
+    ) -> str:
         command = ""
         for arg in args:
             if isinstance(arg, linux.Path):
@@ -64,7 +64,9 @@ class UBootMachine(
 
         return ret, out
 
-    def exec0(self, *args: typing.Union[str, special.Special, linux.Path[linux.LabHost]]) -> str:
+    def exec0(
+        self, *args: typing.Union[str, special.Special, linux.Path[linux.LabHost]]
+    ) -> str:
         ret, out = self.exec(*args)
 
         if ret != 0:

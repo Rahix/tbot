@@ -51,7 +51,9 @@ class LinuxMachine(board.BoardMachine[B], linux.LinuxMachine):
 
 
 class LinuxWithUBootMachine(LinuxMachine[B]):
-    boot_commands: typing.List[typing.List[typing.Union[str, special.Special]]] = [["run", "bootcmd"]]
+    boot_commands: typing.List[typing.List[typing.Union[str, special.Special]]] = [
+        ["run", "bootcmd"]
+    ]
 
     @property
     @abc.abstractmethod
