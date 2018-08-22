@@ -108,12 +108,11 @@ class Channel(abc.ABC):
                     previous.extend(data)
                     if end_magic is None and data == b"\x04":
                         break
-                    if end_magic is not None:
-                        for a, b in itertools.zip_longest(previous, b"\r~."):
-                            if a != b:
-                                break
-                        else:
+                    for a, b in itertools.zip_longest(previous, b"\r~."):
+                        if a != b:
                             break
+                    else:
+                        break
                     self.send(data)
 
             sys.stdout.write("\r\n")
