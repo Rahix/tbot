@@ -35,16 +35,16 @@ class LinuxMachine(board.BoardMachine[B], linux.LinuxMachine):
     def __init__(self, b: typing.Union[B, board.UBootMachine[B]]) -> None:
         super().__init__(b.board if isinstance(b, board.UBootMachine) else b)
 
-    def boot_to_shell(self) -> None:
+    def boot_to_shell(self, stream: typing.TextIO) -> None:
         chan = self._obtain_channel()
 
-        with tbot.log.EventIO(tbot.log.c("LINUX BOOT").bold + f" ({self.name})") as ev:
-            ev.prefix = "   <> "
-            chan.read_until_prompt(self.login_prompt, stream=ev)
+        chan.read_until_prompt(self.login_prompt, stream=stream)
 
         chan.send(self.username + "\n")
+        stream.write(self.login_prompt + self.username + "\n")
         if self.password is not None:
             chan.read_until_prompt("word: ")
+            stream.write("Password: ****")
             chan.send(self.password + "\n")
         time.sleep(self.login_timeout)
         chan.initialize(shell=self.shell)
@@ -71,10 +71,16 @@ class LinuxWithUBootMachine(LinuxMachine[B]):
             ub = self.ub
             self.channel = self.ub.channel
 
+        tbot.log.EventIO(tbot.log.c("LINUX BOOT").bold + f" ({self.name})")
         for cmd in self.boot_commands[:-1]:
             ub.exec0(*cmd)
-        self.channel.send(ub.build_command(*self.boot_commands[-1]) + "\n")
-        self.boot_to_shell()
+
+        # Make it look like a normal U-Boot command
+        last_command = ub.build_command(*self.boot_commands[-1])
+        with tbot.log.command(ub.name, last_command) as ev:
+            ev.prefix = "   <> "
+            self.channel.send(last_command + "\n")
+            self.boot_to_shell(channel.channel.SkipStream(ev, len(last_command) + 1))
 
     def destroy(self) -> None:
         if self.ub is not None:
@@ -96,7 +102,9 @@ class LinuxStandaloneMachine(LinuxMachine[B]):
         else:
             raise RuntimeError("{board!r} does not support a serial connection!")
 
-        self.boot_to_shell()
+        with tbot.log.EventIO(tbot.log.c("LINUX BOOT").bold + f" ({self.name})") as ev:
+            ev.prefix = "   <> "
+            self.boot_to_shell(ev)
 
     def destroy(self) -> None:
         self.channel.close()
