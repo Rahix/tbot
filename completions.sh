@@ -10,6 +10,8 @@ _tbot()
 
     if [[ "$prev" == @(-t|-b|-l|--board|--lab) ]]; then
         _filedir py
+        # Remove __pycache__ for convenience
+        COMPREPLY=(${COMPREPLY[@]/*__pycache__*/})
         return
     fi
 
