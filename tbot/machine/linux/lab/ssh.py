@@ -60,5 +60,5 @@ class SSHLabHost(lab.LabHost):
     def _obtain_channel(self) -> channel.Channel:
         return self.channel
 
-    def new_channel(self) -> channel.Channel:
+    def _new_channel(self) -> channel.Channel:
         return channel.ParamikoChannel(self.client.get_transport().open_session())

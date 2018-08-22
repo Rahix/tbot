@@ -2,19 +2,24 @@ import abc
 import typing
 from tbot.machine import linux
 from tbot.machine import channel
+from tbot.machine.linux import special
+
+Self = typing.TypeVar("Self", bound="LabHost")
 
 
 class LabHost(linux.LinuxMachine):
 
     @abc.abstractmethod
-    def new_channel(self) -> channel.Channel:
-        """
-        Create a new channel for use by another machine.
-
-        :rtype: channel.Channel
-        :returns: A new channel to this lab host
-        """
+    def _new_channel(self) -> channel.Channel:
         pass
+
+    def new_channel(self: Self, *args: typing.Union[str, special.Special, linux.Path[Self]]) -> channel.Channel:
+        chan = self._new_channel()
+        if args != []:
+            chan.send(self.build_command(*args) + "\n")
+        # Read back the command we just sent
+        chan.recv()
+        return chan
 
     @property
     def default_build(self) -> typing.Type[linux.BuildMachine]:
