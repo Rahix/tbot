@@ -5,6 +5,7 @@ import tbot
 from tbot.machine import board
 from tbot.machine import linux
 from tbot.machine import channel
+from . import special
 
 B = typing.TypeVar("B", bound=board.Board)
 Self = typing.TypeVar("Self", bound="LinuxMachine")
@@ -50,7 +51,7 @@ class LinuxMachine(board.BoardMachine[B], linux.LinuxMachine):
 
 
 class LinuxWithUBootMachine(LinuxMachine[B]):
-    boot_command = "run bootcmd"
+    boot_commands: typing.List[typing.List[typing.Union[str, special.Special]]] = [["run", "bootcmd"]]
 
     @property
     @abc.abstractmethod
@@ -60,13 +61,17 @@ class LinuxWithUBootMachine(LinuxMachine[B]):
     def __init__(self, b: typing.Union[B, board.UBootMachine[B]]) -> None:
         super().__init__(b)
         if isinstance(b, board.UBootMachine):
+            ub = b
             self.ub = None
             self.channel = b.channel
         else:
             self.ub = self.uboot(b)
+            ub = self.ub
             self.channel = self.ub.channel
 
-        self.channel.send(self.boot_command + "\n")
+        for cmd in self.boot_commands[:-1]:
+            ub.exec0(*cmd)
+        self.channel.send(ub.build_command(*self.boot_commands[-1]) + "\n")
         self.boot_to_shell()
 
     def destroy(self) -> None:

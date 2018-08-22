@@ -1,8 +1,11 @@
-from .board import Board  # noqa: F401
-from .machine import BoardMachine  # noqa: F401
-from .uboot import UBootMachine  # noqa: F401
+from .board import Board
+from .machine import BoardMachine
+from .uboot import UBootMachine
 from .linux import (
     LinuxMachine,
     LinuxWithUBootMachine,
     LinuxStandaloneMachine,
-)  # noqa: F401
+)
+from .special import Env, Raw
+
+__all__ = ("Board", "BoardMachine", "UBootMachine", "LinuxMachine", "LinuxWithUBootMachine", "LinuxStandaloneMachine", "Env", "Raw")

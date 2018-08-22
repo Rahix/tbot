@@ -5,14 +5,15 @@ from .build import BuildMachine
 from .lab import LabHost
 from .ssh import SSHMachine
 
-from .special import Env, Pipe
+from .special import Env, Pipe, Raw
 
 __all__ = (
+    "BuildMachine",
+    "Env",
+    "LabHost",
     "LinuxMachine",
     "Path",
-    "BuildMachine",
-    "LabHost",
-    "SSHMachine",
-    "Env",
     "Pipe",
+    "Raw",
+    "SSHMachine",
 )

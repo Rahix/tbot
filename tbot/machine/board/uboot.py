@@ -1,15 +1,16 @@
 import typing
 import shlex
 import tbot
-from . import machine
-from . import board
+from tbot import machine
+from tbot.machine import board
 from tbot.machine import linux
+from . import special
 
 B = typing.TypeVar("B", bound=board.Board)
 
 
 class UBootMachine(
-    machine.BoardMachine[B], tbot.machine.InteractiveMachine
+    board.BoardMachine[B], machine.InteractiveMachine
 ):
     autoboot_prompt = r"Hit any key to stop autoboot:\s+\d+\s+"
     autoboot_keys = "\n"
@@ -37,18 +38,21 @@ class UBootMachine(
     def destroy(self) -> None:
         self.channel.close()
 
-    def build_command(self, *args: typing.Union[str, linux.Path[linux.LabHost]]) -> str:
+    def build_command(self, *args: typing.Union[str, special.Special, linux.Path[linux.LabHost]]) -> str:
         command = ""
         for arg in args:
             if isinstance(arg, linux.Path):
                 arg = arg.relative_to("/tftpboot")._local_str()
 
-            command += f"{shlex.quote(arg)} "
+            if isinstance(arg, special.Special):
+                command += arg.resolve_string() + " "
+            else:
+                command += f"{shlex.quote(arg)} "
 
         return command[:-1]
 
     def exec(
-        self, *args: typing.Union[str, linux.Path[linux.LabHost]]
+        self, *args: typing.Union[str, special.Special, linux.Path[linux.LabHost]]
     ) -> typing.Tuple[int, str]:
         command = self.build_command(*args)
 
@@ -60,7 +64,7 @@ class UBootMachine(
 
         return ret, out
 
-    def exec0(self, *args: typing.Union[str, linux.Path[linux.LabHost]]) -> str:
+    def exec0(self, *args: typing.Union[str, special.Special, linux.Path[linux.LabHost]]) -> str:
         ret, out = self.exec(*args)
 
         if ret != 0:
