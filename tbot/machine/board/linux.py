@@ -16,7 +16,7 @@ class LinuxMachine(board.BoardMachine[B], linux.LinuxMachine):
     login_timeout = 1.0
 
     # Most boards use busybox which has ash built-in
-    shell = "ash"
+    shell = "sh"
 
     @property
     def name(self) -> str:
