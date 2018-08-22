@@ -146,4 +146,8 @@ PS1="\\[\\033[36m\\]{self.name}: \\[\\033[32m\\]\\w\\[\\033[0m\\]> "
         channel.attach_interactive(end_magic=endstr)
 
         log.message("Exiting interactive shell ...")
-        channel.raw_command("exit\n")
+
+        try:
+            channel.raw_command("exit\n", timeout=0.5)
+        except TimeoutError:
+            raise RuntimeError("Failed to reacquire shell after interactive session!")

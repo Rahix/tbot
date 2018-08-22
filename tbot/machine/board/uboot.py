@@ -58,7 +58,13 @@ class UBootMachine(machine.BoardMachine, tbot.machine.InteractiveMachine, typing
     def interactive(self) -> None:
         tbot.log.message("Entering interactive shell (CTRL+D to exit) ...")
 
-        self.channel.send("\n")
+        self.channel.send(" \n")
         self.channel.attach_interactive()
+
+        self.channel.send(" \n")
+        try:
+            self.channel.read_until_prompt(self.prompt, timeout=0.5)
+        except TimeoutError:
+            raise RuntimeError("Failed to reacquire U-Boot after interactive session!")
 
         tbot.log.message("Exiting interactive shell ...")
