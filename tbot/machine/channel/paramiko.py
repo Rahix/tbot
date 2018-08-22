@@ -1,5 +1,6 @@
-import typing
 import shutil
+import socket
+import typing
 import paramiko
 from . import channel
 
@@ -28,11 +29,20 @@ class ParamikoChannel(channel.Channel):
                 raise channel.ChannelClosedException()
             c += b
 
-    def recv(self) -> bytes:
-        buf = self.ch.recv(1024)
+    def recv(self, timeout: typing.Optional[float] = None) -> bytes:
+        if timeout is not None:
+            self.ch.settimeout(timeout)
 
-        while self.ch.recv_ready():
-            buf += self.ch.recv(1024)
+        try:
+            buf = self.ch.recv(1024)
+
+            while self.ch.recv_ready():
+                buf += self.ch.recv(1024)
+        except socket.timeout:
+            raise TimeoutError()
+        finally:
+            if timeout is not None:
+                self.ch.settimeout(None)
 
         if buf == b"":
             raise channel.ChannelClosedException()

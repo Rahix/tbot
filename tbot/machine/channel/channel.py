@@ -6,6 +6,7 @@ import re
 import select
 import sys
 import termios
+import time
 import tty
 import typing
 
@@ -43,7 +44,7 @@ class Channel(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def recv(self) -> bytes:
+    def recv(self, timeout: typing.Optional[float] = None) -> bytes:
         pass
 
     @abc.abstractmethod
@@ -152,25 +153,33 @@ class Channel(abc.ABC):
         *,
         regex: bool = False,
         stream: typing.Optional[typing.TextIO] = None,
+        timeout: typing.Optional[float] = None,
     ) -> str:
+        start_time = time.monotonic()
         expr = f"{prompt}$" if regex else "^$"
         buf = ""
 
+        timeout_remaining = timeout
         while True:
             new = (
-                self.recv()
+                self.recv(timeout=timeout_remaining)
                 .replace(b"\r\n", b"\n")
                 .replace(b"\r\n", b"\n")
                 .replace(b"\r", b"\n")
             )
 
             decoded = ""
-            while True:
+            for _ in range(10):
                 try:
                     decoded += new.decode("utf-8")
                     break
                 except UnicodeDecodeError:
-                    new += self.recv()
+                    try:
+                        new += self.recv(timeout=0.1)
+                    except TimeoutError:
+                        pass
+            else:
+                decoded += new.decode("latin_1")
 
             buf += decoded
 
@@ -183,6 +192,10 @@ class Channel(abc.ABC):
             elif stream:
                 stream.write(decoded)
 
+            if timeout is not None:
+                current_time = time.monotonic()
+                timeout_remaining = timeout - (current_time - start_time)
+
         return buf
 
     def raw_command(
@@ -191,11 +204,12 @@ class Channel(abc.ABC):
         *,
         prompt: str = TBOT_PROMPT,
         stream: typing.Optional[typing.TextIO] = None,
+        timeout: typing.Optional[float] = None,
     ) -> str:
         self.send(f"{command}\n".encode("utf-8"))
         if stream:
             stream = SkipStream(stream, len(command) + 1)
-        out = self.read_until_prompt(prompt, stream=stream)[
+        out = self.read_until_prompt(prompt, stream=stream, timeout=timeout)[
             len(command) + 1 : -len(prompt)
         ]
         return out

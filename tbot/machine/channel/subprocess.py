@@ -40,15 +40,17 @@ class SubprocessChannel(channel.Channel):
                 raise channel.ChannelClosedException()
             c += b
 
-    def recv(self) -> bytes:
+    def recv(self, timeout: typing.Optional[float] = None) -> bytes:
         if self.p.returncode is not None:
             raise channel.ChannelClosedException()
 
         buf = b""
 
-        r, _, _ = select.select([self.pty_master], [], [])
+        r, _, _ = select.select([self.pty_master], [], [], timeout)
         if self.pty_master in r:
             buf = os.read(self.pty_master, 1024)
+        else:
+            raise TimeoutError()
 
         try:
             while True:
