@@ -11,12 +11,12 @@ B = typing.TypeVar("B", bound=board.Board)
 Self = typing.TypeVar("Self", bound="LinuxMachine")
 
 
-class LinuxMachine(board.BoardMachine[B], linux.LinuxMachine):
+class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
     login_prompt = "login: "
     login_timeout = 1.0
 
     # Most boards use busybox which has ash built-in
-    shell = linux.shell.Ash
+    shell: typing.Type[linux.shell.Shell] = linux.shell.Ash
 
     @property
     def name(self) -> str:

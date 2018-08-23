@@ -1,5 +1,6 @@
 import abc
 import contextlib
+import time
 import typing
 import tbot
 from tbot.machine import linux
@@ -9,6 +10,7 @@ Self = typing.TypeVar("Self", bound="Board")
 
 
 class Board(contextlib.AbstractContextManager):
+    connect_wait: typing.Optional[float] = None
 
     @property
     @abc.abstractmethod
@@ -30,6 +32,8 @@ class Board(contextlib.AbstractContextManager):
         self.lh = lh
         self.boot_ev = tbot.log.EventIO()
         self.channel = self.connect()
+        if self.connect_wait is not None:
+            time.sleep(self.connect_wait)
         self.on = False
 
     def __repr__(self) -> str:

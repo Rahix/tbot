@@ -32,14 +32,17 @@ def selftest_machine_shell(
     # Capabilities
     cap = []
     if isinstance(m, linux.LinuxMachine):
-        if m.shell == "bash":
+        if m.shell == linux.shell.Bash:
             cap.extend(["printf"])
-        if m.shell in ["ash", "dash"]:
+        if m.shell == linux.shell.Ash:
             cap.extend(["printf"])
 
     tbot.log.message("Testing command output ...")
     out = m.exec0("echo", "Hello World")
     assert out == "Hello World\n", repr(out)
+
+    out = m.exec0("echo", "$?", "!#")
+    assert out == "$? !#\n", repr(out)
 
     if "printf" in cap:
         out = m.exec0("printf", "Hello World")
