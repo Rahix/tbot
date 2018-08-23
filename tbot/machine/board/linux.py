@@ -16,7 +16,7 @@ class LinuxMachine(board.BoardMachine[B], linux.LinuxMachine):
     login_timeout = 1.0
 
     # Most boards use busybox which has ash built-in
-    shell = "ash"
+    shell = linux.shell.Ash
 
     @property
     def name(self) -> str:
@@ -47,7 +47,7 @@ class LinuxMachine(board.BoardMachine[B], linux.LinuxMachine):
             stream.write("Password: ****")
             chan.send(self.password + "\n")
         time.sleep(self.login_timeout)
-        chan.initialize(shell=self.shell)
+        chan.initialize(sh=self.shell)
 
 
 class LinuxWithUBootMachine(LinuxMachine[B]):

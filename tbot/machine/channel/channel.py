@@ -10,6 +10,8 @@ import time
 import tty
 import typing
 
+from tbot.machine.linux import shell
+
 TBOT_PROMPT = "TBOT-VEJPVC1QUk9NUFQK$ "
 
 
@@ -126,31 +128,28 @@ class Channel(abc.ABC):
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, oldtty)
             self._interactive_teardown()
 
-    def initialize(self, *, shell: str = "bash") -> None:
+    def initialize(self, *, sh: typing.Type[shell.Shell] = shell.Bash) -> None:
         """
         Initialize this channel so it is ready to receive commands.
         """
 
         # Set proper prompt
-        self.send("PROMPT_COMMAND=''\n")
-        self.raw_command(f"PS1='{TBOT_PROMPT}'")
+        self.raw_command(sh.set_prompt(TBOT_PROMPT))
+
         # Ensure we don't make history
-        # ash seems to not be able to take unsetting
-        # the histfile well
-        if shell != "ash":
-            self.raw_command("unset HISTFILE")
+        cmd = sh.disable_history()
+        if cmd is not None:
+            self.raw_command(cmd)
+
         # Disable line editing
-        if shell == "bash":
-            self.raw_command("set +o vi")
-            self.raw_command("set +o emacs")
-        # elif shell == "ash" or shell == "dash":
-        #     self.raw_command("set +o interactive")
-        else:
-            # No shell specific behaviour known, try
-            # making the terminal really wide
-            self.raw_command("stty cols 1024")
+        cmd = sh.disable_editing()
+        if cmd is not None:
+            self.raw_command(cmd)
+
         # Ensure multiline commands work
-        self.raw_command("PS2=''")
+        cmd = sh.set_prompt2("")
+        if cmd is not None:
+            self.raw_command(cmd)
 
     def __init__(self) -> None:
         self.initialize()

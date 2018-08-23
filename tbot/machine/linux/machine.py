@@ -7,12 +7,13 @@ from tbot import machine
 from tbot.machine import channel
 from .path import Path
 from .special import Special
+from . import shell as sh
 
 Self = typing.TypeVar("Self", bound="LinuxMachine")
 
 
 class LinuxMachine(machine.Machine, machine.InteractiveMachine):
-    shell = "bash"
+    shell: typing.Type[sh.Shell] = sh.Bash
 
     @property
     @abc.abstractmethod
@@ -127,27 +128,22 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         endstr = "INTERACTIVE-END-" + hex(165380656580165943945649390069628824191)[2:]
 
         size = shutil.get_terminal_size()
-        if self.shell == "bash":
-            channel.raw_command("set -o emacs")
+        cmd = self.shell.enable_editing()
+        if cmd is not None:
+            channel.raw_command(cmd)
 
         channel.raw_command(f"stty cols {size.columns}; stty rows {size.lines}")
-        channel.send(f"{self.shell}\n")
-        if self.shell != "ash":
-            channel.send("unset HISTFILE\n")
-        channel.send(
-            f"""\
-PROMPT_COMMAND=""
-PS1="{endstr}"
-"""
-        )
+        channel.send(f"{self.shell.name}\n")
+        cmd = self.shell.disable_history()
+        if cmd is not None:
+            channel.send(f"{cmd}\n")
+
+        channel.send(self.shell.set_prompt(endstr) + "\n")
         channel.read_until_prompt(endstr)
-        channel.send(
-            f"""\
-{self.shell}
-PROMPT_COMMAND=""
-PS1="\\[\\033[36m\\]{self.name}: \\[\\033[32m\\]\\w\\[\\033[0m\\]> "
-"""
-        )
+
+        channel.send(f"{self.shell.name}\n")
+        cmd = self.shell.set_prompt(f"\\[\\033[36m\\]{self.name}: \\[\\033[32m\\]\\w\\[\\033[0m\\]> ")
+        channel.send(f"{cmd}\n")
         channel.read_until_prompt("> ")
         channel.send("\n")
         log.message("Entering interactive shell ...")
@@ -160,3 +156,7 @@ PS1="\\[\\033[36m\\]{self.name}: \\[\\033[32m\\]\\w\\[\\033[0m\\]> "
             channel.raw_command("exit\n", timeout=0.5)
         except TimeoutError:
             raise RuntimeError("Failed to reacquire shell after interactive session!")
+
+        cmd = self.shell.disable_editing()
+        if cmd is not None:
+            channel.raw_command(cmd)
