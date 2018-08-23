@@ -11,7 +11,7 @@ B = typing.TypeVar("B", bound=board.Board)
 Self = typing.TypeVar("Self", bound="LinuxMachine")
 
 
-class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
+class LinuxMachine(board.BoardMachine[B], linux.LinuxMachine):
     login_prompt = "login: "
     login_timeout = 1.0
 
