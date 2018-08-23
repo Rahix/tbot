@@ -1,5 +1,6 @@
 import abc
 import typing
+import tbot
 from tbot.machine import linux
 from tbot.machine import channel
 from tbot.machine.linux import special
@@ -18,7 +19,9 @@ class LabHost(linux.LinuxMachine):
     ) -> channel.Channel:
         chan = self._new_channel()
         if args != ():
-            chan.send(self.build_command(*args) + "\n")
+            cmd = self.build_command(*args)
+            tbot.log.command(self.name, cmd)
+            chan.send(cmd + "\n")
             # Read back the command we just sent
             chan.recv()
         return chan
