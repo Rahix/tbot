@@ -135,7 +135,10 @@ class Channel(abc.ABC):
         self.send("PROMPT_COMMAND=''\n")
         self.raw_command(f"PS1='{TBOT_PROMPT}'")
         # Ensure we don't make history
-        self.raw_command("unset HISTFILE")
+        # ash seems to not be able to take unsetting
+        # the histfile well
+        if shell != "ash":
+            self.raw_command("unset HISTFILE")
         # Disable line editing
         if shell == "bash":
             self.raw_command("set +o vi")

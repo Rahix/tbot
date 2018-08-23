@@ -127,12 +127,15 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         endstr = "INTERACTIVE-END-" + hex(165380656580165943945649390069628824191)[2:]
 
         size = shutil.get_terminal_size()
-        channel.raw_command("set -o emacs")
+        if self.shell == "bash":
+            channel.raw_command("set -o emacs")
+
         channel.raw_command(f"stty cols {size.columns}; stty rows {size.lines}")
+        channel.send(f"{self.shell}\n")
+        if self.shell != "ash":
+            channel.send("unset HISTFILE\n")
         channel.send(
             f"""\
-{self.shell}
-unset HISTFILE
 PROMPT_COMMAND=""
 PS1="{endstr}"
 """
