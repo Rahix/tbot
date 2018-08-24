@@ -13,7 +13,7 @@ Self = typing.TypeVar("Self", bound="LinuxMachine")
 
 class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
     login_prompt = "login: "
-    login_timeout = 1.0
+    login_wait = 1.0
 
     # Most boards use busybox which has ash built-in
     shell: typing.Type[linux.shell.Shell] = linux.shell.Ash
@@ -45,7 +45,8 @@ class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
             chan.read_until_prompt("word: ")
             stream.write("Password: ****")
             chan.send(self.password + "\n")
-        time.sleep(self.login_timeout)
+        time.sleep(self.login_wait)
+        chan.send("\n")
         chan.initialize(sh=self.shell)
 
 
