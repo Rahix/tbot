@@ -144,7 +144,7 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         channel.send(f"{self.shell.name}\n")
         cmd = self.shell.set_prompt(f"\\[\\033[36m\\]{self.name}: \\[\\033[32m\\]\\w\\[\\033[0m\\]> ")
         channel.send(f"{cmd}\n")
-        channel.read_until_prompt("> ")
+        channel.read_until_prompt("> (\x1B\\[.*)?", regex=True)
         channel.send("\n")
         log.message("Entering interactive shell ...")
 

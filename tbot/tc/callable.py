@@ -16,6 +16,13 @@ def interactive_build() -> None:
 
 
 @tbot.testcase
+def interactive_board() -> None:
+    with tbot.acquire_lab() as lh:
+        with tbot.acquire_board(lh) as b:
+            b.channel.attach_interactive()
+
+
+@tbot.testcase
 def interactive_uboot() -> None:
     with tbot.acquire_lab() as lh:
         with tbot.acquire_board(lh) as b:
