@@ -8,15 +8,15 @@ __all__ = ["selftest_path_integrity", "selftest_path_stat"]
 
 
 @tbot.testcase
-def selftest_path_integrity(lh: typing.Optional[linux.LabHost] = None,) -> None:
-    with lh or tbot.acquire_lab() as lh:
+def selftest_path_integrity(lab: typing.Optional[linux.LabHost] = None,) -> None:
+    with lab or tbot.acquire_lab() as lh:
         p = lh.workdir / "folder" / "file.txt"
 
         with tbot.acquire_lab() as lh2:
             raised = False
             try:
                 # mypy detects that this is wrong
-                lh2.exec0("echo", p)  # type: ignore
+                lh2.exec0("echo", p)
             except machine.WrongHostException:
                 raised = True
             assert raised
@@ -31,8 +31,8 @@ def selftest_path_integrity(lh: typing.Optional[linux.LabHost] = None,) -> None:
 
 
 @tbot.testcase
-def selftest_path_stat(lh: typing.Optional[linux.LabHost] = None,) -> None:
-    with lh or tbot.acquire_lab() as lh:
+def selftest_path_stat(lab: typing.Optional[linux.LabHost] = None,) -> None:
+    with lab or tbot.acquire_lab() as lh:
         tbot.log.message("Setting up test files ...")
         symlink = lh.workdir / "symlink"
         if symlink.exists():

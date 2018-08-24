@@ -11,7 +11,7 @@ B = typing.TypeVar("B", bound=board.Board)
 Self = typing.TypeVar("Self", bound="LinuxMachine")
 
 
-class LinuxMachine(board.BoardMachine[B], linux.LinuxMachine):
+class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
     login_prompt = "login: "
     login_timeout = 1.0
 
@@ -31,7 +31,6 @@ class LinuxMachine(board.BoardMachine[B], linux.LinuxMachine):
     def password(self) -> typing.Optional[str]:
         pass
 
-    @abc.abstractmethod
     def __init__(self, b: typing.Union[B, board.UBootMachine[B]]) -> None:
         super().__init__(b.board if isinstance(b, board.UBootMachine) else b)
 
@@ -65,11 +64,11 @@ class LinuxWithUBootMachine(LinuxMachine[B]):
         if isinstance(b, board.UBootMachine):
             ub = b
             self.ub = None
-            self.channel = b.channel
         else:
             self.ub = self.uboot(b)
             ub = self.ub
-            self.channel = self.ub.channel
+
+        self.channel = ub.channel
 
         tbot.log.EventIO(tbot.log.c("LINUX BOOT").bold + f" ({self.name})")
         for cmd in self.boot_commands[:-1]:

@@ -4,12 +4,12 @@ import pathlib
 import paramiko
 from tbot.machine import channel
 from tbot.machine.linux import auth
-from . import lab
+from .machine import LabHost
 
 SLH = typing.TypeVar("SLH", bound="SSHLabHost")
 
 
-class SSHLabHost(lab.LabHost):
+class SSHLabHost(LabHost):
 
     @property
     @abc.abstractmethod

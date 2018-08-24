@@ -21,6 +21,7 @@ class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
     def __init__(self, board: B) -> None:
         super().__init__(board)
 
+        self.channel: machine.channel.Channel
         if board.channel is not None:
             self.channel = board.channel
         else:

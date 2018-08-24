@@ -1,11 +1,10 @@
 import abc
-import contextlib
 import typing
 
 Self = typing.TypeVar("Self", bound="Machine")
 
 
-class Machine(contextlib.AbstractContextManager):
+class Machine(typing.ContextManager[Self]):
     """Connect to a machine (host, board, etc.)."""
 
     @property

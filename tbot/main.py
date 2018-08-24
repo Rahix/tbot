@@ -104,7 +104,7 @@ def main() -> None:
         lab = loader.load_module(pathlib.Path(args.lab).resolve())
         tbot.selectable.LabHost = lab.LAB  # type: ignore
     else:
-        tbot.selectable.LabHost = tbot.machine.linux.lab.LocalLabHost  # type: ignore
+        pass
 
     if args.board is not None:
         board = loader.load_module(pathlib.Path(args.board).resolve())

@@ -2,12 +2,12 @@ import typing
 import getpass
 from tbot.machine import linux
 from tbot.machine import channel
-from . import lab
+from .machine import LabHost
 
 LLH = typing.TypeVar("LLH", bound="LocalLabHost")
 
 
-class LocalLabHost(lab.LabHost):
+class LocalLabHost(LabHost):
     name = "local"
 
     @property

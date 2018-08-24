@@ -1,19 +1,17 @@
 import typing
+from tbot.machine import linux
 from tbot.machine.linux import lab
 from tbot.machine import board
 
 
-class LabHost(lab.LabHost):
-    """
-    Dummy type that will be replaced by the actual lab at runtime.
-    """
-    _unselected = True
+class LabHost(lab.LocalLabHost, typing.ContextManager):
+    pass
 
 
 def acquire_lab() -> LabHost:
     if hasattr(LabHost, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a lab?")
-    return LabHost()  # type: ignore
+    return LabHost()
 
 
 class Board(board.Board):
@@ -22,34 +20,53 @@ class Board(board.Board):
     """
     _unselected = True
 
+    name = "dummy"
+
+    def __init__(self, lh: linux.LabHost) -> None:
+        raise NotImplementedError("This is a dummy Board")
+
+    def poweron(self) -> None:
+        raise NotImplementedError("This is a dummy Board")
+
+    def poweroff(self) -> None:
+        raise NotImplementedError("This is a dummy Board")
+
 
 def acquire_board(lh: LabHost) -> Board:
     if hasattr(Board, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a board?")
-    return Board(lh)  # type: ignore
+    return Board(lh)
 
 
-class UBootMachine(board.UBootMachine):
+class UBootMachine(board.UBootMachine[Board]):
     """
     Dummy type that will be replaced by the actual U-Boot machine at runtime.
     """
     _unselected = True
 
+    def __init__(self, b: typing.Any) -> None:
+        raise NotImplementedError("This is a dummy Linux")
+
 
 def acquire_uboot(board: Board) -> UBootMachine:
     if hasattr(UBootMachine, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a board?")
-    return UBootMachine(board)  # type: ignore
+    return UBootMachine(board)
 
 
-class LinuxMachine(board.LinuxMachine):
+class LinuxMachine(board.LinuxMachine[Board]):
     """
     Dummy type that will be replaced by the actual Linux machine at runtime.
     """
     _unselected = True
 
+    def __init__(self, b: typing.Any) -> None:
+        raise NotImplementedError("This is a dummy Linux")
+
+    password = None
+
 
 def acquire_linux(b: typing.Union[Board, UBootMachine]) -> LinuxMachine:
     if hasattr(LinuxMachine, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a board?")
-    return LinuxMachine(b)  # type: ignore
+    return LinuxMachine(b)

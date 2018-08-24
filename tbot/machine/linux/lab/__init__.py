@@ -1,4 +1,4 @@
-from .lab import LabHost
+from .machine import LabHost
 from .local import LocalLabHost
 from .ssh import SSHLabHost
 
