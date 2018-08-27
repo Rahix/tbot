@@ -54,7 +54,7 @@ def acquire_uboot(board: Board) -> UBootMachine:
     return UBootMachine(board)
 
 
-class LinuxMachine(board.LinuxMachine[Board]):
+class LinuxMachine(board.LinuxMachine[Board], typing.ContextManager):
     """
     Dummy type that will be replaced by the actual Linux machine at runtime.
     """
