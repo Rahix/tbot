@@ -33,3 +33,7 @@ def testcase(tc: F) -> F:
 
     setattr(wrapped, "_tbot_testcase", None)
     return typing.cast(F, wrapped)
+
+
+flags: typing.Set[str] = set()
+configs: typing.Dict[str, str] = dict()

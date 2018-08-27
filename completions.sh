@@ -15,6 +15,11 @@ _tbot()
         return
     fi
 
+    if [[ "$prev" == @(-f) ]]; then
+        COMPREPLY=()
+        return
+    fi
+
     # Collect testcase path arguments
     local index=0
     local path_args=""
@@ -30,9 +35,9 @@ _tbot()
     done
 
     if [[ "$cur" == -* ]]; then
-        COMPREPLY=( $( compgen -W '-h -b -l -T -t -s -i
+        COMPREPLY=( $( compgen -W '-h -b -l -T -t -s -i -f
             --list-testcases --list-boards --list-labs --list-files
-            --board --lab --show --interactive' -- "$cur" ) )
+            --list-flags --board --lab --show --interactive' -- "$cur" ) )
     else
         # Collecting testcases can be really slow, so we cache them for
         # a small amount of time (5 seconds)

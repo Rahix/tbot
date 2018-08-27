@@ -1,10 +1,11 @@
+import typing
 from tbot import log
 import pathlib
 import argparse
 import traceback
 
 
-def main() -> None:
+def main() -> None:  # noqa: C901
     parser = argparse.ArgumentParser(
         prog="tbot",
         description="Test and development automation tool, tailored for embedded needs",
@@ -34,11 +35,21 @@ def main() -> None:
         help="Add a file to the testcase search path.",
     )
 
+    parser.add_argument(
+        "-f",
+        metavar="FLAG",
+        dest="flags",
+        action="append",
+        default=[],
+        help="Set a user defined flag to change testcase behaviour",
+    )
+
     flags = [
         (["--list-testcases"], "List all testcases in the current search path."),
         (["--list-labs"], "List all available labs."),
         (["--list-boards"], "List all available boards."),
         (["--list-files"], "List all testcase files."),
+        (["--list-flags"], "List all flags defined in lab or board config."),
         (["-s", "--show"], "Show testcase signatures instead of running them."),
         (["-i", "--interactive"], "Prompt before running each command."),
     ]
@@ -98,14 +109,19 @@ def main() -> None:
 
     import tbot
 
+    for flag in args.flags:
+        tbot.flags.add(flag)
+
     # Set the actual selected types, needs to be ignored by mypy
     # beause this is obviously not good python
+    lab = None
     if args.lab is not None:
         lab = loader.load_module(pathlib.Path(args.lab).resolve())
         tbot.selectable.LabHost = lab.LAB  # type: ignore
     else:
         pass
 
+    board = None
     if args.board is not None:
         board = loader.load_module(pathlib.Path(args.board).resolve())
         tbot.selectable.Board = board.BOARD  # type: ignore
@@ -115,6 +131,18 @@ def main() -> None:
             tbot.selectable.LinuxMachine = board.LINUX  # type: ignore
     else:
         pass
+
+    if args.list_flags:
+        all_flags: typing.Dict[str, str] = dict()
+        if lab is not None and "FLAGS" in lab.__dict__:
+            all_flags.update(lab.__dict__["FLAGS"])
+
+        if board is not None and "FLAGS" in board.__dict__:
+            all_flags.update(board.__dict__["FLAGS"])
+
+        width = max(map(len, flags))
+        for name, description in all_flags.items():
+            tbot.log.message(tbot.log.c(name.ljust(width)).blue + ": " + description)
 
     try:
         for tc in args.testcase:
