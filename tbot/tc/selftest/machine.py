@@ -92,15 +92,22 @@ def selftest_machine_shell(
 
 @tbot.testcase
 def selftest_machine_channel(ch: channel.Channel, remote_close: bool) -> None:
-    out = ch.raw_command("echo Hello World", timeout=5)
+    out = ch.raw_command("echo Hello World", timeout=1)
     assert out == "Hello World\n", repr(out)
 
     assert ch.isopen()
 
     if remote_close:
         ch.send("exit\n")
-        time.sleep(0.2)
-        ch.recv(timeout=5)
+        time.sleep(0.01)
+        ch.recv(timeout=1)
+
+        raised = False
+        try:
+            ch.recv(timeout=1)
+        except channel.ChannelClosedException:
+            raised = True
+        assert raised
     else:
         ch.close()
 
@@ -115,7 +122,7 @@ def selftest_machine_channel(ch: channel.Channel, remote_close: bool) -> None:
 
     raised = False
     try:
-        ch.recv(timeout=5)
+        ch.recv(timeout=1)
     except channel.ChannelClosedException:
         raised = True
     assert raised
