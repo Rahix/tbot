@@ -25,3 +25,12 @@ TBot Module
 .. automodule:: tbot.log
     :members:
     :undoc-members:
+
+
+``tbot.machine``
+----------------
+.. automodule:: tbot.machine
+    :members:
+    :undoc-members:
+
+.. automodule:: tbot.machine.error
