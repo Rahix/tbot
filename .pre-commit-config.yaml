@@ -21,10 +21,14 @@ repos:
       language: system
       entry: mypy
       files: ^.*\.py$
-      exclude: ^(conf|setup)\.py$
+      exclude: (^(conf|setup)\.py$|^static_tests)
 -   repo: local
     hooks:
-    - id: tests
+    - id: selftests
       name: TBot Selftest
       language: system
-      entry: ./selftest.sh
+      entry: python3 -c "__import__('tbot.main').main.main()" selftest
+    - id: static_tests
+      name: TBot type system tests
+      language: system
+      entry: ./static_tests/run.sh
