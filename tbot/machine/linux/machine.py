@@ -74,6 +74,7 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         self: Self,
         *args: typing.Union[str, Special, Path[Self]],
         stdout: typing.Optional[Path[Self]] = None,
+        timeout: typing.Optional[float] = None,
     ) -> typing.Tuple[int, str]:
         """
         Run a command on this machine.
@@ -92,7 +93,7 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         command = self.build_command(*args, stdout=stdout)
 
         with log.command(self.name, command) as ev:
-            ret, out = channel.raw_command_with_retval(command, stream=ev)
+            ret, out = channel.raw_command_with_retval(command, stream=ev, timeout=timeout)
 
         return ret, out
 
@@ -100,6 +101,7 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         self: Self,
         *args: typing.Union[str, Special, Path[Self]],
         stdout: typing.Optional[Path[Self]] = None,
+        timeout: typing.Optional[float] = None,
     ) -> str:
         """
         Run a command on this machine and ensure it succeeds.
@@ -113,7 +115,7 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
                   command (with a trailing newline).
         :rtype: str
         """
-        ret, out = self.exec(*args, stdout=stdout)
+        ret, out = self.exec(*args, stdout=stdout, timeout=timeout)
 
         if ret != 0:
             raise machine.CommandFailedException(self, self.build_command(*args), out)

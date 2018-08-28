@@ -228,9 +228,10 @@ class Channel(abc.ABC):
         prompt: str = TBOT_PROMPT,
         retval_check_cmd: str = "echo $?",
         stream: typing.Optional[typing.TextIO] = None,
+        timeout: typing.Optional[float] = None,
     ) -> typing.Tuple[int, str]:
-        out = self.raw_command(command, prompt=prompt, stream=stream)
+        out = self.raw_command(command, prompt=prompt, stream=stream, timeout=timeout)
 
-        retval = int(self.raw_command(retval_check_cmd, prompt=prompt).strip())
+        retval = int(self.raw_command(retval_check_cmd, prompt=prompt, timeout=timeout).strip())
 
         return retval, out
