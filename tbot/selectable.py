@@ -16,6 +16,14 @@ class LabHost(lab.LocalLabHost, typing.ContextManager):
 
 
 def acquire_lab() -> LabHost:
+    """
+    Acquire a new connection to the LabHost.
+
+    If your :class:`~tbot.machine.linux.LabHost` is a :class:`~tbot.machine.linux.lab.SSHLabHost`
+    this will create a new ssh connection.
+
+    :rtype: tbot.machine.linux.LabHost
+    """
     if hasattr(LabHost, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a lab?")
     return LabHost()
@@ -40,6 +48,13 @@ class Board(board.Board):
 
 
 def acquire_board(lh: LabHost) -> Board:
+    """
+    Acquire a handle to the selected board.
+
+    The returned board must be used in a with statement to be powered on.
+
+    :rtype: tbot.machine.board.Board
+    """
     if hasattr(Board, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a board?")
     return Board(lh)
@@ -56,6 +71,11 @@ class UBootMachine(board.UBootMachine[Board]):
 
 
 def acquire_uboot(board: Board) -> UBootMachine:
+    """
+    Acquire the board's U-Boot shell.
+
+    :rtype: tbot.machine.board.UBootMachine
+    """
     if hasattr(UBootMachine, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a board?")
     return UBootMachine(board)
@@ -74,6 +94,14 @@ class LinuxMachine(board.LinuxMachine[Board], typing.ContextManager):
 
 
 def acquire_linux(b: typing.Union[Board, UBootMachine]) -> LinuxMachine:
+    """
+    Acquire the board's Linux shell.
+
+    Can either boot from a previously created U-Boot (if the implementation
+    supports this) or directly.
+
+    :rtype: tbot.machine.board.LinuxMachine
+    """
     if hasattr(LinuxMachine, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a board?")
     return LinuxMachine(b)

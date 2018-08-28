@@ -14,6 +14,7 @@ Welcome to TBot's documentation!
 
    install
    getting-started
+   module
 
 
 
