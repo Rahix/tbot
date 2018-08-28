@@ -3,7 +3,6 @@ TBot Module
 
 ``tbot``
 --------
-
 .. automodule:: tbot
     :members:
     :undoc-members:
@@ -19,3 +18,10 @@ TBot Module
             ...
 
 .. automodule:: tbot.selectable
+
+
+``tbot.log``
+------------
+.. automodule:: tbot.log
+    :members:
+    :undoc-members:
