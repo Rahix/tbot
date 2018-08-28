@@ -109,5 +109,5 @@ def command(mach: str, cmd: str) -> EventIO:
     return ev
 
 
-def message(msg: str) -> None:
-    EventIO(msg)
+def message(msg: str) -> EventIO:
+    return EventIO(msg)
