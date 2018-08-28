@@ -93,7 +93,9 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         command = self.build_command(*args, stdout=stdout)
 
         with log.command(self.name, command) as ev:
-            ret, out = channel.raw_command_with_retval(command, stream=ev, timeout=timeout)
+            ret, out = channel.raw_command_with_retval(
+                command, stream=ev, timeout=timeout
+            )
 
         return ret, out
 
@@ -144,7 +146,9 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         channel.read_until_prompt(endstr)
 
         channel.send(f"{self.shell.name}\n")
-        cmd = self.shell.set_prompt(f"\\[\\033[36m\\]{self.name}: \\[\\033[32m\\]\\w\\[\\033[0m\\]> ")
+        cmd = self.shell.set_prompt(
+            f"\\[\\033[36m\\]{self.name}: \\[\\033[32m\\]\\w\\[\\033[0m\\]> "
+        )
         channel.send(f"{cmd}\n")
         channel.read_until_prompt("> (\x1B\\[.*)?", regex=True)
         channel.send("\n")

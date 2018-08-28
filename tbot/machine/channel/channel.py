@@ -236,6 +236,8 @@ class Channel(abc.ABC):
     ) -> typing.Tuple[int, str]:
         out = self.raw_command(command, prompt=prompt, stream=stream, timeout=timeout)
 
-        retval = int(self.raw_command(retval_check_cmd, prompt=prompt, timeout=timeout).strip())
+        retval = int(
+            self.raw_command(retval_check_cmd, prompt=prompt, timeout=timeout).strip()
+        )
 
         return retval, out

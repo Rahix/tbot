@@ -14,10 +14,12 @@ def testsuite(*args: typing.Callable, **kwargs: typing.Any) -> None:
             errors.append((test.__name__, traceback.format_exc()))
 
     with tbot.log.message(
-        tbot.log.c(tbot.log.u(
-            "────────────────────────────────────────",
-            "----------------------------------------"
-        )).dark
+        tbot.log.c(
+            tbot.log.u(
+                "────────────────────────────────────────",
+                "----------------------------------------",
+            )
+        ).dark
     ) as ev:
         if errors != []:
             ev.writeln(
