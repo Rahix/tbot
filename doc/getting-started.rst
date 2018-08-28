@@ -21,7 +21,7 @@ have multiple files, but for now, this is the easiest way. Add the following con
     @tbot.testcase
     def my_awesome_testcase() -> None:
         with tbot.acquire_lab() as lh:
-            name = lh.exec0("uname", "-n")
+            name = lh.exec0("uname", "-n").strip()
             tbot.log.message(f"Hello {name}!")
 
 If you did everything correctly, running
@@ -67,12 +67,15 @@ example it is good enough.
 
 ::
 
-    name = lh.exec0("uname", "-n")
+    name = lh.exec0("uname", "-n").strip()
 
 Now that we have the ability to interact with the labhost, let's do so: We call ``uname -n`` to
 greet the users machine. Note, that each argument is passed separately to ``exec0``. The reason
 for this is that it ensures everything will be properly escaped and there are no accidental mistakes.
 For special characters there is a different notation as you will see later.
+
+The ``strip()`` is needed, because the command output contains the trailing newline, which we don't
+want in this case.
 
 ::
 
@@ -81,7 +84,7 @@ For special characters there is a different notation as you will see later.
 This is basically TBot's equivalent of ``print``. The most important difference is, that it does not
 only print it to the terminal, but also store it in the logfile.
 
-.. todo::
+.. TODO::
     Verbosity
 
 Writing Testcases
@@ -111,7 +114,7 @@ The solution is a hybrid and looks like the following::
         lab: typing.Optional[linux.LabHost] = None,
     ) -> None:
         with lab or tbot.acquire_lab() as lh:
-            name = lh.exec0("uname", "-n")
+            name = lh.exec0("uname", "-n").strip()
             tbot.log.message(f"Hello {name}!")
 
 I'd suggest remembering this and using it for any testcase that should be commandline callable.
@@ -129,3 +132,116 @@ I'd suggest remembering this and using it for any testcase that should be comman
             with lab or tbot.acquire_lab() as lh:
                 name = lh.exec0("uname", "-n")
                 tbot.log.message(f"Hello {name}!")
+
+Calling other testcases is just as easy as calling a python function. From your perspective, a testcase
+*is* just a python function. If you want to call testcases from other files, import them like you would
+with a python module.
+
+TBot contains a library of testcases for common tasks that you can make use of. Take a look at ``tbot.tc``.
+
+
+Machine Interaction
+-------------------
+
+Linux
+^^^^^
+All linux machine (``tbot.machine.linux.LinuxMachine``) implement two methods for executing commands:
+``exec`` and ``exec0``. ``exec0`` is just a wrapper around ``exec`` that ensures the return code of the
+command is ``0``. Both take the command as one parameter per commandline parameter. For example::
+
+    output = m.exec0("uname", "-n")
+    output = m.exec0("dmesg")
+    output = m.exec0("echo", "$!#?")
+
+TBot will ensure that arguments are properly escaped, so you can pass in anything without worrying.
+This poses a problem, when you need special syntaxes. For example when you try to use shell expansion
+of environment variables. To do this, use the following::
+
+    from tbot.machine import linux
+
+    user = m.exec0("echo", linux.Env("USER"))
+
+This is not the only special parameter you can use:
+
+* ``linux.Pipe``: A ``|`` for piping command output to another command
+
+.. TODO::
+    More, like eg. ``linux.Then``, ``linux.Background``, ``linux.OrElse``, ``linux.AndThen``
+
+Another thing TBot handles specially is paths. A path can be created like this::
+
+    from tbot.machine import linux
+
+    p = linux.Path(machine, "/foo/bar")
+
+``p`` is now a path. TBot's paths are based on python's ``pathlib`` so you can use all the usual
+methods / operators::
+
+    file_in_p = p / "dirname" / "file.txt"
+    if not p.exists():
+        ...
+    if no p.is_dir():
+        raise RuntimeError(f"{p} must be a directory!")
+
+TBot's paths have a very nice property: They are bound to the host they were created with. This means
+that you cannot accidentally use a path on a wrong machine::
+
+    m = tbot.acquire_lab()
+    lnx = tbot.acquire_linux(...)
+
+    p = linux.Path(m, "/path/to/somewhere/file.txt")
+
+    # This will raise an Exception and will be catched by a static typechecker like mypy:
+    content = lnx.exec0("cat", p)
+
+Board
+^^^^^
+Interacting with the board is similar to interacting with a host like the labhost. The only difference
+is that this time, we need to first initialize the board::
+
+    with tbot.acquire_board(lh) as b:
+        with tbot.acquire_uboot(b) as ub:
+            ub.exec0("version")
+
+            # Now boot into Linux
+            with tbot.acquire_linux(ub) as lnx:
+                lnx.exec0("uname", "-a")
+
+
+    # You can also boot directly into Linux:
+    # (Some boards might not even support intercepting
+    # U-Boot first)
+    with tbot.acquire_board(lh) as b:
+        with tbot.acquire_linux(b) as lnx:
+            lnx.exec0("uname", "-a")
+
+.. TODO::
+    Testcase pattern for board interaction
+
+Interactive
+^^^^^^^^^^^
+One convenience function of TBot is allowing the user to directly access most machines' shells. There are
+two ways to do so.
+
+.. highlight:: guess
+   :linenothreshold: 3
+
+1. Calling one of the ``interactive_lab``, ``interactive_build``, ``interactive_board``, ``interactive_uboot``
+   ``interactive_linux`` testcases. This is the most straight forward. It might look like this::
+
+        ~$ tbot -l labs/mylab.py -b boards/myboard.py interactive_uboot
+
+.. highlight:: python
+   :linenothreshold: 3
+
+2. Calling ``machine.interactive()`` in your testcase. For example::
+
+        with tbot.acquire_board(lh) as b:
+            with tbot.acquire_linux(b) as lnx:
+                lnx.exec0("echo", "Doing some setup work")
+
+                # Might raise an Exception if TBot was not able to reaquire the shell after
+                # the interactive session
+                lnx.interactive()
+
+                lnx.exec0("echo", "Continuing testcase after the user made some adjustments")
