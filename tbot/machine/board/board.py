@@ -34,6 +34,8 @@ class Board(contextlib.AbstractContextManager):
         self.channel = self.connect()
         if self.connect_wait is not None:
             time.sleep(self.connect_wait)
+        if self.channel is not None and not self.channel.isopen():
+            raise RuntimeError("Could not connect to board!")
         self.on = False
 
     def __repr__(self) -> str:

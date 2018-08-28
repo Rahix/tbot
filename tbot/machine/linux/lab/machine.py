@@ -21,7 +21,9 @@ class LabHost(linux.LinuxMachine):
         if args != ():
             cmd = self.build_command(*args)
             tbot.log.command(self.name, cmd)
-            chan.send(cmd + "\n")
+            # Send exit after the command so this channel will close once it
+            # is done.
+            chan.send(cmd + " ; exit\n")
             # Read back the command we just sent
             chan.recv()
         return chan
