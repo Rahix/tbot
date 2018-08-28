@@ -21,7 +21,7 @@ repos:
       language: system
       entry: mypy
       files: ^.*\.py$
-      exclude: ^(conf|setup)\.py$
+      exclude: (^(conf|setup)\.py$|^static_tests)
 -   repo: local
     hooks:
     - id: selftests

@@ -11,7 +11,7 @@ class LocalLabHost(LabHost):
     name = "local"
 
     @property
-    def workdir(self) -> "linux.Path[LocalLabHost]":
+    def workdir(self: LLH) -> "linux.Path[LLH]":
         p = linux.Path(self, "/tmp/tbot-wd")
         self.exec0("mkdir", "-p", p)
         return p

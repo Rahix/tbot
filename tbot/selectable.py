@@ -5,7 +5,14 @@ from tbot.machine import board
 
 
 class LabHost(lab.LocalLabHost, typing.ContextManager):
-    pass
+
+    def __enter__(self) -> "LabHost":
+        return typing.cast(LabHost, super().__enter__())
+
+    @property
+    def workdir(self) -> "linux.Path[LabHost]":
+        wd = super().workdir
+        return linux.Path(self, wd)
 
 
 def acquire_lab() -> LabHost:

@@ -4,7 +4,7 @@ import typing
 Self = typing.TypeVar("Self", bound="Machine")
 
 
-class Machine(typing.ContextManager[Self]):
+class Machine(typing.ContextManager):
     """Connect to a machine (host, board, etc.)."""
 
     @property
