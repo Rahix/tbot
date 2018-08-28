@@ -27,6 +27,7 @@ class SubprocessChannel(channel.Channel):
         super().__init__()
 
     def send(self, data: typing.Union[bytes, str]) -> None:
+        self.p.poll()
         if self.p.returncode is not None:
             raise channel.ChannelClosedException()
 
@@ -41,16 +42,24 @@ class SubprocessChannel(channel.Channel):
             c += b
 
     def recv(self, timeout: typing.Optional[float] = None) -> bytes:
-        if self.p.returncode is not None:
-            raise channel.ChannelClosedException()
+        self.p.poll()
 
         buf = b""
 
-        r, _, _ = select.select([self.pty_master], [], [], timeout)
-        if self.pty_master in r:
+        if self.p.returncode is None:
+            # If the process is still running, wait for one byte or
+            # the timeout to arrive
+            r, _, _ = select.select([self.pty_master], [], [], timeout)
+            if self.pty_master not in r:
+                raise TimeoutError()
+        # If the process has ended, check for anything left
+
+        try:
             buf = os.read(self.pty_master, 1024)
-        else:
-            raise TimeoutError()
+        except BlockingIOError:
+            # If we don't get anything, and the timeout hasn't triggered
+            # this channel is closed
+            raise channel.ChannelClosedException()
 
         try:
             while True:
@@ -66,3 +75,7 @@ class SubprocessChannel(channel.Channel):
 
     def fileno(self) -> int:
         return self.pty_master
+
+    def isopen(self) -> bool:
+        self.p.poll()
+        return self.p.returncode is None

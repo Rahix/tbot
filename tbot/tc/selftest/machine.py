@@ -1,4 +1,5 @@
 import typing
+import time
 import tbot
 from tbot.machine import channel
 from tbot.machine import linux
@@ -22,7 +23,8 @@ def selftest_machine_labhost_shell(lab: typing.Optional[linux.LabHost] = None,) 
     with lab or tbot.acquire_lab() as lh:
         selftest_machine_shell(lh)
 
-        selftest_machine_channel(lh.new_channel())
+        selftest_machine_channel(lh.new_channel(), False)
+        selftest_machine_channel(lh.new_channel(), True)
 
 
 @tbot.testcase
@@ -89,11 +91,20 @@ def selftest_machine_shell(
 
 
 @tbot.testcase
-def selftest_machine_channel(ch: channel.Channel) -> None:
-    out = ch.raw_command("echo Hello World")
+def selftest_machine_channel(ch: channel.Channel, remote_close: bool) -> None:
+    out = ch.raw_command("echo Hello World", timeout=5)
     assert out == "Hello World\n", repr(out)
 
-    ch.close()
+    assert ch.isopen()
+
+    if remote_close:
+        ch.send("exit\n")
+        time.sleep(0.2)
+        ch.recv(timeout=5)
+    else:
+        ch.close()
+
+    assert not ch.isopen()
 
     raised = False
     try:
@@ -104,7 +115,7 @@ def selftest_machine_channel(ch: channel.Channel) -> None:
 
     raised = False
     try:
-        ch.recv()
+        ch.recv(timeout=5)
     except channel.ChannelClosedException:
         raised = True
     assert raised

@@ -55,6 +55,9 @@ class ParamikoChannel(channel.Channel):
     def fileno(self) -> int:
         return self.ch.fileno()
 
+    def isopen(self) -> bool:
+        return not self.ch.exit_status_ready()
+
     def _interactive_setup(self) -> None:
         size = shutil.get_terminal_size()
         self.ch.resize_pty(size.columns, size.lines, 1024, 1024)

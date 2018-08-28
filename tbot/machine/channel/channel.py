@@ -62,6 +62,10 @@ class Channel(abc.ABC):
     def fileno(self) -> int:
         pass
 
+    @abc.abstractmethod
+    def isopen(self) -> bool:
+        pass
+
     def _interactive_setup(self) -> None:
         pass
 
