@@ -12,6 +12,9 @@ Welcome to TBot's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   install
+   getting-started
+
 
 
 Indices and tables
