@@ -13,7 +13,11 @@ class LocalLabHost(LabHost):
     @property
     def workdir(self: LLH) -> "linux.Path[LLH]":
         p = linux.Path(self, "/tmp/tbot-wd")
-        self.exec0("mkdir", "-p", p)
+        # Only create workdir once
+        if not hasattr(self, "_wd_marker"):
+            if not p.exists():
+                self.exec0("mkdir", "-p", p)
+            setattr(self, "_wd_marker", None)
         return p
 
     @property
