@@ -27,4 +27,4 @@ repos:
     - id: tests
       name: TBot Selftest
       language: system
-      entry: ./selftest.sh
+      entry: python3 -c "__import__('tbot.main').main.main()" selftest
