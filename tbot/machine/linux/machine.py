@@ -13,6 +13,8 @@ Self = typing.TypeVar("Self", bound="LinuxMachine")
 
 
 class LinuxMachine(machine.Machine, machine.InteractiveMachine):
+    """Machine that is running Linux."""
+
     shell: typing.Type[sh.Shell] = sh.Bash
 
     @property
@@ -40,9 +42,10 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         Build the string representation of a command.
 
         :param args: Each arg is a token that will be sent to the shell. Can be
-                     either a str or a Path that is associated with this
-                     host. Arguments will be escaped (a str like "a b" will not
-                     result in separate arguments to the command)
+            either a str, a :class:`~linux.special.Special` or a Path that
+            is associated with this host. Arguments will be escaped
+            (a str like "a b" will not result in separate arguments to the
+            command)
         :param Path stdout: File where stdout should be directed to
         :returns: A string that would be sent to the machine to execute the command
         :rtype: str
@@ -80,12 +83,13 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         Run a command on this machine.
 
         :param args: Each arg is a token that will be sent to the shell. Can be
-                     either a str or a Path that is associated with this
-                     host. Arguments will be escaped (a str like "a b" will not
-                     result in separate arguments to the command)
+            either a str, a :class:`~linux.special.Special` or a Path that
+            is associated with this host. Arguments will be escaped
+            (a str like "a b" will not result in separate arguments to the
+            command)
         :param Path stdout: File where stdout should be directed to
         :returns: Tuple with the exit code and a string containing the combined
-                  stdout and stderr of the command (with a trailing newline).
+            stdout and stderr of the command (with a trailing newline).
         :rtype: (int, str)
         """
         channel = self._obtain_channel()
@@ -109,12 +113,13 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         Run a command on this machine and ensure it succeeds.
 
         :param args: Each arg is a token that will be sent to the shell. Can be
-                     either a str or a Path that is associated with this
-                     host. Arguments will be escaped (a str like "a b" will not
-                     result in separate arguments to the command)
+            either a str, a :class:`~linux.special.Special` or a Path that
+            is associated with this host. Arguments will be escaped
+            (a str like "a b" will not result in separate arguments to the
+            command)
         :param Path stdout: File where stdout should be directed to
         :returns: A string containing the combined stdout and stderr of the
-                  command (with a trailing newline).
+            command (with a trailing newline).
         :rtype: str
         """
         ret, out = self.exec(*args, stdout=stdout, timeout=timeout)
@@ -125,6 +130,7 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         return out
 
     def interactive(self) -> None:
+        """Drop into an interactive session on this machine."""
         channel = self._obtain_channel()
 
         # Generate the endstring instead of having it as a constant
