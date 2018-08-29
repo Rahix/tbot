@@ -21,7 +21,7 @@ class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
             ...
 
         class MyBoardUBoot(board.UBootMachine[MyBoard]):
-            pass
+            prompt = "=> "
 
         BOARD = MyBoard
         UBOOT = MyBoardUBoot

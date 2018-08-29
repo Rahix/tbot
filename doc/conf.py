@@ -86,6 +86,8 @@ pygments_style = 'sphinx'
 todo_include_todos = True
 
 autoclass_content = 'both'
+autodoc_member_order = 'bysource'
+autodoc_default_flags = ['show-inheritance']
 
 # -- Options for HTML output ----------------------------------------------
 
