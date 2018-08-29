@@ -3,7 +3,11 @@ from tbot.machine.linux import shell
 
 
 class Bash(shell.Shell):
-    """Bourne-Again SHell."""
+    """
+    Bourne-Again SHell.
+
+    .. py:data:: name: str = "bash"
+    """
 
     name = "bash"
 

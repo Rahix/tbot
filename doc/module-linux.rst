@@ -1,10 +1,17 @@
 ``tbot.machine.linux`` Module
 =============================
 
-.. automodule:: tbot.machine.linux
+``tbot.machine.linux``
+----------------------
+.. autoclass:: tbot.machine.linux.LinuxMachine
     :members:
-    :undoc-members:
 
+.. autoclass:: tbot.machine.linux.Path
+    :members:
+
+Command Specials
+^^^^^^^^^^^^^^^^
+.. autoclass:: tbot.machine.linux.Env
 .. py:data:: tbot.machine.linux.Pipe
 
     Special character for the ``|`` pipe to send command output
@@ -14,10 +21,18 @@
 
         m.exec0("dmesg", linux.Pipe, "grep", "usb0")
 
-.. automodule:: tbot.machine.linux.machine
-.. automodule:: tbot.machine.linux.path
-.. automodule:: tbot.machine.linux.special
-.. automodule:: tbot.machine.linux.lab.machine
+.. autoclass:: tbot.machine.linux.Raw
+
+Implementations
+^^^^^^^^^^^^^^^
+.. autoclass:: tbot.machine.linux.LabHost
+    :members:
+
+.. autoclass:: tbot.machine.linux.BuildMachine
+    :members:
+
+.. autoclass:: tbot.machine.linux.SSHMachine
+    :members:
 
 
 ``tbot.machine.linux.auth``

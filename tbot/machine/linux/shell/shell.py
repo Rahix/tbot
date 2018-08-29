@@ -5,7 +5,9 @@ class Shell:
     """
     Generic sh shell.
 
-    :cvar str name: Name of this shell (Also used when creating a new instance of
+    .. py:data:: name: str = "sh"
+
+        Name of this shell (Also used when creating a new instance of
         this shell.)
     """
 
