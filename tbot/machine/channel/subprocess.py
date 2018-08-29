@@ -8,8 +8,10 @@ from . import channel
 
 
 class SubprocessChannel(channel.Channel):
+    """Subprocess based channel."""
 
     def __init__(self) -> None:
+        """Create a new :mod:`subprocess` based channel."""
         self.pty_master, pty_slave = pty.openpty()
 
         self.p = subprocess.Popen(
@@ -26,7 +28,7 @@ class SubprocessChannel(channel.Channel):
 
         super().__init__()
 
-    def send(self, data: typing.Union[bytes, str]) -> None:
+    def send(self, data: typing.Union[bytes, str]) -> None:  # noqa: D102
         self.p.poll()
         if self.p.returncode is not None:
             raise channel.ChannelClosedException()
@@ -41,7 +43,7 @@ class SubprocessChannel(channel.Channel):
                 raise channel.ChannelClosedException()
             c += b
 
-    def recv(self, timeout: typing.Optional[float] = None) -> bytes:
+    def recv(self, timeout: typing.Optional[float] = None) -> bytes:  # noqa: D102
         self.p.poll()
 
         buf = b""
@@ -69,13 +71,13 @@ class SubprocessChannel(channel.Channel):
 
         return buf
 
-    def close(self) -> None:
+    def close(self) -> None:  # noqa: D102
         self.p.kill()
         self.p.wait()
 
-    def fileno(self) -> int:
+    def fileno(self) -> int:  # noqa: D102
         return self.pty_master
 
-    def isopen(self) -> bool:
+    def isopen(self) -> bool:  # noqa: D102
         self.p.poll()
         return self.p.returncode is None

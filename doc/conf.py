@@ -175,12 +175,10 @@ texinfo_documents = [
 ]
 
 
-
-
-# Example configuration for intersphinx: refer to the Python standard library.
+# Intersphinx Config
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
-    'paramiko': ('http://docs.paramiko.org/en/2.4/', None),
+    'paramiko': ('http://docs.paramiko.org/en/2.4', None),
 }
 
 
