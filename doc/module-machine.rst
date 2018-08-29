@@ -32,6 +32,7 @@
 
 .. automodule:: tbot.machine.linux.lab.machine
 
+
 ``tbot.machine.linux.lab``
 --------------------------
 .. automodule:: tbot.machine.linux.lab
@@ -41,3 +42,25 @@
 .. automodule:: tbot.machine.linux.lab.local
 
 .. automodule:: tbot.machine.linux.lab.ssh
+
+
+``tbot.machine.linux.build``
+----------------------------
+.. TODO::
+    Add **BuildMachine**
+
+
+``tbot.machine.linux.ssh``
+--------------------------
+.. TODO::
+    Add **SSHMachine**
+
+
+``tbot.machine.linux.shell``
+----------------------------
+.. automodule:: tbot.machine.linux.shell
+    :members:
+
+.. automodule:: tbot.machine.linux.shell.shell
+.. automodule:: tbot.machine.linux.shell.bash
+.. automodule:: tbot.machine.linux.shell.ash
