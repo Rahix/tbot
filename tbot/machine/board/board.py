@@ -88,14 +88,15 @@ class Board(contextlib.AbstractContextManager):
             time.sleep(self.connect_wait)
         if self.channel is not None and not self.channel.isopen():
             raise RuntimeError("Could not connect to board!")
-        self.on = False
+        self._rc = 0
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.lh!r})"
 
     def __enter__(self: Self) -> Self:
-        if self.on:
-            raise RuntimeError("Board already powered on!")
+        self._rc += 1
+        if self._rc > 1:
+            return self
         self.boot_ev.writeln(tbot.log.c("POWERON").bold + f" ({self.name})")
         self.boot_ev.prefix = "   <> "
         self.poweron()
@@ -103,5 +104,7 @@ class Board(contextlib.AbstractContextManager):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:  # type: ignore
-        tbot.log.EventIO(tbot.log.c("POWEROFF").bold + f" ({self.name})")
-        self.poweroff()
+        self._rc -= 1
+        if self._rc == 0:
+            tbot.log.EventIO(tbot.log.c("POWEROFF").bold + f" ({self.name})")
+            self.poweroff()
