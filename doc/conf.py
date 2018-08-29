@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# tbot documentation build configuration file, created by
-# sphinx-quickstart on Tue Jan 23 11:42:55 2018.
+# TBot documentation build configuration file, created by
+# sphinx-quickstart on Tue Aug 28 11:57:52 2018.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -31,14 +31,11 @@
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.coverage',
-    'sphinx.ext.githubpages',
-    'sphinx.ext.viewcode',
+extensions = ['sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
-]
+    'sphinx.ext.coverage',
+    'sphinx.ext.viewcode']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -88,18 +85,16 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
 
-intersphinx_mapping = {
-    'python': ('https://docs.python.org/3', None),
-    'paramiko': ('http://docs.paramiko.org/en/2.4/', None),
-}
+autoclass_content = 'both'
+autodoc_member_order = 'bysource'
+autodoc_default_flags = ['show-inheritance']
 
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-# html_theme = 'alabaster'
-html_theme = "sphinx_rtd_theme"
+html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -155,7 +150,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'tbot.tex', 'tbot Documentation',
+    (master_doc, 'TBot.tex', 'TBot Documentation',
      'Rahix', 'manual'),
 ]
 
@@ -165,7 +160,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'tbot', 'tbot Documentation',
+    (master_doc, 'tbot', 'TBot Documentation',
      [author], 1)
 ]
 
@@ -176,10 +171,17 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'tbot', 'tbot Documentation',
-     author, 'tbot', 'One line description of project.',
+    (master_doc, 'TBot', 'TBot Documentation',
+     author, 'TBot', 'One line description of project.',
      'Miscellaneous'),
 ]
+
+
+# Intersphinx Config
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+    'paramiko': ('http://docs.paramiko.org/en/2.4', None),
+}
 
 
 # Fix instance variables being cross-referenced

@@ -6,6 +6,14 @@ from termcolor2 import c
 
 
 def u(with_unicode: str, without_unicode: str) -> str:
+    """
+    Select a string depending on whether the terminal supports unicode.
+
+    :param str with_unicode: The string to be used if unicode is available
+    :param str without_unicode: The string to be used if unicode is **not** available
+    :rtype: str
+    :returns: The selected string
+    """
     if sys.stdout.encoding == "UTF-8":
         return with_unicode
     return without_unicode
@@ -16,6 +24,7 @@ INTERACTIVE = False
 
 
 class EventIO(io.StringIO):
+    """Stream for a log event."""
 
     def __init__(
         self,
@@ -23,6 +32,14 @@ class EventIO(io.StringIO):
         *,
         nest_first: typing.Optional[str] = None,
     ) -> None:
+        """
+        Create a log event.
+
+        A log event is a :class:`io.StringIO` and everything written to
+        the stram will be added to the log event.
+
+        :param str initial: Optional first line of the log event
+        """
         super().__init__("")
 
         self.cursor = 0
@@ -57,9 +74,16 @@ class EventIO(io.StringIO):
             print(self._prefix() + buf)
 
     def writeln(self, s: typing.Union[str, c]) -> int:
+        """Add a line to this log event."""
         return self.write(s + "\n")
 
     def write(self, s: str) -> int:
+        r"""
+        Add some text to this log event.
+
+        Printing to stdout will only occur once a newline ``"\n"`` is
+        written.
+        """
         res = super().write(s)
 
         self._print_lines()
@@ -70,6 +94,12 @@ class EventIO(io.StringIO):
         return self
 
     def close(self) -> None:
+        """
+        Finalize this log event.
+
+        No more text can be added to this log event after
+        closing it.
+        """
         self._print_lines(last=True)
         # TODO: Write Log Event
         super().close()
@@ -80,6 +110,11 @@ class EventIO(io.StringIO):
 
 
 def testcase_begin(name: str) -> None:
+    """
+    Log a testcase's beginning.
+
+    :param str name: Name of the testcase
+    """
     global NESTING
 
     EventIO("Calling " + c(name).cyan.bold + " ...")
@@ -87,6 +122,11 @@ def testcase_begin(name: str) -> None:
 
 
 def testcase_end(success: bool = True) -> None:
+    """
+    Log a testcase's end.
+
+    :param bool success: Whether the testcase succeeded
+    """
     global NESTING
 
     if success:
@@ -99,6 +139,15 @@ def testcase_end(success: bool = True) -> None:
 
 
 def command(mach: str, cmd: str) -> EventIO:
+    """
+    Log a command's execution.
+
+    :param str mach: Name of the machine the command is run on
+    :param str cmd: The command itself
+    :rtype: EventIO
+    :returns: A stream that the output of the command should
+        be written to.
+    """
     ev = EventIO("[" + c(mach).yellow + "] " + c(cmd).dark)
     ev.prefix = "   ## "
 
@@ -110,4 +159,9 @@ def command(mach: str, cmd: str) -> EventIO:
 
 
 def message(msg: str) -> EventIO:
+    """
+    Log a message.
+
+    :param str msg: The message
+    """
     return EventIO(msg)

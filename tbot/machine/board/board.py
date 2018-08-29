@@ -10,25 +10,77 @@ Self = typing.TypeVar("Self", bound="Board")
 
 
 class Board(contextlib.AbstractContextManager):
-    connect_wait: typing.Optional[float] = None
+    """
+    Abstract base class for boards.
+
+    **Implementation example**::
+
+        from tbot.machine import board
+        from tbot.machine import channel
+        from tbot.machine import linux
+
+        class MyBoard(board.Board):
+            name = "my-board"
+
+            def poweron(self) -> None:
+                # Command to power on the board
+                self.lh.exec0("poweron", self.name)
+
+            def poweroff(self) -> None:
+                # Command to power off the board
+                self.lh.exec0("poweroff", self.name)
+
+            def connect(self) -> channel.Channel:
+                return self.lh.new_channel(
+                    "picocom",
+                    "-b",
+                    "115200",
+                    linux.Path(self.lh, "/dev") / f"tty-{self.name}",
+                )
+    """
+
+    @property
+    def connect_wait(self) -> typing.Optional[float]:
+        """
+        Time to wait after connecting before powering on (:class:`float`).
+
+        This is supposed to allow telnet/rlogin/whatever to take some time
+        to establish the connection.
+        """
+        pass
 
     @property
     @abc.abstractmethod
     def name(self) -> str:
+        """Name of this board."""
         pass
 
     @abc.abstractmethod
     def poweron(self) -> None:
+        """Power on this board."""
         pass
 
     @abc.abstractmethod
     def poweroff(self) -> None:
+        """Power off this board."""
         pass
 
     def connect(self) -> typing.Optional[channel.Channel]:
+        """Connect to the serial port of this board."""
         return None
 
     def __init__(self, lh: linux.LabHost) -> None:
+        """
+        Initialize an instance of this board.
+
+        This will not yet power on the board. For that you need to use a ``with``
+        block::
+
+            with MyBoard(lh) as b:
+                ...
+
+        :param tbot.machine.linux.LabHost lh: LabHost from where to connect to the Board.
+        """
         self.lh = lh
         self.boot_ev = tbot.log.EventIO()
         self.channel = self.connect()
@@ -51,6 +103,5 @@ class Board(contextlib.AbstractContextManager):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:  # type: ignore
-        """Cleanup this machine instance."""
         tbot.log.EventIO(tbot.log.c("POWEROFF").bold + f" ({self.name})")
         self.poweroff()

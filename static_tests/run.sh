@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
 
+output="No output :/"
+
 run_check() {
     echo -n "$1" "... "
 }
 
 check_fail() {
     echo "fail."
+
+    echo "----------------------"
+    echo "$output"
     exit 1
 }
 
@@ -16,7 +21,7 @@ check_ok() {
 test_path() {
     echo "Test static_tests/path.py ..."
     echo "Check if expected errors are deteced ..."
-    local output=$(mypy static_tests/path.py)
+    output=$(mypy --no-incremental static_tests/path.py)
 
     run_check "Line 12"; echo "$output" | grep "static_tests/path.py:12:" >/dev/null || check_fail; check_ok
     run_check "Line 18"; echo "$output" | grep "static_tests/path.py:18:" >/dev/null || check_fail; check_ok
@@ -28,7 +33,7 @@ test_path() {
 test_testcase() {
     echo "Test static_tests/testcase.py ..."
     echo "Check if expected errors are deteced ..."
-    local output=$(mypy static_tests/testcase.py)
+    output=$(mypy --no-incremental static_tests/testcase.py)
 
     run_check "Line 23"; echo "$output" | grep "static_tests/testcase.py:23:" >/dev/null || check_fail; check_ok
     run_check "Line 24"; echo "$output" | grep "static_tests/testcase.py:24:" >/dev/null || check_fail; check_ok

@@ -15,15 +15,15 @@ and it can be used for automation of test using a CI.
    :maxdepth: 2
    :caption: Contents:
 
-   doc/install
-   doc/getting-started
-   doc/usage
-   doc/configuration
-   doc/logging
-   doc/tbot
-   doc/builtins
-   doc/example-workflow
-   doc/examples
+   install
+   getting-started
+   usage
+   configuration
+   logging
+   tbot
+   builtins
+   example-workflow
+   examples
 
 Indices and tables
 ==================

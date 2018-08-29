@@ -10,15 +10,16 @@ class Machine(typing.ContextManager):
     @property
     @abc.abstractmethod
     def name(self) -> str:
-        """Return the name of this machine."""
+        """Name of this machine."""
         pass
 
     @abc.abstractmethod
     def destroy(self) -> None:
-        """Destroy and cleanup this machine instance."""
+        """Destroy and cleanup this machine."""
         pass
 
     def __init__(self) -> None:
+        """Connect to this machine."""
         self._rc = 0
 
     def __enter__(self: Self) -> Self:
@@ -33,7 +34,14 @@ class Machine(typing.ContextManager):
 
 
 class InteractiveMachine(abc.ABC):
+    """Machine that can be used interactively."""
 
     @abc.abstractmethod
     def interactive(self) -> None:
+        """
+        Drop into an interactive shell on this machine.
+
+        :raises RuntimeError: If TBot was not able to reacquire the shell
+            after the session finished.
+        """
         pass
