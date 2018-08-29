@@ -8,6 +8,26 @@ H = typing.TypeVar("H", bound="linux.LinuxMachine")
 
 
 class Path(pathlib.PurePosixPath, typing.Generic[H]):
+    """
+    A path that is associated with a TBot machine.
+
+    A path can only be used with its associated host.  Using it with
+    any other host will raise an exception and will be detected by
+    a static typechecker.
+
+    Apart from that, ``Path`` behaves like a :class:`pathlib.Path`::
+
+        from tbot.machine import linux
+
+        p = linux.Path(mach, "/foo/bar")
+        p2 = p / "bar" / "baz"
+        if not p2.exists():
+            mach.exec0("mkdir", "-p", p2.parent)
+            mach.exec0("touch", p2)
+        elif not p2.is_file():
+            raise Exception(f"{p2} must be a normal file!")
+    """
+
     __slots__ = ("_host",)
 
     def __new__(cls, host: H, *args: typing.Any) -> "Path":
@@ -22,15 +42,26 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
         return super().__new__(cls, *args)
 
     def __init__(self, host: H, *args: typing.Any) -> None:
-        """Initialize a path."""
+        """
+        Create a new path.
+
+        :param linux.LinuxMachine host: Host this path should be associated with
+        :param args: pathlib.PurePosixPath constructor arguments
+        """
         self._host = host
 
     @property
     def host(self) -> H:
-        """Return the host associated with this path."""
+        """Host associated with this path."""
         return self._host
 
     def stat(self) -> os.stat_result:
+        """
+        Return the result of ``stat`` on this path.
+
+        Tries to imitate the results of :meth:`pathlib.Path.stat`, returns a
+        :class:`os.stat_result`.
+        """
         ec, stat_str = self.host.exec("stat", "-t", self)
         if ec != 0:
             raise OSError(errno.ENOENT, f"Can't stat {self}")
@@ -53,31 +84,40 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
         )
 
     def exists(self) -> bool:
+        """Whether this path exists."""
         return self.host.exec("test", "-e", self)[0] == 0
 
     def is_dir(self) -> bool:
+        """Whether this path points to a directory."""
         return self.host.exec("test", "-d", self)[0] == 0
 
     def is_file(self) -> bool:
+        """Whether this path points to a normal file."""
         return self.host.exec("test", "-f", self)[0] == 0
 
     def is_symlink(self) -> bool:
+        """Whether this path points to a symlink."""
         return self.host.exec("test", "-h", self)[0] == 0
 
     def is_block_device(self) -> bool:
+        """Whether this path points to a block device."""
         return self.host.exec("test", "-b", self)[0] == 0
 
     def is_char_device(self) -> bool:
+        """Whether this path points to a character device."""
         return self.host.exec("test", "-c", self)[0] == 0
 
     def is_fifo(self) -> bool:
+        """Whether this path points to a pipe(fifo)."""
         return self.host.exec("test", "-p", self)[0] == 0
 
     def is_socket(self) -> bool:
+        """Whether this path points to a unix domain-socket."""
         return self.host.exec("test", "-S", self)[0] == 0
 
     @property
     def parent(self) -> "Path[H]":
+        """Parent of this path."""
         return Path(self._host, super().parent)
 
     def __truediv__(self, key: typing.Any) -> "Path[H]":
