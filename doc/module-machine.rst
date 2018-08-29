@@ -25,11 +25,8 @@
         m.exec0("dmesg", linux.Pipe, "grep", "usb0")
 
 .. automodule:: tbot.machine.linux.machine
-
 .. automodule:: tbot.machine.linux.path
-
 .. automodule:: tbot.machine.linux.special
-
 .. automodule:: tbot.machine.linux.lab.machine
 
 
@@ -40,7 +37,6 @@
     :undoc-members:
 
 .. automodule:: tbot.machine.linux.lab.local
-
 .. automodule:: tbot.machine.linux.lab.ssh
 
 
