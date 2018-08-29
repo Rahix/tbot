@@ -30,6 +30,12 @@
 .. automodule:: tbot.machine.linux.lab.machine
 
 
+``tbot.machine.linux.auth``
+---------------------------
+.. automodule:: tbot.machine.linux.auth
+    :members:
+
+
 ``tbot.machine.linux.lab``
 --------------------------
 .. automodule:: tbot.machine.linux.lab
