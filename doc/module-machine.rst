@@ -1,8 +1,6 @@
 ``tbot.machine`` Module
 =======================
 
-``tbot.machine``
-----------------
 .. automodule:: tbot.machine
     :members:
     :undoc-members:
