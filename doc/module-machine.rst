@@ -51,8 +51,10 @@
 
 ``tbot.machine.linux.ssh``
 --------------------------
-.. TODO::
-    Add **SSHMachine**
+.. automodule:: tbot.machine.linux.ssh
+    :members:
+
+.. automodule:: tbot.machine.linux.ssh.machine
 
 
 ``tbot.machine.linux.shell``
