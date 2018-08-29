@@ -46,8 +46,11 @@
 
 ``tbot.machine.linux.build``
 ----------------------------
-.. TODO::
-    Add **BuildMachine**
+.. automodule:: tbot.machine.linux.build
+    :members:
+
+.. automodule:: tbot.machine.linux.build.machine
+.. automodule:: tbot.machine.linux.build.toolchain
 
 
 ``tbot.machine.linux.ssh``
