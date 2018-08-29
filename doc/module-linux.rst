@@ -43,12 +43,11 @@ Implementations
 
 ``tbot.machine.linux.lab``
 --------------------------
-.. automodule:: tbot.machine.linux.lab
+.. autoclass:: tbot.machine.linux.lab.LocalLabHost
     :members:
-    :undoc-members:
 
-.. automodule:: tbot.machine.linux.lab.local
-.. automodule:: tbot.machine.linux.lab.ssh
+.. autoclass:: tbot.machine.linux.lab.SSHLabHost
+    :members:
 
 
 ``tbot.machine.linux.build``

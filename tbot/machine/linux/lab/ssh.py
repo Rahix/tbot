@@ -10,7 +10,34 @@ SLH = typing.TypeVar("SLH", bound="SSHLabHost")
 
 
 class SSHLabHost(LabHost):
-    """LabHost that can be connected to via SSH."""
+    """
+    LabHost that can be connected to via SSH.
+
+    Makes use of :class:`~tbot.machine.channel.ParamikoChannel`.
+
+    To use a LabHost that is connected via SSH, you must subclass
+    SSHLabHost in you lab config.
+
+    **Example**::
+
+        from tbot.machine.linux import lab
+        from tbot.machine import linux
+
+
+        class MySSHLab(lab.SSHLabHost):
+            name = "my-ssh-lab"
+            hostname = "lab.example.com"
+            username = "admin"
+
+            @property
+            def workdir(self) -> "linux.Path[MySSHLab]":
+                p = linux.Path(self, "/tmp/tbot-wd")
+                self.exec0("mkdir", "-p", p)
+                return p
+
+
+        LAB = MySSHLab
+    """
 
     @property
     @abc.abstractmethod
@@ -21,7 +48,7 @@ class SSHLabHost(LabHost):
     @property
     def authenticator(self) -> auth.Authenticator:
         """
-        Return an authenticator that allows logging in on this LabHost.
+        Return an :class:`~tbot.machine.linux.auth.Authenticator` that allows logging in on this LabHost.
 
         Defaults to a private key authenticator using ``~/.ssh/id_rsa``.
         """

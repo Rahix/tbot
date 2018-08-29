@@ -8,7 +8,14 @@ LLH = typing.TypeVar("LLH", bound="LocalLabHost")
 
 
 class LocalLabHost(LabHost):
-    """LabHost on the host TBot is running on."""
+    """
+    LabHost on the host TBot is running on.
+
+    Makes use of the :class:`~tbot.machine.channel.SubprocessChannel`.
+
+    ``LocalLabHost`` can be instanciated as is, but if you need customization,
+    you should subclass it.
+    """
 
     name = "local"
 
