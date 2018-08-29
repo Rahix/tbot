@@ -52,26 +52,20 @@ Implementations
 
 ``tbot.machine.linux.build``
 ----------------------------
-.. automodule:: tbot.machine.linux.build
+.. autoclass:: tbot.machine.linux.build.Toolchain
     :members:
 
-.. automodule:: tbot.machine.linux.build.machine
-.. automodule:: tbot.machine.linux.build.toolchain
-
-
-``tbot.machine.linux.ssh``
---------------------------
-.. automodule:: tbot.machine.linux.ssh
+.. autoclass:: tbot.machine.linux.build.EnvScriptToolchain
     :members:
-
-.. automodule:: tbot.machine.linux.ssh.machine
 
 
 ``tbot.machine.linux.shell``
 ----------------------------
-.. automodule:: tbot.machine.linux.shell
+.. autoclass:: tbot.machine.linux.shell.Shell
     :members:
 
-.. automodule:: tbot.machine.linux.shell.shell
-.. automodule:: tbot.machine.linux.shell.bash
-.. automodule:: tbot.machine.linux.shell.ash
+.. autoclass:: tbot.machine.linux.shell.Bash
+    :members:
+
+.. autoclass:: tbot.machine.linux.shell.Ash
+    :members:
