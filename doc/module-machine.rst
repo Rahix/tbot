@@ -1,20 +1,27 @@
 ``tbot.machine`` Module
 =======================
 
-.. automodule:: tbot.machine
+.. autoclass:: tbot.machine.Machine
     :members:
-    :undoc-members:
 
-.. automodule:: tbot.machine.error
+.. autoclass:: tbot.machine.InteractiveMachine
+    :members:
+
+.. autoexception:: tbot.machine.CommandFailedException
+.. autoexception:: tbot.machine.WrongHostException
 
 ``tbot.machine.channel``
 ------------------------
-.. automodule:: tbot.machine.channel
+.. autoclass:: tbot.machine.channel.Channel
     :members:
 
-.. automodule:: tbot.machine.channel.channel
-.. automodule:: tbot.machine.channel.paramiko
-.. automodule:: tbot.machine.channel.subprocess
+Implementations
+^^^^^^^^^^^^^^^
+.. autoclass:: tbot.machine.channel.ParamikoChannel
+.. autoclass:: tbot.machine.channel.SubprocessChannel
 
+Helpers
+^^^^^^^
+.. autoexception:: tbot.machine.channel.ChannelClosedException
 .. autoclass:: tbot.machine.channel.channel.SkipStream
     :members:

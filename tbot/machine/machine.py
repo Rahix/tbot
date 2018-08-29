@@ -10,7 +10,7 @@ class Machine(typing.ContextManager):
     @property
     @abc.abstractmethod
     def name(self) -> str:
-        """Return the name of this machine."""
+        """Name of this machine."""
         pass
 
     @abc.abstractmethod

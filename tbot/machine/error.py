@@ -13,7 +13,7 @@ class CommandFailedException(Exception):
         *args: typing.Any,
     ) -> None:
         """
-        Command that was issued did not finish successfully.
+        Create a new CommandFailedException.
 
         :param machine.Machine host: The machine the command was issued on
         :param str command: The command that failed
