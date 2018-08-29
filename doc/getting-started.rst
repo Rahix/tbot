@@ -6,15 +6,15 @@ Getting Started
 
 First Steps
 -----------
-TBot works out of the box. You can run it's selftests like this::
+TBot works out of the box.  You can run it's selftests like this::
 
     ~$ tbot selftest
 
-(If this does not work, please contact the developers. This should not be the case)
+(If this does not work, please contact the developers.  This should not be the case)
 
-Now, let's create some example testcase. Start by creating a file named ``tc.py`` in
-your current directory. Later you will see that you can also name it differently or
-have multiple files, but for now, this is the easiest way. Add the following content::
+Now, let's create some example testcase.  Start by creating a file named ``tc.py`` in
+your current directory.  Later you will see that you can also name it differently or
+have multiple files, but for now, this is the easiest way.  Add the following content::
 
     import tbot
 
@@ -34,14 +34,14 @@ If you did everything correctly, running
 .. highlight:: python
    :linenothreshold: 3
 
-should greet you host. Let's disect the code from above::
+should greet you host.  Let's disect the code from above::
 
     @tbot.testcase
     def my_awesome_testcase() -> None:
         ...
 
-This is just a normal python function for our testcase. The ``tbot.testcase``
-decorator tells TBot that it should be treated as a testcase. In practice this
+This is just a normal python function for our testcase.  The :func:`tbot.testcase`
+decorator tells TBot that it should be treated as a testcase.  In practice this
 means that TBot will allow calling it from the commandline and will hook into
 the call so it can gather log data about it.
 
@@ -51,14 +51,14 @@ the call so it can gather log data about it.
         ...
 
 To understand this line, we first need to get to know one of the core concepts of TBot:
-**Machines**. Every host TBot interacts with is called a machine. That includes the labhost,
-which we use here, a buildhost where your code might be compiled, the board you are testing,
-or any other host you want TBot to connect to. There are different kinds of machine. Our
-labhost is special, because it is the base from where connections to other host are made.
-This allows TBot to only need one connection to one host for doing its task.
+**Machines** (:class:`~tbot.machine.Machine`).  Every host TBot interacts with is called a machine.
+That includes the labhost, which we use here, a buildhost where your code might be compiled,
+the board you are testing, or any other host you want TBot to connect to.  There are different kinds
+of machine.  Our labhost is special, because it is the base from where connections to other host
+are made.  This allows TBot to only need one connection to one host for doing its task.
 
 Machines should always be used inside a ``with`` statement to ensure proper cleanup in any
-case. This is especially important with boardmachines, because if this is not done, the board
+case.  This is especially important with boardmachines, because if this is not done, the board
 might not be turned off after the tests.
 
 So, the line you see here requests a new labhost object from TBot so we can interact with it.
@@ -69,19 +69,20 @@ example it is good enough.
 
     name = lh.exec0("uname", "-n").strip()
 
-Now that we have the ability to interact with the labhost, let's do so: We call ``uname -n`` to
-greet the users machine. Note, that each argument is passed separately to ``exec0``. The reason
-for this is that it ensures everything will be properly escaped and there are no accidental mistakes.
-For special characters there is a different notation as you will see later.
+Now that we have the ability to interact with the labhost, let's do so: We call
+``uname -n`` to greet the users machine.  Note, that each argument is passed separately to
+:meth:`~tbot.machine.linux.LinuxMachine.exec0`.  The reason for this is that it ensures everything
+will be properly escaped and there are no accidental mistakes.  For special characters there is
+a different notation as you will see later.
 
-The ``strip()`` is needed, because the command output contains the trailing newline, which we don't
+The :meth:`~str.strip` is needed, because the command output contains the trailing newline, which we don't
 want in this case.
 
 ::
 
     tbot.log.message(f"Hello {name}!")
 
-This is basically TBot's equivalent of ``print``. The most important difference is, that it does not
+:func:`tbot.log.message` is basically TBot's equivalent of :func:`print`.  The most important difference is, that it does not
 only print it to the terminal, but also store it in the logfile.
 
 .. TODO::
@@ -89,9 +90,9 @@ only print it to the terminal, but also store it in the logfile.
 
 Writing Testcases
 -----------------
-As mentioned above, testcases calling ``acquire_lab`` is not the best way to do it. Why? Well, imagine,
-each testcase that is called would create a new ssh connection to your labhost. This would be really
-inefficient. The easiest solution is to require the lab as a parameter like this::
+As mentioned above, testcases calling :func:`tbot.acquire_lab` is not the best way to do it.  Why?  Well, imagine,
+each testcase that is called would create a new ssh connection to your labhost.  This would be really
+inefficient.  The easiest solution is to require the lab as a parameter like this::
 
     import tbot
     from tbot.machine import linux
@@ -117,12 +118,14 @@ The solution is a hybrid and looks like the following::
             name = lh.exec0("uname", "-n").strip()
             tbot.log.message(f"Hello {name}!")
 
-I'd suggest remembering this and using it for any testcase that should be commandline callable.
+I'd suggest remembering this and using it for any testcase that should be commandline callable.  Also,
+if you take a look at the documentation for :func:`tbot.acquire_uboot` and :func:`tbot.acquire_linux`,
+there are similar recipes available.  More about those two functions later.
 
 .. note::
-    In this documentation and in the TBot sources, type annotations are used everywhere. This allows
+    In this documentation and in the TBot sources, type annotations are used everywhere.  This allows
     the use of a static type-checker such as ``mypy``, which makes finding bugs before you even run
-    the code a lot easier. Of course, this is optional, the following code would work just as well::
+    the code a lot easier.  Of course, this is optional, the following code would work just as well::
 
 
         import tbot
@@ -133,11 +136,11 @@ I'd suggest remembering this and using it for any testcase that should be comman
                 name = lh.exec0("uname", "-n")
                 tbot.log.message(f"Hello {name}!")
 
-Calling other testcases is just as easy as calling a python function. From your perspective, a testcase
-*is* just a python function. If you want to call testcases from other files, import them like you would
+Calling other testcases is just as easy as calling a python function.  From your perspective, a testcase
+*is* just a python function.  If you want to call testcases from other files, import them like you would
 with a python module.
 
-TBot contains a library of testcases for common tasks that you can make use of. Take a look at ``tbot.tc``.
+TBot contains a library of testcases for common tasks that you can make use of.  Take a look at :mod:`tbot.tc`.
 
 
 Machine Interaction
@@ -145,17 +148,19 @@ Machine Interaction
 
 Linux
 ^^^^^
-All linux machine (``tbot.machine.linux.LinuxMachine``) implement two methods for executing commands:
-``exec`` and ``exec0``. ``exec0`` is just a wrapper around ``exec`` that ensures the return code of the
-command is ``0``. Both take the command as one parameter per commandline parameter. For example::
+All :class:`~tbot.machine.linux.LinuxMachine` implement two methods for executing commands:
+:meth:`~tbot.machine.linux.LinuxMachine.exec` and :meth:`~tbot.machine.linux.LinuxMachine.exec0`.
+:meth:`~tbot.machine.linux.LinuxMachine.exec0` is just a wrapper around
+:meth:`~tbot.machine.linux.LinuxMachine.exec` that ensures the return code of the command is ``0``.
+Both take the command as one argument per commandline parameter.  For example::
 
     output = m.exec0("uname", "-n")
     output = m.exec0("dmesg")
     output = m.exec0("echo", "$!#?")
 
 TBot will ensure that arguments are properly escaped, so you can pass in anything without worrying.
-This poses a problem, when you need special syntaxes. For example when you try to use shell expansion
-of environment variables. To do this, use the following::
+This poses a problem, when you need special syntaxes.  For example when you try to use shell expansion
+of environment variables.  To do this, use the following::
 
     from tbot.machine import linux
 
@@ -163,19 +168,21 @@ of environment variables. To do this, use the following::
 
 This is not the only special parameter you can use:
 
-* ``linux.Pipe``: A ``|`` for piping command output to another command
+* :func:`~tbot.machine.linux.Env`: Environment variable expansion
+* :data:`~tbot.machine.linux.Pipe`: A ``|`` for piping command output to another command
 
 .. TODO::
     More, like eg. ``linux.Then``, ``linux.Background``, ``linux.OrElse``, ``linux.AndThen``
 
-Another thing TBot handles specially is paths. A path can be created like this::
+Another thing TBot handles specially is paths.  A :class:`~tbot.machine.linux.Path` can be
+created like this::
 
     from tbot.machine import linux
 
     p = linux.Path(machine, "/foo/bar")
 
-``p`` is now a path. TBot's paths are based on python's ``pathlib`` so you can use all the usual
-methods / operators::
+``p`` is now a :class:`~tbot.machine.linux.Path`.  TBot's paths are based on
+python's :mod:`pathlib` so you can use all the usual methods / operators::
 
     file_in_p = p / "dirname" / "file.txt"
     if not p.exists():
@@ -183,7 +190,7 @@ methods / operators::
     if no p.is_dir():
         raise RuntimeError(f"{p} must be a directory!")
 
-TBot's paths have a very nice property: They are bound to the host they were created with. This means
+TBot's paths have a very nice property: They are bound to the host they were created with.  This means
 that you cannot accidentally use a path on a wrong machine::
 
     m = tbot.acquire_lab()
@@ -196,7 +203,7 @@ that you cannot accidentally use a path on a wrong machine::
 
 Board
 ^^^^^
-Interacting with the board is similar to interacting with a host like the labhost. The only difference
+Interacting with the board is similar to interacting with a host like the labhost.  The only difference
 is that this time, we need to first initialize the board::
 
     with tbot.acquire_board(lh) as b:
@@ -220,21 +227,21 @@ is that this time, we need to first initialize the board::
 
 Interactive
 ^^^^^^^^^^^
-One convenience function of TBot is allowing the user to directly access most machines' shells. There are
+One convenience function of TBot is allowing the user to directly access most machines' shells.  There are
 two ways to do so.
 
 .. highlight:: guess
    :linenothreshold: 3
 
 1. Calling one of the ``interactive_lab``, ``interactive_build``, ``interactive_board``, ``interactive_uboot``
-   ``interactive_linux`` testcases. This is the most straight forward. It might look like this::
+   ``interactive_linux`` testcases.  This is the most straight forward.  It might look like this::
 
         ~$ tbot -l labs/mylab.py -b boards/myboard.py interactive_uboot
 
 .. highlight:: python
    :linenothreshold: 3
 
-2. Calling ``machine.interactive()`` in your testcase. For example::
+2. Calling ``machine.interactive()`` in your testcase.  For example::
 
         with tbot.acquire_board(lh) as b:
             with tbot.acquire_linux(b) as lnx:
