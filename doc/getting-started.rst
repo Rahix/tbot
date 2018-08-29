@@ -170,9 +170,13 @@ This is not the only special parameter you can use:
 
 * :func:`~tbot.machine.linux.Env`: Environment variable expansion
 * :data:`~tbot.machine.linux.Pipe`: A ``|`` for piping command output to another command
+* :data:`~tbot.machine.linux.Then`: A ``;`` for running multiple commands
+* :data:`~tbot.machine.linux.Background`: A ``&`` for running a command in the background
+* :data:`~tbot.machine.linux.AndThen`: A ``&&`` for chaining commands
+* :data:`~tbot.machine.linux.OrElse`: A ``||`` for error handling
+* :func:`~tbot.machine.linux.Raw`: Raw string if TBot isn't expressive enough for your usecase.
+  Use this only when no other option works.
 
-.. TODO::
-    More, like eg. ``linux.Then``, ``linux.Background``, ``linux.OrElse``, ``linux.AndThen``
 
 Another thing TBot handles specially is paths.  A :class:`~tbot.machine.linux.Path` can be
 created like this::

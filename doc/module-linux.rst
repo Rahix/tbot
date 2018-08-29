@@ -21,6 +21,40 @@ Command Specials
 
         m.exec0("dmesg", linux.Pipe, "grep", "usb0")
 
+.. py:data:: tbot.machine.linux.Then
+
+    Special character for the ``;`` separator to run multiple commands
+
+    **Example**::
+
+        m.exec0("sleep", "1", linux.Then, "date")
+
+.. py:data:: tbot.machine.linux.Background
+
+    Special character for the ``&`` separator to run a command in the background
+
+    **Example**::
+
+        m.exec0("daemon", linux.Backround)
+
+.. py:data:: tbot.machine.linux.OrElse
+
+    Special character for the ``||`` separator to run a command if the
+    first one failed
+
+    **Example**::
+
+        m.exec0("test", "-d", "/foo/bar", linux.OrElse, "mkdir", "-p", "/foo/bar")
+
+.. py:data:: tbot.machine.linux.AndThen
+
+    Special character for the ``&&`` separator to run a command if the
+    first one succeeded
+
+    **Example**::
+
+        m.exec0("test", "-d", ".git", linux.AndThen, "git", "describe", "--tags")
+
 .. autoclass:: tbot.machine.linux.Raw
 
 Implementations
