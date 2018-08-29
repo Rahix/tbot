@@ -8,10 +8,17 @@ LLH = typing.TypeVar("LLH", bound="LocalLabHost")
 
 
 class LocalLabHost(LabHost):
+    """LabHost on the host TBot is running on."""
+
     name = "local"
 
     @property
     def workdir(self: LLH) -> "linux.Path[LLH]":
+        """
+        Return a path to a workdir for TBot.
+
+        Defaults to ``/tmp/tbot-wd``, but can be overwritten in a lab config.
+        """
         p = linux.Path(self, "/tmp/tbot-wd")
         # Only create workdir once
         if not hasattr(self, "_wd_marker"):
@@ -22,13 +29,16 @@ class LocalLabHost(LabHost):
 
     @property
     def username(self) -> str:
+        """Return the name of the user running TBot."""
         return getpass.getuser()
 
     def __init__(self) -> None:
+        """Create a new instance of a LocalLabHost."""
         super().__init__()
         self.channel = channel.SubprocessChannel()
 
     def destroy(self) -> None:
+        """Destroy this instance of a LocalLabHost."""
         self.channel.close()
 
     def _obtain_channel(self) -> channel.Channel:

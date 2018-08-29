@@ -1,4 +1,4 @@
-Module ``tbot``
+``tbot`` Module
 ===============
 
 ``tbot``

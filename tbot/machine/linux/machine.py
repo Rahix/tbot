@@ -13,7 +13,7 @@ Self = typing.TypeVar("Self", bound="LinuxMachine")
 
 
 class LinuxMachine(machine.Machine, machine.InteractiveMachine):
-    """Machine that is running Linux."""
+    """Generic machine that is running Linux."""
 
     shell: typing.Type[sh.Shell] = sh.Bash
 

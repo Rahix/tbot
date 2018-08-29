@@ -1,4 +1,4 @@
-Module ``tbot.machine``
+``tbot.machine`` Module
 =======================
 
 ``tbot.machine``
@@ -29,3 +29,15 @@ Module ``tbot.machine``
 .. automodule:: tbot.machine.linux.path
 
 .. automodule:: tbot.machine.linux.special
+
+.. automodule:: tbot.machine.linux.lab.machine
+
+``tbot.machine.linux.lab``
+--------------------------
+.. automodule:: tbot.machine.linux.lab
+    :members:
+    :undoc-members:
+
+.. automodule:: tbot.machine.linux.lab.local
+
+.. automodule:: tbot.machine.linux.lab.ssh

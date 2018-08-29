@@ -10,6 +10,7 @@ SLH = typing.TypeVar("SLH", bound="SSHLabHost")
 
 
 class SSHLabHost(LabHost):
+    """LabHost that can be connected to via SSH."""
 
     @property
     @abc.abstractmethod
@@ -19,12 +20,20 @@ class SSHLabHost(LabHost):
 
     @property
     def authenticator(self) -> auth.Authenticator:
-        """Return an authenticator that allows logging in on the labhost."""
+        """
+        Return an authenticator that allows logging in on this LabHost.
+
+        Defaults to a private key authenticator using ``~/.ssh/id_rsa``.
+        """
         return auth.PrivateKeyAuthenticator(pathlib.Path.home() / ".ssh" / "id_rsa")
 
     @property
     def port(self) -> int:
-        """Return the port the SSH server is listening on."""
+        """
+        Return the port the remote SSH server is listening on.
+
+        Defaults to ``22``.
+        """
         return 22
 
     def __repr__(self) -> str:
@@ -33,6 +42,7 @@ class SSHLabHost(LabHost):
         )
 
     def __init__(self) -> None:
+        """Create a new instance of this SSH LabHost."""
         super().__init__()
         self.client = paramiko.SSHClient()
         self.client.load_system_host_keys()
@@ -55,6 +65,14 @@ class SSHLabHost(LabHost):
         )
 
     def destroy(self) -> None:
+        """
+        Destroy this LabHost instance.
+
+        .. warning::
+            Closes all channels that are still open. You should not call this method
+            unless you know what you are doing. The preferred way is to use a context
+            block using ``with``.
+        """
         self.client.close()
 
     def _obtain_channel(self) -> channel.Channel:
