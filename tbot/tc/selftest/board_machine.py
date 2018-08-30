@@ -6,15 +6,17 @@ from tbot.machine import board
 
 
 class TestBoard(board.Board):
+    """Dummy Board."""
+
     name = "test"
 
-    def poweron(self) -> None:
+    def poweron(self) -> None:  # noqa: D102
         self.lh.exec0("touch", self.lh.workdir / "selftest_power")
 
-    def poweroff(self) -> None:
+    def poweroff(self) -> None:  # noqa: D102
         self.lh.exec0("rm", self.lh.workdir / "selftest_power")
 
-    def connect(self) -> channel.Channel:
+    def connect(self) -> channel.Channel:  # noqa: D102
         return self.lh.new_channel(
             linux.Raw(
                 """\
@@ -29,17 +31,20 @@ read -p 'Autoboot: '"""
 
 
 class TestBoardUBoot(board.UBootMachine[TestBoard]):
+    """Dummy Board UBoot."""
+
     autoboot_prompt = "Autoboot: "
     prompt = "Test-U-Boot> "
 
 
 @tbot.testcase
-def selftest_board_uboot(lab: typing.Optional[tbot.selectable.LabHost] = None,) -> None:
+def selftest_board_uboot(lab: typing.Optional[tbot.selectable.LabHost] = None) -> None:
+    """Test if TBot intercepts U-Boot correctly."""
     with lab or tbot.acquire_lab() as lh:
         b_: board.Board
         try:
             b_ = tbot.acquire_board(lh)
-        except RuntimeError:
+        except NotImplementedError:
             b_ = TestBoard(lh)
         with b_ as b:
             ub_: board.UBootMachine
@@ -57,7 +62,8 @@ def selftest_board_uboot(lab: typing.Optional[tbot.selectable.LabHost] = None,) 
 
 
 @tbot.testcase
-def selftest_board_power(lab: typing.Optional[tbot.selectable.LabHost] = None,) -> None:
+def selftest_board_power(lab: typing.Optional[tbot.selectable.LabHost] = None) -> None:
+    """Test if the board is powered on and off correctly."""
     with lab or tbot.acquire_lab() as lh:
         power_path = lh.workdir / "selftest_power"
         if power_path.exists():
