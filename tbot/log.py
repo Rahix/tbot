@@ -158,7 +158,7 @@ def command(mach: str, cmd: str) -> EventIO:
     return ev
 
 
-def message(msg: str) -> EventIO:
+def message(msg: typing.Union[str, c]) -> EventIO:
     """
     Log a message.
 
