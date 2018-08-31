@@ -21,10 +21,14 @@ class TestBoard(board.Board):
             linux.Raw(
                 """\
 sh; exit
+unset HISTFILE
 PS1='Test-U-Boot> '
 alias version="uname -a"
 alias printenv="set | grep -E '^U'"
 sh
+unset HISTFILE
+set +o emacs
+set +o vi
 read -p 'Autoboot: '"""
             )
         )
@@ -89,3 +93,106 @@ def selftest_board_power(lab: typing.Optional[tbot.selectable.LabHost] = None) -
             pass
 
         assert not power_path.exists()
+
+
+class TestBoardLinuxUB(board.LinuxWithUBootMachine[TestBoard]):
+    uboot = TestBoardUBoot
+    boot_commands = [
+        ["echo", "Booting linux ..."],
+        ["echo", "[  0.000]", "boot: message"],
+        ["echo", "[  0.013]", "boot: info"],
+        ["echo", "[  0.157]", "boot: message"],
+        [
+            board.Raw(
+                "printf 'tb-login: '; read username; printf 'Password: '; read password; [[ $username = 'root' && $password = 'rootpw' ]] || exit 1"
+            )
+        ],
+    ]
+
+    username = "root"
+    password = "rootpw"
+    login_prompt = "tb-login: "
+    login_wait = 0.02
+
+
+@tbot.testcase
+def selftest_board_linux_uboot(
+    lab: typing.Optional[tbot.selectable.LabHost] = None
+) -> None:
+    with lab or tbot.acquire_lab() as lh:
+        tbot.log.message("Testing without UB ...")
+        with TestBoard(lh) as b:
+            with TestBoardLinuxUB(b) as lnx:
+                lnx.exec0("uname", "-a")
+
+        tbot.log.message("Testing with UB ...")
+        with TestBoard(lh) as b:
+            with TestBoardUBoot(b) as ub:
+                with TestBoardLinuxUB(ub) as lnx:
+                    lnx.exec0("uname", "-a")
+
+
+@tbot.testcase
+def selftest_board_linux_nopw(
+    lab: typing.Optional[tbot.selectable.LabHost] = None
+) -> None:
+
+    class TestBoardLinuxUB_NOPW(board.LinuxWithUBootMachine[TestBoard]):
+        uboot = TestBoardUBoot
+        boot_commands = [
+            ["echo", "Booting linux ..."],
+            ["echo", "[  0.000]", "boot: message"],
+            ["echo", "[  0.013]", "boot: info"],
+            ["echo", "[  0.157]", "boot: message"],
+            [
+                board.Raw(
+                    "printf 'tb-login: '; read username; [[ $username = 'root' ]] || exit 1"
+                )
+            ],
+        ]
+
+        username = "root"
+        password = None
+        login_prompt = "tb-login: "
+        login_wait = 0.02
+
+    with lab or tbot.acquire_lab() as lh:
+        tbot.log.message("Testing without UB ...")
+        with TestBoard(lh) as b:
+            with TestBoardLinuxUB_NOPW(b) as lnx:
+                lnx.exec0("uname", "-a")
+
+        tbot.log.message("Testing with UB ...")
+        with TestBoard(lh) as b:
+            with TestBoardUBoot(b) as ub:
+                with TestBoardLinuxUB_NOPW(ub) as lnx:
+                    lnx.exec0("uname", "-a")
+
+
+@tbot.testcase
+def selftest_board_linux_standalone(
+    lab: typing.Optional[tbot.selectable.LabHost] = None
+) -> None:
+
+    class TestBoardLinuxStandalone(board.LinuxStandaloneMachine[TestBoard]):
+        username = "root"
+        password = None
+        login_prompt = "Autoboot: "
+        login_wait = 0.02
+
+    with lab or tbot.acquire_lab() as lh:
+        tbot.log.message("Testing without UB ...")
+        with TestBoard(lh) as b:
+            with TestBoardLinuxStandalone(b) as lnx:
+                lnx.exec0("uname", "-a")
+
+        tbot.log.message("Testing with UB ...")
+        with TestBoard(lh) as b:
+            with TestBoardUBoot(b) as ub:
+                raised = False
+                try:
+                    with TestBoardLinuxStandalone(ub) as lnx:
+                        lnx.exec0("uname", "-a")
+                except RuntimeError:
+                    raised = True
+                assert raised
