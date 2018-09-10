@@ -1,7 +1,8 @@
-import typing
-import sys
+import enum
 import io
 import itertools
+import sys
+import typing
 from termcolor2 import c
 
 
@@ -19,8 +20,20 @@ def u(with_unicode: str, without_unicode: str) -> str:
     return without_unicode
 
 
+@enum.unique
+class Verbosity(enum.IntEnum):
+    """Verbosity levels."""
+
+    QUIET = 0
+    INFO = enum.auto()
+    COMMAND = enum.auto()
+    STDOUT = enum.auto()
+    CHANNEL = enum.auto()
+
+
 NESTING = 0
 INTERACTIVE = False
+VERBOSITY = Verbosity.INFO
 
 
 class EventIO(io.StringIO):
@@ -30,6 +43,7 @@ class EventIO(io.StringIO):
         self,
         initial: typing.Union[str, c, None] = None,
         *,
+        verbosity: Verbosity = Verbosity.INFO,
         nest_first: typing.Optional[str] = None,
     ) -> None:
         """
@@ -46,6 +60,7 @@ class EventIO(io.StringIO):
         self.first = True
         self.prefix: typing.Optional[str] = None
         self.nest_first = nest_first or u("├─", "+-")
+        self.verbosity = verbosity
 
         if initial:
             self.writeln(str(initial))
@@ -61,6 +76,9 @@ class EventIO(io.StringIO):
 
     def _print_lines(self, last: bool = False) -> None:
         buf = self.getvalue()[self.cursor :]
+
+        if self.verbosity > VERBOSITY:
+            return
 
         while "\n" in buf:
             line = buf.split("\n", maxsplit=1)[0]
@@ -117,7 +135,7 @@ def testcase_begin(name: str) -> None:
     """
     global NESTING
 
-    EventIO("Calling " + c(name).cyan.bold + " ...")
+    EventIO("Calling " + c(name).cyan.bold + " ...", verbosity=Verbosity.QUIET)
     NESTING += 1
 
 
@@ -134,7 +152,7 @@ def testcase_end(success: bool = True) -> None:
     else:
         success_string = c("Fail").red.bold
 
-    EventIO(success_string + ".", nest_first=u("└─", "\\-"))
+    EventIO(success_string + ".", nest_first=u("└─", "\\-"), verbosity=Verbosity.QUIET)
     NESTING -= 1
 
 
@@ -148,13 +166,14 @@ def command(mach: str, cmd: str) -> EventIO:
     :returns: A stream that the output of the command should
         be written to.
     """
-    ev = EventIO("[" + c(mach).yellow + "] " + c(cmd).dark)
+    ev = EventIO("[" + c(mach).yellow + "] " + c(cmd).dark, verbosity=Verbosity.COMMAND)
     ev.prefix = "   ## "
 
     if INTERACTIVE:
         if input(c("OK [Y/n]? ").magenta).upper() not in ("", "Y"):
             raise RuntimeError("Aborted by user")
 
+    ev.verbosity = Verbosity.STDOUT
     return ev
 
 
@@ -164,4 +183,4 @@ def message(msg: typing.Union[str, c]) -> EventIO:
 
     :param str msg: The message
     """
-    return EventIO(msg)
+    return EventIO(msg, verbosity=Verbosity.INFO)

@@ -10,6 +10,7 @@ import time
 import tty
 import typing
 
+import tbot
 from tbot.machine.linux import shell
 
 TBOT_PROMPT = "TBOT-VEJPVC1QUk9NUFQK$ "
@@ -276,6 +277,12 @@ class Channel(abc.ABC):
                         pass
             else:
                 decoded += new.decode("latin_1")
+
+            if tbot.log.VERBOSITY >= tbot.log.Verbosity.CHANNEL:
+                tbot.log.EventIO(
+                    tbot.log.c(repr(decoded)).yellow,
+                    verbosity=tbot.log.Verbosity.CHANNEL,
+                )
 
             buf += decoded
 

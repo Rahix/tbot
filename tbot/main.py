@@ -6,6 +6,7 @@ import traceback
 
 
 def main() -> None:  # noqa: C901
+    """Tbot main entry point."""
     parser = argparse.ArgumentParser(
         prog="tbot",
         description="Test and development automation tool, tailored for embedded needs",
@@ -44,6 +45,10 @@ def main() -> None:  # noqa: C901
         help="Set a user defined flag to change testcase behaviour",
     )
 
+    parser.add_argument(
+        "-v", dest="verbosity", action="count", default=0, help="Increase the verbosity"
+    )
+
     flags = [
         (["--list-testcases"], "List all testcases in the current search path."),
         (["--list-labs"], "List all available labs."),
@@ -58,6 +63,8 @@ def main() -> None:  # noqa: C901
         parser.add_argument(*flag_names, action="store_true", help=flag_help)
 
     args = parser.parse_args()
+
+    log.VERBOSITY = log.Verbosity(args.verbosity + 1)
 
     if args.list_labs:
         raise NotImplementedError()
@@ -142,20 +149,28 @@ def main() -> None:  # noqa: C901
 
         width = max(map(len, flags))
         for name, description in all_flags.items():
-            tbot.log.message(tbot.log.c(name.ljust(width)).blue + ": " + description)
+            log.message(log.c(name.ljust(width)).blue + ": " + description)
 
     try:
         for tc in args.testcase:
             testcases[tc]()
     except Exception as e:
-        with log.EventIO(tbot.log.c("Exception").red.bold + ":") as ev:
+        with log.EventIO(
+            log.c("Exception").red.bold + ":", verbosity=log.Verbosity.QUIET
+        ) as ev:
             ev.prefix = "  "
             ev.write(traceback.format_exc())
 
-        log.EventIO(tbot.log.c("FAILURE").red.bold, nest_first=tbot.log.u("└─", "\\-"))
+        log.EventIO(
+            log.c("FAILURE").red.bold,
+            nest_first=log.u("└─", "\\-"),
+            verbosity=log.Verbosity.QUIET,
+        )
     else:
         log.EventIO(
-            tbot.log.c("SUCCESS").green.bold, nest_first=tbot.log.u("└─", "\\-")
+            log.c("SUCCESS").green.bold,
+            nest_first=log.u("└─", "\\-"),
+            verbosity=log.Verbosity.QUIET,
         )
 
 
