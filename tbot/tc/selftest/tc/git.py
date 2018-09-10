@@ -90,6 +90,35 @@ def selftest_tc_git_checkout(lab: typing.Optional[linux.LabHost] = None,) -> Non
         assert (repo / "README.md").is_file()
         assert not (repo / "file2.md").is_file()
 
+        tbot.log.message("Make repo dirty ...")
+        lh.exec0("echo", "Test 123", stdout=repo / "file.txt")
+
+        git.checkout(remote, target, clean=False)
+        assert (repo / "file.txt").is_file()
+
+        git.checkout(remote, target, clean=True)
+        assert not (repo / "file.txt").is_file()
+
+        tbot.log.message("Add dirty commit ...")
+        lh.exec0("echo", "Test 123", stdout=repo / "file.txt")
+        lh.exec0("git", "-C", repo, "add", "file.txt")
+        lh.exec0(
+            "git",
+            "-C",
+            repo,
+            "commit",
+            "--author",
+            "TBot Selftest <none@none>",
+            "-m",
+            "Add file.txt",
+        )
+
+        git.checkout(remote, target, clean=False)
+        assert (repo / "file.txt").is_file()
+
+        git.checkout(remote, target, clean=True)
+        assert not (repo / "file.txt").is_file()
+
         lh.exec0("rm", "-rf", target)
 
 
