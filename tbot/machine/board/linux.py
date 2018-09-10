@@ -159,7 +159,7 @@ class LinuxWithUBootMachine(LinuxMachine[B]):
         with tbot.log.command(ub.name, last_command) as ev:
             ev.prefix = "   <> "
             self.channel.send(last_command + "\n")
-            self.boot_to_shell(channel.channel.SkipStream(ev, len(last_command) + 1))
+            self.boot_to_shell(channel.SkipStream(ev, len(last_command) + 1))
 
     def destroy(self) -> None:  # noqa: D102
         if self.ub is not None:
