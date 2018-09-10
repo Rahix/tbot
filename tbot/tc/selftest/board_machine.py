@@ -66,6 +66,24 @@ def selftest_board_uboot(lab: typing.Optional[tbot.selectable.LabHost] = None) -
 
 
 @tbot.testcase
+def selftest_board_linux(lab: typing.Optional[tbot.selectable.LabHost] = None) -> None:
+    """Test board's linux."""
+    with lab or tbot.acquire_lab() as lh:
+        try:
+            b_ = tbot.acquire_board(lh)
+        except NotImplementedError:
+            tbot.log.message(
+                tbot.log.c("Skipped").yellow.bold + " because no board available."
+            )
+            return
+        with b_ as b:
+            with tbot.acquire_linux(b) as lnx:
+                from . import machine as mach
+
+                mach.selftest_machine_shell(lnx)
+
+
+@tbot.testcase
 def selftest_board_power(lab: typing.Optional[tbot.selectable.LabHost] = None) -> None:
     """Test if the board is powered on and off correctly."""
     with lab or tbot.acquire_lab() as lh:
@@ -96,6 +114,8 @@ def selftest_board_power(lab: typing.Optional[tbot.selectable.LabHost] = None) -
 
 
 class TestBoardLinuxUB(board.LinuxWithUBootMachine[TestBoard]):
+    """Dummy board linux uboot."""
+
     uboot = TestBoardUBoot
     boot_commands = [
         ["echo", "Booting linux ..."],
@@ -119,6 +139,7 @@ class TestBoardLinuxUB(board.LinuxWithUBootMachine[TestBoard]):
 def selftest_board_linux_uboot(
     lab: typing.Optional[tbot.selectable.LabHost] = None
 ) -> None:
+    """Test linux booting from U-Boot."""
     with lab or tbot.acquire_lab() as lh:
         tbot.log.message("Testing without UB ...")
         with TestBoard(lh) as b:
@@ -136,6 +157,7 @@ def selftest_board_linux_uboot(
 def selftest_board_linux_nopw(
     lab: typing.Optional[tbot.selectable.LabHost] = None
 ) -> None:
+    """Test linux without a password."""
 
     class TestBoardLinuxUB_NOPW(board.LinuxWithUBootMachine[TestBoard]):
         uboot = TestBoardUBoot
@@ -173,6 +195,7 @@ def selftest_board_linux_nopw(
 def selftest_board_linux_standalone(
     lab: typing.Optional[tbot.selectable.LabHost] = None
 ) -> None:
+    """Test linux booting standalone."""
 
     class TestBoardLinuxStandalone(board.LinuxStandaloneMachine[TestBoard]):
         username = "root"

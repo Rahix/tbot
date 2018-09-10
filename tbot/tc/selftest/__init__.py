@@ -31,6 +31,7 @@ def selftest(lab: typing.Optional[linux.LabHost] = None,) -> None:
             selftest_path_integrity,  # noqa: F405
             selftest_board_power,  # noqa: F405
             selftest_board_uboot,  # noqa: F405
+            selftest_board_linux,  # noqa: F405
             selftest_board_linux_uboot,  # noqa: F405
             selftest_board_linux_standalone,  # noqa: F405
             selftest_board_linux_nopw,  # noqa: F405
