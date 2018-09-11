@@ -8,6 +8,8 @@ H = typing.TypeVar("H", bound=linux.LinuxMachine)
 
 
 class ResetMode(enum.Enum):
+    """Mode for ``git --reset``."""
+
     SOFT = "--soft"
     MIXED = "--mixed"
     HARD = "--hard"
@@ -16,6 +18,8 @@ class ResetMode(enum.Enum):
 
 
 class GitRepository(linux.Path[H]):
+    """Git repository."""
+
     def __new__(
         cls,
         target: linux.Path[H],
@@ -63,22 +67,62 @@ class GitRepository(linux.Path[H]):
     def git(
         self, *args: typing.Union[str, linux.Path[H], linux.special.Special]
     ) -> typing.Tuple[int, str]:
+        """
+        Run a git subcommand.
+
+        Behaves like calling ``git -C <path/to/repo> <*args>``.
+
+        :param args: Command line parameters. First one should be a git subcommand.
+        :rtype: tuple[int, str]
+        :returns: Retcode and command output
+        """
         return self.host.exec("git", "-C", self, *args)
 
     def git0(
         self, *args: typing.Union[str, linux.Path[H], linux.special.Special]
     ) -> str:
+        """
+        Run a git subcommand and ensure its retcode is zero.
+
+        Behaves like calling ``git -C <path/to/repo> <*args>``.
+
+        :param args: Command line parameters. First one should be a git subcommand.
+        :rtype: str
+        :returns: Command output
+        :raises CommandFailedException: If the command exited with a non-zero return code
+        """
         return self.host.exec0("git", "-C", self, *args)
 
     def checkout(self, rev: str) -> None:
+        """
+        Checkout a revision or branch.
+
+        :param str rev: Revision or branch name to be checked out.
+        """
         self.git0("checkout", rev)
 
     def reset(self, rev: str, mode: ResetMode = ResetMode.MIXED) -> None:
+        """
+        Call ``git --reset``.
+
+        :param str rev: Revision to reset to
+        :param ResetMode mode: Reset mode to be used. Refer to the ``git-reset``
+            man-page for more info.
+        """
         self.git0("reset", mode.value, rev)
 
     def clean(
         self, force: bool = True, untracked: bool = False, noignore: bool = False
     ) -> None:
+        """
+        Call ``git clean``.
+
+        :param bool force: ``-f``
+        :param bool untracked: ``-d``
+        :param bool noignore: ``-x``
+
+        Refer to the ``git-clean`` man-page for more info.
+        """
         options = "-"
 
         if force:
@@ -91,10 +135,18 @@ class GitRepository(linux.Path[H]):
         self.git0("clean", options if options != "-" else "")
 
     def add(self, f: linux.Path[H]) -> None:
+        """Add a file to the index."""
         self.git0("add", f)
 
     @tbot.testcase
     def commit(self, msg: str, author: typing.Optional[str] = None) -> None:
+        """
+        Commit changes.
+
+        :param str msg: Commit message
+        :param str author: Optional commit author in the ``Author Name <email@address>``
+            format.
+        """
         additional: typing.List[str] = []
         if author is not None:
             additional += ["--author", author]
@@ -103,6 +155,14 @@ class GitRepository(linux.Path[H]):
 
     @tbot.testcase
     def am(self, patch: linux.Path[H]) -> int:
+        """
+        Apply one or multiple patches.
+
+        :param linux.Path patch: Either a path to a `.patch` file or to a
+            directory containing patch files.
+        :rtype: int
+        :returns: Number of patches applied
+        """
         # Check if we got a single patch or a patchdir
         if self.host.exec("test", "-d", patch)[0] == 0:
             files = [
@@ -125,4 +185,4 @@ class GitRepository(linux.Path[H]):
                 self.git0("am", "--abort")
                 raise
 
-        return 0
+        return 1
