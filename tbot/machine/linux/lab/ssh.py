@@ -84,7 +84,11 @@ class SSHLabHost(LabHost):
             key_file = str(authenticator.key)
 
         self.client.connect(
-            self.hostname, port=self.port, password=password, key_filename=key_file
+            self.hostname,
+            username=self.username,
+            port=self.port,
+            password=password,
+            key_filename=key_file,
         )
 
         self.channel = channel.ParamikoChannel(
