@@ -22,6 +22,8 @@ def git_prepare(lab: linux.LabHost) -> str:
 
         lab.exec0("mkdir", "-p", p)
         lab.exec0("git", "-C", p, "init")
+        repo = git.GitRepository.from_path(p)
+
         lab.exec0(
             "echo",
             """\
@@ -30,19 +32,11 @@ This repo exists to test TBot's git testcase.
 
 You can safely remove it, but please **do not** modify it as that might
 break the tests.""",
-            stdout=p / "README.md",
+            stdout=repo / "README.md",
         )
-        lab.exec0("git", "-C", p, "add", "README.md")
-        lab.exec0(
-            "git",
-            "-C",
-            p,
-            "commit",
-            "--author",
-            "TBot Selftest <none@none>",
-            "-m",
-            "Initial",
-        )
+
+        repo.add(repo / "README.md")
+        repo.commit("Initial", author="TBot Selftest <none@none>")
 
         tbot.log.message("Creating test patch ...")
         lab.exec0(
@@ -50,25 +44,16 @@ break the tests.""",
             """\
 # File 2
 A second file that will have been added by patching.""",
-            stdout=p / "file2.md",
+            stdout=repo / "file2.md",
         )
 
-        lab.exec0("git", "-C", p, "add", "file2.md")
-        lab.exec0(
-            "git",
-            "-C",
-            p,
-            "commit",
-            "--author",
-            "TBot Selftest <none@none>",
-            "-m",
-            "Add file2",
-        )
-        patch_name = lab.exec0("git", "-C", p, "format-patch", "HEAD~1").strip()
-        lab.exec0("mv", p / patch_name, lab.workdir / "selftest-git.patch")
+        repo.add(repo / "file2.md")
+        repo.commit("Add file2", author="TBot Selftest <none@none>")
+        patch_name = repo.git0("format-patch", "HEAD~1").strip()
+        lab.exec0("mv", repo / patch_name, lab.workdir / "selftest-git.patch")
 
         tbot.log.message("Resetting repo ...")
-        lab.exec0("git", "-C", p, "reset", "--hard", "HEAD~1")
+        repo.reset("HEAD~1", git.ResetMode.HARD)
 
         _GIT = p._local_str()
         return _GIT
@@ -86,7 +71,7 @@ def selftest_tc_git_checkout(lab: typing.Optional[linux.LabHost] = None,) -> Non
             lh.exec0("rm", "-rf", target)
 
         tbot.log.message("Cloning repo ...")
-        repo = git.checkout(remote, target)
+        repo = git.GitRepository.clone(remote, target)
 
         assert (repo / "README.md").is_file()
         assert not (repo / "file2.md").is_file()
@@ -102,17 +87,8 @@ def selftest_tc_git_checkout(lab: typing.Optional[linux.LabHost] = None,) -> Non
 
         tbot.log.message("Add dirty commit ...")
         lh.exec0("echo", "Test 123", stdout=repo / "file.txt")
-        lh.exec0("git", "-C", repo, "add", "file.txt")
-        lh.exec0(
-            "git",
-            "-C",
-            repo,
-            "commit",
-            "--author",
-            "TBot Selftest <none@none>",
-            "-m",
-            "Add file.txt",
-        )
+        repo.add(repo / "file.txt")
+        repo.commit("Add file.txt", author="TBot Selftest <none@none>")
 
         git.checkout(remote, target, clean=False)
         assert (repo / "file.txt").is_file()
@@ -139,7 +115,7 @@ def selftest_tc_git_am(lab: typing.Optional[linux.LabHost] = None,) -> None:
         assert not (repo / "file2.md").is_file()
 
         tbot.log.message("Apply patch ...")
-        git.am(repo, lh.workdir / "selftest-git.patch")
+        repo.am(lh.workdir / "selftest-git.patch")
 
         assert (repo / "file2.md").is_file()
 
@@ -154,27 +130,18 @@ This section was added by a second patch""",
             stdout=repo / "file2.md",
         )
 
-        lh.exec0("git", "-C", repo, "add", "file2.md")
-        lh.exec0(
-            "git",
-            "-C",
-            repo,
-            "commit",
-            "--author",
-            "TBot Selftest <none@none>",
-            "-m",
-            "Update file2",
-        )
+        repo.add(repo / "file2.md")
+        repo.commit("Update file2", author="TBot Selftest <none@none>")
 
         patch_dir = lh.workdir / "selftest-git-patches"
         lh.exec0("mkdir", "-p", patch_dir)
         lh.exec0("git", "-C", repo, "format-patch", "-o", patch_dir, "HEAD~2")
-        lh.exec0("git", "-C", repo, "reset", "--hard", "HEAD~2")
+        repo.reset("HEAD~2", git.ResetMode.HARD)
 
         assert not (repo / "file2.md").is_file()
 
         tbot.log.message("Apply multiple patches ...")
-        git.am(repo, patch_dir)
+        repo.am(patch_dir)
 
         assert lh.exec("grep", "2.2", repo / "file2.md")[0] == 0
 
