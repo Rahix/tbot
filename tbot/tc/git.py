@@ -16,21 +16,49 @@ class ResetMode(enum.Enum):
 
 
 class GitRepository(linux.Path[H]):
-    @classmethod
-    def from_path(cls, p: linux.Path[H]) -> "GitRepository[H]":
-        if not (p / ".git").exists():
-            raise RuntimeError(f"{p} is not a git repository")
-        return cls(p.host, p)
-
-    @classmethod
-    def clone(
+    def __new__(
         cls,
-        url: str,
         target: linux.Path[H],
+        url: typing.Optional[str] = None,
+        *,
         clean: bool = True,
         rev: typing.Optional[str] = None,
     ) -> "GitRepository[H]":
-        return checkout(url, target, clean, rev)
+        # Casting madness required because parent defines __new__
+        return typing.cast(
+            "GitRepository",
+            super().__new__(
+                typing.cast(typing.Type[linux.Path[H]], cls), target.host, target
+            ),
+        )
+
+    def __init__(
+        self,
+        target: linux.Path[H],
+        url: typing.Optional[str] = None,
+        *,
+        clean: bool = True,
+        rev: typing.Optional[str] = None,
+    ) -> None:
+        super().__init__(target.host, target)
+        if url is not None:
+            # Clone and optionally clean repo
+            already_cloned = self.host.exec("test", "-d", self / ".git")[0] == 0
+            if not already_cloned:
+                self.host.exec0("mkdir", "-p", self)
+                self.host.exec0("git", "clone", url, self)
+
+            if clean and already_cloned:
+                self.reset("origin", ResetMode.HARD)
+                self.clean(untracked=True, noignore=True)
+
+            if clean or not already_cloned:
+                if rev:
+                    self.checkout(rev)
+        else:
+            # Assume a repo is supposed to already exist
+            if not (self / ".git").exists():
+                raise RuntimeError(f"{target} is not a git repository")
 
     def git(
         self, *args: typing.Union[str, linux.Path[H], linux.special.Special]
@@ -98,30 +126,3 @@ class GitRepository(linux.Path[H]):
                 raise
 
         return 0
-
-
-@tbot.testcase
-def checkout(
-    url: str,
-    target: linux.Path[H],
-    clean: bool = True,
-    rev: typing.Optional[str] = None,
-) -> GitRepository[H]:
-    h = target.host
-
-    already_cloned = h.exec("test", "-d", target / ".git")[0] == 0
-    if not already_cloned:
-        h.exec0("mkdir", "-p", target)
-        h.exec0("git", "clone", url, target)
-
-    repo = GitRepository(h, target)
-
-    if clean or not already_cloned:
-        if rev:
-            repo.checkout(rev)
-
-    if clean and already_cloned:
-        repo.reset("origin", ResetMode.HARD)
-        repo.clean(untracked=True, noignore=True)
-
-    return repo

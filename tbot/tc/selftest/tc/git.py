@@ -22,7 +22,7 @@ def git_prepare(lab: linux.LabHost) -> str:
 
         lab.exec0("mkdir", "-p", p)
         lab.exec0("git", "-C", p, "init")
-        repo = git.GitRepository.from_path(p)
+        repo = git.GitRepository(p)
 
         lab.exec0(
             "echo",
@@ -71,7 +71,7 @@ def selftest_tc_git_checkout(lab: typing.Optional[linux.LabHost] = None,) -> Non
             lh.exec0("rm", "-rf", target)
 
         tbot.log.message("Cloning repo ...")
-        repo = git.GitRepository.clone(remote, target)
+        repo = git.GitRepository(target, remote)
 
         assert (repo / "README.md").is_file()
         assert not (repo / "file2.md").is_file()
@@ -79,10 +79,10 @@ def selftest_tc_git_checkout(lab: typing.Optional[linux.LabHost] = None,) -> Non
         tbot.log.message("Make repo dirty ...")
         lh.exec0("echo", "Test 123", stdout=repo / "file.txt")
 
-        git.checkout(remote, target, clean=False)
+        repo = git.GitRepository(target, remote, clean=False)
         assert (repo / "file.txt").is_file()
 
-        git.checkout(remote, target, clean=True)
+        repo = git.GitRepository(target, remote, clean=True)
         assert not (repo / "file.txt").is_file()
 
         tbot.log.message("Add dirty commit ...")
@@ -90,10 +90,10 @@ def selftest_tc_git_checkout(lab: typing.Optional[linux.LabHost] = None,) -> Non
         repo.add(repo / "file.txt")
         repo.commit("Add file.txt", author="TBot Selftest <none@none>")
 
-        git.checkout(remote, target, clean=False)
+        repo = git.GitRepository(target, remote, clean=False)
         assert (repo / "file.txt").is_file()
 
-        git.checkout(remote, target, clean=True)
+        repo = git.GitRepository(target, remote, clean=True)
         assert not (repo / "file.txt").is_file()
 
         lh.exec0("rm", "-rf", target)
@@ -109,7 +109,7 @@ def selftest_tc_git_am(lab: typing.Optional[linux.LabHost] = None,) -> None:
             lh.exec0("rm", "-rf", target)
 
         tbot.log.message("Cloning repo ...")
-        repo = git.checkout(remote, target)
+        repo = git.GitRepository(target, remote)
 
         assert (repo / "README.md").is_file()
         assert not (repo / "file2.md").is_file()
