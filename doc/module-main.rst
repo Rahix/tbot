@@ -35,7 +35,7 @@ Helpers
 
 .. py:class:: tbot.log.c(s: str) -> tbot.log.c
 
-    Color a string. Reexport from :mod:`termcolor2`
+    Color a string.  Reexport from :mod:`termcolor2`
 
     **Example**::
 

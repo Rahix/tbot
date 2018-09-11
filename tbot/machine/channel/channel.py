@@ -10,6 +10,7 @@ import time
 import tty
 import typing
 
+import tbot
 from tbot.machine.linux import shell
 
 TBOT_PROMPT = "TBOT-VEJPVC1QUk9NUFQK$ "
@@ -257,12 +258,7 @@ class Channel(abc.ABC):
 
         timeout_remaining = timeout
         while True:
-            new = (
-                self.recv(timeout=timeout_remaining)
-                .replace(b"\r\n", b"\n")
-                .replace(b"\r\n", b"\n")
-                .replace(b"\r", b"\n")
-            )
+            new = self.recv(timeout=timeout_remaining)
 
             decoded = ""
             for _ in range(10):
@@ -276,6 +272,16 @@ class Channel(abc.ABC):
                         pass
             else:
                 decoded += new.decode("latin_1")
+
+            decoded = (
+                decoded.replace("\r\n", "\n").replace("\r\n", "\n").replace("\r", "\n")
+            )
+
+            if tbot.log.VERBOSITY >= tbot.log.Verbosity.CHANNEL:
+                tbot.log.EventIO(
+                    tbot.log.c(repr(decoded)).yellow,
+                    verbosity=tbot.log.Verbosity.CHANNEL,
+                )
 
             buf += decoded
 

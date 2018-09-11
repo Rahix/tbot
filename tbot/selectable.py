@@ -40,6 +40,7 @@ def acquire_lab() -> LabHost:
             lab: typing.Optional[linux.LabHost] = None,
         ) -> None:
             with lab or tbot.acquire_lab() as lh:
+                # Your code goes here
                 ...
 
     :rtype: tbot.machine.linux.LabHost
@@ -92,6 +93,26 @@ def acquire_uboot(board: Board) -> UBootMachine:
     """
     Acquire the board's U-Boot shell.
 
+    As there can only be one instance of :class:`UBootMachine` at a time,
+    your testcases should optionally take the :class:`UBootMachine` as a
+    parameter. The recipe looks like this::
+
+        import typing
+        import tbot
+        from tbot.machine import board
+
+
+        @tbot.testcase
+        def my_testcase(
+            lab: typing.Optional[tbot.selectable.LabHost] = None,
+            ub: typing.Optional[board.UBootMachine] = None,
+        ) -> None:
+            with lab or tbot.acquire_lab() as lh:
+                with tbot.acquire_board(lh) if ub is None else ub.board as b:
+                    with ub or tbot.acquire_uboot(b) as ub:
+                        # Your code goes here
+                        ...
+
     :rtype: tbot.machine.board.UBootMachine
     """
     if hasattr(UBootMachine, "_unselected"):
@@ -116,6 +137,25 @@ def acquire_linux(b: typing.Union[Board, UBootMachine]) -> LinuxMachine:
 
     Can either boot from a previously created U-Boot (if the implementation
     supports this) or directly.
+
+    To write testcases that work both from the commandline and when called from other
+    testcases, use the following recipe::
+
+        import typing
+        import tbot
+        from tbot.machine import board
+
+
+        @tbot.testcase
+        def my_testcase(
+            lab: typing.Optional[tbot.selectable.LabHost] = None,
+            lnx: typing.Optional[board.LinuxMachine] = None,
+        ) -> None:
+            with lab or tbot.acquire_lab() as lh:
+                with tbot.acquire_board(lh) if lnx is None else lnx.board as b:
+                    with lnx or tbot.acquire_linux(b) as lnx:
+                        # Your code goes here
+                        ...
 
     :rtype: tbot.machine.board.LinuxMachine
     """

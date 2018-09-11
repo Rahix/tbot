@@ -1,5 +1,6 @@
 import typing
 import time
+import re
 import tbot
 from tbot.machine import channel
 from tbot.machine import linux
@@ -35,9 +36,9 @@ def selftest_machine_shell(
     cap = []
     if isinstance(m, linux.LinuxMachine):
         if m.shell == linux.shell.Bash:
-            cap.extend(["printf"])
+            cap.extend(["printf", "jobs", "control"])
         if m.shell == linux.shell.Ash:
-            cap.extend(["printf"])
+            cap.extend(["printf", "control"])
 
     tbot.log.message("Testing command output ...")
     out = m.exec0("echo", "Hello World")
@@ -82,6 +83,31 @@ def selftest_machine_shell(
 
         out = m.exec0("cat", f)
         assert out == "Some data\nAnd some more\n", repr(out)
+
+        if "jobs" in cap:
+            t1 = time.monotonic()
+            out = m.exec0(
+                "sleep", "10", linux.Background, "echo", "Hello World"
+            ).strip()
+            t2 = time.monotonic()
+
+            assert re.match(r"\[\d+\] \d+\nHello World", out), repr(out)
+            assert (
+                t2 - t1
+            ) < 9.0, (
+                f"Command took {t2 - t1}s (max 9s). Sleep was not sent to background"
+            )
+
+        if "control" in cap:
+            out = m.exec0(
+                "false", linux.AndThen, "echo", "FOO", linux.OrElse, "echo", "BAR"
+            ).strip()
+            assert out == "BAR", repr(out)
+
+            out = m.exec0(
+                "true", linux.AndThen, "echo", "FOO", linux.OrElse, "echo", "BAR"
+            ).strip()
+            assert out == "FOO", repr(out)
 
     if isinstance(m, board.UBootMachine):
         tbot.log.message("Testing env vars ...")

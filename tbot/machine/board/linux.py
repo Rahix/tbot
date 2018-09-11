@@ -147,7 +147,10 @@ class LinuxWithUBootMachine(LinuxMachine[B]):
 
         self.channel = ub.channel
 
-        tbot.log.EventIO(tbot.log.c("LINUX BOOT").bold + f" ({self.name})")
+        tbot.log.EventIO(
+            tbot.log.c("LINUX BOOT").bold + f" ({self.name})",
+            verbosity=tbot.log.Verbosity.QUIET,
+        )
         for cmd in self.boot_commands[:-1]:
             ub.exec0(*cmd)
 
@@ -156,7 +159,7 @@ class LinuxWithUBootMachine(LinuxMachine[B]):
         with tbot.log.command(ub.name, last_command) as ev:
             ev.prefix = "   <> "
             self.channel.send(last_command + "\n")
-            self.boot_to_shell(channel.channel.SkipStream(ev, len(last_command) + 1))
+            self.boot_to_shell(channel.SkipStream(ev, len(last_command) + 1))
 
     def destroy(self) -> None:  # noqa: D102
         if self.ub is not None:
@@ -219,8 +222,12 @@ class LinuxStandaloneMachine(LinuxMachine[B]):
         else:
             raise RuntimeError("{board!r} does not support a serial connection!")
 
-        with tbot.log.EventIO(tbot.log.c("LINUX BOOT").bold + f" ({self.name})") as ev:
+        with tbot.log.EventIO(
+            tbot.log.c("LINUX BOOT").bold + f" ({self.name})",
+            verbosity=tbot.log.Verbosity.QUIET,
+        ) as ev:
             ev.prefix = "   <> "
+            ev.verbosity = tbot.log.Verbosity.STDOUT
             self.boot_to_shell(ev)
 
     def destroy(self) -> None:  # noqa: D102

@@ -16,7 +16,7 @@ def selftest_path_integrity(lab: typing.Optional[linux.LabHost] = None,) -> None
             raised = False
             try:
                 # mypy detects that this is wrong
-                lh2.exec0("echo", p)
+                lh2.exec0("echo", p)  # type: ignore
             except machine.WrongHostException:
                 raised = True
             assert raised

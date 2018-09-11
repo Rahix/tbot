@@ -16,7 +16,12 @@ class Env(Special):
     __slots__ = ("name",)
 
     def __init__(self, name: str) -> None:
-        """Create a new environment variable accessor.
+        """
+        Create a new environment variable accessor.
+
+        **Example**::
+
+            m.exec0(linux.Env("CC"), "-c", m.workdir / "main.c")
 
         :param str name: Name of the env var.
         """
@@ -33,7 +38,15 @@ class Raw(Special):
     __slots__ = ("text",)
 
     def __init__(self, text: str) -> None:
-        """Create a new unescaped string."""
+        """
+        Create a new unescaped string.
+
+        **Example**::
+
+            m.exec0(linux.Raw('FOOBAR="${USER}@$(hostname):${PWD}"'))
+
+        :param str text: The raw string
+        """
         self.text = text
 
     def resolve_string(self) -> str:
@@ -52,4 +65,8 @@ class _Static(Special):
         return self.string
 
 
+AndThen = _Static("&&")
+Background = _Static("&")
+OrElse = _Static("||")
 Pipe = _Static("|")
+Then = _Static(";")
