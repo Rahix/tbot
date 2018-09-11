@@ -4,7 +4,7 @@ setup(
     name="tbot",
     version="0.6.0-pre01",
     packages=find_packages(include=("tbot", "tbot.*")),
-    install_requires=["paramiko", "enforce", "termcolor2"],
+    install_requires=["paramiko", "termcolor2"],
     entry_points={
         "console_scripts": ["tbot = tbot.main:main", "tbot-mgr = tbot.mgr:main"]
     },
