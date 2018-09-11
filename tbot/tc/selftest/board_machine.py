@@ -20,12 +20,12 @@ class TestBoard(board.Board):
         return self.lh.new_channel(
             linux.Raw(
                 """\
-sh; exit
+bash --norc; exit
 unset HISTFILE
 PS1='Test-U-Boot> '
 alias version="uname -a"
 alias printenv="set | grep -E '^U'"
-sh
+bash --norc
 unset HISTFILE
 set +o emacs
 set +o vi
