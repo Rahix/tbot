@@ -44,3 +44,6 @@ class _Static(Special):
 
     def resolve_string(self) -> str:
         return self.string
+
+
+Then = _Static(";")

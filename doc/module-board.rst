@@ -24,6 +24,14 @@ Special Characters
 .. autoclass:: tbot.machine.board.Raw
     :members:
 
+.. py:data:: tbot.machine.board.Then
+
+    Special character for the ``;`` separator to run multiple commands
+
+    **Example**::
+
+        m.exec0("if", "true", board.Then, "then", "echo", "Hallo", board.Then, "fi")
+
 .. automodule:: tbot.machine.board.special
 
 Linux
