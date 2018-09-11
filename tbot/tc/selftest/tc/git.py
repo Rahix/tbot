@@ -85,6 +85,7 @@ def selftest_tc_git_checkout(lab: typing.Optional[linux.LabHost] = None,) -> Non
         if target.exists():
             lh.exec0("rm", "-rf", target)
 
+        tbot.log.message("Cloning repo ...")
         repo = git.checkout(remote, target)
 
         assert (repo / "README.md").is_file()
@@ -131,11 +132,13 @@ def selftest_tc_git_am(lab: typing.Optional[linux.LabHost] = None,) -> None:
         if target.exists():
             lh.exec0("rm", "-rf", target)
 
+        tbot.log.message("Cloning repo ...")
         repo = git.checkout(remote, target)
 
         assert (repo / "README.md").is_file()
         assert not (repo / "file2.md").is_file()
 
+        tbot.log.message("Apply patch ...")
         git.am(repo, lh.workdir / "selftest-git.patch")
 
         assert (repo / "file2.md").is_file()
@@ -170,6 +173,7 @@ This section was added by a second patch""",
 
         assert not (repo / "file2.md").is_file()
 
+        tbot.log.message("Apply multiple patches ...")
         git.am(repo, patch_dir)
 
         assert lh.exec("grep", "2.2", repo / "file2.md")[0] == 0
