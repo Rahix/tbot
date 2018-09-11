@@ -32,9 +32,6 @@ class GitRepository(linux.Path[H]):
     ) -> "GitRepository[H]":
         return checkout(url, target, clean, rev)
 
-    def am(self, patch: linux.Path[H]) -> int:
-        return am(self, patch)
-
     def git(
         self, *args: typing.Union[str, linux.Path[H], linux.special.Special]
     ) -> typing.Tuple[int, str]:
@@ -68,12 +65,39 @@ class GitRepository(linux.Path[H]):
     def add(self, f: linux.Path[H]) -> None:
         self.git0("add", f)
 
+    @tbot.testcase
     def commit(self, msg: str, author: typing.Optional[str] = None) -> None:
         additional: typing.List[str] = []
         if author is not None:
             additional += ["--author", author]
 
         self.git0("commit", *additional, "-m", msg)
+
+    @tbot.testcase
+    def am(self, patch: linux.Path[H]) -> int:
+        # Check if we got a single patch or a patchdir
+        if self.host.exec("test", "-d", patch)[0] == 0:
+            files = [
+                linux.Path(self.host, p)
+                for p in self.host.exec0("find", patch, "-name", "*.patch")
+                .strip("\n")
+                .split("\n")
+            ]
+
+            files.sort()
+
+            for f in files:
+                self.am(f)
+
+            return len(files)
+        else:
+            try:
+                self.git0("am", "-3", patch)
+            except:  # noqa: E722
+                self.git0("am", "--abort")
+                raise
+
+        return 0
 
 
 @tbot.testcase
@@ -101,30 +125,3 @@ def checkout(
         repo.clean(untracked=True, noignore=True)
 
     return repo
-
-
-@tbot.testcase
-def am(git: GitRepository[H], patch: linux.Path[H]) -> int:
-    h = git.host
-
-    # Check if we got a single patch or a patchdir
-    if h.exec("test", "-d", patch)[0] == 0:
-        files = [
-            linux.Path(h, p)
-            for p in h.exec0("find", patch, "-name", "*.patch").strip("\n").split("\n")
-        ]
-
-        files.sort()
-
-        for f in files:
-            am(git, f)
-
-        return len(files)
-    else:
-        try:
-            h.exec0("git", "-C", git, "am", "-3", patch)
-        except:  # noqa: E722
-            h.exec0("git", "-C", git, "am", "--abort")
-            raise
-
-    return 0
