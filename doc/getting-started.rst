@@ -54,14 +54,14 @@ To understand this line, we first need to get to know one of the core concepts o
 **Machines** (:class:`~tbot.machine.Machine`).  Every host TBot interacts with is called a machine.
 That includes the labhost, which we use here, a buildhost where your code might be compiled,
 the board you are testing, or any other host you want TBot to connect to.  There are different kinds
-of machine.  Our labhost is special, because it is the base from where connections to other host
-are made.  This allows TBot to only need one connection to one host for doing its task.
+of machines.  Our labhost is special, because it is the base from where connections to other host
+are made.
 
 Machines should always be used inside a ``with`` statement to ensure proper cleanup in any
 case.  This is especially important with boardmachines, because if this is not done, the board
 might not be turned off after the tests.
 
-So, the line you see here requests a new labhost object from TBot so we can interact with it.
+The line you see here requests a new labhost object from TBot so we can interact with it.
 As you will see later, this is not quite the way you would do this normally, but for this simple
 example it is good enough.
 
@@ -191,7 +191,7 @@ python's :mod:`pathlib` so you can use all the usual methods / operators::
     file_in_p = p / "dirname" / "file.txt"
     if not p.exists():
         ...
-    if no p.is_dir():
+    if not p.is_dir():
         raise RuntimeError(f"{p} must be a directory!")
 
 TBot's paths have a very nice property: They are bound to the host they were created with.  This means
@@ -226,8 +226,25 @@ is that this time, we need to first initialize the board::
         with tbot.acquire_linux(b) as lnx:
             lnx.exec0("uname", "-a")
 
-.. TODO::
-    Testcase pattern for board interaction
+.. note::
+    A pattern similar to the one above can be used to write testcases that can either be used from
+    the commandline or supplied with a board-machine::
+
+        import typing
+        import tbot
+        from tbot.machine import board
+
+
+        @tbot.testcase
+        def my_testcase(
+            lab: typing.Optional[tbot.selectable.LabHost] = None,
+            ub: typing.Optional[board.UBootMachine] = None,
+        ) -> None:
+            with lab or tbot.acquire_lab() as lh:
+                with tbot.acquire_board(lh) if ub is None else ub.board as b:
+                    with ub or tbot.acquire_uboot(b) as ub:
+                        # Your code goes here
+                        ...
 
 Interactive
 ^^^^^^^^^^^
