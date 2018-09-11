@@ -7,21 +7,34 @@ from tbot.machine.linux import auth
 
 
 class SSHMachine(linux.LinuxMachine):
+    """Generic machine that can be reached via SSH from the LabHost."""
 
     @property
     @abc.abstractmethod
     def hostname(self) -> str:
-        """Return the hostname of this machine."""
+        """
+        Return the hostname of this machine.
+
+        :rtype: str
+        """
         pass
 
     @property
     def authenticator(self) -> auth.Authenticator:
-        """Return an authenticator that allows logging in on this machine."""
+        """
+        Return an authenticator that allows logging in on this machine.
+
+        :rtype: tbot.machine.linux.auth.Authenticator
+        """
         return auth.PrivateKeyAuthenticator(pathlib.Path.home() / ".ssh" / "id_rsa")
 
     @property
     def port(self) -> int:
-        """Return the port the SSH server is listening on."""
+        """
+        Return the port the SSH server is listening on.
+
+        :rtype: int
+        """
         return 22
 
     def __repr__(self) -> str:
@@ -29,7 +42,7 @@ class SSHMachine(linux.LinuxMachine):
             f"<{self.__class__.__name__} {self.username}@{self.hostname}:{self.port} (Lab: {self.labhost!r}>"
         )
 
-    def connect(self) -> channel.Channel:
+    def _connect(self) -> channel.Channel:
         chan = self.labhost.new_channel()
 
         authenticator = self.authenticator
@@ -51,13 +64,19 @@ class SSHMachine(linux.LinuxMachine):
         return chan
 
     def __init__(self, labhost: linux.LabHost) -> None:
+        """
+        Connect to this SSH machine.
+
+        :param tbot.machine.linux.LabHost labhost: LabHost from where to attempt connecting
+        """
         super().__init__()
         self.labhost = labhost
 
-        self.channel = self.connect()
+        self.channel = self._connect()
 
     def _obtain_channel(self) -> channel.Channel:
         return self.channel
 
     def destroy(self) -> None:
+        """Destory this SSHMachine instance."""
         self.channel.close()

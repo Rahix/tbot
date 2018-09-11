@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="tbot",
-    version="0.6.0-pre00",
+    version="0.6.0-pre01",
     packages=find_packages(include=("tbot", "tbot.*")),
     install_requires=["paramiko", "enforce", "termcolor2"],
     entry_points={

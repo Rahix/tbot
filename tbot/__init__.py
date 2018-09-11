@@ -18,7 +18,15 @@ F = typing.TypeVar("F", bound=typing.Callable[..., typing.Any])
 
 
 def testcase(tc: F) -> F:
-    """Decorate a function to make it a testcase."""
+    """
+    Decorate a function to make it a testcase.
+
+    **Example**::
+
+        @tbot.testcase
+        def foobar_testcase(x: str) -> int:
+            return int(x, 16)
+    """
 
     @functools.wraps(tc)
     def wrapped(*args: typing.Any, **kwargs: typing.Any) -> typing.Any:
