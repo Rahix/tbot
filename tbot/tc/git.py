@@ -3,7 +3,6 @@ import tbot
 import enum
 from tbot.machine import linux
 
-
 H = typing.TypeVar("H", bound=linux.LinuxMachine)
 
 
@@ -20,7 +19,7 @@ class ResetMode(enum.Enum):
 class GitRepository(linux.Path[H]):
     """Git repository."""
 
-    def __new__(
+    def __new__(  # noqa: D102
         cls,
         target: linux.Path[H],
         url: typing.Optional[str] = None,
@@ -44,6 +43,28 @@ class GitRepository(linux.Path[H]):
         clean: bool = True,
         rev: typing.Optional[str] = None,
     ) -> None:
+        """
+        Initialize a git repository from either a remote or an existing repo.
+
+        There are two modes in which a repo can be initialized:
+
+        1. Only supplying ``target``: TBot assumes, that a repo exists at ``target``
+           already and will fail if this is not the case.
+        2. Also supplying ``url``: If ``target`` is not already a git repo, one will
+           be created by cloning ``url``.
+
+        If ``clean`` is ``True``, the repo will be hard reset and all untracked
+        files/ changes will be removed. If ``rev`` is also given, it will be
+        checked out.
+
+        :param linux.Path target: Where the repository is supposed to be.
+        :param str url: Optional remote url. Whether this is set specifies the
+            mode the repo is initialized in.
+        :param bool clean: Whether to clean the working tree. Defaults to ``True``.
+        :param str rev: Optional revision to checkout. Only has an effect if clean
+            is also set. If you don't want to clean, but still perform a checkout,
+            call :meth:`~tbot.tc.git.GitRepository.checkout`.
+        """
         super().__init__(target.host, target)
         if url is not None:
             # Clone and optionally clean repo
@@ -63,6 +84,12 @@ class GitRepository(linux.Path[H]):
             # Assume a repo is supposed to already exist
             if not (self / ".git").exists():
                 raise RuntimeError(f"{target} is not a git repository")
+            if clean:
+                self.reset("", ResetMode.HARD)
+                self.clean(untracked=True, noignore=True)
+
+                if rev:
+                    self.checkout(rev)
 
     def git(
         self, *args: typing.Union[str, linux.Path[H], linux.special.Special]
