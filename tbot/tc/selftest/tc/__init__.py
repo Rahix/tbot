@@ -4,6 +4,7 @@ from tbot import tc
 from tbot.machine import linux
 
 from .git import *  # noqa: F403
+from .shell import *  # noqa: F403
 
 
 @tbot.testcase
@@ -13,5 +14,6 @@ def selftest_tc(lab: typing.Optional[linux.LabHost] = None,) -> None:
         tc.testsuite(
             selftest_tc_git_checkout,  # noqa: F405
             selftest_tc_git_am,  # noqa: F405
+            selftest_tc_shell_copy,  # noqa: F405
             lab=lh,
         )
