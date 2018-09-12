@@ -9,6 +9,9 @@
 .. autoclass:: tbot.machine.linux.Path
     :members:
 
+.. autoclass:: tbot.machine.linux.Workdir
+    :members:
+
 Command Specials
 ^^^^^^^^^^^^^^^^
 .. autoclass:: tbot.machine.linux.Env
