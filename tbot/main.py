@@ -49,6 +49,10 @@ def main() -> None:  # noqa: C901
         "-v", dest="verbosity", action="count", default=0, help="Increase the verbosity"
     )
 
+    parser.add_argument(
+        "-q", dest="quiet", action="count", default=0, help="Decrease the verbosity"
+    )
+
     flags = [
         (["--list-testcases"], "List all testcases in the current search path."),
         (["--list-labs"], "List all available labs."),
@@ -64,7 +68,7 @@ def main() -> None:  # noqa: C901
 
     args = parser.parse_args()
 
-    log.VERBOSITY = log.Verbosity(args.verbosity + 1)
+    log.VERBOSITY = log.Verbosity(1 + args.verbosity - args.quiet)
 
     if args.list_labs:
         raise NotImplementedError()
@@ -154,7 +158,7 @@ def main() -> None:  # noqa: C901
     try:
         for tc in args.testcase:
             testcases[tc]()
-    except Exception as e:
+    except:  # noqa: E722
         with log.EventIO(
             log.c("Exception").red.bold + ":", verbosity=log.Verbosity.QUIET
         ) as ev:

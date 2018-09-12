@@ -85,8 +85,16 @@ want in this case.
 :func:`tbot.log.message` is basically TBot's equivalent of :func:`print`.  The most important difference is, that it does not
 only print it to the terminal, but also store it in the logfile.
 
-.. TODO::
-    Verbosity
+.. note::
+    TBot has different **Verbosity** levels:
+
+    * ``QUIET``: Only show testcases that are called
+    * ``INFO``: Show info messages, such as those created by :func:`tbot.log.message`
+    * ``COMMAND``: Show all commands that are called on the various machine
+    * ``STDOUT``: Also show commands outputs
+    * ``CHANNEL``: Show everything received on all channels, useful for debugging
+
+    The default is ``INFO``. You can increase the Verbosity using ``-v`` and decrease it using ``-q``.
 
 Writing Testcases
 -----------------
