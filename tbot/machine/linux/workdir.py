@@ -7,6 +7,11 @@ H = typing.TypeVar("H", bound=linux.LinuxMachine)
 class Workdir:
     """Helper for defining a machines workdir."""
 
+    def __init__(self) -> None:  # noqa: D107
+        raise NotImplementedError(
+            "You are probably using this wrong, please refer to the documentation."
+        )
+
     @classmethod
     def static(cls, host: H, path: str) -> linux.Path[H]:
         """
