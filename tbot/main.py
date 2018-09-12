@@ -102,8 +102,19 @@ def main() -> None:  # noqa: C901
             if i != 0:
                 print(log.c("\n=================================\n").dark)
             func = testcases[name]
-            signature = name + str(inspect.signature(func))
-            print(log.c(signature).bold.yellow)
+            signature = f"def {name}{str(inspect.signature(func))}:\n    ..."
+            try:
+                import pygments
+                from pygments.lexers import PythonLexer
+                from pygments.formatters import TerminalFormatter
+
+                print(
+                    pygments.highlight(
+                        signature, PythonLexer(), TerminalFormatter()
+                    ).strip()
+                )
+            except ImportError:
+                print(log.c(signature).bold.yellow)
             print(log.c(f"----------------").dark)
             print(
                 log.c(
