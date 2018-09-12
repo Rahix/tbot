@@ -25,6 +25,7 @@ much modification also allow running tests on it in an automated setting (CI).
    module-machine
    module-linux
    module-board
+   module-tc
 
 
 

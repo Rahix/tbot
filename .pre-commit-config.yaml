@@ -19,9 +19,9 @@ repos:
     - id: mypy
       name: mypy
       language: system
-      entry: mypy
+      entry: mypy --no-incremental
       files: ^.*\.py$
-      exclude: ^(setup\.py$|static_tests|doc)
+      exclude: ^(setup\.py$|static_tests|doc|fastentrypoints.py)
 -   repo: local
     hooks:
     - id: selftests

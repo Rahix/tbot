@@ -1,8 +1,9 @@
 from setuptools import setup, find_packages
+import fastentrypoints  # noqa: F401
 
 setup(
     name="tbot",
-    version="0.6.0-pre02",
+    version="0.6.0-pre03",
     packages=find_packages(include=("tbot", "tbot.*")),
     install_requires=["paramiko", "termcolor2"],
     entry_points={

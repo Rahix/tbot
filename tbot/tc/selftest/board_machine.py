@@ -134,6 +134,11 @@ class TestBoardLinuxUB(board.LinuxWithUBootMachine[TestBoard]):
     login_prompt = "tb-login: "
     login_wait = 0.02
 
+    @property
+    def workdir(self) -> "linux.Path[TestBoardLinuxUB]":
+        """Return workdir."""
+        return linux.Workdir.static(self, "/tmp/tbot-wd")
+
 
 @tbot.testcase
 def selftest_board_linux_uboot(
@@ -151,6 +156,7 @@ def selftest_board_linux_uboot(
             with TestBoardUBoot(b) as ub:
                 with TestBoardLinuxUB(ub) as lnx:
                     lnx.exec0("uname", "-a")
+                    lnx.exec0("ls", lnx.workdir)
 
 
 @tbot.testcase
@@ -166,6 +172,7 @@ def selftest_board_linux_nopw(
             ["echo", "[  0.000]", "boot: message"],
             ["echo", "[  0.013]", "boot: info"],
             ["echo", "[  0.157]", "boot: message"],
+            ["export", "HOME=/tmp"],
             [
                 board.Raw(
                     "printf 'tb-login: '; read username; [[ $username = 'root' ]] || exit 1"
@@ -178,6 +185,11 @@ def selftest_board_linux_nopw(
         login_prompt = "tb-login: "
         login_wait = 0.02
 
+        @property
+        def workdir(self) -> "linux.Path[TestBoardLinuxUB_NOPW]":
+            """Return workdir."""
+            return linux.Workdir.athome(self, "tbot-wd")
+
     with lab or tbot.acquire_lab() as lh:
         tbot.log.message("Testing without UB ...")
         with TestBoard(lh) as b:
@@ -189,6 +201,7 @@ def selftest_board_linux_nopw(
             with TestBoardUBoot(b) as ub:
                 with TestBoardLinuxUB_NOPW(ub) as lnx:
                     lnx.exec0("uname", "-a")
+                    lnx.exec0("ls", lnx.workdir)
 
 
 @tbot.testcase
