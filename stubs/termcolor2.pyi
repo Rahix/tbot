@@ -1,3 +1,4 @@
+# flake8: noqa
 import typing
 
 class _C:
