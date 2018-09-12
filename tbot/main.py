@@ -1,8 +1,4 @@
-import typing
-from tbot import log
-import pathlib
 import argparse
-import traceback
 
 
 def main() -> None:  # noqa: C901
@@ -12,11 +8,11 @@ def main() -> None:  # noqa: C901
         description="Test and development automation tool, tailored for embedded needs",
     )
 
-    parser.add_argument("testcase", nargs="*", help="Testcase that should be run.")
+    parser.add_argument("testcase", nargs="*", help="testcase that should be run.")
 
-    parser.add_argument("-b", "--board", help="Use this board instead of the default.")
+    parser.add_argument("-b", "--board", help="use this board instead of the default.")
 
-    parser.add_argument("-l", "--lab", help="Use this lab instead of the default.")
+    parser.add_argument("-l", "--lab", help="use this lab instead of the default.")
 
     parser.add_argument(
         "-T",
@@ -24,7 +20,7 @@ def main() -> None:  # noqa: C901
         dest="tcdirs",
         action="append",
         default=[],
-        help="Add a directory to the testcase search path.",
+        help="add a directory to the testcase search path.",
     )
 
     parser.add_argument(
@@ -33,7 +29,7 @@ def main() -> None:  # noqa: C901
         dest="tcfiles",
         action="append",
         default=[],
-        help="Add a file to the testcase search path.",
+        help="add a file to the testcase search path.",
     )
 
     parser.add_argument(
@@ -42,31 +38,33 @@ def main() -> None:  # noqa: C901
         dest="flags",
         action="append",
         default=[],
-        help="Set a user defined flag to change testcase behaviour",
+        help="set a user defined flag to change testcase behaviour",
     )
 
     parser.add_argument(
-        "-v", dest="verbosity", action="count", default=0, help="Increase the verbosity"
+        "-v", dest="verbosity", action="count", default=0, help="increase the verbosity"
     )
 
     parser.add_argument(
-        "-q", dest="quiet", action="count", default=0, help="Decrease the verbosity"
+        "-q", dest="quiet", action="count", default=0, help="decrease the verbosity"
     )
 
     flags = [
-        (["--list-testcases"], "List all testcases in the current search path."),
-        (["--list-labs"], "List all available labs."),
-        (["--list-boards"], "List all available boards."),
-        (["--list-files"], "List all testcase files."),
-        (["--list-flags"], "List all flags defined in lab or board config."),
-        (["-s", "--show"], "Show testcase signatures instead of running them."),
-        (["-i", "--interactive"], "Prompt before running each command."),
+        (["--list-testcases"], "list all testcases in the current search path."),
+        (["--list-labs"], "list all available labs."),
+        (["--list-boards"], "list all available boards."),
+        (["--list-files"], "list all testcase files."),
+        (["--list-flags"], "list all flags defined in lab or board config."),
+        (["-s", "--show"], "show testcase signatures instead of running them."),
+        (["-i", "--interactive"], "prompt before running each command."),
     ]
 
     for flag_names, flag_help in flags:
         parser.add_argument(*flag_names, action="store_true", help=flag_help)
 
     args = parser.parse_args()
+
+    from tbot import log
 
     log.VERBOSITY = log.Verbosity(1 + args.verbosity - args.quiet)
 
@@ -77,6 +75,7 @@ def main() -> None:  # noqa: C901
         raise NotImplementedError()
 
     from tbot import loader
+    import pathlib
 
     files = loader.get_file_list(
         (pathlib.Path(d).resolve() for d in args.tcdirs),
@@ -144,6 +143,8 @@ def main() -> None:  # noqa: C901
         pass
 
     if args.list_flags:
+        import typing
+
         all_flags: typing.Dict[str, str] = dict()
         if lab is not None and "FLAGS" in lab.__dict__:
             all_flags.update(lab.__dict__["FLAGS"])
@@ -162,6 +163,8 @@ def main() -> None:  # noqa: C901
         with log.EventIO(
             log.c("Exception").red.bold + ":", verbosity=log.Verbosity.QUIET
         ) as ev:
+            import traceback
+
             ev.prefix = "  "
             ev.write(traceback.format_exc())
 

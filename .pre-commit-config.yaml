@@ -21,7 +21,7 @@ repos:
       language: system
       entry: mypy
       files: ^.*\.py$
-      exclude: ^(setup\.py$|static_tests|doc)
+      exclude: ^(setup\.py$|static_tests|doc|tbot/fastentrypoints.py)
 -   repo: local
     hooks:
     - id: selftests

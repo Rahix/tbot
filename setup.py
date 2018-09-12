@@ -1,4 +1,5 @@
 from setuptools import setup, find_packages
+import tbot.fastentrypoints  # noqa: F401
 
 setup(
     name="tbot",
