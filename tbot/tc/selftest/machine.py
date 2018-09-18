@@ -6,7 +6,11 @@ from tbot.machine import channel
 from tbot.machine import linux
 from tbot.machine import board
 
-__all__ = ["selftest_machine_reentrant", "selftest_machine_labhost_shell"]
+__all__ = (
+    "selftest_machine_reentrant",
+    "selftest_machine_labhost_shell",
+    "selftest_machine_ssh_shell",
+)
 
 
 @tbot.testcase
@@ -26,6 +30,20 @@ def selftest_machine_labhost_shell(lab: typing.Optional[linux.LabHost] = None,) 
 
         selftest_machine_channel(lh.new_channel(), False)
         selftest_machine_channel(lh.new_channel(), True)
+
+
+@tbot.testcase
+def selftest_machine_ssh_shell(lab: typing.Optional[linux.LabHost] = None,) -> None:
+    from tbot.tc.selftest import minisshd
+
+    with lab or tbot.acquire_lab() as lh:
+        if minisshd.check_minisshd(lh):
+            with minisshd.minisshd(lh) as ssh:
+                selftest_machine_shell(ssh)
+
+                selftest_machine_channel(ssh._obtain_channel(), True)
+        else:
+            tbot.log.message(tbot.log.c("Skip").yellow.bold + " ssh tests.")
 
 
 @tbot.testcase

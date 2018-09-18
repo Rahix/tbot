@@ -28,6 +28,7 @@ def selftest(lab: typing.Optional[linux.LabHost] = None,) -> None:
         tc.testsuite(
             selftest_machine_reentrant,  # noqa: F405
             selftest_machine_labhost_shell,  # noqa: F405
+            selftest_machine_ssh_shell,  # noqa: F405
             selftest_path_stat,  # noqa: F405
             selftest_path_integrity,  # noqa: F405
             selftest_board_power,  # noqa: F405
