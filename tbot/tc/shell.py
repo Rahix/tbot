@@ -44,7 +44,7 @@ def copy(p1: linux.Path[H], p2: linux.Path[H]) -> None:
             raise RuntimeError("Only key authentication is supported")
         key = authenticator.key
 
-        # Copy from an ssh host
+        # Copy to an ssh host
         p1.host.exec0(
             "scp",
             "-P",
