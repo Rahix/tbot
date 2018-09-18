@@ -10,41 +10,39 @@ __all__ = ("selftest_tc_shell_copy",)
 @tbot.testcase
 def selftest_tc_shell_copy(lab: typing.Optional[linux.LabHost] = None,) -> None:
     """Test ``shell.copy``."""
+
+    def do_test(a: linux.Path, b: linux.Path, msg: str) -> None:
+        if b.exists():
+            b.host.exec0("rm", b)
+        a.host.exec0("echo", msg, stdout=a)
+
+        shell.copy(a, b)
+
+        out = b.host.exec0("cat", b).strip()
+        assert out == msg, repr(out) + " != " + repr(msg)
+
     with lab or tbot.acquire_lab() as lh:
         tbot.log.message("Test copying a file on the same host ...")
-
-        f00 = lh.workdir / ".selftest_file"
-        lh.exec0("echo", "Hello World, this is a test!", stdout=f00)
-        f01 = lh.workdir / ".selftest_file2"
-        if f01.exists():
-            lh.exec0("rm", f01)
-
-        shell.copy(f00, f01)
-        out = lh.exec0("cat", f01).strip()
-        assert out == "Hello World, this is a test!", repr(out)
+        do_test(
+            lh.workdir / ".selftest-copy-local1",
+            lh.workdir / ".selftest-copy-local2",
+            "Copy locally",
+        )
 
         if minisshd.check_minisshd(lh):
-            tbot.log.message("Test copying a file from an ssh host ...")
-
             with minisshd.minisshd(lh) as ssh:
-                f10 = ssh.workdir / ".selftest-scp-download"
-                ssh.exec0("echo", "SSH TEST 1234", stdout=f10)
-                f11 = lh.workdir / ".selftest-scp-dwn-target"
-                if f11.exists():
-                    lh.exec0("rm", f11)
+                tbot.log.message("Test downloading a file from an ssh host ...")
+                do_test(
+                    ssh.workdir / ".selftest-copy-ssh1",
+                    lh.workdir / ".selftest-copy-ssh2",
+                    "Download via SCP",
+                )
 
-                shell.copy(f10, f11)
-                out = lh.exec0("cat", f11).strip()
-                assert out == "SSH TEST 1234", repr(out)
-
-                f20 = lh.workdir / ".selftest-scp-upload"
-                lh.exec0("echo", "SSH TEST 4321", stdout=f20)
-                f21 = ssh.workdir / ".selftest-scp-upl-target"
-                if f21.exists():
-                    ssh.exec0("rm", f21)
-
-                shell.copy(f20, f21)
-                out = ssh.exec0("cat", f21).strip()
-                assert out == "SSH TEST 4321", repr(out)
+                tbot.log.message("Test uploading a file to an ssh host ...")
+                do_test(
+                    lh.workdir / ".selftest-copy-ssh1",
+                    ssh.workdir / ".selftest-copy-ssh2",
+                    "Upload via SCP",
+                )
         else:
             tbot.log.message(tbot.log.c("Skip").yellow.bold + " ssh tests.")
