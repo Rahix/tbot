@@ -1,4 +1,5 @@
 import typing
+import time
 import functools
 from tbot import log
 
@@ -31,12 +32,13 @@ def testcase(tc: F) -> F:
     @functools.wraps(tc)
     def wrapped(*args: typing.Any, **kwargs: typing.Any) -> typing.Any:
         log.testcase_begin(tc.__name__)
+        start = time.monotonic()
         try:
             result = tc(*args, **kwargs)
         except:  # noqa: E722
-            log.testcase_end(False)
+            log.testcase_end(time.monotonic() - start, False)
             raise
-        log.testcase_end()
+        log.testcase_end(time.monotonic() - start)
         return result
 
     setattr(wrapped, "_tbot_testcase", None)

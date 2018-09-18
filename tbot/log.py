@@ -139,10 +139,11 @@ def testcase_begin(name: str) -> None:
     NESTING += 1
 
 
-def testcase_end(success: bool = True) -> None:
+def testcase_end(duration: float, success: bool = True) -> None:
     """
     Log a testcase's end.
 
+    :param float duration: Time passed while this testcase ran
     :param bool success: Whether the testcase succeeded
     """
     global NESTING
@@ -152,7 +153,11 @@ def testcase_end(success: bool = True) -> None:
     else:
         success_string = c("Fail").red.bold
 
-    EventIO(success_string + ".", nest_first=u("└─", "\\-"), verbosity=Verbosity.QUIET)
+    EventIO(
+        success_string + f". ({duration:.3f}s)",
+        nest_first=u("└─", "\\-"),
+        verbosity=Verbosity.QUIET,
+    )
     NESTING -= 1
 
 
