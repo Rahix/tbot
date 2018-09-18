@@ -1,6 +1,18 @@
 # Changelog
 
 ## [Unreleased]
+Version **0.6.0** is basically a complete rewrite of TBot.  A rough summary of changes:
+- Be as *pythonic* as possible, the old version had a big issue of non pythonic patterns
+  making things that should be easy difficult.
+- More static guarantees. New TBot can guarantee even more when checking your testcases with
+  a static typechecker.  A big new feature in that regard is static guarantee of never using
+  a path with a wrong machine!
+- Cleaner and much smaller codebase.  Every piece of code is written as small and pythonic
+  as possible which has made the codebase much more manageable.
+- Speedups! New TBot can complete its selfchecks in under 1s. This is possible because of a
+  new channel API that no longer uses sleep unless absolutely necessary.
+- Much more stable and predictable.  Even more care was taken in making TBot behave as predictable
+  as possible and reducing side effects.
 
 
 ## [0.3.4] - 2018-08-09
