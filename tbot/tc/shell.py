@@ -15,7 +15,7 @@ def copy(p1: linux.Path[H], p2: linux.Path[H]) -> None:
     ``scp`` will be used to do the transfer.
 
     :param linux.Path p1: Exisiting path to be copied
-    :param linux.Path p2: Target where ``p1`` whould be copied
+    :param linux.Path p2: Target where ``p1`` should be copied
     """
     if p1.host is p2.host:
         # Both paths are on the same host
