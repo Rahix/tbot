@@ -9,6 +9,7 @@
 
 ### Fixed
 - Program name in help and version message was wrong
+- Better error messages when a testcase file can't be loaded
 
 
 ## [0.6.0-pre04] - 2018-09-19
