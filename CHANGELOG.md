@@ -1,6 +1,11 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- More robust completions
+
+### Fixed
+- Program name in help and version message was wrong
 
 
 ## [0.6.0-pre04] - 2018-09-19
