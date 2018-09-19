@@ -2,6 +2,7 @@ import tbot
 import typing
 from tbot.machine import linux
 from tbot.tc import shell
+from tbot.tc.selftest import minisshd
 
 __all__ = ("selftest_tc_shell_copy",)
 
@@ -9,15 +10,39 @@ __all__ = ("selftest_tc_shell_copy",)
 @tbot.testcase
 def selftest_tc_shell_copy(lab: typing.Optional[linux.LabHost] = None,) -> None:
     """Test ``shell.copy``."""
+
+    def do_test(a: linux.Path, b: linux.Path, msg: str) -> None:
+        if b.exists():
+            b.host.exec0("rm", b)
+        a.host.exec0("echo", msg, stdout=a)
+
+        shell.copy(a, b)
+
+        out = b.host.exec0("cat", b).strip()
+        assert out == msg, repr(out) + " != " + repr(msg)
+
     with lab or tbot.acquire_lab() as lh:
-        f = lh.workdir / ".selftest_file"
-        f2 = lh.workdir / ".selftest_file2"
+        tbot.log.message("Test copying a file on the same host ...")
+        do_test(
+            lh.workdir / ".selftest-copy-local1",
+            lh.workdir / ".selftest-copy-local2",
+            "Copy locally",
+        )
 
-        tbot.log.message("Testing copying a file on the same host ...")
+        if minisshd.check_minisshd(lh):
+            with minisshd.minisshd(lh) as ssh:
+                tbot.log.message("Test downloading a file from an ssh host ...")
+                do_test(
+                    ssh.workdir / ".selftest-copy-ssh1",
+                    lh.workdir / ".selftest-copy-ssh2",
+                    "Download via SCP",
+                )
 
-        lh.exec0("echo", "Hello World, this is a test!", stdout=f)
-
-        shell.copy(f, f2)
-
-        out = lh.exec0("cat", f2).strip()
-        assert out == "Hello World, this is a test!", out
+                tbot.log.message("Test uploading a file to an ssh host ...")
+                do_test(
+                    lh.workdir / ".selftest-copy-ssh1",
+                    ssh.workdir / ".selftest-copy-ssh2",
+                    "Upload via SCP",
+                )
+        else:
+            tbot.log.message(tbot.log.c("Skip").yellow.bold + " ssh tests.")

@@ -3,6 +3,34 @@
 ## [Unreleased]
 
 
+## [0.6.0-pre04] - 2018-09-19
+### Added
+- `GitRepository.head`: Get the current position of `HEAD`
+- `GitRepository.bisect`: Bisect the git repo to find the commit
+  which introduced a bug.
+- Show durations of testcase runs.
+
+### Changed
+- Moved package metadata into `__about__.py`
+- Always show long version in documentation
+- `shell.copy` can now copy from and to SSHMachines.
+
+
+## [0.6.0-pre] - 2018-08-28
+Version **0.6.0** is basically a complete rewrite of TBot.  A rough summary of changes:
+- Be as *pythonic* as possible, the old version had a big issue of non pythonic patterns
+  making things that should be easy difficult.
+- More static guarantees. New TBot can guarantee even more when checking your testcases with
+  a static typechecker.  A big new feature in that regard is static guarantee of never using
+  a path with a wrong machine!
+- Cleaner and much smaller codebase.  Every piece of code is written as small and pythonic
+  as possible which has made the codebase much more manageable.
+- Speedups! New TBot can complete its selfchecks in under 1s. This is possible because of a
+  new channel API that no longer uses sleep unless absolutely necessary.
+- Much more stable and predictable.  Even more care was taken in making TBot behave as predictable
+  as possible and reducing side effects.
+
+
 ## [0.3.4] - 2018-08-09
 ### Added
 - `TestcaseFailure` & `InvalidUsageException` exceptions

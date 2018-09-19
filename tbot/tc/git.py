@@ -120,6 +120,11 @@ class GitRepository(linux.Path[H]):
         """
         return self.host.exec0("git", "-C", self, *args)
 
+    @property
+    def head(self) -> str:
+        """Return the current HEAD of this repo."""
+        return self.git0("rev-parse", "HEAD").strip()
+
     def checkout(self, rev: str) -> None:
         """
         Checkout a revision or branch.
@@ -213,3 +218,47 @@ class GitRepository(linux.Path[H]):
                 raise
 
         return 1
+
+    @tbot.testcase
+    def bisect(self, good: str, test: "typing.Callable[[GitRepository], bool]") -> str:
+        """
+        Run a git bisect to find the commit that introduced an error.
+
+        :param str good: A known good commit, the current head will be assumed as bad.
+        :param test: A function to check the state of the current commit.  Should return
+            ``True`` if it is good and ``False`` if it is bad.  An exception is interpreded
+            as an unexpected error while checking.
+        :rtype: str
+        :returns: The first bad commit
+        """
+        try:
+            self.git0("bisect", "start")
+            self.git0("bisect", "bad")
+            self.git0("bisect", "good", good)
+
+            while True:
+                current = self.head
+                tbot.log.message(f"Trying commit {current} ...")
+
+                success = test(self)
+                if success:
+                    self.git0("bisect", "good")
+                else:
+                    self.git0("bisect", "bad")
+
+                # Check how many commits are remaining
+                remaining = (
+                    self.git0(
+                        "bisect", "visualize", "--pretty=format:%H", linux.Pipe, "cat"
+                    )
+                    .strip()
+                    .split("\n")
+                )
+                tbot.log.message(f"{len(remaining)} commits remaining ...")
+
+                if len(remaining) == 1:
+                    return remaining[0]
+        except:  # noqa: E722
+            raise
+        finally:
+            self.git0("bisect", "reset")

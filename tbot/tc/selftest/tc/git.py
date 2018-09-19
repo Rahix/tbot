@@ -3,7 +3,7 @@ import tbot
 from tbot.machine import linux
 from tbot.tc import git
 
-__all__ = ("selftest_tc_git_checkout", "selftest_tc_git_am")
+__all__ = ("selftest_tc_git_checkout", "selftest_tc_git_am", "selftest_tc_git_bisect")
 
 _GIT: typing.Optional[str] = None
 
@@ -22,7 +22,7 @@ def git_prepare(lab: linux.LabHost) -> str:
 
         lab.exec0("mkdir", "-p", p)
         lab.exec0("git", "-C", p, "init")
-        repo = git.GitRepository(p)
+        repo = git.GitRepository(p, clean=False)
 
         lab.exec0(
             "echo",
@@ -147,3 +147,37 @@ This section was added by a second patch""",
 
         lh.exec0("rm", "-rf", target)
         lh.exec0("rm", "-rf", patch_dir)
+
+
+@tbot.testcase
+def selftest_tc_git_bisect(lab: typing.Optional[linux.LabHost] = None,) -> None:
+    with lab or tbot.acquire_lab() as lh:
+        remote = git_prepare(lh)
+        target = lh.workdir / "selftest-git-bisect"
+
+        if target.exists():
+            lh.exec0("rm", "-rf", target)
+
+        repo = git.GitRepository(target, remote)
+        counter = repo / "counter.txt"
+
+        rev = repo.head
+
+        for i in range(0, 24):
+            tbot.log.message(f"Create commit ({i+1:2}/24) ...")
+
+            lh.exec0("echo", str(i), stdout=counter)
+            repo.add(counter)
+            repo.commit(f"Set counter to {i}", author="TBot Selftest <none@none>")
+
+        @tbot.testcase
+        def check_counter(repo: git.GitRepository) -> bool:
+            return int(repo.host.exec0("cat", repo / "counter.txt").strip()) < 17
+
+        bad = repo.bisect(good=rev, test=check_counter)
+
+        tbot.log.message(f"Bad commit is {bad}!")
+
+        repo.git0("show", bad, linux.Pipe, "cat")
+
+        lh.exec0("rm", "-rf", target)

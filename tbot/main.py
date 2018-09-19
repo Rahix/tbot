@@ -1,11 +1,11 @@
 import argparse
+from tbot import __about__
 
 
 def main() -> None:  # noqa: C901
     """Tbot main entry point."""
     parser = argparse.ArgumentParser(
-        prog="tbot",
-        description="Test and development automation tool, tailored for embedded needs",
+        prog=__about__.__name__, description=__about__.__summary__
     )
 
     parser.add_argument("testcase", nargs="*", help="testcase that should be run.")
@@ -47,6 +47,10 @@ def main() -> None:  # noqa: C901
 
     parser.add_argument(
         "-q", dest="quiet", action="count", default=0, help="decrease the verbosity"
+    )
+
+    parser.add_argument(
+        "--version", action="version", version=f"%(prog)s {__about__.__version__}"
     )
 
     flags = [

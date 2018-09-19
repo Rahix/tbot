@@ -5,3 +5,4 @@ log/
 *.pyc
 .mypy_cache/
 dist/
+.doctrees
