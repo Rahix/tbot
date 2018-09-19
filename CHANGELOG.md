@@ -1,6 +1,19 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- `GitRepository.head`: Get the current position of `HEAD`
+- `GitRepository.bisect`: Bisect the git repo to find the commit
+  which introduced a bug.
+- Show durations of testcase runs.
+
+### Changed
+- Moved package metadata into `__about__.py`
+- Always show long version in documentation
+- `shell.copy` can now copy from and to SSHMachines.
+
+
+## [0.6.0-pre] - 2018-08-28
 Version **0.6.0** is basically a complete rewrite of TBot.  A rough summary of changes:
 - Be as *pythonic* as possible, the old version had a big issue of non pythonic patterns
   making things that should be easy difficult.
