@@ -182,10 +182,13 @@ def command(mach: str, cmd: str) -> EventIO:
     return ev
 
 
-def message(msg: typing.Union[str, c]) -> EventIO:
+def message(
+    msg: typing.Union[str, c], verbosity: Verbosity = Verbosity.INFO
+) -> EventIO:
     """
     Log a message.
 
     :param str msg: The message
+    :param Verbosity verbosity: Message verbosity
     """
-    return EventIO(msg, verbosity=Verbosity.INFO)
+    return EventIO(msg, verbosity=verbosity)

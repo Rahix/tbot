@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- `verbosity` parameter for `log.message`
+
 ### Changed
 - More robust completions
 
