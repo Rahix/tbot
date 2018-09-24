@@ -10,6 +10,15 @@ class SSHMachine(linux.LinuxMachine):
     """Generic machine that can be reached via SSH from the LabHost."""
 
     @property
+    def ignore_hostkey(self) -> bool:
+        """
+        Ignore host key.
+
+        Set this to true if the remote changes its host key often.
+        """
+        return False
+
+    @property
     @abc.abstractmethod
     def hostname(self) -> str:
         """
@@ -49,8 +58,10 @@ class SSHMachine(linux.LinuxMachine):
         if not isinstance(authenticator, auth.PrivateKeyAuthenticator):
             raise RuntimeError("Only key authentication is supported")
 
+        hk_disable = "-o StrictHostKeyChecking=no" if self.ignore_hostkey else ""
+
         chan.send(
-            f"ssh -o BatchMode=yes -i {authenticator.key} -p {self.port} {self.username}@{self.hostname}; exit\n"
+            f"ssh -o BatchMode=yes {hk_disable} -i {authenticator.key} -p {self.port} {self.username}@{self.hostname}; exit\n"
         )
 
         time.sleep(0.5)

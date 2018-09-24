@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Added
 - `verbosity` parameter for `log.message`
+- `ignore_hostkey` flag for `SSHMachine`s
 
 ### Changed
 - More robust completions
@@ -10,6 +11,7 @@
 ### Fixed
 - Program name in help and version message was wrong
 - Better error messages when a testcase file can't be loaded
+- Selftests failing because sshd host key changes
 
 
 ## [0.6.0-pre04] - 2018-09-19
