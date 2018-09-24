@@ -38,7 +38,7 @@ class LabHost(linux.LinuxMachine):
         chan = self._new_channel()
         if args != ():
             cmd = self.build_command(*args)
-            tbot.log.command(self.name, cmd)
+            tbot.log_event.command(self.name, cmd)
             # Send exit after the command so this channel will close once it
             # is done.
             chan.send(cmd + " ; exit\n")

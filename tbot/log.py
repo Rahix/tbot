@@ -127,61 +127,6 @@ class EventIO(io.StringIO):
             self.close()
 
 
-def testcase_begin(name: str) -> None:
-    """
-    Log a testcase's beginning.
-
-    :param str name: Name of the testcase
-    """
-    global NESTING
-
-    EventIO("Calling " + c(name).cyan.bold + " ...", verbosity=Verbosity.QUIET)
-    NESTING += 1
-
-
-def testcase_end(duration: float, success: bool = True) -> None:
-    """
-    Log a testcase's end.
-
-    :param float duration: Time passed while this testcase ran
-    :param bool success: Whether the testcase succeeded
-    """
-    global NESTING
-
-    if success:
-        success_string = c("Done").green.bold
-    else:
-        success_string = c("Fail").red.bold
-
-    EventIO(
-        success_string + f". ({duration:.3f}s)",
-        nest_first=u("└─", "\\-"),
-        verbosity=Verbosity.QUIET,
-    )
-    NESTING -= 1
-
-
-def command(mach: str, cmd: str) -> EventIO:
-    """
-    Log a command's execution.
-
-    :param str mach: Name of the machine the command is run on
-    :param str cmd: The command itself
-    :rtype: EventIO
-    :returns: A stream that the output of the command should
-        be written to.
-    """
-    ev = EventIO("[" + c(mach).yellow + "] " + c(cmd).dark, verbosity=Verbosity.COMMAND)
-    ev.prefix = "   ## "
-
-    if INTERACTIVE:
-        if input(c("OK [Y/n]? ").magenta).upper() not in ("", "Y"):
-            raise RuntimeError("Aborted by user")
-
-    ev.verbosity = Verbosity.STDOUT
-    return ev
-
-
 def message(
     msg: typing.Union[str, c], verbosity: Verbosity = Verbosity.INFO
 ) -> EventIO:
