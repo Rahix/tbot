@@ -85,7 +85,7 @@ class GitRepository(linux.Path[H]):
             if not (self / ".git").exists():
                 raise RuntimeError(f"{target} is not a git repository")
             if clean:
-                self.reset("", ResetMode.HARD)
+                self.reset("HEAD", ResetMode.HARD)
                 self.clean(untracked=True, noignore=True)
 
                 if rev:
