@@ -26,6 +26,10 @@ def copy(p1: linux.Path[H], p2: linux.Path[H]) -> None:
             raise RuntimeError("Only key authentication is supported")
         key = authenticator.key
 
+        hk_disable = (
+            ["-o", "StrictHostKeyChecking=no"] if p1.host.ignore_hostkey else []
+        )
+
         # Copy from an ssh host
         p2.host.exec0(
             "scp",
@@ -33,6 +37,7 @@ def copy(p1: linux.Path[H], p2: linux.Path[H]) -> None:
             str(p1.host.port),
             "-o",
             "BatchMode=yes",
+            *hk_disable,
             "-i",
             str(key),
             f"{p1.host.username}@{p1.host.hostname}:{p1._local_str()}",
@@ -44,6 +49,10 @@ def copy(p1: linux.Path[H], p2: linux.Path[H]) -> None:
             raise RuntimeError("Only key authentication is supported")
         key = authenticator.key
 
+        hk_disable = (
+            ["-o", "StrictHostKeyChecking=no"] if p2.host.ignore_hostkey else []
+        )
+
         # Copy to an ssh host
         p1.host.exec0(
             "scp",
@@ -51,6 +60,7 @@ def copy(p1: linux.Path[H], p2: linux.Path[H]) -> None:
             str(p2.host.port),
             "-o",
             "BatchMode=yes",
+            *hk_disable,
             "-i",
             str(key),
             p1,

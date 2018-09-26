@@ -85,7 +85,7 @@ class GitRepository(linux.Path[H]):
             if not (self / ".git").exists():
                 raise RuntimeError(f"{target} is not a git repository")
             if clean:
-                self.reset("", ResetMode.HARD)
+                self.reset("HEAD", ResetMode.HARD)
                 self.clean(untracked=True, noignore=True)
 
                 if rev:
@@ -243,8 +243,14 @@ class GitRepository(linux.Path[H]):
                 success = test(self)
                 if success:
                     self.git0("bisect", "good")
+                    tbot.log.message(
+                        f"Commit {current} is " + tbot.log.c("good").green + "."
+                    )
                 else:
                     self.git0("bisect", "bad")
+                    tbot.log.message(
+                        f"Commit {current} is " + tbot.log.c("BAD").red + "."
+                    )
 
                 # Check how many commits are remaining
                 remaining = (
@@ -257,6 +263,9 @@ class GitRepository(linux.Path[H]):
                 tbot.log.message(f"{len(remaining)} commits remaining ...")
 
                 if len(remaining) == 1:
+                    tbot.log.message(
+                        "First bad commit is " + tbot.log.c(remaining[0]).yellow
+                    )
                     return remaining[0]
         except:  # noqa: E722
             raise

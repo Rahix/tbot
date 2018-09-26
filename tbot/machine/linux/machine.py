@@ -2,7 +2,7 @@ import abc
 import typing
 import shlex
 import shutil
-from tbot import log
+import tbot
 from tbot import machine
 from tbot.machine import channel
 from .path import Path
@@ -96,7 +96,7 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
 
         command = self.build_command(*args, stdout=stdout)
 
-        with log.command(self.name, command) as ev:
+        with tbot.log_event.command(self.name, command) as ev:
             ret, out = channel.raw_command_with_retval(
                 command, stream=ev, timeout=timeout
             )
@@ -158,11 +158,11 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         channel.send(f"{cmd}\n")
         channel.read_until_prompt("> (\x1B\\[.*)?", regex=True)
         channel.send("\n")
-        log.message("Entering interactive shell ...")
+        tbot.log.message("Entering interactive shell ...")
 
         channel.attach_interactive(end_magic=endstr)
 
-        log.message("Exiting interactive shell ...")
+        tbot.log.message("Exiting interactive shell ...")
 
         try:
             channel.raw_command("exit\n", timeout=0.5)

@@ -3,6 +3,21 @@
 ## [Unreleased]
 
 
+## [0.6.0-pre05] - 2018-09-26
+### Added
+- `verbosity` parameter for `log.message`
+- `ignore_hostkey` flag for `SSHMachine`s
+
+### Changed
+- More robust completions
+
+### Fixed
+- Program name in help and version message was wrong
+- Better error messages when a testcase file can't be loaded
+- Selftests failing because sshd host key changes
+- `GitRepository` failing to reset in `__init__`
+
+
 ## [0.6.0-pre04] - 2018-09-19
 ### Added
 - `GitRepository.head`: Get the current position of `HEAD`

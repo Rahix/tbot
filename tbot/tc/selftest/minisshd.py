@@ -9,6 +9,7 @@ class MiniSSHMachine(linux.SSHMachine):
 
     hostname = "localhost"
     name = "minissh-local"
+    ignore_hostkey = True
 
     @property
     def username(self) -> str:

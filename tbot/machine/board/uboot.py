@@ -103,7 +103,7 @@ class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
         """
         command = self.build_command(*args)
 
-        with tbot.log.command(self.name, command) as ev:
+        with tbot.log_event.command(self.name, command) as ev:
             ev.prefix = "   >> "
             ret, out = self.channel.raw_command_with_retval(
                 command, prompt=self.prompt, stream=ev

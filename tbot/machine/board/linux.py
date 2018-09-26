@@ -156,7 +156,7 @@ class LinuxWithUBootMachine(LinuxMachine[B]):
 
         # Make it look like a normal U-Boot command
         last_command = ub.build_command(*self.boot_commands[-1])
-        with tbot.log.command(ub.name, last_command) as ev:
+        with tbot.log_event.command(ub.name, last_command) as ev:
             ev.prefix = "   <> "
             self.channel.send(last_command + "\n")
             self.boot_to_shell(channel.SkipStream(ev, len(last_command) + 1))
