@@ -3,7 +3,9 @@ import io
 import itertools
 import sys
 import typing
+import pathlib
 from termcolor2 import c
+from . import log_file
 
 
 def u(with_unicode: str, without_unicode: str) -> str:
@@ -34,6 +36,7 @@ class Verbosity(enum.IntEnum):
 NESTING = 0
 INTERACTIVE = False
 VERBOSITY = Verbosity.INFO
+LOGFILE = log_file.LogFileWriter(pathlib.Path("/tmp/log.json"))
 
 
 class EventIO(io.StringIO):
@@ -41,10 +44,12 @@ class EventIO(io.StringIO):
 
     def __init__(
         self,
+        ty: typing.List[str],
         initial: typing.Union[str, c, None] = None,
         *,
         verbosity: Verbosity = Verbosity.INFO,
         nest_first: typing.Optional[str] = None,
+        **kwargs: typing.Any,
     ) -> None:
         """
         Create a log event.
@@ -61,6 +66,8 @@ class EventIO(io.StringIO):
         self.prefix: typing.Optional[str] = None
         self.nest_first = nest_first or u("├─", "+-")
         self.verbosity = verbosity
+        self.ty = ty
+        self.data = kwargs
 
         if initial:
             self.writeln(str(initial))
@@ -119,7 +126,9 @@ class EventIO(io.StringIO):
         closing it.
         """
         self._print_lines(last=True)
-        # TODO: Write Log Event
+
+        LOGFILE.event(self.ty, self.data)
+
         super().close()
 
     def __del__(self) -> None:
@@ -136,4 +145,4 @@ def message(
     :param str msg: The message
     :param Verbosity verbosity: Message verbosity
     """
-    return EventIO(msg, verbosity=verbosity)
+    return EventIO(["msg"], msg, verbosity=verbosity, text=str(msg))

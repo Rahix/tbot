@@ -100,6 +100,7 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
             ret, out = channel.raw_command_with_retval(
                 command, stream=ev, timeout=timeout
             )
+            ev.data["stdout"] = out
 
         return ret, out
 

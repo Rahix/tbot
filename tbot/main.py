@@ -175,24 +175,32 @@ def main() -> None:  # noqa: C901
         for tc in args.testcase:
             testcases[tc]()
     except:  # noqa: E722
-        with log.EventIO(
-            log.c("Exception").red.bold + ":", verbosity=log.Verbosity.QUIET
-        ) as ev:
-            import traceback
+        import traceback
 
+        trace = traceback.format_exc()
+        with log.EventIO(
+            ["exception"],
+            log.c("Exception").red.bold + ":",
+            verbosity=log.Verbosity.QUIET,
+            trace=trace,
+        ) as ev:
             ev.prefix = "  "
-            ev.write(traceback.format_exc())
+            ev.write(trace)
 
         log.EventIO(
+            ["tbot", "end"],
             log.c("FAILURE").red.bold,
             nest_first=log.u("└─", "\\-"),
             verbosity=log.Verbosity.QUIET,
+            success=False,
         )
     else:
         log.EventIO(
+            ["tbot", "end"],
             log.c("SUCCESS").green.bold,
             nest_first=log.u("└─", "\\-"),
             verbosity=log.Verbosity.QUIET,
+            success=True,
         )
 
 

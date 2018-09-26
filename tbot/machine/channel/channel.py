@@ -279,6 +279,7 @@ class Channel(abc.ABC):
 
             if tbot.log.VERBOSITY >= tbot.log.Verbosity.CHANNEL:
                 tbot.log.EventIO(
+                    ["__debug__"],
                     tbot.log.c(repr(decoded)).yellow,
                     verbosity=tbot.log.Verbosity.CHANNEL,
                 )

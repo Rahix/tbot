@@ -108,6 +108,7 @@ class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
             ret, out = self.channel.raw_command_with_retval(
                 command, prompt=self.prompt, stream=ev
             )
+            ev.data["stdout"] = out
 
         return ret, out
 
