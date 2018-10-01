@@ -1,11 +1,11 @@
 import enum
 import io
 import itertools
+import json
 import sys
+import time
 import typing
-import pathlib
 from termcolor2 import c
-from . import log_file
 
 
 def u(with_unicode: str, without_unicode: str) -> str:
@@ -36,7 +36,8 @@ class Verbosity(enum.IntEnum):
 NESTING = 0
 INTERACTIVE = False
 VERBOSITY = Verbosity.INFO
-LOGFILE = log_file.LogFileWriter(pathlib.Path("/tmp/log.json"))
+LOGFILE: typing.Optional[typing.TextIO] = open("/tmp/tbot.json", "w")
+START_TIME = time.monotonic()
 
 
 class EventIO(io.StringIO):
@@ -127,7 +128,16 @@ class EventIO(io.StringIO):
         """
         self._print_lines(last=True)
 
-        LOGFILE.event(self.ty, self.data)
+        if LOGFILE is not None:
+            ev = {
+                "type": self.ty,
+                "time": time.monotonic() - START_TIME,
+                "data": self.data,
+            }
+
+            json.dump(ev, LOGFILE, indent=2)
+            LOGFILE.write("\n")
+            LOGFILE.flush()
 
         super().close()
 
