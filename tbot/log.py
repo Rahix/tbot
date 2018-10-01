@@ -36,7 +36,7 @@ class Verbosity(enum.IntEnum):
 NESTING = 0
 INTERACTIVE = False
 VERBOSITY = Verbosity.INFO
-LOGFILE: typing.Optional[typing.TextIO] = open("/tmp/tbot.json", "w")
+LOGFILE: typing.Optional[typing.TextIO] = None
 START_TIME = time.monotonic()
 
 
