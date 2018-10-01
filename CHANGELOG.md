@@ -1,6 +1,10 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Reimplemented Logging. The following generators have been updated:
+    * `htmllog`
+    * `junit`
 
 
 ## [0.6.0-pre05] - 2018-09-26
