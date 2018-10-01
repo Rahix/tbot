@@ -200,7 +200,7 @@ def main() -> None:  # noqa: C901
     try:
         for tc in args.testcase:
             testcases[tc]()
-    except:  # noqa: E722
+    except Exception as e:  # noqa: E722
         import traceback
 
         trace = traceback.format_exc()
@@ -208,6 +208,7 @@ def main() -> None:  # noqa: C901
             ["exception"],
             log.c("Exception").red.bold + ":",
             verbosity=log.Verbosity.QUIET,
+            name=e.__class__.__name__,
             trace=trace,
         ) as ev:
             ev.prefix = "  "
