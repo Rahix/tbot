@@ -155,4 +155,4 @@ def message(
     :param str msg: The message
     :param Verbosity verbosity: Message verbosity
     """
-    return EventIO(["msg"], msg, verbosity=verbosity, text=str(msg))
+    return EventIO(["msg", str(verbosity)], msg, verbosity=verbosity, text=str(msg))

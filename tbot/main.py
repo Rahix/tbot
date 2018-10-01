@@ -83,7 +83,10 @@ def main() -> None:  # noqa: C901
         logdir = pathlib.Path.cwd() / "log"
         logdir.mkdir(exist_ok=True)
 
-        prefix = f"{args.lab or 'none'}-{args.board or 'none'}"
+        lab_name = "none" if args.lab is None else pathlib.Path(args.lab).stem
+        board_name = "none" if args.board is None else pathlib.Path(args.board).stem
+
+        prefix = f"{lab_name}-{board_name}"
         glob_pattern = f"{prefix}-*.json"
         new_num = sum(1 for _ in logdir.glob(glob_pattern)) + 1
         logfile = logdir / f"{prefix}-{new_num:04}.json"

@@ -39,21 +39,26 @@ class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
         """Create a new instance of this LinuxMachine."""
         super().__init__(b.board if isinstance(b, board.UBootMachine) else b)
 
-    def boot_to_shell(self, stream: typing.TextIO) -> None:
+    def boot_to_shell(self, stream: typing.TextIO) -> str:
         """Wait for the login prompt."""
         chan = self._obtain_channel()
+        output = ""
 
-        chan.read_until_prompt(self.login_prompt, stream=stream)
+        output += chan.read_until_prompt(self.login_prompt, stream=stream)
 
         chan.send(self.username + "\n")
         stream.write(self.login_prompt + self.username + "\n")
+        output += self.login_prompt + self.username + "\n"
         if self.password is not None:
             chan.read_until_prompt("word: ")
             stream.write("Password: ****")
+            output += "Password: ****"
             chan.send(self.password + "\n")
         time.sleep(self.login_wait)
         chan.send("\n")
         chan.initialize(sh=self.shell)
+
+        return output
 
 
 class LinuxWithUBootMachine(LinuxMachine[B]):
@@ -147,20 +152,22 @@ class LinuxWithUBootMachine(LinuxMachine[B]):
 
         self.channel = ub.channel
 
-        tbot.log.EventIO(
+        with tbot.log.EventIO(
             ["board", "linux-boot", ub.board.name],
             tbot.log.c("LINUX BOOT").bold + f" ({self.name})",
             verbosity=tbot.log.Verbosity.QUIET,
-        )
-        for cmd in self.boot_commands[:-1]:
-            ub.exec0(*cmd)
+        ) as boot_ev:
+            for cmd in self.boot_commands[:-1]:
+                ub.exec0(*cmd)
 
-        # Make it look like a normal U-Boot command
-        last_command = ub.build_command(*self.boot_commands[-1])
-        with tbot.log_event.command(ub.name, last_command) as ev:
-            ev.prefix = "   <> "
-            self.channel.send(last_command + "\n")
-            self.boot_to_shell(channel.SkipStream(ev, len(last_command) + 1))
+            # Make it look like a normal U-Boot command
+            last_command = ub.build_command(*self.boot_commands[-1])
+            with tbot.log_event.command(ub.name, last_command) as ev:
+                ev.prefix = "   <> "
+                self.channel.send(last_command + "\n")
+                log = self.boot_to_shell(channel.SkipStream(ev, len(last_command) + 1))
+
+                boot_ev.data["output"] = log[len(last_command) + 1 :]
 
     def destroy(self) -> None:  # noqa: D102
         if self.ub is not None:
@@ -230,7 +237,9 @@ class LinuxStandaloneMachine(LinuxMachine[B]):
         ) as ev:
             ev.prefix = "   <> "
             ev.verbosity = tbot.log.Verbosity.STDOUT
-            self.boot_to_shell(ev)
+            log = self.boot_to_shell(ev)
+
+            ev.data["output"] = log
 
     def destroy(self) -> None:  # noqa: D102
         self.channel.close()
