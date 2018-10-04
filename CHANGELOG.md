@@ -5,6 +5,10 @@
 - Reimplemented Logging. The following generators have been updated:
     * `htmllog`
     * `junit`
+
+### Changed
+- Updated documentation
+
 ### Removed
 - Unnecessary files from pre 0.6 versions
 
