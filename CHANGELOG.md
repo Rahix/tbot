@@ -1,6 +1,10 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Reimplemented Logging. The following generators have been updated:
+    * `htmllog`
+    * `junit`
 ### Removed
 - Unnecessary files from pre 0.6 versions
 

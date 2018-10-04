@@ -1,7 +1,9 @@
 import enum
 import io
 import itertools
+import json
 import sys
+import time
 import typing
 from termcolor2 import c
 
@@ -34,6 +36,8 @@ class Verbosity(enum.IntEnum):
 NESTING = 0
 INTERACTIVE = False
 VERBOSITY = Verbosity.INFO
+LOGFILE: typing.Optional[typing.TextIO] = None
+START_TIME = time.monotonic()
 
 
 class EventIO(io.StringIO):
@@ -41,10 +45,12 @@ class EventIO(io.StringIO):
 
     def __init__(
         self,
+        ty: typing.List[str],
         initial: typing.Union[str, c, None] = None,
         *,
         verbosity: Verbosity = Verbosity.INFO,
         nest_first: typing.Optional[str] = None,
+        **kwargs: typing.Any,
     ) -> None:
         """
         Create a log event.
@@ -61,6 +67,8 @@ class EventIO(io.StringIO):
         self.prefix: typing.Optional[str] = None
         self.nest_first = nest_first or u("├─", "+-")
         self.verbosity = verbosity
+        self.ty = ty
+        self.data = kwargs
 
         if initial:
             self.writeln(str(initial))
@@ -119,7 +127,18 @@ class EventIO(io.StringIO):
         closing it.
         """
         self._print_lines(last=True)
-        # TODO: Write Log Event
+
+        if LOGFILE is not None:
+            ev = {
+                "type": self.ty,
+                "time": time.monotonic() - START_TIME,
+                "data": self.data,
+            }
+
+            json.dump(ev, LOGFILE, indent=2)
+            LOGFILE.write("\n")
+            LOGFILE.flush()
+
         super().close()
 
     def __del__(self) -> None:
@@ -136,4 +155,4 @@ def message(
     :param str msg: The message
     :param Verbosity verbosity: Message verbosity
     """
-    return EventIO(msg, verbosity=verbosity)
+    return EventIO(["msg", str(verbosity)], msg, verbosity=verbosity, text=str(msg))

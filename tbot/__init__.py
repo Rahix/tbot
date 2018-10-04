@@ -38,9 +38,9 @@ def testcase(tc: F) -> F:
         try:
             result = tc(*args, **kwargs)
         except:  # noqa: E722
-            log_event.testcase_end(time.monotonic() - start, False)
+            log_event.testcase_end(tc.__name__, time.monotonic() - start, False)
             raise
-        log_event.testcase_end(time.monotonic() - start)
+        log_event.testcase_end(tc.__name__, time.monotonic() - start, True)
         return result
 
     setattr(wrapped, "_tbot_testcase", None)

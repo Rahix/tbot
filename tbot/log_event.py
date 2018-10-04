@@ -10,11 +10,16 @@ def testcase_begin(name: str) -> None:
 
     :param str name: Name of the testcase
     """
-    log.EventIO("Calling " + c(name).cyan.bold + " ...", verbosity=log.Verbosity.QUIET)
+    log.EventIO(
+        ["tc", "begin"],
+        "Calling " + c(name).cyan.bold + " ...",
+        verbosity=log.Verbosity.QUIET,
+        name=name,
+    )
     log.NESTING += 1
 
 
-def testcase_end(duration: float, success: bool = True) -> None:
+def testcase_end(name: str, duration: float, success: bool = True) -> None:
     """
     Log a testcase's end.
 
@@ -27,9 +32,13 @@ def testcase_end(duration: float, success: bool = True) -> None:
         success_string = c("Fail").red.bold
 
     log.EventIO(
+        ["tc", "end"],
         success_string + f". ({duration:.3f}s)",
         nest_first=u("└─", "\\-"),
         verbosity=log.Verbosity.QUIET,
+        name=name,
+        duration=duration,
+        success=success,
     )
     log.NESTING -= 1
 
@@ -45,7 +54,10 @@ def command(mach: str, cmd: str) -> log.EventIO:
         be written to.
     """
     ev = log.EventIO(
-        "[" + c(mach).yellow + "] " + c(cmd).dark, verbosity=log.Verbosity.COMMAND
+        ["cmd", mach],
+        "[" + c(mach).yellow + "] " + c(cmd).dark,
+        verbosity=log.Verbosity.COMMAND,
+        cmd=cmd,
     )
     ev.prefix = "   ## "
 
