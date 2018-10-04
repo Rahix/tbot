@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Removed
+- Unnecessary files from pre 0.6 versions
 
 
 ## [0.6.0-pre05] - 2018-09-26
