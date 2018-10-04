@@ -27,7 +27,7 @@ repos:
     - id: selftests
       name: TBot Selftest
       language: system
-      entry: python3 -c "__import__('tbot.main').main.main()" selftest
+      entry: python3 -c "__import__('tbot.main').main.main()" --log "/dev/null" selftest
     - id: static_tests
       name: TBot type system tests
       language: system

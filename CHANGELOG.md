@@ -9,6 +9,9 @@
 ### Changed
 - Updated documentation
 
+### Fixed
+- Fixed pre-commit selftest hook creating log files
+
 ### Removed
 - Unnecessary files from pre 0.6 versions
 
