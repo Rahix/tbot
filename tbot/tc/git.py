@@ -220,7 +220,7 @@ class GitRepository(linux.Path[H]):
         return 1
 
     @tbot.testcase
-    def bisect(self, good: str, test: "typing.Callable[[GitRepository], bool]") -> str:
+    def bisect(self, good: str, test: "typing.Callable[..., bool]") -> str:
         """
         Run a git bisect to find the commit that introduced an error.
 
