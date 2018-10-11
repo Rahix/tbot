@@ -5,6 +5,8 @@
 - Reimplemented Logging. The following generators have been updated:
     * `htmllog`
     * `junit`
+- Support for password authentication on SSH machines.  **I strongly
+  reccomend not using this!**
 
 ### Changed
 - Updated documentation

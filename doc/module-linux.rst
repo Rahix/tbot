@@ -71,6 +71,10 @@ Implementations
 .. autoclass:: tbot.machine.linux.SSHMachine
     :members:
 
+.. automodule:: tbot.machine.linux.lab.machine
+.. automodule:: tbot.machine.linux.build.machine
+.. automodule:: tbot.machine.linux.ssh.machine
+
 
 ``tbot.machine.linux.auth``
 ---------------------------
@@ -86,6 +90,8 @@ Implementations
 .. autoclass:: tbot.machine.linux.lab.SSHLabHost
     :members:
 
+.. automodule:: tbot.machine.linux.lab.local
+.. automodule:: tbot.machine.linux.lab.ssh
 
 ``tbot.machine.linux.build``
 ----------------------------
@@ -95,6 +101,7 @@ Implementations
 .. autoclass:: tbot.machine.linux.build.EnvScriptToolchain
     :members:
 
+.. automodule:: tbot.machine.linux.build.toolchain
 
 ``tbot.machine.linux.shell``
 ----------------------------
