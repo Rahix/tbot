@@ -1,6 +1,9 @@
 TBot
 ====
 
+**Note**: This version is outdated!  Please wait for the *0.6.0* release or, if you are impatient, take a look
+at the `next` branch ;)
+
 TBot is a test automation tool for embedded linux development. It can handle day to day routines to make a
 develper's life a lot easier and it can be used for automation of test running with CI. TBot is written in
 Python3.6 and will not work with anything below.
