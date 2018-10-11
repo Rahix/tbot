@@ -1,3 +1,5 @@
+import pathlib
+import time
 import argparse
 from tbot import __about__
 
@@ -53,6 +55,10 @@ def main() -> None:  # noqa: C901
         "--version", action="version", version=f"%(prog)s {__about__.__version__}"
     )
 
+    parser.add_argument(
+        "--log", metavar="LOGFILE", help="Alternative location for the json log file"
+    )
+
     flags = [
         (["--list-testcases"], "list all testcases in the current search path."),
         (["--list-labs"], "list all available labs."),
@@ -70,6 +76,27 @@ def main() -> None:  # noqa: C901
 
     from tbot import log
 
+    # Determine LogFile
+    if args.log:
+        log.LOGFILE = open(args.log, "w")
+    else:
+        logdir = pathlib.Path.cwd() / "log"
+        logdir.mkdir(exist_ok=True)
+
+        lab_name = "none" if args.lab is None else pathlib.Path(args.lab).stem
+        board_name = "none" if args.board is None else pathlib.Path(args.board).stem
+
+        prefix = f"{lab_name}-{board_name}"
+        glob_pattern = f"{prefix}-*.json"
+        new_num = sum(1 for _ in logdir.glob(glob_pattern)) + 1
+        logfile = logdir / f"{prefix}-{new_num:04}.json"
+        # Ensure logfile will not overwrite another one
+        while logfile.exists():
+            new_num += 1
+            logfile = logdir / f"{prefix}-{new_num:04}.json"
+
+        log.LOGFILE = open(logfile, "w")
+
     log.VERBOSITY = log.Verbosity(1 + args.verbosity - args.quiet)
 
     if args.list_labs:
@@ -79,7 +106,6 @@ def main() -> None:  # noqa: C901
         raise NotImplementedError()
 
     from tbot import loader
-    import pathlib
 
     files = loader.get_file_list(
         (pathlib.Path(d).resolve() for d in args.tcdirs),
@@ -174,25 +200,38 @@ def main() -> None:  # noqa: C901
     try:
         for tc in args.testcase:
             testcases[tc]()
-    except:  # noqa: E722
+    except Exception as e:  # noqa: E722
+        import traceback
+
+        trace = traceback.format_exc()
         with log.EventIO(
-            log.c("Exception").red.bold + ":", verbosity=log.Verbosity.QUIET
+            ["exception"],
+            log.c("Exception").red.bold + ":",
+            verbosity=log.Verbosity.QUIET,
+            name=e.__class__.__name__,
+            trace=trace,
         ) as ev:
-            import traceback
-
             ev.prefix = "  "
-            ev.write(traceback.format_exc())
+            ev.write(trace)
 
+        duration = time.monotonic() - log.START_TIME
         log.EventIO(
-            log.c("FAILURE").red.bold,
+            ["tbot", "end"],
+            log.c("FAILURE").red.bold + f" ({duration:.3f}s)",
             nest_first=log.u("└─", "\\-"),
             verbosity=log.Verbosity.QUIET,
+            success=False,
+            duration=duration,
         )
     else:
+        duration = time.monotonic() - log.START_TIME
         log.EventIO(
-            log.c("SUCCESS").green.bold,
+            ["tbot", "end"],
+            log.c("SUCCESS").green.bold + f" ({duration:.3f}s)",
             nest_first=log.u("└─", "\\-"),
             verbosity=log.Verbosity.QUIET,
+            success=True,
+            duration=duration,
         )
 
 

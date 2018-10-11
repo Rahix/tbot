@@ -15,6 +15,10 @@ much modification also allow running tests on it in an automated setting (CI).
 
 .. image:: _static/tbot.svg
 
+.. note::
+    The **TBot Host** and the **Lab Host** can also be the same machine in which case
+    the SSH connection between them is not needed. (Same with BuildHost and LabHost)
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:

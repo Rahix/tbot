@@ -3,6 +3,24 @@
 ## [Unreleased]
 
 
+## [0.6.0-pre06] - 2018-10-11
+### Added
+- Reimplemented Logging. The following generators have been updated:
+    * `htmllog`
+    * `junit`
+- Support for password authentication on SSH machines.  **I strongly
+  reccomend not using this!**
+
+### Changed
+- Updated documentation
+
+### Fixed
+- Fixed pre-commit selftest hook creating log files
+
+### Removed
+- Unnecessary files from pre 0.6 versions
+
+
 ## [0.6.0-pre05] - 2018-09-26
 ### Added
 - `verbosity` parameter for `log.message`

@@ -1,6 +1,7 @@
 import time
 import abc
 import pathlib
+from tbot import log_event
 from tbot.machine import channel
 from tbot.machine import linux
 from tbot.machine.linux import auth
@@ -33,6 +34,16 @@ class SSHMachine(linux.LinuxMachine):
         """
         Return an authenticator that allows logging in on this machine.
 
+        .. danger::
+            It is strongly advised to use key authentication.  If you use password
+            auth, **THE PASSWORD WILL BE LEAKED** and **MIGHT EASILY BE STOLEN**
+            by other users on your labhost.  It will also be visible in the log file.
+
+            If you decide to use this, you're doing this on your own risk.
+
+            The only case where I support using passwords is when connecting to
+            a test board with a default password.
+
         :rtype: tbot.machine.linux.auth.Authenticator
         """
         return auth.PrivateKeyAuthenticator(pathlib.Path.home() / ".ssh" / "id_rsa")
@@ -47,22 +58,30 @@ class SSHMachine(linux.LinuxMachine):
         return 22
 
     def __repr__(self) -> str:
-        return f"<{self.__class__.__name__} {self.username}@{self.hostname}:{self.port} (Lab: {self.labhost!r}>"
+        return (
+            f"<{self.__class__.__name__} {self.username}@{self.hostname}:{self.port} (Lab: {self.labhost!r}>"
+        )
 
     def _connect(self) -> channel.Channel:
         chan = self.labhost.new_channel()
 
+        hk_disable = ["-o", "StrictHostKeyChecking=no"] if self.ignore_hostkey else []
+
         authenticator = self.authenticator
         if isinstance(authenticator, auth.PasswordAuthenticator):
-            raise RuntimeError("Password authentication is not yet supported")
-        if not isinstance(authenticator, auth.PrivateKeyAuthenticator):
-            raise RuntimeError("Only key authentication is supported")
+            # Careful, password WILL BE LEAKED!
+            cmd = ["sshpass", "-p", authenticator.password, "ssh"]
+        elif isinstance(authenticator, auth.PrivateKeyAuthenticator):
+            cmd = ["ssh", "-o", "BatchMode=yes", "-i", str(authenticator.key)]
+        else:
+            raise RuntimeError(f"{authenticator!r} is not supported for SSH hosts!")
 
-        hk_disable = "-o StrictHostKeyChecking=no" if self.ignore_hostkey else ""
-
-        chan.send(
-            f"ssh -o BatchMode=yes {hk_disable} -i {authenticator.key} -p {self.port} {self.username}@{self.hostname}; exit\n"
+        cmd_str = self.build_command(
+            *cmd, *hk_disable, "-p", str(self.port), f"{self.username}@{self.hostname}"
         )
+
+        with log_event.command(self.labhost.name, cmd_str):
+            chan.send(cmd_str + "; exit\n")
 
         time.sleep(0.5)
 
