@@ -1,23 +1,25 @@
 ``tbot.machine.board`` Module
 =============================
+.. automodule:: tbot.machine.board.board
 .. autoclass:: tbot.machine.board.Board
     :members:
 
+.. automodule:: tbot.machine.board.machine
 .. autoclass:: tbot.machine.board.BoardMachine
     :members:
 
-.. automodule:: tbot.machine.board.board
-.. automodule:: tbot.machine.board.machine
 
 U-Boot
 ------
+.. automodule:: tbot.machine.board.uboot
 .. autoclass:: tbot.machine.board.UBootMachine
     :members:
 
-.. automodule:: tbot.machine.board.uboot
 
 Special Characters
 ^^^^^^^^^^^^^^^^^^
+.. automodule:: tbot.machine.board.special
+
 .. autoclass:: tbot.machine.board.Env
     :members:
 
@@ -32,14 +34,13 @@ Special Characters
 
         m.exec0("if", "true", board.Then, "then", "echo", "Hallo", board.Then, "fi")
 
-.. automodule:: tbot.machine.board.special
 
 Linux
 -----
+.. automodule:: tbot.machine.board.linux
+
 .. autoclass:: tbot.machine.board.LinuxWithUBootMachine
     :members:
 
 .. autoclass:: tbot.machine.board.LinuxStandaloneMachine
     :members:
-
-.. automodule:: tbot.machine.board.linux

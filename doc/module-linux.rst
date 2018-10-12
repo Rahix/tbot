@@ -62,18 +62,17 @@ Command Specials
 
 Implementations
 ^^^^^^^^^^^^^^^
+.. automodule:: tbot.machine.linux.lab.machine
 .. autoclass:: tbot.machine.linux.LabHost
     :members:
 
+.. automodule:: tbot.machine.linux.build.machine
 .. autoclass:: tbot.machine.linux.BuildMachine
     :members:
 
+.. automodule:: tbot.machine.linux.ssh.machine
 .. autoclass:: tbot.machine.linux.SSHMachine
     :members:
-
-.. automodule:: tbot.machine.linux.lab.machine
-.. automodule:: tbot.machine.linux.build.machine
-.. automodule:: tbot.machine.linux.ssh.machine
 
 
 ``tbot.machine.linux.auth``
@@ -84,24 +83,25 @@ Implementations
 
 ``tbot.machine.linux.lab``
 --------------------------
+.. automodule:: tbot.machine.linux.lab.local
 .. autoclass:: tbot.machine.linux.lab.LocalLabHost
     :members:
 
+.. automodule:: tbot.machine.linux.lab.ssh
 .. autoclass:: tbot.machine.linux.lab.SSHLabHost
     :members:
 
-.. automodule:: tbot.machine.linux.lab.local
-.. automodule:: tbot.machine.linux.lab.ssh
 
 ``tbot.machine.linux.build``
 ----------------------------
+.. automodule:: tbot.machine.linux.build.toolchain
+
 .. autoclass:: tbot.machine.linux.build.Toolchain
     :members:
 
 .. autoclass:: tbot.machine.linux.build.EnvScriptToolchain
     :members:
 
-.. automodule:: tbot.machine.linux.build.toolchain
 
 ``tbot.machine.linux.shell``
 ----------------------------

@@ -3,13 +3,12 @@
 
 Shell
 -----
+.. automodule:: tbot.tc.shell
 .. autofunction:: tbot.tc.shell.copy
 
-.. automodule:: tbot.tc.shell
 
 Git
 ---
+.. automodule:: tbot.tc.git
 .. autoclass:: tbot.tc.git.GitRepository
     :members:
-
-.. automodule:: tbot.tc.git
