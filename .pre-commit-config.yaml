@@ -30,7 +30,15 @@ repos:
     - id: selftests
       name: TBot Selftest
       language: system
-      entry: python3 -c "__import__('tbot.main').main.main()" --log "/dev/null" selftest
+      entry: python3 -c "__import__('tbot.main').main.main()" --log "/tmp/tbot-log.json" selftest
+    - id: generator_html
+      name: TBot HTML log generator
+      language: system
+      entry: ./generators/generate_htmllog.py /tmp/tbot-log.json
+    - id: generator_junit
+      name: TBot junit generator
+      language: system
+      entry: ./generators/junit.py /tmp/tbot-log.json
     - id: static_tests
       name: TBot type system tests
       language: system
