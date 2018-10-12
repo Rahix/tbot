@@ -74,4 +74,5 @@ def minisshd(h: linux.LabHost, port: int = 2022) -> typing.Generator:
         ssh_machine = MiniSSHMachine(h, port)
         yield ssh_machine
     finally:
+        tbot.log.message("Stopping dropbear ...")
         h.exec0("kill", pid)
