@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Password support in `shell.copy`
 
 
 ## [0.6.0-pre06] - 2018-10-11
