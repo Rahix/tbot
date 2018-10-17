@@ -4,6 +4,9 @@
 ### Added
 - Password support in `shell.copy`
 
+### Fixed
+- Stdout showing password prompt late
+
 
 ## [0.6.0-pre06] - 2018-10-11
 ### Added
