@@ -6,6 +6,7 @@
 
 ### Fixed
 - Stdout showing password prompt late
+- Remove some escape sequences from log output to keep it tidy
 
 
 ## [0.6.0-pre06] - 2018-10-11
