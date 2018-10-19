@@ -93,6 +93,9 @@ class Channel(abc.ABC):
         """
         Close this channel.
 
+        An Implementation of ``close`` must call ``Channel.cleanup`` before
+        closing the channel if it is still open.
+
         Calls to ``send``/``recv`` must fail after calling ``close``.
         """
         pass
@@ -126,6 +129,14 @@ class Channel(abc.ABC):
     def _interactive_teardown(self) -> None:
         """Teardown after returning from an interactive session."""
         pass
+
+    def register_cleanup(self, clean: "typing.Callable[[Channel], None]") -> None:
+        """Register a cleanup function for this channel."""
+
+        def cleanup() -> None:
+            clean(self)
+
+        self.cleanup = cleanup
 
     def attach_interactive(
         self, end_magic: typing.Union[str, bytes, None] = None
@@ -226,6 +237,7 @@ class Channel(abc.ABC):
 
     def __init__(self) -> None:
         """Create a new channel."""
+        self.cleanup: typing.Callable[[], None] = lambda: None
         self.initialize()
 
     def read_until_prompt(

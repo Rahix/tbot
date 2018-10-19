@@ -56,6 +56,8 @@ class ParamikoChannel(channel.Channel):
         return buf
 
     def close(self) -> None:  # noqa: D102
+        if self.isopen():
+            self.cleanup()
         self.ch.close()
 
     def fileno(self) -> int:  # noqa: D102
