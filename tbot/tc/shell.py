@@ -1,3 +1,4 @@
+import copy as cpy
 import typing
 import tbot
 from tbot.machine import linux
@@ -18,18 +19,45 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
     :param linux.Path p1: Exisiting path to be copied
     :param linux.Path p2: Target where ``p1`` should be copied
     """
-    if p1.host is p2.host:
+    if isinstance(p1.host, p2.host.__class__) or isinstance(p2.host, p1.host.__class__):
         # Both paths are on the same host
-        p1.host.exec0("cp", p1, typing.cast(linux.Path[H1], p2))
+        p2_w1 = linux.Path(p1.host, p2)
+        p1.host.exec0("cp", p1, p2_w1)
         return
     elif isinstance(p1.host, linux.SSHMachine) and p1.host.labhost is p2.host:
+        # Copy from an SSH machine
         copy_to = False
         local_path = typing.cast(linux.Path[linux.LinuxMachine], p2)
         remote_path = typing.cast(linux.Path[linux.SSHMachine], p1)
     elif isinstance(p2.host, linux.SSHMachine) and p2.host.labhost is p1.host:
+        # Copy to an SSH machine
         copy_to = True
         local_path = typing.cast(linux.Path[linux.LinuxMachine], p1)
         remote_path = typing.cast(linux.Path[linux.SSHMachine], p2)
+    elif isinstance(p1.host, linux.lab.LocalLabHost) and isinstance(
+        p2.host, linux.lab.SSHLabHost
+    ):
+        # Copy from local to ssh labhost
+        copy_to = True
+        local_path = typing.cast(linux.Path[linux.LinuxMachine], p1)
+        # Create a fake SSH machine path
+        fake_machine = cpy.copy(p2.host)
+        setattr(fake_machine, "ignore_hostkey", False)
+        remote_path = typing.cast(
+            linux.Path[linux.SSHMachine], linux.Path(fake_machine, p2)
+        )
+    elif isinstance(p2.host, linux.lab.LocalLabHost) and isinstance(
+        p1.host, linux.lab.SSHLabHost
+    ):
+        # Copy to local from ssh labhost
+        copy_to = False
+        local_path = typing.cast(linux.Path[linux.LinuxMachine], p2)
+        # Create a fake SSH machine path
+        fake_machine = cpy.copy(p1.host)
+        setattr(fake_machine, "ignore_hostkey", False)
+        remote_path = typing.cast(
+            linux.Path[linux.SSHMachine], linux.Path(fake_machine, p1)
+        )
     else:
         raise NotImplementedError(f"Can't copy from {p1.host} to {p2.host}!")
 

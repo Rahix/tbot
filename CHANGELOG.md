@@ -6,6 +6,8 @@
 - `Board.cleanup`, `Channel.register_cleanup`, ability to register a hook
   for cleaning a channel.  Might help if some lockfiles are kept when TBot
   just kills a connection.
+- Support for copying from `LocalLabHost()` to `SSHLabHost()` and the other
+  way around.
 
 ### Fixed
 - Fix failures not leading to error return code
