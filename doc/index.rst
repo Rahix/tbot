@@ -25,6 +25,7 @@ much modification also allow running tests in an automated setting (CI).
 
    install
    getting-started
+   recipes
    module-main
    module-machine
    module-linux

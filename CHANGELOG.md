@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Added
 - Password support in `shell.copy`
+- Recipes in documentation
 - `Board.cleanup`, `Channel.register_cleanup`, ability to register a hook
   for cleaning a channel.  Might help if some lockfiles are kept when TBot
   just kills a connection.
