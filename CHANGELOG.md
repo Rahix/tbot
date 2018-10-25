@@ -8,6 +8,7 @@
   just kills a connection.
 
 ### Fixed
+- Fix failures not leading to error return code
 - Better error message if a board/lab was not found
 - Stdout showing password prompt late
 - Remove some escape sequences from log output to keep it tidy
