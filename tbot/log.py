@@ -110,6 +110,15 @@ class EventIO(io.StringIO):
         Printing to stdout will only occur once a newline ``"\n"`` is
         written.
         """
+
+        s = (
+            s.replace("\x1B[H", "")
+            .replace("\x1B[2J", "")
+            .replace("\x1B[K", "")
+            .replace("\x1B[r", "")
+            .replace("\x1B[u", "")
+        )
+
         res = super().write(s)
 
         self._print_lines()

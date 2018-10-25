@@ -3,6 +3,28 @@
 ## [Unreleased]
 
 
+## [0.6.0-pre07] - 2018-10-25
+### Added
+- Password support in `shell.copy`
+- Recipes in documentation
+- `Board.cleanup`, `Channel.register_cleanup`, ability to register a hook
+  for cleaning a channel.  Might help if some lockfiles are kept when TBot
+  just kills a connection.
+- Support for copying from `LocalLabHost()` to `SSHLabHost()` and the other
+  way around.
+- `GitRepository.symbolic_head` to get current branch name
+
+### Changed
+- `GitRepository.bisect` now ensures that the good revision is actually good
+  and the current revision is actually bad.
+
+### Fixed
+- Fix failures not leading to error return code
+- Better error message if a board/lab was not found
+- Stdout showing password prompt late
+- Remove some escape sequences from log output to keep it tidy
+
+
 ## [0.6.0-pre06] - 2018-10-11
 ### Added
 - Reimplemented Logging. The following generators have been updated:

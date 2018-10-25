@@ -7,11 +7,11 @@ Welcome to TBot's documentation!
 ================================
 
 TBot is a testing/automation tool that is focused on usage in embedded development.
-At it's core TBot just provides utilities for interaction with remote hosts/targets
+At its core TBot just provides utilities for interaction with remote hosts/targets
 and an extensive library of routines that are common in embedded development/testing.
 
 TBot aims to be a support for the developer while working on a project and without
-much modification also allow running tests on it in an automated setting (CI).
+much modification also allow running tests in an automated setting (CI).
 
 .. image:: _static/tbot.svg
 
@@ -25,6 +25,7 @@ much modification also allow running tests on it in an automated setting (CI).
 
    install
    getting-started
+   recipes
    module-main
    module-machine
    module-linux

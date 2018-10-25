@@ -51,9 +51,9 @@ class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
         output += self.login_prompt + self.username + "\n"
         if self.password is not None:
             chan.read_until_prompt("word: ")
-            stream.write("Password: ****")
-            output += "Password: ****"
             chan.send(self.password + "\n")
+            stream.write("Password: ****\n")
+            output += "Password: ****\n"
         time.sleep(self.login_wait)
         chan.send("\n")
         chan.initialize(sh=self.shell)

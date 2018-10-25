@@ -143,7 +143,7 @@ def selftest_machine_channel(ch: channel.Channel, remote_close: bool) -> None:
 
     if remote_close:
         ch.send("exit\n")
-        time.sleep(0.01)
+        time.sleep(0.1)
         ch.recv(timeout=1)
 
         raised = False

@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """Print all ["msg", ...] log events."""
 import sys
 import logparser

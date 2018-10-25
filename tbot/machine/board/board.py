@@ -69,6 +69,15 @@ class Board(contextlib.AbstractContextManager):
         """Connect to the serial port of this board."""
         return None
 
+    def cleanup(self) -> None:
+        """
+        Cleanup the connection.
+
+        Might be necessary if the TBot's default behaviour
+        of just killing the shell leaves lock files behind.
+        """
+        pass
+
     def __init__(self, lh: linux.LabHost) -> None:
         """
         Initialize an instance of this board.
@@ -91,6 +100,13 @@ class Board(contextlib.AbstractContextManager):
         if self.channel is not None and not self.channel.isopen():
             raise RuntimeError("Could not connect to board!")
         self._rc = 0
+
+        if self.channel is not None:
+
+            def cleaner(_: channel.Channel) -> None:
+                self.cleanup()
+
+            self.channel.register_cleanup(cleaner)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.lh!r})"

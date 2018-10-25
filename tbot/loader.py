@@ -49,6 +49,8 @@ def get_file_list(
 
 
 def load_module(p: pathlib.Path) -> importlib.types.ModuleType:
+    if not p.is_file():
+        raise FileNotFoundError(f"The module {str(p)!r} does not exist")
     default_sys_path = sys.path
     try:
         module_spec = importlib.util.spec_from_file_location(

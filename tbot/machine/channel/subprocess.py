@@ -72,6 +72,8 @@ class SubprocessChannel(channel.Channel):
         return buf
 
     def close(self) -> None:  # noqa: D102
+        if self.isopen():
+            self.cleanup()
         self.p.kill()
         self.p.wait()
 

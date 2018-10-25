@@ -1,3 +1,4 @@
+import sys
 import pathlib
 import time
 import argparse
@@ -223,6 +224,7 @@ def main() -> None:  # noqa: C901
             success=False,
             duration=duration,
         )
+        sys.exit(1)
     else:
         duration = time.monotonic() - log.START_TIME
         log.EventIO(

@@ -97,6 +97,7 @@ def acquire_uboot(board: Board) -> UBootMachine:
     your testcases should optionally take the :class:`UBootMachine` as a
     parameter. The recipe looks like this::
 
+        import contextlib
         import typing
         import tbot
         from tbot.machine import board
@@ -105,13 +106,17 @@ def acquire_uboot(board: Board) -> UBootMachine:
         @tbot.testcase
         def my_testcase(
             lab: typing.Optional[tbot.selectable.LabHost] = None,
-            ub: typing.Optional[board.UBootMachine] = None,
+            uboot: typing.Optional[board.UBootMachine] = None,
         ) -> None:
-            with lab or tbot.acquire_lab() as lh:
-                with tbot.acquire_board(lh) if ub is None else ub.board as b:
-                    with ub or tbot.acquire_uboot(b) as ub:
-                        # Your code goes here
-                        ...
+            with contextlib.ExitStack() as cx:
+                lh = cx.enter_context(lab or tbot.acquire_lab())
+                if uboot is not None:
+                    ub = uboot
+                else:
+                    b = cx.enter_context(tbot.acquire_board(lh))
+                    ub = cx.enter_context(tbot.acquire_uboot(b))
+
+                ...
 
     :rtype: tbot.machine.board.UBootMachine
     """
@@ -141,21 +146,26 @@ def acquire_linux(b: typing.Union[Board, UBootMachine]) -> LinuxMachine:
     To write testcases that work both from the commandline and when called from other
     testcases, use the following recipe::
 
+        import contextlib
         import typing
         import tbot
         from tbot.machine import board
 
 
         @tbot.testcase
-        def my_testcase(
+        def test_testcase(
             lab: typing.Optional[tbot.selectable.LabHost] = None,
-            lnx: typing.Optional[board.LinuxMachine] = None,
+            board_linux: typing.Optional[board.LinuxMachine] = None,
         ) -> None:
-            with lab or tbot.acquire_lab() as lh:
-                with tbot.acquire_board(lh) if lnx is None else lnx.board as b:
-                    with lnx or tbot.acquire_linux(b) as lnx:
-                        # Your code goes here
-                        ...
+            with contextlib.ExitStack() as cx:
+                lh = cx.enter_context(lab or tbot.acquire_lab())
+                if board_linux is not None:
+                    lnx = board_linux
+                else:
+                    b = cx.enter_context(tbot.acquire_board(lh))
+                    lnx = cx.enter_context(tbot.acquire_linux(b))
+
+                ...
 
     :rtype: tbot.machine.board.LinuxMachine
     """

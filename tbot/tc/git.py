@@ -125,6 +125,15 @@ class GitRepository(linux.Path[H]):
         """Return the current HEAD of this repo."""
         return self.git0("rev-parse", "HEAD").strip()
 
+    @property
+    def symbolic_head(self) -> str:
+        """Return the current HEAD of this repo, as a symbolic if possible."""
+        res = self.git("symbolic-ref", "--short", "--quiet", "HEAD")
+        if res[0] == 0:
+            return res[1].strip()
+        else:
+            return self.head
+
     def checkout(self, rev: str) -> None:
         """
         Checkout a revision or branch.
@@ -231,6 +240,21 @@ class GitRepository(linux.Path[H]):
         :rtype: str
         :returns: The first bad commit
         """
+
+        # First check if good is good and bad is bad
+        tbot.log.message("Trying current revision ...")
+        if test(self):
+            raise AssertionError("The current revision isn't actually bad!")
+
+        current = self.symbolic_head
+        self.checkout(good)
+        tbot.log.message(f"Trying 'good' revision ({good}) ...")
+        if not test(self):
+            self.checkout(current)
+            raise AssertionError("The 'good' revision isn't actually good!")
+        self.checkout(current)
+
+        # Do the bisect now
         try:
             self.git0("bisect", "start")
             self.git0("bisect", "bad")
@@ -267,7 +291,5 @@ class GitRepository(linux.Path[H]):
                         "First bad commit is " + tbot.log.c(remaining[0]).yellow
                     )
                     return remaining[0]
-        except:  # noqa: E722
-            raise
         finally:
             self.git0("bisect", "reset")
