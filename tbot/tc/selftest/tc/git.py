@@ -161,8 +161,6 @@ def selftest_tc_git_bisect(lab: typing.Optional[linux.LabHost] = None,) -> None:
         repo = git.GitRepository(target, remote)
         counter = repo / "counter.txt"
 
-        rev = repo.head
-
         for i in range(0, 24):
             tbot.log.message(f"Create commit ({i+1:2}/24) ...")
 
@@ -170,9 +168,16 @@ def selftest_tc_git_bisect(lab: typing.Optional[linux.LabHost] = None,) -> None:
             repo.add(counter)
             repo.commit(f"Set counter to {i}", author="TBot Selftest <none@none>")
 
+            if i == 0:
+                # Take the first commit with counter as good
+                rev = repo.head
+
         @tbot.testcase
         def check_counter(repo: git.GitRepository) -> bool:
-            return int(repo.host.exec0("cat", repo / "counter.txt").strip()) < 17
+            result = repo.host.exec("cat", repo / "counter.txt")
+            return result[0] == 0 and int(result[1].strip()) < 17
+
+        head = repo.symbolic_head
 
         bad = repo.bisect(good=rev, test=check_counter)
 
@@ -180,4 +185,8 @@ def selftest_tc_git_bisect(lab: typing.Optional[linux.LabHost] = None,) -> None:
 
         repo.git0("show", bad, linux.Pipe, "cat")
 
+        new_head = repo.symbolic_head
+        assert (
+            new_head == head
+        ), f"Bisect didn't clean up ... ({new_head!r} != {head!r})"
         lh.exec0("rm", "-rf", target)

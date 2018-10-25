@@ -8,6 +8,11 @@
   just kills a connection.
 - Support for copying from `LocalLabHost()` to `SSHLabHost()` and the other
   way around.
+- `GitRepository.symbolic_head` to get current branch name
+
+### Changed
+- `GitRepository.bisect` now ensures that the good revision is actually good
+  and the current revision is actually bad.
 
 ### Fixed
 - Fix failures not leading to error return code
