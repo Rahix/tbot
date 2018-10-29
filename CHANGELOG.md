@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- *Internal*: `Board` no longer manages the boot-logevent as that breaks
+  when no BoardMachine follows up
 
 
 ## [0.6.0-pre07] - 2018-10-25

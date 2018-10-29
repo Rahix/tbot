@@ -153,8 +153,8 @@ class LinuxWithUBootMachine(LinuxMachine[B]):
         self.channel = ub.channel
 
         with tbot.log.EventIO(
-            ["board", "linux-boot", ub.board.name],
-            tbot.log.c("LINUX BOOT").bold + f" ({self.name})",
+            ["board", "linux", ub.board.name],
+            tbot.log.c("LINUX").bold + f" ({self.name})",
             verbosity=tbot.log.Verbosity.QUIET,
         ) as boot_ev:
             for cmd in self.boot_commands[:-1]:
@@ -231,8 +231,8 @@ class LinuxStandaloneMachine(LinuxMachine[B]):
             raise RuntimeError("{board!r} does not support a serial connection!")
 
         with tbot.log.EventIO(
-            ["board", "linux-boot", self.board.name],
-            tbot.log.c("LINUX BOOT").bold + f" ({self.name})",
+            ["board", "linux", self.board.name],
+            tbot.log.c("LINUX").bold + f" ({self.name})",
             verbosity=tbot.log.Verbosity.QUIET,
         ) as ev:
             ev.prefix = "   <> "
