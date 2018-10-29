@@ -57,12 +57,18 @@ class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
         else:
             raise RuntimeError("{board!r} does not support a serial connection!")
 
-        with board.boot_ev:
+        with tbot.log.EventIO(
+            ["board", "uboot", board.name],
+            tbot.log.c("UBOOT").bold + f" ({self.name})",
+            verbosity=tbot.log.Verbosity.QUIET,
+        ) as boot_ev:
+            boot_ev.verbosity = tbot.log.Verbosity.STDOUT
+            boot_ev.prefix = "   <> "
             boot_log = self.channel.read_until_prompt(
-                self.autoboot_prompt, regex=True, stream=board.boot_ev
+                self.autoboot_prompt, regex=True, stream=boot_ev
             )
 
-            board.boot_ev.data["output"] = boot_log
+            boot_ev.data["output"] = boot_log
         self.channel.send(self.autoboot_keys)
         self.channel.read_until_prompt(self.prompt)
 

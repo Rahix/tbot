@@ -3,6 +3,18 @@
 ## [Unreleased]
 
 
+## [0.6.0-pre08] - 2018-10-29
+### Added
+- Selftest that fails intentionally
+
+### Changed
+- *Internal*: `Board` no longer manages the boot-logevent as that breaks
+  when no BoardMachine follows up
+
+### Fixed
+- HTMLLog generater producing bad HTML because of some log issues
+
+
 ## [0.6.0-pre07] - 2018-10-25
 ### Added
 - Password support in `shell.copy`

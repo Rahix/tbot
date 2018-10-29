@@ -126,9 +126,8 @@ The solution is a hybrid and looks like the following::
             name = lh.exec0("uname", "-n").strip()
             tbot.log.message(f"Hello {name}!")
 
-I'd suggest remembering this and using it for any testcase that should be commandline callable.  Also,
-if you take a look at the documentation for :func:`tbot.acquire_uboot` and :func:`tbot.acquire_linux`,
-there are similar recipes available.  More about those two functions later.
+This is one of my 'recipes'.  These are code snippets that you will reuse all the time while using
+TBot.  There are a lot more, for different tasks.  Take a look at the :ref:`recipes:Recipes` page.
 
 .. note::
     In this documentation and in the TBot sources, type annotations are used everywhere.  This allows
@@ -238,6 +237,7 @@ is that this time, we need to first initialize the board::
     A pattern similar to the one above can be used to write testcases that can either be used from
     the commandline or supplied with a board-machine::
 
+        import contextlib
         import typing
         import tbot
         from tbot.machine import board
@@ -246,13 +246,21 @@ is that this time, we need to first initialize the board::
         @tbot.testcase
         def my_testcase(
             lab: typing.Optional[tbot.selectable.LabHost] = None,
-            ub: typing.Optional[board.UBootMachine] = None,
+            uboot: typing.Optional[board.UBootMachine] = None,
         ) -> None:
-            with lab or tbot.acquire_lab() as lh:
-                with tbot.acquire_board(lh) if ub is None else ub.board as b:
-                    with ub or tbot.acquire_uboot(b) as ub:
-                        # Your code goes here
-                        ...
+            with contextlib.ExitStack() as cx:
+                lh = cx.enter_context(lab or tbot.acquire_lab())
+                if uboot is not None:
+                    ub = uboot
+                else:
+                    b = cx.enter_context(tbot.acquire_board(lh))
+                    ub = cx.enter_context(tbot.acquire_uboot(b))
+
+                ...
+
+
+    Again, take a look at the :ref:`recipes:Testcase with U-Boot` section on the :ref:`recipes:Recipes`
+    page.
 
 Interactive
 ^^^^^^^^^^^

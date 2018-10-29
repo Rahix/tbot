@@ -23,9 +23,30 @@ def selftest_user(lab: typing.Optional[linux.LabHost] = None,) -> None:
 
 
 @tbot.testcase
+def selftest_failing(lab: typing.Optional[linux.LabHost] = None,) -> None:
+
+    class CustomException(Exception):
+        pass
+
+    @tbot.testcase
+    def inner() -> None:
+        raise CustomException()
+
+    raised = False
+    try:
+        inner()
+    except CustomException:
+        raised = True
+    assert raised, "Exception was not raised"
+
+
+@tbot.testcase
 def selftest(lab: typing.Optional[linux.LabHost] = None,) -> None:
     with lab or tbot.acquire_lab() as lh:
         tc.testsuite(
+            selftest_failing,
+            selftest_uname,
+            selftest_user,
             selftest_machine_reentrant,  # noqa: F405
             selftest_machine_labhost_shell,  # noqa: F405
             selftest_machine_ssh_shell,  # noqa: F405

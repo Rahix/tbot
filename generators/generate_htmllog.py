@@ -7,6 +7,7 @@ using U-Boot's python test suite's html log
 generator as a base
 """
 import sys
+import re
 import pathlib
 import string
 import logparser
@@ -38,28 +39,23 @@ def main() -> None:
     def gen_html(ev: logparser.LogEvent) -> str:
         """Generate html for a log message."""
         if ev.type == ["tc", "begin"]:
-            return f"""<div class="section block">
+            return f"""\
+                       <div class="section block">
                          <div class="section-header block-header">
                            {ev.data['name']}
                          </div>
                          <div class="section-content block-content">
-                           <div class="action">
-                             <pre></pre>
-                           </div>"""
+                           """
         elif ev.type == ["tc", "end"]:
             if ev.data["success"]:
-                return f"""<div class="status-pass">
+                return f"""\
+                           <div class="status-pass">
                              <pre>OK, Time: {ev.data['duration']:.3f}s</pre>
                            </div>
                          </div>
                        </div>"""
-            if ev.data["fail_ok"]:
-                return f"""<div class="status-xpass">
-                             <pre>Fail expected, Time: {ev.data['duration']:.3f}s</pre>
-                           </div>
-                         </div>
-                       </div>"""
-            return f"""    <div class="status-fail">
+            return f"""\
+                           <div class="status-fail">
                              <pre>FAIL, Time: {ev.data['duration']:.3f}s</pre>
                            </div>
                          </div>
@@ -76,7 +72,8 @@ def main() -> None:
                 )
             except KeyError:
                 output = "&lt;no output&gt;"
-            return f"""    <div class="block">
+            return f"""\
+                           <div class="block">
                              <div class="block-header">
                                {shell_type} {command}
                              </div>
@@ -86,9 +83,14 @@ def main() -> None:
                              </div>
                            </div>"""
         elif ev.type[0] == "board":
-            idx = ["on", "off", "linux-boot"].index(ev.type[1])
+            idx = ["on", "off", "uboot", "linux"].index(ev.type[1])
 
-            ev_name = ["BOARD POWERUP", "BOARD POWER OFF", "BOARD LINUX BOOT"][idx]
+            ev_name = [
+                "BOARD POWER-ON",
+                "BOARD POWER-OFF",
+                "BOARD UBOOT START",
+                "BOARD LINUX BOOT",
+            ][idx]
             try:
                 output = (
                     ev.data["output"]
@@ -98,7 +100,8 @@ def main() -> None:
                 )
             except KeyError:
                 output = "<no output>"
-            return f"""    <div class="block">
+            return f"""\
+                           <div class="block">
                              <div class="block-header">
                                -&gt; <b>{ev_name}</b>
                              </div>
@@ -115,7 +118,8 @@ def main() -> None:
                 .replace(">", "&gt;")
             ) + "\n"
             first_line, message = output.split("\n", maxsplit=1)
-            return f"""    <div class="block">
+            return f"""\
+                           <div class="block">
                              <div class="block-header">
                                Message ({ev.type[1]}): {first_line}
                              </div>
@@ -128,7 +132,8 @@ def main() -> None:
                              </div>
                            </div>"""
         elif ev.type[0] == "exception":
-            return f"""    <div class="block">
+            return f"""\
+                           <div class="block">
                              <div class="block-header">
                                Exception: {ev.data['name']}
                              </div>
@@ -155,7 +160,10 @@ def main() -> None:
         "content": "\n".join(map(gen_html, log)),
     }
 
-    print(string.Template(template_string).safe_substitute(data))
+    page = string.Template(template_string).safe_substitute(data)
+
+    ansi_escapes = re.compile(r"\x1B\[[0-?]*[ -/]*[@-~]")
+    print(ansi_escapes.sub("", page))
 
 
 if __name__ == "__main__":

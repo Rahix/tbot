@@ -91,9 +91,6 @@ class Board(contextlib.AbstractContextManager):
         :param tbot.machine.linux.LabHost lh: LabHost from where to connect to the Board.
         """
         self.lh = lh
-        self.boot_ev = tbot.log.EventIO(
-            ["board", "on", self.name], verbosity=tbot.log.Verbosity.QUIET
-        )
         self.channel = self.connect()
         if self.connect_wait is not None:
             time.sleep(self.connect_wait)
@@ -115,9 +112,11 @@ class Board(contextlib.AbstractContextManager):
         self._rc += 1
         if self._rc > 1:
             return self
-        self.boot_ev.writeln(tbot.log.c("POWERON").bold + f" ({self.name})")
-        self.boot_ev.verbosity = tbot.log.Verbosity.STDOUT
-        self.boot_ev.prefix = "   <> "
+        tbot.log.EventIO(
+            ["board", "on", self.name],
+            tbot.log.c("POWERON").bold + f" ({self.name})",
+            verbosity=tbot.log.Verbosity.QUIET,
+        )
         self.poweron()
         self.on = True
         return self
