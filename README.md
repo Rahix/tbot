@@ -7,6 +7,8 @@ and an extensive library of routines that are common in embedded development/tes
 TBot aims to be a support for the developer while working on a project and without
 much modification also allow running tests in an automated setting (CI).
 
+Most info about TBot can be found in its [documentation](https://rahix.de/tbot).
+
 ![TBot Architecture](doc/_static/tbot.png)
 
 *Note that the TBot and Lab host can be the same machine.  Same with Lab and Build host.*
