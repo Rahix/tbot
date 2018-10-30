@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- Improved testrun end handling
 
 
 ## [0.6.0-pre08] - 2018-10-29

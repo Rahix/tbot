@@ -1,6 +1,5 @@
 import sys
 import pathlib
-import time
 import argparse
 from tbot import __about__
 
@@ -198,6 +197,8 @@ def main() -> None:  # noqa: C901
         for name, description in all_flags.items():
             log.message(log.c(name.ljust(width)).blue + ": " + description)
 
+    from tbot import log_event
+
     try:
         for tc in args.testcase:
             testcases[tc]()
@@ -215,26 +216,17 @@ def main() -> None:  # noqa: C901
             ev.prefix = "  "
             ev.write(trace)
 
-        duration = time.monotonic() - log.START_TIME
-        log.EventIO(
-            ["tbot", "end"],
-            log.c("FAILURE").red.bold + f" ({duration:.3f}s)",
-            nest_first=log.u("└─", "\\-"),
-            verbosity=log.Verbosity.QUIET,
-            success=False,
-            duration=duration,
-        )
+        log_event.tbot_end(False)
         sys.exit(1)
-    else:
-        duration = time.monotonic() - log.START_TIME
-        log.EventIO(
-            ["tbot", "end"],
-            log.c("SUCCESS").green.bold + f" ({duration:.3f}s)",
-            nest_first=log.u("└─", "\\-"),
+    except KeyboardInterrupt:
+        log.message(
+            log.c("Exception").red.bold + ":\n    Test run manually aborted.",
             verbosity=log.Verbosity.QUIET,
-            success=True,
-            duration=duration,
         )
+        log_event.tbot_end(False)
+        sys.exit(2)
+    else:
+        log_event.tbot_end(True)
 
 
 if __name__ == "__main__":
