@@ -4,6 +4,9 @@
 ### Added
 - `max` parameter for `Channel.recv()`
 - `recv_n` method for `Channel` to read exactly N bytes
+- `ignore_hostkey` in `SSHLabHost`
+- `console_check` hook to prevent racey board connections
+  from multiple developers
 
 ### Changed
 - Improved testrun end handling

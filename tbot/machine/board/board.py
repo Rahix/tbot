@@ -55,6 +55,22 @@ class Board(contextlib.AbstractContextManager):
         """Name of this board."""
         pass
 
+    def console_check(self) -> None:
+        """
+        Run this check before actually interacting with the board.
+
+        This hook allows you to ensure the console is unoccupied so you
+        don't accidentally interfere with other developers.
+
+        Return if the console if ok, raise an Exception if it is not.
+
+        .. note::
+            If the connect command fails in less than ``connect_wait``
+            seconds, this check is not needed.  It is, however, definitely
+            the safer way.
+        """
+        pass
+
     @abc.abstractmethod
     def poweron(self) -> None:
         """Power on this board."""
@@ -112,6 +128,7 @@ class Board(contextlib.AbstractContextManager):
         self._rc += 1
         if self._rc > 1:
             return self
+        self.console_check()
         tbot.log.EventIO(
             ["board", "on", self.name],
             tbot.log.c("POWERON").bold + f" ({self.name})",
