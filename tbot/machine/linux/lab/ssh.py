@@ -40,6 +40,15 @@ class SSHLabHost(LabHost):
     """
 
     @property
+    def ignore_hostkey(self) -> bool:
+        """
+        Ignore host key.
+
+        Set this to true if the remote changes its host key often.
+        """
+        return False
+
+    @property
     @abc.abstractmethod
     def hostname(self) -> str:
         """Return the hostname of this lab."""
@@ -72,7 +81,11 @@ class SSHLabHost(LabHost):
         """Create a new instance of this SSH LabHost."""
         super().__init__()
         self.client = paramiko.SSHClient()
-        self.client.load_system_host_keys()
+
+        if self.ignore_hostkey:
+            self.client.set_missing_host_key_policy(paramiko.client.AutoAddPolicy())
+        else:
+            self.client.load_system_host_keys()
 
         password = None
         key_file = None

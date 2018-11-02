@@ -1,3 +1,4 @@
+import getpass
 import typing
 import contextlib
 import tbot
@@ -32,6 +33,36 @@ class MiniSSHMachine(linux.SSHMachine):
         self._username = labhost.username
 
         super().__init__(labhost)
+
+
+class MiniSSHLabHost(linux.lab.SSHLabHost):
+    """SSHLabHost for test purposes."""
+
+    hostname = "localhost"
+    name = "minissh-lab"
+    ignore_hostkey = True
+
+    @property
+    def username(self) -> str:
+        """Return local username."""
+        return self._username
+
+    @property
+    def port(self) -> int:
+        """Return local ssh server port."""
+        return self._port
+
+    @property
+    def workdir(self) -> "linux.Path[MiniSSHLabHost]":
+        """Return a workdir."""
+        return linux.Workdir.static(self, "/tmp/tbot-wd/minisshd-remote")
+
+    def __init__(self, port: int) -> None:
+        """Create a new MiniSSHMachine."""
+        self._port = port
+        self._username = getpass.getuser()
+
+        super().__init__()
 
 
 @tbot.testcase

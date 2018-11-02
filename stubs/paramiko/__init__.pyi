@@ -1,5 +1,6 @@
 import typing
 import socket
+from . import client
 
 class Channel:
     def exec_command(self, command: str) -> None: ...
@@ -37,8 +38,10 @@ class Transport:
         timeout: typing.Optional[float] = None,
     ) -> Channel: ...
 
+
 class SSHClient:
     def load_system_host_keys(self) -> None: ...
+    def set_missing_host_key_policy(self, policy: client.MissingHostKeyPolicy) -> None: ...
     def connect(
         self,
         hostname: str,
