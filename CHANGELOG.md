@@ -7,6 +7,7 @@
 
 ### Changed
 - Improved testrun end handling
+- Made `SSHMachine` more userfriendly; now shows ssh errors in log
 
 
 ## [0.6.0-pre08] - 2018-10-29

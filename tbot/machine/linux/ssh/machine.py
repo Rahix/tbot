@@ -1,4 +1,3 @@
-import time
 import abc
 import pathlib
 from tbot import log_event
@@ -80,14 +79,29 @@ class SSHMachine(linux.LinuxMachine):
             *cmd, *hk_disable, "-p", str(self.port), f"{self.username}@{self.hostname}"
         )
 
-        with log_event.command(self.labhost.name, cmd_str):
-            chan.send(cmd_str + "; exit\n")
+        try:
+            with log_event.command(self.labhost.name, cmd_str) as ev:
+                send_str = cmd_str + "; exit\n"
+                chan.send(send_str)
+                # Read back command
+                chan.recv_n(len(send_str) + 1)
 
-        time.sleep(0.5)
+                head = b""
+                try:
+                    while True:
+                        head += chan.recv(timeout=0.1)
+                except TimeoutError:
+                    pass
+                finally:
+                    try:
+                        ev.write(head.decode("utf-8"))
+                    except UnicodeDecodeError:
+                        ev.write(head.decode("latin1"))
 
-        # Reinitialize channel after ssh connection is established
-
-        chan.initialize()
+            # Reinitialize channel after ssh connection is established
+            chan.initialize()
+        except channel.ChannelClosedException:
+            raise RuntimeError("SSH connection failed: Remote closed port")
 
         return chan
 
