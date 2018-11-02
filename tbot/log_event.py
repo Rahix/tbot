@@ -71,11 +71,20 @@ def command(mach: str, cmd: str) -> log.EventIO:
 
 
 def tbot_end(success: bool) -> None:
+    log.message(
+        log.c(
+            log.u(
+                "────────────────────────────────────────",
+                "----------------------------------------",
+            )
+        ).dark
+    )
+
     if log.LOGFILE is not None:
         log.message(f"Log written to {log.LOGFILE.name!r}")
+
     msg = log.c("SUCCESS").green.bold if success else log.c("FAILURE").red.bold
     duration = time.monotonic() - log.START_TIME
-
     log.EventIO(
         ["tbot", "end"],
         msg + f" ({duration:.3f}s)",
