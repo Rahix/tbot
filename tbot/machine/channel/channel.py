@@ -66,7 +66,9 @@ class Channel(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def recv(self, timeout: typing.Optional[float] = None) -> bytes:
+    def recv(
+        self, timeout: typing.Optional[float] = None, max: typing.Optional[int] = None
+    ) -> bytes:
         """
         Receive some data from this channel.
 
@@ -83,6 +85,7 @@ class Channel(abc.ABC):
 
         :param float timeout: Optional timeout after which ``recv`` should return
             if no data is avalable.
+        :param int max: Optional maximum number of bytes to read.
         :raises ChannelClosedException: If the channel is no longer open.
         :raises TimeoutError: If the timeout was reached before data got available.
         """
@@ -239,6 +242,26 @@ class Channel(abc.ABC):
         """Create a new channel."""
         self.cleanup: typing.Callable[[], None] = lambda: None
         self.initialize()
+
+    def recv_n(self, n: int, timeout: typing.Optional[float] = None) -> bytes:
+        """
+        Receive exactly N bytes.
+
+        Return exactly N bytes or raise an exception if the channel closed/the
+        timeout was reached.
+
+        :param int n: Number of bytes
+        :param float timeout: Optional timeout
+        """
+        start_time = time.monotonic()
+        buf = b""
+
+        while len(buf) < n:
+            buf += self.recv(timeout=timeout, max=(n - len(buf)))
+            if timeout is not None:
+                timeout = timeout - (time.monotonic() - start_time)
+
+        return buf
 
     def read_until_prompt(
         self,

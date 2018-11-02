@@ -139,6 +139,12 @@ def selftest_machine_channel(ch: channel.Channel, remote_close: bool) -> None:
     out = ch.raw_command("echo Hello World", timeout=1)
     assert out == "Hello World\n", repr(out)
 
+    # Check recv_n
+    ch.send("echo Foo Bar\n")
+    out2 = ch.recv_n(8, timeout=1.0)
+    assert out2 == b"echo Foo", repr(out)
+    ch.read_until_prompt(channel.TBOT_PROMPT)
+
     assert ch.isopen()
 
     if remote_close:

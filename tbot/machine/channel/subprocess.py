@@ -43,7 +43,9 @@ class SubprocessChannel(channel.Channel):
                 raise channel.ChannelClosedException()
             c += b
 
-    def recv(self, timeout: typing.Optional[float] = None) -> bytes:  # noqa: D102
+    def recv(
+        self, timeout: typing.Optional[float] = None, max: typing.Optional[int] = None
+    ) -> bytes:  # noqa: D102
         self.p.poll()
 
         buf = b""
@@ -56,8 +58,9 @@ class SubprocessChannel(channel.Channel):
                 raise TimeoutError()
         # If the process has ended, check for anything left
 
+        maxread = min(1024, max) if max else 1024
         try:
-            buf = os.read(self.pty_master, 1024)
+            buf = os.read(self.pty_master, maxread)
         except BlockingIOError:
             # If we don't get anything, and the timeout hasn't triggered
             # this channel is closed
@@ -65,7 +68,10 @@ class SubprocessChannel(channel.Channel):
 
         try:
             while True:
-                buf += os.read(self.pty_master, 1024)
+                maxread = min(1024, max - len(buf)) if max else 1024
+                if maxread == 0:
+                    break
+                buf += os.read(self.pty_master, maxread)
         except BlockingIOError:
             pass
 

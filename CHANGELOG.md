@@ -1,6 +1,10 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- `max` parameter for `Channel.recv()`
+- `recv_n` method for `Channel` to read exactly N bytes
+
 ### Changed
 - Improved testrun end handling
 

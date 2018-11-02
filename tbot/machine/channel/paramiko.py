@@ -35,15 +35,21 @@ class ParamikoChannel(channel.Channel):
                 raise channel.ChannelClosedException()
             c += b
 
-    def recv(self, timeout: typing.Optional[float] = None) -> bytes:  # noqa: D102
+    def recv(
+        self, timeout: typing.Optional[float] = None, max: typing.Optional[int] = None
+    ) -> bytes:  # noqa: D102
         if timeout is not None:
             self.ch.settimeout(timeout)
 
         try:
-            buf = self.ch.recv(1024)
+            maxread = min(1024, max) if max else 1024
+            buf = self.ch.recv(maxread)
 
             while self.ch.recv_ready():
-                buf += self.ch.recv(1024)
+                maxread = min(1024, max - len(buf)) if max else 1024
+                if maxread == 0:
+                    break
+                buf += self.ch.recv(maxread)
         except socket.timeout:
             raise TimeoutError()
         finally:
