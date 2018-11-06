@@ -90,7 +90,7 @@ class EventIO(io.StringIO):
 
         while "\n" in buf:
             line = buf.split("\n", maxsplit=1)[0]
-            print(self._prefix() + line)
+            print(self._prefix() + c(line))
             length = len(line) + 1
             self.cursor += length
             buf = buf[length:]
