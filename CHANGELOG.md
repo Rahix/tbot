@@ -13,6 +13,9 @@
 - Improved testrun end handling
 - Made `SSHMachine` more userfriendly; now shows ssh errors in log
 
+### Fixed
+- `shell.copy` sometimes not respecting `ignore_hostkey` flag
+
 
 ## [0.6.0-pre08] - 2018-10-29
 ### Added

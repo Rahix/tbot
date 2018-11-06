@@ -42,7 +42,7 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
         local_path = typing.cast(linux.Path[linux.LinuxMachine], p1)
         # Create a fake SSH machine path
         fake_machine = cpy.copy(p2.host)
-        setattr(fake_machine, "ignore_hostkey", False)
+        setattr(fake_machine, "ignore_hostkey", p2.host.ignore_hostkey)
         remote_path = typing.cast(
             linux.Path[linux.SSHMachine], linux.Path(fake_machine, p2)
         )
@@ -54,7 +54,7 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
         local_path = typing.cast(linux.Path[linux.LinuxMachine], p2)
         # Create a fake SSH machine path
         fake_machine = cpy.copy(p1.host)
-        setattr(fake_machine, "ignore_hostkey", False)
+        setattr(fake_machine, "ignore_hostkey", p1.host.ignore_hostkey)
         remote_path = typing.cast(
             linux.Path[linux.SSHMachine], linux.Path(fake_machine, p1)
         )
