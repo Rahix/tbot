@@ -62,7 +62,10 @@ def selftest_board_uboot(lab: typing.Optional[tbot.selectable.LabHost] = None) -
 
                 for line in env[:-1]:
                     if line != "" and line[0].isalnum():
-                        assert "=" in line, line
+                        assert "=" in line, repr(line)
+
+                out = ub.exec0("echo", board.F("0x{}", str(1234))).strip()
+                assert out == "0x1234", repr(out)
 
 
 @tbot.testcase

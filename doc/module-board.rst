@@ -23,6 +23,9 @@ Special Characters
 .. autoclass:: tbot.machine.board.Env
     :members:
 
+.. autoclass:: tbot.machine.board.F
+    :members:
+
 .. autoclass:: tbot.machine.board.Raw
     :members:
 
