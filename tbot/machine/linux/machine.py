@@ -34,8 +34,8 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         pass
 
     def build_command(
-        self,
-        *args: typing.Union[str, Special, Path[Self]],
+        self: Self,
+        *args: typing.Union[str, Special[Self], Path[Self]],
         stdout: typing.Optional[Path[Self]] = None,
     ) -> str:
         """
@@ -59,7 +59,7 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
                 arg = arg._local_str()
 
             if isinstance(arg, Special):
-                command += arg.resolve_string() + " "
+                command += arg.resolve_string(self) + " "
             else:
                 command += f"{shlex.quote(arg)} "
 
@@ -75,7 +75,7 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
 
     def exec(
         self: Self,
-        *args: typing.Union[str, Special, Path[Self]],
+        *args: typing.Union[str, Special[Self], Path[Self]],
         stdout: typing.Optional[Path[Self]] = None,
         timeout: typing.Optional[float] = None,
     ) -> typing.Tuple[int, str]:
@@ -106,7 +106,7 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
 
     def exec0(
         self: Self,
-        *args: typing.Union[str, Special, Path[Self]],
+        *args: typing.Union[str, Special[Self], Path[Self]],
         stdout: typing.Optional[Path[Self]] = None,
         timeout: typing.Optional[float] = None,
     ) -> str:
@@ -136,7 +136,10 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
 
         # Generate the endstring instead of having it as a constant
         # so opening this files won't trigger an exit
-        endstr = "INTERACTIVE-END-" + hex(165380656580165943945649390069628824191)[2:]
+        endstr = (
+            "INTERACTIVE-END-"
+            + hex(165_380_656_580_165_943_945_649_390_069_628_824_191)[2:]
+        )
 
         size = shutil.get_terminal_size()
         cmd = self.shell.enable_editing()
