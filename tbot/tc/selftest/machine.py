@@ -118,6 +118,15 @@ def selftest_machine_shell(
         out = m.exec0("cat", f)
         assert out == "Some data\nAnd some more\n", repr(out)
 
+        tbot.log.message("Testing formatting ...")
+        tmp = linux.Path(m, "/tmp/foo/bar")
+        out = m.exec0("echo", linux.F("{}:{}:{}", tmp, linux.Pipe, "foo"))
+        assert out == "/tmp/foo/bar:|:foo\n", repr(out)
+
+        m.exec0("export", linux.F("NEWPATH={}:{}", tmp, linux.Env("PATH"), quote=False))
+        out = m.exec0("echo", linux.Env("NEWPATH"))
+        assert out != "/tmp/foo/bar:${PATH}\n", repr(out)
+
         if "jobs" in cap:
             t1 = time.monotonic()
             out = m.exec0(

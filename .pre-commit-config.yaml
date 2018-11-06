@@ -16,7 +16,7 @@ repos:
     - id: check-merge-conflict
     - id: debug-statements
     - id: flake8
-      exclude: ^(setup\.py$|doc)
+      exclude: ^(setup\.py$|static_tests|doc|fastentrypoints.py)
 -   repo: local
     hooks:
     - id: mypy

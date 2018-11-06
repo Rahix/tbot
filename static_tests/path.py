@@ -1,4 +1,5 @@
 from tbot.machine.linux import path
+from tbot.machine import linux
 import machine
 
 
@@ -24,3 +25,9 @@ def invalid_path() -> None:
 
     # should fail!
     mach_lnx.exec0("cat", p3)
+
+    # should fail!
+    mach_lnx.exec0("echo", stdout=p3 / "file")
+
+    # should fail!
+    mach_lnx.exec0("echo", linux.F("{}", p3))

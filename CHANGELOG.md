@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 ### Added
+- `linux.F`: Formatter with TBot support
 - `max` parameter for `Channel.recv()`
 - `recv_n` method for `Channel` to read exactly N bytes
 - `ignore_hostkey` in `SSHLabHost`

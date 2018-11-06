@@ -15,6 +15,8 @@
 Command Specials
 ^^^^^^^^^^^^^^^^
 .. autoclass:: tbot.machine.linux.Env
+.. autoclass:: tbot.machine.linux.F
+
 .. py:data:: tbot.machine.linux.Pipe
 
     Special character for the ``|`` pipe to send command output

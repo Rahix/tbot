@@ -56,12 +56,13 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
                 if arg.host is not self:
                     raise machine.WrongHostException(self, arg)
 
-                arg = arg._local_str()
-
-            if isinstance(arg, Special):
+                command += arg._local_str() + " "
+            elif isinstance(arg, Special):
                 command += arg.resolve_string(self) + " "
+            elif isinstance(arg, str):
+                command += shlex.quote(arg) + " "
             else:
-                command += f"{shlex.quote(arg)} "
+                raise TypeError(f"{arg!r} is not a supported argument type!")
 
         if isinstance(stdout, Path):
             if stdout.host is not self:
