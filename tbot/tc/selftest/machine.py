@@ -108,8 +108,8 @@ def selftest_machine_shell(
         out = m.exec0("echo", linux.Env("TBOT_TEST_ENV_VAR"))
         assert out == "121212\n", repr(out)
 
-        tbot.log.message("Testing redirection ...")
-        f = m.workdir / ".redir_test.txt"
+        tbot.log.message("Testing redirection (and weird paths) ...")
+        f = m.workdir / ".redir test.txt"
         if f.exists():
             m.exec0("rm", f)
 
@@ -119,13 +119,13 @@ def selftest_machine_shell(
         assert out == "Some data\nAnd some more\n", repr(out)
 
         tbot.log.message("Testing formatting ...")
-        tmp = linux.Path(m, "/tmp/foo/bar")
+        tmp = linux.Path(m, "/tmp/f o/bar")
         out = m.exec0("echo", linux.F("{}:{}:{}", tmp, linux.Pipe, "foo"))
-        assert out == "/tmp/foo/bar:|:foo\n", repr(out)
+        assert out == "/tmp/f o/bar:|:foo\n", repr(out)
 
         m.exec0("export", linux.F("NEWPATH={}:{}", tmp, linux.Env("PATH"), quote=False))
         out = m.exec0("echo", linux.Env("NEWPATH"))
-        assert out != "/tmp/foo/bar:${PATH}\n", repr(out)
+        assert out != "/tmp/f o/bar:${PATH}\n", repr(out)
 
         if "jobs" in cap:
             t1 = time.monotonic()

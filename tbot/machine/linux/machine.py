@@ -56,7 +56,7 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
                 if arg.host is not self:
                     raise machine.WrongHostException(self, arg)
 
-                command += arg._local_str() + " "
+                command += shlex.quote(arg._local_str()) + " "
             elif isinstance(arg, Special):
                 command += arg.resolve_string(self) + " "
             elif isinstance(arg, str):

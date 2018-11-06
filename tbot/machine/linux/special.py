@@ -77,7 +77,12 @@ class F(Special[H]):
             elif isinstance(arg, linux.Path):
                 if arg.host is not host:
                     raise machine.WrongHostException(host, arg)
-                return arg._local_str()
+                string = arg._local_str()
+                # If quoting is off, we should still quote paths
+                if not self.quote:
+                    return shlex.quote(string)
+                else:
+                    return string
             else:
                 raise TypeError(f"{arg!r} is not a supported argument type!")
 
