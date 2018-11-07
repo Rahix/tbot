@@ -14,6 +14,7 @@
 ### Changed
 - Improved testrun end handling
 - Made `SSHMachine` more userfriendly; now shows ssh errors in log
+- Made `shell` mandatory for `BoardLinux` machines
 
 ### Fixed
 - `shell.copy` sometimes not respecting `ignore_hostkey` flag

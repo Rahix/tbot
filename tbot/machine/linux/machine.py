@@ -15,7 +15,10 @@ Self = typing.TypeVar("Self", bound="LinuxMachine")
 class LinuxMachine(machine.Machine, machine.InteractiveMachine):
     """Generic machine that is running Linux."""
 
-    shell: typing.Type[sh.Shell] = sh.Bash
+    @property
+    def shell(self) -> typing.Type[sh.Shell]:
+        """Shell that is in use on the board."""
+        return sh.Bash
 
     @property
     @abc.abstractmethod

@@ -136,6 +136,7 @@ class TestBoardLinuxUB(board.LinuxWithUBootMachine[TestBoard]):
     password = "rootpw"
     login_prompt = "tb-login: "
     login_wait = 0.02
+    shell = linux.shell.Bash
 
     @property
     def workdir(self) -> "linux.Path[TestBoardLinuxUB]":
@@ -187,6 +188,7 @@ def selftest_board_linux_nopw(
         password = None
         login_prompt = "tb-login: "
         login_wait = 0.02
+        shell = linux.shell.Bash
 
         @property
         def workdir(self) -> "linux.Path[TestBoardLinuxUB_NOPW]":
@@ -218,6 +220,7 @@ def selftest_board_linux_standalone(
         password = None
         login_prompt = "Autoboot: "
         login_wait = 0.02
+        shell = linux.shell.Bash
 
     with lab or tbot.acquire_lab() as lh:
         tbot.log.message("Testing without UB ...")

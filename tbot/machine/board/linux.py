@@ -17,8 +17,11 @@ class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
     login_prompt = "login: "
     login_wait = 1.0
 
-    # Most boards use busybox which has ash built-in
-    shell: typing.Type[linux.shell.Shell] = linux.shell.Ash
+    @property
+    @abc.abstractmethod
+    def shell(self) -> typing.Type[linux.shell.Shell]:
+        """Shell that is in use on the board."""
+        pass
 
     @property
     def name(self) -> str:
