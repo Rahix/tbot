@@ -8,6 +8,8 @@
 - `ignore_hostkey` in `SSHLabHost`
 - `console_check` hook to prevent racey board connections
   from multiple developers
+- `LinuxWithUBootMachine.do_boot` for a more flexible
+  `boot_commands` definition
 
 ### Changed
 - Improved testrun end handling

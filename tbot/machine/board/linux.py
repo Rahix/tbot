@@ -116,6 +116,9 @@ class LinuxWithUBootMachine(LinuxMachine[B]):
         List of commands to boot Linux from U-Boot. Commands are a list,
         of the arguments that are given to :meth:`~tbot.machine.board.UBootMachine.exec0`
 
+        By default, ``do_boot`` is called, but if ``boot_commands`` is defined, it will
+        be used instead (and ``do_boot`` is ignored).
+
         **Example**::
 
             boot_commands = [
@@ -131,9 +134,34 @@ class LinuxWithUBootMachine(LinuxMachine[B]):
             ]
     """
 
-    boot_commands: typing.List[typing.List[typing.Union[str, special.Special]]] = [
-        ["run", "bootcmd"]
-    ]
+    boot_commands: typing.Optional[
+        typing.List[typing.List[typing.Union[str, special.Special]]]
+    ] = None
+
+    def do_boot(self) -> typing.List[typing.Union[str, special.Special]]:
+        """
+        Run commands to boot linux on ``self.ub``.
+
+        The last command, the one that actually kicks off the boot process,
+        needs to be returned as a list of arguments.
+
+        ``do_boot`` will only be called, if ``boot_commands`` is None.
+
+        **Example**::
+
+            def do_boot(self) -> typing.List[typing.Union[str, special.Special]]:
+                self.ub.exec0("setenv", "console", "ttyS0")
+                self.ub.exec0("setenv", "baudrate", str(115200))
+                self.ub.exec0(
+                    "setenv",
+                    "bootargs",
+                    board.Raw("console=${console},${baudrate}"),
+                )
+                self.ub.exec0("tftp", board.Env("loadaddr"), "zImage")
+
+                return ["bootz", board.Env("loadaddr")]
+        """
+        return ["run", "bootcmd"]
 
     @property
     @abc.abstractmethod
@@ -157,11 +185,15 @@ class LinuxWithUBootMachine(LinuxMachine[B]):
             tbot.log.c("LINUX").bold + f" ({self.name})",
             verbosity=tbot.log.Verbosity.QUIET,
         ) as boot_ev:
-            for cmd in self.boot_commands[:-1]:
-                ub.exec0(*cmd)
+            if self.boot_commands is not None:
+                for cmd in self.boot_commands[:-1]:
+                    ub.exec0(*cmd)
+                bootcmd = self.boot_commands[-1]
+            else:
+                bootcmd = self.do_boot()
 
             # Make it look like a normal U-Boot command
-            last_command = ub.build_command(*self.boot_commands[-1])
+            last_command = ub.build_command(*bootcmd)
             with tbot.log_event.command(ub.name, last_command) as ev:
                 ev.prefix = "   <> "
                 self.channel.send(last_command + "\n")
