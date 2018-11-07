@@ -2,7 +2,7 @@ from .board import Board
 from .machine import BoardMachine
 from .uboot import UBootMachine
 from .linux import LinuxMachine, LinuxWithUBootMachine, LinuxStandaloneMachine
-from .special import Env, Raw, Then, F
+from .special import Env, Raw, Then, F, Special
 
 __all__ = (
     "Board",
@@ -14,5 +14,6 @@ __all__ = (
     "Raw",
     "Then",
     "F",
+    "Special",
     "UBootMachine",
 )

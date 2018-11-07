@@ -6,7 +6,7 @@ from .lab import LabHost
 from .ssh import SSHMachine
 from .workdir import Workdir
 
-from .special import AndThen, Background, Env, OrElse, Pipe, Raw, Then, F
+from .special import AndThen, Background, Env, OrElse, Pipe, Raw, Then, F, Special
 
 __all__ = (
     "BuildMachine",
@@ -22,5 +22,6 @@ __all__ = (
     "Raw",
     "Then",
     "F",
+    "Special",
     "Workdir",
 )
