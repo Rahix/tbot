@@ -32,6 +32,9 @@ class Verbosity(enum.IntEnum):
     STDOUT = enum.auto()
     CHANNEL = enum.auto()
 
+    def __str__(self) -> str:
+        return super(Verbosity, self).__str__().split(".")[-1]
+
 
 NESTING = 0
 INTERACTIVE = False

@@ -16,6 +16,7 @@
 ### Fixed
 - `shell.copy` sometimes not respecting `ignore_hostkey` flag
 - `shell.copy` relying on an ugly hack that breaks on some python versions
+- `Verbosity` being in the wrong format in log events
 
 
 ## [0.6.0-pre08] - 2018-10-29
