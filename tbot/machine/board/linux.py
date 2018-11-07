@@ -138,9 +138,11 @@ class LinuxWithUBootMachine(LinuxMachine[B]):
         typing.List[typing.List[typing.Union[str, special.Special]]]
     ] = None
 
-    def do_boot(self) -> typing.List[typing.Union[str, special.Special]]:
+    def do_boot(
+        self, ub: board.UBootMachine[B]
+    ) -> typing.List[typing.Union[str, special.Special]]:
         """
-        Run commands to boot linux on ``self.ub``.
+        Run commands to boot linux on ``ub``.
 
         The last command, the one that actually kicks off the boot process,
         needs to be returned as a list of arguments.
@@ -149,15 +151,17 @@ class LinuxWithUBootMachine(LinuxMachine[B]):
 
         **Example**::
 
-            def do_boot(self) -> typing.List[typing.Union[str, special.Special]]:
-                self.ub.exec0("setenv", "console", "ttyS0")
-                self.ub.exec0("setenv", "baudrate", str(115200))
-                self.ub.exec0(
+            def do_boot(
+                self, ub: board.UBootMachine[B]
+            ) -> typing.List[typing.Union[str, board.Special]]:
+                ub.exec0("setenv", "console", "ttyS0")
+                ub.exec0("setenv", "baudrate", str(115200))
+                ub.exec0(
                     "setenv",
                     "bootargs",
                     board.Raw("console=${console},${baudrate}"),
                 )
-                self.ub.exec0("tftp", board.Env("loadaddr"), "zImage")
+                ub.exec0("tftp", board.Env("loadaddr"), "zImage")
 
                 return ["bootz", board.Env("loadaddr")]
         """
@@ -190,7 +194,7 @@ class LinuxWithUBootMachine(LinuxMachine[B]):
                     ub.exec0(*cmd)
                 bootcmd = self.boot_commands[-1]
             else:
-                bootcmd = self.do_boot()
+                bootcmd = self.do_boot(ub)
 
             # Make it look like a normal U-Boot command
             last_command = ub.build_command(*bootcmd)
