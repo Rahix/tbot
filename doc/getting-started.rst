@@ -178,6 +178,8 @@ of environment variables.  To do this, use the following::
 
 This is not the only special parameter you can use:
 
+* :func:`~tbot.machine.linux.F`: Format string, for complex argument construction.  Please
+  refer to its documentation for more info.
 * :func:`~tbot.machine.linux.Env`: Environment variable expansion
 * :data:`~tbot.machine.linux.Pipe`: A ``|`` for piping command output to another command
 * :data:`~tbot.machine.linux.Then`: A ``;`` for running multiple commands
