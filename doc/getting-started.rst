@@ -155,10 +155,13 @@ Machine Interaction
 
 Linux
 ^^^^^
-All :class:`~tbot.machine.linux.LinuxMachine` implement two methods for executing commands:
-:meth:`~tbot.machine.linux.LinuxMachine.exec` and :meth:`~tbot.machine.linux.LinuxMachine.exec0`.
+All :class:`~tbot.machine.linux.LinuxMachine` implement three methods for executing commands:
+:meth:`~tbot.machine.linux.LinuxMachine.exec`, :meth:`~tbot.machine.linux.LinuxMachine.exec0`,
+and :meth:`~tbot.machine.linux.LinuxMachine.test`.
 :meth:`~tbot.machine.linux.LinuxMachine.exec0` is just a wrapper around
 :meth:`~tbot.machine.linux.LinuxMachine.exec` that ensures the return code of the command is ``0``.
+:meth:`~tbot.machine.linux.LinuxMachine.test` returns ``True`` if the command finished with return
+code ``0`` and ``False`` otherwise.
 Both take the command as one argument per commandline parameter.  For example::
 
     output = m.exec0("uname", "-n")
