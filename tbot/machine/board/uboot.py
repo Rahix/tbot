@@ -140,6 +140,20 @@ class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
 
         return out
 
+    def test(
+        self, *args: typing.Union[str, special.Special, linux.Path[linux.LabHost]]
+    ) -> bool:
+        """
+        Run a command and test if it succeeds.
+
+        :param args: Each argument can either be a :class:`str` or a special token
+            like :class:`~tbot.machine.board.Env`.
+        :rtype: bool
+        :returns: ``True`` if the return code is 0, else ``False``.
+        """
+        ret, _ = self.exec(*args)
+        return ret == 0
+
     def interactive(self) -> None:
         """
         Drop into an interactive U-Boot session.

@@ -134,6 +134,27 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
 
         return out
 
+    def test(
+        self: Self,
+        *args: typing.Union[str, Special[Self], Path[Self]],
+        stdout: typing.Optional[Path[Self]] = None,
+        timeout: typing.Optional[float] = None,
+    ) -> bool:
+        """
+        Run a command and test if it succeeds.
+
+        :param args: Each arg is a token that will be sent to the shell. Can be
+            either a str, a :class:`~linux.special.Special` or a Path that
+            is associated with this host. Arguments will be escaped
+            (a str like "a b" will not result in separate arguments to the
+            command)
+        :param Path stdout: File where stdout should be directed to
+        :returns: ``True`` if the return code is 0, else ``False``.
+        :rtype: bool
+        """
+        ret, _ = self.exec(*args, stdout=stdout, timeout=timeout)
+        return ret == 0
+
     def interactive(self) -> None:
         """Drop into an interactive session on this machine."""
         channel = self._obtain_channel()

@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 ### Added
+- `mach.test()` to just check the return code of a command
 - `linux.F`, `board.F`: Formatter with TBot support
 - `max` parameter for `Channel.recv()`
 - `recv_n` method for `Channel` to read exactly N bytes
