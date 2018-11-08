@@ -85,35 +85,35 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
 
     def exists(self) -> bool:
         """Whether this path exists."""
-        return self.host.exec("test", "-e", self)[0] == 0
+        return self.host.test("test", "-e", self)
 
     def is_dir(self) -> bool:
         """Whether this path points to a directory."""
-        return self.host.exec("test", "-d", self)[0] == 0
+        return self.host.test("test", "-d", self)
 
     def is_file(self) -> bool:
         """Whether this path points to a normal file."""
-        return self.host.exec("test", "-f", self)[0] == 0
+        return self.host.test("test", "-f", self)
 
     def is_symlink(self) -> bool:
         """Whether this path points to a symlink."""
-        return self.host.exec("test", "-h", self)[0] == 0
+        return self.host.test("test", "-h", self)
 
     def is_block_device(self) -> bool:
         """Whether this path points to a block device."""
-        return self.host.exec("test", "-b", self)[0] == 0
+        return self.host.test("test", "-b", self)
 
     def is_char_device(self) -> bool:
         """Whether this path points to a character device."""
-        return self.host.exec("test", "-c", self)[0] == 0
+        return self.host.test("test", "-c", self)
 
     def is_fifo(self) -> bool:
         """Whether this path points to a pipe(fifo)."""
-        return self.host.exec("test", "-p", self)[0] == 0
+        return self.host.test("test", "-p", self)
 
     def is_socket(self) -> bool:
         """Whether this path points to a unix domain-socket."""
-        return self.host.exec("test", "-S", self)[0] == 0
+        return self.host.test("test", "-S", self)
 
     @property
     def parent(self) -> "Path[H]":

@@ -68,7 +68,7 @@ class GitRepository(linux.Path[H]):
         super().__init__(target.host, target)
         if url is not None:
             # Clone and optionally clean repo
-            already_cloned = self.host.exec("test", "-d", self / ".git")[0] == 0
+            already_cloned = self.host.test("test", "-d", self / ".git")
             if not already_cloned:
                 self.host.exec0("mkdir", "-p", self)
                 self.host.exec0("git", "clone", url, self)
@@ -205,7 +205,7 @@ class GitRepository(linux.Path[H]):
         :returns: Number of patches applied
         """
         # Check if we got a single patch or a patchdir
-        if self.host.exec("test", "-d", patch)[0] == 0:
+        if self.host.test("test", "-d", patch):
             files = [
                 linux.Path(self.host, p)
                 for p in self.host.exec0("find", patch, "-name", "*.patch")

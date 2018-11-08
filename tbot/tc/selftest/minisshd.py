@@ -68,7 +68,7 @@ class MiniSSHLabHost(linux.lab.SSHLabHost):
 @tbot.testcase
 def check_minisshd(h: linux.LabHost) -> bool:
     """Check if this host can run a minisshd."""
-    return h.exec("which", "dropbear")[0] == 0
+    return h.test("which", "dropbear")
 
 
 @tbot.testcase

@@ -143,7 +143,7 @@ This section was added by a second patch""",
         tbot.log.message("Apply multiple patches ...")
         repo.am(patch_dir)
 
-        assert lh.exec("grep", "2.2", repo / "file2.md")[0] == 0
+        assert lh.test("grep", "2.2", repo / "file2.md")
 
         lh.exec0("rm", "-rf", target)
         lh.exec0("rm", "-rf", patch_dir)
