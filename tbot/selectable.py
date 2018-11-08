@@ -134,6 +134,7 @@ class LinuxMachine(board.LinuxMachine[Board], typing.ContextManager):
         raise NotImplementedError("This is a dummy Linux")
 
     password = None
+    shell = linux.shell.Shell
 
 
 def acquire_linux(b: typing.Union[Board, UBootMachine]) -> LinuxMachine:
