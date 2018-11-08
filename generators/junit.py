@@ -1,12 +1,13 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """
-Generate a JUnit XML file
--------------------------
+Generate a JUnit XML file.
+
 .. warning::
    Because JUnit's design differs from TBot's a lot, the output is a little
    bit unusual. It should show all information but not always where you would
    expect to find it.
 """
+import logparser
 import json
 import sys
 import typing
@@ -14,9 +15,10 @@ import junit_xml
 
 
 class TestcaseExecution:
-    """ A Testcase Execution """
+    """A Testcase Execution."""
 
     def __init__(self, name: str) -> None:
+        """Create a new TestcaseExecution."""
         self.name = name
         self.duration = 0
         self.sub_steps: typing.List[typing.Union[TestcaseExecution, ShellStep]] = []
@@ -26,36 +28,36 @@ class TestcaseExecution:
 
 
 class ShellStep:
-    """ A Shell command execution """
+    """A Shell command execution."""
 
     def __init__(self, command: str, output: str) -> None:
+        """Create a new ShellStep."""
         self.command = command
         self.output = output
 
 
 def parse_log(
-    log: typing.List[typing.Dict[str, typing.Any]]
+    log: typing.Iterable[logparser.LogEvent]
 ) -> typing.List[TestcaseExecution]:
-    """ Parse json log """
+    """Parse log."""
     toplevels = []
 
     stack = []
     exception = None
     for ev in log:
-        ty = ev["type"]
         # timestamp = ev['time']
 
-        if ty == ["testcase", "begin"]:
-            name = ev["name"]
+        if ev.type == ["tc", "begin"]:
+            name = ev.data["name"]
 
             cur = TestcaseExecution(name)
 
             stack.append(cur)
-        elif ty == ["testcase", "end"]:
-            name = ev["name"]
-            duration = ev["duration"]
-            success = ev["success"]
-            fail_ok = ev["fail_ok"]
+        elif ev.type == ["tc", "end"]:
+            name = ev.data["name"]
+            duration = ev.data["duration"]
+            success = ev.data["success"]
+            fail_ok = False if "fail_ok" not in ev.data else ev.data["fail_ok"]
 
             cur = stack.pop()
             assert cur.name == name
@@ -70,11 +72,11 @@ def parse_log(
                 stack[-1].sub_steps.append(cur)
             else:
                 toplevels.append(cur)
-        elif ty == ["exception"]:
-            exception = (ev["name"], ev["trace"])
-        elif ty[0] == "shell":
-            command = ev["command"]
-            output = ev["output"]
+        elif ev.type == ["exception"]:
+            exception = (ev.data["name"], ev.data["trace"])
+        elif ev.type[0] == "cmd":
+            command = ev.data["cmd"]
+            output = "<no output>" if "stdout" not in ev.data else ev.data["stdout"]
 
             stack[-1].sub_steps.append(ShellStep(command, output))
 
@@ -84,7 +86,7 @@ def parse_log(
 def toplevel_to_junit(
     num: int, toplevel: TestcaseExecution
 ) -> typing.List[junit_xml.TestCase]:
-    """ Convert a toplevel testcase to junit testcases """
+    """Convert a toplevel testcase to junit testcases."""
     testcases: typing.List[junit_xml.TestCase] = []
     _, testcases = testcase_to_junit(
         f"{num:02} - {toplevel.name}", 0, toplevel.name, toplevel, True
@@ -99,7 +101,7 @@ def testcase_to_junit(
     testcase: TestcaseExecution,
     is_toplevel: bool = False,
 ) -> typing.Tuple[int, typing.List[junit_xml.TestCase]]:
-    """ Convert a testcase to junit testcases """
+    """Convert a testcase to junit testcases."""
     testcases = []
     my_cls_path = cls_path if is_toplevel else f"{cls_path} -> {testcase.name}"
     tc = junit_xml.TestCase(
@@ -135,21 +137,13 @@ def testcase_to_junit(
 
 
 def main() -> None:
-    """ Generate a JUnit XML file """
+    """Generate a JUnit XML file."""
 
     try:
-        log = json.load(open(sys.argv[1]))
+        log = logparser.logfile(sys.argv[1])
     except IndexError:
         sys.stderr.write(
             f"""\
-\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m
-"""
-        )
-        sys.exit(1)
-    except json.JSONDecodeError:
-        sys.stderr.write(
-            f"""\
-\x1B[31mInvalid JSON!\x1B[0m
 \x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m
 """
         )

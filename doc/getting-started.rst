@@ -1,351 +1,296 @@
-.. tbot getting started guide
-
 .. highlight:: guess
    :linenothreshold: 3
 
 Getting Started
 ===============
 
-TBot Project Structure
-----------------------
-First of all you need to create a new TBot project. TBot has a handy
-tool for doing so called ``tbot-mgr``. To start a new project use the
-following command::
+First Steps
+-----------
+TBot works out of the box.  You can run it's selftests like this::
 
-    ~$ tbot-mgr new test-tbot-project
+    ~$ tbot selftest
 
-``tbot-mgr`` will create a new folder called ``test-tbot-project`` and
-a few subfolders below it that TBot expects. The structure of a TBot
-project looks like this::
+(If this does not work, please contact the developers.  This should not be the case)
 
-    +-test-tbot-project/
-      +-config/
-      | +-boards/
-      | | +-board1.py
-      | | +-board2.py
-      | +-labs/
-      |   +-lab1.py
-      |   +-lab2.py
-      +-tc/
-        +-testcases1.py
-        +-testcases2.py
-
-``config/boards/`` contains a file for each board in your project,
-``config/labs/`` contains a file for each lab in your project.
-
-``tc/`` contains files that will be read by TBot when collecting testcases.
-You can write as many testcases in one file as you want.
-
-First TBot Usage
-----------------
-Now would be a good time to test if TBot actually works. To do so, use
-``tbot-mgr`` to create a dummy board and lab::
-
-    ~/test-tbot-project$ tbot-mgr add dummies
-
-And then run TBot's selftests::
-
-    ~/test-tbot-project$ tbot dummy-lab dummy-board selftest -v
-
-What you can see now is what the output of TBot while running a testcase looks like.
-``-v`` controls the verbosity level.
-
-.. note::
-    The dummy-lab that ``tbot-mgr`` just created is a lab that will try to connect to
-    localhost via ssh. This means you **have to** have an sshd running. If your ssh
-    daemon runs with a config that does not use the default settings, please adjust the
-    file ``test-tbot-project/config/labs/dummy-lab.py`` accordingly.
-
-If all went well, the last line of TBot's output should mention a success. If that is
-the case, you are set for writing your own testcases:
-
-Testcases
----------
-The main concept of TBot is, that everything is a testcase. Testcases
-can call other testcases like you would call a function to do a certain
-task. For example the :func:`~tbot.builtin.uboot.uboot_tasks.uboot_checkout_and_build`
-testcase builds a version of U-Boot for your currently selected board.
-
-You could do so, by calling TBot like this::
-
-    $ tbot <lab-name> <board-name> uboot_checkout_and_build
-
-where ``lab-name`` is the name of the config for your lab host (more on that later)
-and ``board-name`` is the name of the config for your board.
-
-If you want to call the testcase from another testcase instead (in python),
-it would look like this::
+Now, let's create some example testcase.  Start by creating a file named ``tc.py`` in
+your current directory.  Later you will see that you can also name it differently or
+have multiple files, but for now, this is the easiest way.  Add the following content::
 
     import tbot
 
     @tbot.testcase
-    def an_example_testcase(tb: tbot.TBot) -> None:
-        tb.call("build_uboot")
+    def my_awesome_testcase() -> None:
+        with tbot.acquire_lab() as lh:
+            name = lh.exec0("uname", "-n").strip()
+            tbot.log.message(f"Hello {name}!")
 
-Now you can call your testcase like this::
-
-    $ tbot <lab-name> <board-name> an_example_testcase
-
-Note the decorator for this function: ``tbot.testcase`` makes a function a testcase
-that can be called by other testcases or from the commandline.
-
-Testcases can also take parameters and return values::
-
-    import tbot
-
-    @tbot.testcase
-    def a_testcase_with_a_parameter(tb: tbot.TBot, *,
-                                    param_mandatory: bool,
-                                    param_optional: bool = False,
-                                   ) -> bool:
-        tbot.log.message(f"A: {param_mandatory}, B: {param_optional}")
-        return param_mandatory or param_optional
-
-When you try to call this testcase from the commandline, you will notice TBot failing
-with an error that says something about a missing parameter. And that is entirely
-reasonable because the testcase takes a mandatory argument (Arguments after a
-``*`` are called *Mandatory Keyword-Argumens*). You can pass that parameter to TBot
-like this::
-
-    $ tbot <lab-name> <board-name> a_testcase_with_a_parameter -p param_mandatory=True
-
-TBot will evaluate everything after the ``=`` as a python expression. And of course, the
-optional parameter can also be set in the same way.
-
-.. warning::
-   TBot uses **eval** for those parameters. This could become a security issue
-   if you use untrusted input for constructing the commandline. Be careful!
-
-To get the return value of a testcase, you have to call it from another testcase, like this::
-
-    ret_val = tb.call("a_testcase_with_a_parameter", param_mandatory=False, param_optional=True)
-    assert ret_val is True
-
-Labhost Shell Interaction
---------------------------
-Testcases can interact with the shell of the lab host. This might look like the
-following::
-
-    import tbot
-
-    @tbot.testcase
-    def shell_interaction(tb: tbot.TBot) -> None:
-        # exec0 executes a command and expects a return code of 0
-        # and will raise an exception otherwise
-        out = tb.shell.exec0("echo Hello World")
-        assert out == "Hello World\n", "%r is not Hello World" % out
-
-        # exec executes a command and returns a tuple (ret_code, output)
-        ret_code, _ = tb.shell.exec("false")
-        assert ret_code == 1, "%r is not 1" % ret_code
-
-There are a few things happening here: First of all, ``tb.shell`` is just a shortcut
-for ``tb.machines["labhost"]``, which, by default but not always, is mapped to
-``tb.machines["labhost-noenv"]``. ``noenv`` means, each command is run in an isolated
-environment and setting environment vars or changing the working directory will
-not affect other commands. You should use this type of machine, whenever possible as
-this reduces sideeffects and with that minimizes the risk of strange bugs occuring.
-
-In some cases however, you need a shell, that keeps its environment and working
-directory. For that, tbot has an ``env`` machine. You can use it like this::
-
-    import tbot
-
-    @tbot.testcase
-    def envshell_demo(tb):
-        with tb.machine(tbot.machine.MachineLabEnv()) as tb:
-            tb.shell.exec0("FOO='bar'")
-
-            out = tb.shell.exec0("echo $FOO")
-            assert out == "bar\n"
-
-
-.. note::
-   The ``noenv`` shell is implemented by creating a new SSH channel for each command.
-   This guarantees the most isolation possible. The ``env`` shell however starts a
-   remote interactive bash and executes commands in there. This makes it behave as if
-   the user were to enter the commands by hand but has a few ugly side effects:
-
-   TBot has to use a custom prompt to detect when a command finishes. This is ok as long
-   as you don't send a command like ``tb.shell.exec0("PS1='fooled-you! '")`` which would
-   make TBot hang because the expected prompt never arrives. This might seem like a stupid
-   thing to do, but it actually has some implications: For example the python virtualenv
-   adds a string to your prompt by default. Just keep this in mind when using ``env`` shells ...
-
-   In the same spirit, there are a few other commands that can lead to unexpected behaviour.
-   Just be careful. As long as you just use commands that a user would normally use, you should
-   be fine. If you think that something should work but doesn't, feel free to open an issue.
-
-
-Board Interaction
------------------
-In a similar fashion, you can interact with the U-Boot/Linux shell of your board.
-TBot will automatically turn on the board and make sure it is turned off, when
-your testcase is done. It might be looking like the following (U-Boot)::
-
-    import tbot
-
-    @tbot.testcase
-    def boardshell_demo_uboot(tb):
-        with tb.with_board_uboot() as tb:
-            tb.boardshell.exec0("version")
-
-        # Board is powered off after the end of the with statement
-
-(Linux)::
-
-    import tbot
-
-    @tbot.testcase
-    def boardshell_demo_linux(tb):
-        with tb.with_board_linux() as tb:
-            tb.boardshell.exec0("uname -a")
-
-        # Board is powered off after the end of the with statement
-
-It is also possible to do something in U-Boot before booting Linux::
-
-    import tbot
-
-    @tbot.testcase
-    def boardshell_demo_uboot_and_linux(tb):
-        with tb.with_board_uboot() as tb:
-            # Do things in U-Boot
-            tb.boardshell.exec0("version")
-
-            with tb.with_board_linux() as tb:
-                # Do things in Linux (Linux was started without
-                # powercycling, so changes made in U-Boot will
-                # still be effective)
-                tb.boardshell.exec0("uname -a")
-
-            # Back to U-Boot, TBot has powercycled the board
-            tb.boardshell.exec0("version")
-
-        # Board is powered off after the end of the with statement
-
-
-Buildhost Interaction
----------------------
-TBot uses a host different from the labhost for building software. The rationale
-behind this is, that the labhost is used by everyone and is connected to a lot
-of boards and building on there would make the experience worse for ther users.
-
-To just connect to the buildhost, you could do something like this::
-
-    import tbot
-
-
-    @tbot.testcase
-    def buildhost_example(tb: tbot.TBot) -> None:
-        with tb.machine(tbot.machine.MachineBuild()) as tb:
-            tb.shell.exec0("uname -a")
-
-Note how ``tb.shell`` no longer is the labhost but now runs commands on the buildhost.
-This allows running a testcase on both the labhost and the buildhost without having
-to write it twice.
-
-Another option to access the buildhost is to make use of TBot's knowledge of toolchains.
-The following code will connect to the buildhost and initialize the toolchain for the
-current board. This makes it easier to write code to compile something.
+If you did everything correctly, running
 
 ::
 
-    import tbot
+    ~$ tbot my_awesome_testcase
 
-
-    @tbot.testcase
-    def buildhost_toolchain(tb: tbot.TBot) -> None:
-        # Get the default toolchain for the current board
-        toolchain = tb.call("toolchain_get")
-
-        buildhost_workdir = None
-        @tb.call_then("toolchain_env", toolchain=toolchain)
-        def build(tb: tbot.TBot) -> None:
-            cc = tb.shell.exec0("echo $CC").strip()
-            tbot.log.message(f"Compiler: '{cc}'")
-            # Build your project, for portability, do it inside
-            # "tb.shell.workdir"
-            buildhost_workdir = tb.shell.workdir / "my-project"
-            tb.shell.exec0(f"mkdir -p {buildhost_workdir}")
-
-        # Use this testcase to retrieve you build results
-        labhost_file = tb.call(
-            "retrieve_build_artifact",
-            buildfile=buildhost_workdir / "result.bin",
-        )
 
 .. highlight:: python
    :linenothreshold: 3
 
-``tb.and_then``
----------------
-A new syntax that we can see here is ``@tb.call_then``. This is a shorthand for writing::
+should greet you host.  Let's disect the code from above::
 
-    def build(tb: tbot.TBot) -> None:
-        pass
+    @tbot.testcase
+    def my_awesome_testcase() -> None:
+        ...
 
-    tb.call("toolchain_env", toolchain=toolchain, and_then=build)
+This is just a normal python function for our testcase.  The :func:`tbot.testcase`
+decorator tells TBot that it should be treated as a testcase.  In practice this
+means that TBot will allow calling it from the commandline and will hook into
+the call so it can gather log data about it.
 
-Some testcases take a testcase as a parameter that will be run after setting up some
-environment. In this case, the ``toolchain_env`` testcase connects to the buildhost,
-sets up the toolchain and then runs our testcase - As we can see, the ``CC`` environment
-variable now contains the proper compiler.
+::
 
-.. seealso::
-   Another testcase that makes use of this ``and_then`` syntax is :func:`~tbot.builtin.git_tasks.git_bisect`
+    with tbot.acquire_lab() as lh:
+        ...
+
+To understand this line, we first need to get to know one of the core concepts of TBot:
+**Machines** (:class:`~tbot.machine.Machine`).  Every host TBot interacts with is called a machine.
+That includes the labhost, which we use here, a buildhost where your code might be compiled,
+the board you are testing, or any other host you want TBot to connect to.  There are different kinds
+of machines.  Our labhost is special, because it is the base from where connections to other host
+are made.
+
+Machines should always be used inside a ``with`` statement to ensure proper cleanup in any
+case.  This is especially important with boardmachines, because if this is not done, the board
+might not be turned off after the tests.
+
+The line you see here requests a new labhost object from TBot so we can interact with it.
+As you will see later, this is not quite the way you would do this normally, but for this simple
+example it is good enough.
+
+::
+
+    name = lh.exec0("uname", "-n").strip()
+
+Now that we have the ability to interact with the labhost, let's do so: We call
+``uname -n`` to greet the users machine.  Note, that each argument is passed separately to
+:meth:`~tbot.machine.linux.LinuxMachine.exec0`.  The reason for this is that it ensures everything
+will be properly escaped and there are no accidental mistakes.  For special characters there is
+a different notation as you will see later.
+
+The :meth:`~str.strip` is needed, because the command output contains the trailing newline, which we don't
+want in this case.
+
+::
+
+    tbot.log.message(f"Hello {name}!")
+
+:func:`tbot.log.message` is basically TBot's equivalent of :func:`print`.  The most important difference is, that it does not
+only print it to the terminal, but also store it in the logfile.
+
+.. note::
+    TBot has different **Verbosity** levels:
+
+    * ``QUIET``: Only show testcases that are called
+    * ``INFO``: Show info messages, such as those created by :func:`tbot.log.message`
+    * ``COMMAND``: Show all commands that are called on the various machine
+    * ``STDOUT``: Also show commands outputs
+    * ``CHANNEL``: Show everything received on all channels, useful for debugging
+
+    The default is ``INFO``. You can increase the Verbosity using ``-v`` and decrease it using ``-q``.
+
+Writing Testcases
+-----------------
+As mentioned above, testcases calling :func:`tbot.acquire_lab` is not the best way to do it.  Why?  Well, imagine,
+each testcase that is called would create a new ssh connection to your labhost.  This would be really
+inefficient.  The easiest solution is to require the lab as a parameter like this::
+
+    import tbot
+    from tbot.machine import linux
+
+    @tbot.testcase
+    def my_testcase(lab: linux.LabHost) -> None:
+        ...
+
+This has the big disadvantage that a testcase like this can't be called from TBot's commandline, because
+where would it get that parameter from?
+
+The solution is a hybrid and looks like the following::
+
+    import typing
+    import tbot
+    from tbot.machine import linux
+
+    @tbot.testcase
+    def my_testcase(
+        lab: typing.Optional[linux.LabHost] = None,
+    ) -> None:
+        with lab or tbot.acquire_lab() as lh:
+            name = lh.exec0("uname", "-n").strip()
+            tbot.log.message(f"Hello {name}!")
+
+This is one of my 'recipes'.  These are code snippets that you will reuse all the time while using
+TBot.  There are a lot more, for different tasks.  Take a look at the :ref:`recipes:Recipes` page.
+
+.. note::
+    In this documentation and in the TBot sources, type annotations are used everywhere.  This allows
+    the use of a static type-checker such as ``mypy``, which makes finding bugs before you even run
+    the code a lot easier.  Of course, this is optional, the following code would work just as well::
 
 
-``tbot.log`` - Logging
-----------------------
-TBot has its own logging system. It is available as ``tbot.log``. As you can see, the simplest way to use it
-is to use::
+        import tbot
 
-    tbot.log.message("msg")
-    # or
-    tbot.log.debug("msg")
+        @tbot.testcase
+        def my_testcase(lab = None) -> None:
+            with lab or tbot.acquire_lab() as lh:
+                name = lh.exec0("uname", "-n")
+                tbot.log.message(f"Hello {name}!")
 
-To see the output from the debug message, you need to add a ``-v`` commandline argument. If you add ``-vv`` you will
-also see all commands that are run. Another ``v``: ``-vvv`` will also show the output of every command.
+Calling other testcases is just as easy as calling a python function.  From your perspective, a testcase
+*is* just a python function.  If you want to call testcases from other files, import them like you would
+with a python module.
 
-.. seealso::
-   More information on logging can be found under :ref:`tbot-logging` or in the module itself: :mod:`tbot.log`
-
-Configuration
--------------
-All of the above can be used with the dummy config that we created in the beginning. But it would be way more interesting
-to to all this using actual hardware. For that, you first need to set up configuration.
-
-.. highlight:: shell
-
-Start by creating a lab config. If you have a remote labhost where your board is connected, use::
-
-    $ tbot-mgr add lab
-
-and follow the instructions on screen.
-
-If your board and it's power is directly connected to your own computer, you can use
-
-    **TODO**
+TBot contains a library of testcases for common tasks that you can make use of.  Take a look at :mod:`tbot.tc`.
 
 
-To check your lab config, create a dummy-board and run TBot's selftests::
+Machine Interaction
+-------------------
 
-    $ tbot-mgr add dummy-board -n <my-lab>-dummy -l <my-lab>
-    $ tbot <my-lab> <my-lab>-dummy selftest
+Linux
+^^^^^
+All :class:`~tbot.machine.linux.LinuxMachine` implement three methods for executing commands:
+:meth:`~tbot.machine.linux.LinuxMachine.exec`, :meth:`~tbot.machine.linux.LinuxMachine.exec0`,
+and :meth:`~tbot.machine.linux.LinuxMachine.test`.
+:meth:`~tbot.machine.linux.LinuxMachine.exec0` is just a wrapper around
+:meth:`~tbot.machine.linux.LinuxMachine.exec` that ensures the return code of the command is ``0``.
+:meth:`~tbot.machine.linux.LinuxMachine.test` returns ``True`` if the command finished with return
+code ``0`` and ``False`` otherwise.
+Both take the command as one argument per commandline parameter.  For example::
 
-If those pass, you are done. If not, open ``config/labs/<my-lab>.py`` and adjust it
-so the tests pass. See :ref:`tbot-cfg-opts` for available config keys.
+    output = m.exec0("uname", "-n")
+    output = m.exec0("dmesg")
+    output = m.exec0("echo", "$!#?")
 
-Next we need to create a board config. Use::
+TBot will ensure that arguments are properly escaped, so you can pass in anything without worrying.
+This poses a problem, when you need special syntaxes.  For example when you try to use shell expansion
+of environment variables.  To do this, use the following::
 
-    $ tbot-mgr add board -l <my-lab>
+    from tbot.machine import linux
 
-to do so.Run selftests again, this time using your board to verify your board config::
+    user = m.exec0("echo", linux.Env("USER"))
 
-    $ tbot <my-lab> <my-board> selftest
+This is not the only special parameter you can use:
 
-This of course requires your board to already have a version of U-Boot installed. TBot can't do this first setup for you,
-but you could write a testcase for installing a new version of U-Boot that you compiled using ``uboot_checkout_and_build`` ;)
+* :func:`~tbot.machine.linux.F`: Format string, for complex argument construction.  Please
+  refer to its documentation for more info.
+* :func:`~tbot.machine.linux.Env`: Environment variable expansion
+* :data:`~tbot.machine.linux.Pipe`: A ``|`` for piping command output to another command
+* :data:`~tbot.machine.linux.Then`: A ``;`` for running multiple commands
+* :data:`~tbot.machine.linux.Background`: A ``&`` for running a command in the background
+* :data:`~tbot.machine.linux.AndThen`: A ``&&`` for chaining commands
+* :data:`~tbot.machine.linux.OrElse`: A ``||`` for error handling
+* :func:`~tbot.machine.linux.Raw`: Raw string if TBot isn't expressive enough for your usecase.
+  Use this only when no other option works.
 
-If something fails, adjust ``config/boards/<my-board>.py``, see :ref:`tbot-cfg-opts` for available config keys.
+
+Another thing TBot handles specially is paths.  A :class:`~tbot.machine.linux.Path` can be
+created like this::
+
+    from tbot.machine import linux
+
+    p = linux.Path(machine, "/foo/bar")
+
+``p`` is now a :class:`~tbot.machine.linux.Path`.  TBot's paths are based on
+python's :mod:`pathlib` so you can use all the usual methods / operators::
+
+    file_in_p = p / "dirname" / "file.txt"
+    if not p.exists():
+        ...
+    if not p.is_dir():
+        raise RuntimeError(f"{p} must be a directory!")
+
+TBot's paths have a very nice property: They are bound to the host they were created with.  This means
+that you cannot accidentally use a path on a wrong machine::
+
+    m = tbot.acquire_lab()
+    lnx = tbot.acquire_linux(...)
+
+    p = linux.Path(m, "/path/to/somewhere/file.txt")
+
+    # This will raise an Exception and will be catched by a static typechecker like mypy:
+    content = lnx.exec0("cat", p)
+
+Board
+^^^^^
+Interacting with the board is similar to interacting with a host like the labhost.  The only difference
+is that this time, we need to first initialize the board::
+
+    with tbot.acquire_board(lh) as b:
+        with tbot.acquire_uboot(b) as ub:
+            ub.exec0("version")
+
+            # Now boot into Linux
+            with tbot.acquire_linux(ub) as lnx:
+                lnx.exec0("uname", "-a")
+
+
+    # You can also boot directly into Linux:
+    # (Some boards might not even support intercepting
+    # U-Boot first)
+    with tbot.acquire_board(lh) as b:
+        with tbot.acquire_linux(b) as lnx:
+            lnx.exec0("uname", "-a")
+
+.. note::
+    A pattern similar to the one above can be used to write testcases that can either be used from
+    the commandline or supplied with a board-machine::
+
+        import contextlib
+        import typing
+        import tbot
+        from tbot.machine import board
+
+
+        @tbot.testcase
+        def my_testcase(
+            lab: typing.Optional[tbot.selectable.LabHost] = None,
+            uboot: typing.Optional[board.UBootMachine] = None,
+        ) -> None:
+            with contextlib.ExitStack() as cx:
+                lh = cx.enter_context(lab or tbot.acquire_lab())
+                if uboot is not None:
+                    ub = uboot
+                else:
+                    b = cx.enter_context(tbot.acquire_board(lh))
+                    ub = cx.enter_context(tbot.acquire_uboot(b))
+
+                ...
+
+
+    Again, take a look at the :ref:`recipes:Testcase with U-Boot` section on the :ref:`recipes:Recipes`
+    page.
+
+Interactive
+^^^^^^^^^^^
+One convenience function of TBot is allowing the user to directly access most machines' shells.  There are
+two ways to do so.
+
+.. highlight:: guess
+   :linenothreshold: 3
+
+1. Calling one of the ``interactive_lab``, ``interactive_build``, ``interactive_board``, ``interactive_uboot``
+   ``interactive_linux`` testcases.  This is the most straight forward.  It might look like this::
+
+        ~$ tbot -l labs/mylab.py -b boards/myboard.py interactive_uboot
+
+.. highlight:: python
+   :linenothreshold: 3
+
+2. Calling ``machine.interactive()`` in your testcase.  For example::
+
+        with tbot.acquire_board(lh) as b:
+            with tbot.acquire_linux(b) as lnx:
+                lnx.exec0("echo", "Doing some setup work")
+
+                # Might raise an Exception if TBot was not able to reaquire the shell after
+                # the interactive session
+                lnx.interactive()
+
+                lnx.exec0("echo", "Continuing testcase after the user made some adjustments")

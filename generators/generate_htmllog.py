@@ -1,34 +1,27 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """
-Generate an html log
---------------------
+Generate an html log.
+
 Create an html representation of the log,
 using U-Boot's python test suite's html log
 generator as a base
 """
-import json
 import sys
+import re
 import pathlib
 import string
+import logparser
 
 
-def main():
-    """ Generate an html log """
+def main() -> None:
+    """Generate an html log."""
 
     try:
         filename = pathlib.Path(sys.argv[1])
-        log = json.load(open(filename))
+        log = logparser.logfile(str(filename))
     except IndexError:
         sys.stderr.write(
             f"""\
-\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m
-"""
-        )
-        sys.exit(1)
-    except json.JSONDecodeError:
-        sys.stderr.write(
-            f"""\
-\x1B[31mInvalid JSON!\x1B[0m
 \x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m
 """
         )
@@ -43,45 +36,44 @@ def main():
         sys.exit(1)
 
     # pylint: disable=too-many-return-statements
-    def gen_html(msg):
-        """ Generate html for a log message """
-        if msg["type"] == ["testcase", "begin"]:
-            return f"""<div class="section block">
+    def gen_html(ev: logparser.LogEvent) -> str:
+        """Generate html for a log message."""
+        if ev.type == ["tc", "begin"]:
+            return f"""\
+                       <div class="section block">
                          <div class="section-header block-header">
-                           {msg['name']}
+                           {ev.data['name']}
                          </div>
                          <div class="section-content block-content">
-                           <div class="action">
-                             <pre></pre>
-                           </div>"""
-        elif msg["type"] == ["testcase", "end"]:
-            if msg["success"]:
-                return f"""<div class="status-pass">
-                             <pre>OK, Time: {msg['duration']:.2f}s</pre>
+                           """
+        elif ev.type == ["tc", "end"]:
+            if ev.data["success"]:
+                return f"""\
+                           <div class="status-pass">
+                             <pre>OK, Time: {ev.data['duration']:.3f}s</pre>
                            </div>
                          </div>
                        </div>"""
-            if msg["fail_ok"]:
-                return f"""<div class="status-xpass">
-                             <pre>Fail expected, Time: {msg['duration']:.2f}s</pre>
+            return f"""\
+                           <div class="status-fail">
+                             <pre>FAIL, Time: {ev.data['duration']:.3f}s</pre>
                            </div>
                          </div>
                        </div>"""
-            return f"""    <div class="status-fail">
-                             <pre>FAIL, Time: {msg['duration']:.2f}s</pre>
-                           </div>
-                         </div>
-                       </div>"""
-        elif msg["type"][0] == "shell":
-            shell_type = repr(tuple(msg["type"][1:]))
-            command = repr(msg["command"])[1:-1]
-            output = (
-                msg["output"][:-1]
-                .replace("&", "&amp;")
-                .replace("<", "&lt;")
-                .replace(">", "&gt;")
-            )
-            return f"""    <div class="block">
+        elif ev.type[0] == "cmd":
+            shell_type = f"[{ev.type[1]}]"
+            command = ev.data["cmd"]
+            try:
+                output = (
+                    ev.data["stdout"][:-1]
+                    .replace("&", "&amp;")
+                    .replace("<", "&lt;")
+                    .replace(">", "&gt;")
+                )
+            except KeyError:
+                output = "&lt;no output&gt;"
+            return f"""\
+                           <div class="block">
                              <div class="block-header">
                                {shell_type} {command}
                              </div>
@@ -90,61 +82,75 @@ def main():
 {output}</pre>
                              </div>
                            </div>"""
-        elif msg["type"] == ["board", "boot"]:
-            output = (
-                msg["log"]
-                .replace("&", "&amp;")
-                .replace("<", "&lt;")
-                .replace(">", "&gt;")
-            )
-            return f"""    <div class="block">
+        elif ev.type[0] == "board":
+            idx = ["on", "off", "uboot", "linux"].index(ev.type[1])
+
+            ev_name = [
+                "BOARD POWER-ON",
+                "BOARD POWER-OFF",
+                "BOARD UBOOT START",
+                "BOARD LINUX BOOT",
+            ][idx]
+            try:
+                output = (
+                    ev.data["output"]
+                    .replace("&", "&amp;")
+                    .replace("<", "&lt;")
+                    .replace(">", "&gt;")
+                )
+            except KeyError:
+                output = "<no output>"
+            return f"""\
+                           <div class="block">
                              <div class="block-header">
-                               -&gt; Board boot log
+                               -&gt; <b>{ev_name}</b>
                              </div>
                              <div class="block-content">
                                <pre>
 {output}</pre>
                              </div>
                            </div>"""
-        elif msg["type"][0] == "msg":
+        elif ev.type[0] == "msg":
             output = (
-                msg["text"]
+                ev.data["text"]
                 .replace("&", "&amp;")
                 .replace("<", "&lt;")
                 .replace(">", "&gt;")
-            )
-            return f"""    <div class="block">
+            ) + "\n"
+            first_line, message = output.split("\n", maxsplit=1)
+            return f"""\
+                           <div class="block">
                              <div class="block-header">
-                               Message ({msg['type'][1]}):
+                               Message ({ev.type[1]}): {first_line}
                              </div>
                              <div class="block-content">
                                <pre>
 {output}</pre>
-                               <div class="level-{msg['type'][1]}" style="color: #aaa">
-                                  <i>Loglevel: {msg['type'][1]}</i>
+                               <div class="level-{ev.type[1]}" style="color: #aaa">
+                                  <i>Loglevel: {ev.type[1]}</i>
                                </div>
                              </div>
                            </div>"""
-        elif msg["type"][0] == "exception":
-            return f"""    <div class="block">
+        elif ev.type[0] == "exception":
+            return f"""\
+                           <div class="block">
                              <div class="block-header">
-                               Exception: {msg['name']}
+                               Exception: {ev.data['name']}
                              </div>
                              <div class="block-content">
                                <pre>
-{msg['trace']}</pre>
+{ev.data['trace']}</pre>
                              </div>
                            </div>"""
         elif (
-            msg["type"] == ["tbot", "end"]
-            or msg["type"] == ["tbot", "info"]
-            or msg["type"][0] == "custom"
-            or msg["type"][0] == "board"
-            or msg["type"][0] == "doc"
+            ev.type == ["tbot", "end"]
+            or ev.type == ["tbot", "info"]
+            or ev.type[0] == "custom"
+            or ev.type[0] == "doc"
         ):
             return ""
 
-        raise Exception("unknown event %r" % (msg,))
+        raise Exception(f"Unknown event {ev!r}")
 
     with open(pathlib.Path(__file__).parent / "template.html") as f:
         template_string = f.read()
@@ -154,7 +160,10 @@ def main():
         "content": "\n".join(map(gen_html, log)),
     }
 
-    print(string.Template(template_string).safe_substitute(data))
+    page = string.Template(template_string).safe_substitute(data)
+
+    ansi_escapes = re.compile(r"\x1B\[[0-?]*[ -/]*[@-~]")
+    print(ansi_escapes.sub("", page))
 
 
 if __name__ == "__main__":

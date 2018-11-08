@@ -1,7 +1,8 @@
-build/
+/build/
 _build/
 *.egg-info/
 log/
 *.pyc
 .mypy_cache/
 dist/
+.doctrees

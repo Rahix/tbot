@@ -1,53 +1,83 @@
-TBot
-====
+# TBot ![Python 3.6](https://img.shields.io/badge/python-3.6-blue.svg) [![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
-**Note**: This version is outdated!  Please wait for the *0.6.0* release or, if you are impatient, take a look
-at the `next` branch ;)
+TBot is a testing/automation tool that is focused on usage in embedded development.
+At its core TBot just provides utilities for interaction with remote hosts/targets
+and an extensive library of routines that are common in embedded development/testing.
 
-TBot is a test automation tool for embedded linux development. It can handle day to day routines to make a
-develper's life a lot easier and it can be used for automation of test running with CI. TBot is written in
-Python3.6 and will not work with anything below.
-Please take a look at the [documentation](https://rahix.de/tbot-doc/html/) for a guide on how to get started.
-Or alternatively there is a short slidedeck available at <https://rahix.de/tbot-doc/tbot-presentation/>.
+TBot aims to be a support for the developer while working on a project and without
+much modification also allow running tests in an automated setting (CI).
 
-## Installation ##
-Clone this Repository, then install TBot using
+Most info about TBot can be found in its [documentation](https://rahix.de/tbot).
 
-```
+![TBot Architecture](doc/_static/tbot.png)
+
+*Note that the TBot and Lab host can be the same machine.  Same with Lab and Build host.*
+
+
+## Installation
+```bash
 python3 setup.py install --user
 ```
 
-if you intend to just use TBot or
+Also, if you haven't done this already, you need to add ``~/.local/bin`` to your ``$PATH``.
 
-```
-python3 setup.py develop --user
-```
+### Completions
+TBot supports command line completions. Enable them by adding
 
-if you intend to work on TBot itself.
-
-### Troubleshooting ###
-If the installation does not work, most likely it is an error when installing paramiko. I recommend installing
-paramiko through your distros package manager (eg. `python3-paramiko` for Fedora). If your distros version of
-paramiko is too old, you will then need to install paramiko with pip (after installing the distro package):
-
-```
-pip3 install --user paramiko
+```bash
+source /path/to/tbot/completions.sh
 ```
 
-## Example ##
-The most simple structure of directory that contains just enough information for TBot to be used looks like this:
+to your ``.bashrc`` or equivalent.
 
-```
-+-some_dir/
-  +-config/
-  | +-boards/
-  | | +-some_board.py
-  | +-labs/
-  | | +-some_lab.py
-  | +-tbot.py
-  +-tc/
-    +-some_testcases.py
+
+## Example
+Blinks a GPIO Led on your selected target.
+
+```python
+import contextlib
+import typing
+import time
+import tbot
+from tbot.machine import linux
+
+
+@tbot.testcase
+def blink(
+    mach: typing.Optional[linux.LinuxMachine] = None,
+    pin: int = 18,
+) -> None:
+    """Blink the led on pin ``pin``."""
+    with contextlib.ExitStack() as cx:
+        if mach is None:
+            lh = cx.enter_context(tbot.acquire_lab())
+            b = cx.enter_context(tbot.acquire_board(lh))
+            lnx = cx.enter_context(tbot.acquire_linux(b))
+        else:
+            lnx = mach
+
+        sys_gpio = linux.Path(lnx, "/sys/class/gpio")
+        gpio_n = sys_gpio / f"gpio{pin}"
+        try:
+            lnx.exec0("echo", str(pin), stdout=sys_gpio / "export")
+
+            # Wait for the gpio pin to be initialized
+            time.sleep(0.5)
+            lnx.exec0("echo", "out", stdout=gpio_n / "direction")
+            for _ in range(5):
+                lnx.exec0("echo", "1", stdout=gpio_n / "value")
+                time.sleep(0.5)
+                lnx.exec0("echo", "0", stdout=gpio_n / "value")
+                time.sleep(0.5)
+        finally:
+            lnx.exec0("echo", str(pin), stdout=sys_gpio / "unexport")
 ```
 
-For some example configs and testcases, take a look at the `config/` and `tc/` subdirs of this repo. Refer to the documentation
-for a more in-depth explanation.
+## Credits
+* [fast-entry_points](https://github.com/ninjaaron/fast-entry_points)
+* [paramiko](https://www.paramiko.org/)
+* [termcolor2](https://pypi.org/project/termcolor2/)
+
+
+## Contributing
+Please make use of the `pre-commit` config in this repo to check your changes!

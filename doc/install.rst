@@ -1,8 +1,6 @@
-.. TBot installation
-
 Installation
 ============
-Clone the `TBot repository <https://gitlab.denx.de/HaraldSeiler/tbot>`_, then
+Clone `TBot's repository <https://gitlab.denx.de/HaraldSeiler/tbot>`_, then
 install TBot using
 
 ::
@@ -11,14 +9,6 @@ install TBot using
 
 Also, if you haven't done this already, you need to add ``~/.local/bin`` to
 your ``$PATH``.
-
-Troubleshooting
----------------
-If the installation does not work, most likely it is an error when installing paramiko. I recommend installing
-paramiko through your distros package manager (eg. ``python3-paramiko`` for Fedora). If your distros version of
-paramiko is too old, you will then need to install paramiko with pip (after installing the distro package)::
-
-    pip3 install --user paramiko
 
 Completions
 -----------
@@ -30,12 +20,14 @@ TBot supports command line completions. Enable them by adding
 
 to your ``.bashrc`` or equivalent.
 
-Development
------------
-If you intend to work on TBot itself, you can install it in development mode::
+Troubleshooting
+---------------
+If the above did not work out of the box, take a look at the following list:
 
-    python3 setup.py develop --user
+Paramiko
+^^^^^^^^
+If the installation does not work, most likely it is an error when installing paramiko. I recommend installing
+paramiko through your distros package manager (eg. ``python3-paramiko`` for Fedora). If your distros version of
+paramiko is too old, you will then need to install paramiko with pip (after installing the distro package)::
 
-This does not install TBot like usual, but symlinks the installation to the repository,
-so any changes you make are instantly available, without the need of reinstalling every
-time.
+    pip3 install --user paramiko

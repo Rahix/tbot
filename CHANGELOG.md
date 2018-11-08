@@ -3,6 +3,128 @@
 ## [Unreleased]
 
 
+## [0.6.0] - 2018-11-08
+Version 0.6.0 is finally here!  It is a complete rewrite so none of the old
+stuff is relevant any more.  The changelog below is not everything that was
+changed, but the changes since the last prerelease (`0.6.0-pre08`).
+
+### Added
+- `mach.test()` to just check the return code of a command
+- `linux.F`, `board.F`: Formatter with TBot support
+- `max` parameter for `Channel.recv()`
+- `recv_n` method for `Channel` to read exactly N bytes
+- `ignore_hostkey` in `SSHLabHost`
+- `console_check` hook to prevent racey board connections
+  from multiple developers
+- `LinuxWithUBootMachine.do_boot` for a more flexible
+  `boot_commands` definition
+
+### Changed
+- Improved testrun end handling
+- Made `SSHMachine` more userfriendly; now shows ssh errors in log
+- Made `shell` mandatory for `BoardLinux` machines
+
+### Fixed
+- `shell.copy` sometimes not respecting `ignore_hostkey` flag
+- `shell.copy` relying on an ugly hack that breaks on some python versions
+- `Verbosity` being in the wrong format in log events
+
+
+## [0.6.0-pre08] - 2018-10-29
+### Added
+- Selftest that fails intentionally
+
+### Changed
+- *Internal*: `Board` no longer manages the boot-logevent as that breaks
+  when no BoardMachine follows up
+
+### Fixed
+- HTMLLog generater producing bad HTML because of some log issues
+
+
+## [0.6.0-pre07] - 2018-10-25
+### Added
+- Password support in `shell.copy`
+- Recipes in documentation
+- `Board.cleanup`, `Channel.register_cleanup`, ability to register a hook
+  for cleaning a channel.  Might help if some lockfiles are kept when TBot
+  just kills a connection.
+- Support for copying from `LocalLabHost()` to `SSHLabHost()` and the other
+  way around.
+- `GitRepository.symbolic_head` to get current branch name
+
+### Changed
+- `GitRepository.bisect` now ensures that the good revision is actually good
+  and the current revision is actually bad.
+
+### Fixed
+- Fix failures not leading to error return code
+- Better error message if a board/lab was not found
+- Stdout showing password prompt late
+- Remove some escape sequences from log output to keep it tidy
+
+
+## [0.6.0-pre06] - 2018-10-11
+### Added
+- Reimplemented Logging. The following generators have been updated:
+    * `htmllog`
+    * `junit`
+- Support for password authentication on SSH machines.  **I strongly
+  reccomend not using this!**
+
+### Changed
+- Updated documentation
+
+### Fixed
+- Fixed pre-commit selftest hook creating log files
+
+### Removed
+- Unnecessary files from pre 0.6 versions
+
+
+## [0.6.0-pre05] - 2018-09-26
+### Added
+- `verbosity` parameter for `log.message`
+- `ignore_hostkey` flag for `SSHMachine`s
+
+### Changed
+- More robust completions
+
+### Fixed
+- Program name in help and version message was wrong
+- Better error messages when a testcase file can't be loaded
+- Selftests failing because sshd host key changes
+- `GitRepository` failing to reset in `__init__`
+
+
+## [0.6.0-pre04] - 2018-09-19
+### Added
+- `GitRepository.head`: Get the current position of `HEAD`
+- `GitRepository.bisect`: Bisect the git repo to find the commit
+  which introduced a bug.
+- Show durations of testcase runs.
+
+### Changed
+- Moved package metadata into `__about__.py`
+- Always show long version in documentation
+- `shell.copy` can now copy from and to SSHMachines.
+
+
+## [0.6.0-pre] - 2018-08-28
+Version **0.6.0** is basically a complete rewrite of TBot.  A rough summary of changes:
+- Be as *pythonic* as possible, the old version had a big issue of non pythonic patterns
+  making things that should be easy difficult.
+- More static guarantees. New TBot can guarantee even more when checking your testcases with
+  a static typechecker.  A big new feature in that regard is static guarantee of never using
+  a path with a wrong machine!
+- Cleaner and much smaller codebase.  Every piece of code is written as small and pythonic
+  as possible which has made the codebase much more manageable.
+- Speedups! New TBot can complete its selfchecks in under 1s. This is possible because of a
+  new channel API that no longer uses sleep unless absolutely necessary.
+- Much more stable and predictable.  Even more care was taken in making TBot behave as predictable
+  as possible and reducing side effects.
+
+
 ## [0.3.4] - 2018-08-09
 ### Added
 - `TestcaseFailure` & `InvalidUsageException` exceptions
