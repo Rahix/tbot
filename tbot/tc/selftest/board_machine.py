@@ -20,12 +20,20 @@ class TestBoard(board.Board):
         return self.lh.new_channel(
             linux.Raw(
                 """\
-bash --norc; exit
+bash --norc --noediting; exit
 unset HISTFILE
 PS1='Test-U-Boot> '
 alias version="uname -a"
-alias printenv="set | grep -E '^U'"
-bash --norc
+function printenv() {
+    if [ $# = 0 ]; then
+        set | grep -E '^U'
+    else
+        set | grep "$1" | sed "s/'//g"
+    fi
+}
+function setenv() { local var="$1"; shift; eval "$var=\\"$*\\""
+}
+bash --norc --noediting
 unset HISTFILE
 set +o emacs
 set +o vi
@@ -66,6 +74,10 @@ def selftest_board_uboot(lab: typing.Optional[tbot.selectable.LabHost] = None) -
 
                 out = ub.exec0("echo", board.F("0x{}", str(1234))).strip()
                 assert out == "0x1234", repr(out)
+
+                from . import machine as mach
+
+                mach.selftest_machine_shell(ub)
 
 
 @tbot.testcase

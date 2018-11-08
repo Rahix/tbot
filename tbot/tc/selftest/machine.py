@@ -96,11 +96,8 @@ def selftest_machine_shell(
     assert out == f"{s}\n", repr(out)
 
     tbot.log.message("Testing return codes ...")
-    r, _ = m.exec("true")
-    assert r == 0, repr(r)
-
-    r, _ = m.exec("false")
-    assert r == 1, repr(r)
+    assert m.test("true")
+    assert not m.test("false")
 
     if isinstance(m, linux.LinuxMachine):
         tbot.log.message("Testing env vars ...")
