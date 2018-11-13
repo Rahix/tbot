@@ -78,6 +78,8 @@ def blink(
 * [paramiko](https://www.paramiko.org/)
 * [termcolor2](https://pypi.org/project/termcolor2/)
 
-
 ## Contributing
 Please make use of the `pre-commit` config in this repo to check your changes!
+
+## License
+TBot is licensed under the `GNU General Public License v3.0 or later`.  See [LICENSE](LICENSE) for more info.

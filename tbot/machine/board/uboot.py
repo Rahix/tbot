@@ -1,9 +1,26 @@
+# TBot, Embedded Automation Tool
+# Copyright (C) 2018  Harald Seiler
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import typing
 import shlex
 import tbot
 from tbot import machine
 from tbot.machine import board
 from tbot.machine import linux
+from tbot.machine import channel
 from . import special
 
 B = typing.TypeVar("B", bound=board.Board)
@@ -51,7 +68,7 @@ class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
     def __init__(self, board: B) -> None:  # noqa: D107
         super().__init__(board)
 
-        self.channel: machine.channel.Channel
+        self.channel: channel.Channel
         if board.channel is not None:
             self.channel = board.channel
         else:
