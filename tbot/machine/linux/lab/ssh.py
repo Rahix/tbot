@@ -16,10 +16,12 @@
 
 import abc
 import typing
+import getpass
 import pathlib
 import paramiko
 from tbot.machine import channel
 from tbot.machine.linux import auth
+from tbot import log
 from .machine import LabHost
 
 SLH = typing.TypeVar("SLH", bound="SSHLabHost")
@@ -33,6 +35,9 @@ class SSHLabHost(LabHost):
 
     To use a LabHost that is connected via SSH, you must subclass
     SSHLabHost in you lab config.
+
+    By default ``SSHLabHost`` tries to get connection info from ``~/.ssh/config``,
+    but you can also overwrite this in your config.
 
     **Example**::
 
@@ -61,22 +66,53 @@ class SSHLabHost(LabHost):
         Ignore host key.
 
         Set this to true if the remote changes its host key often.
+
+        Defaults to ``False`` or the value of ``StrictHostKeyChecking`` in
+        ``~/.ssh/config``.
         """
-        return False
+        if "stricthostkeychecking" in self._c:
+            assert isinstance(self._c["stricthostkeychecking"], str)
+            return self._c["stricthostkeychecking"] == "no"
+        else:
+            return False
 
     @property
     @abc.abstractmethod
     def hostname(self) -> str:
-        """Return the hostname of this lab."""
+        """
+        Return the hostname of this lab.
+
+        You must always specify this parameter in your Lab config!
+        """
         pass
+
+    @property
+    def username(self) -> str:
+        """
+        Return the username to login as.
+
+        Defaults to the username from ``~/.ssh/config`` or the local username.
+        """
+        if "user" in self._c:
+            assert isinstance(self._c["user"], str)
+            return self._c["user"]
+        else:
+            return getpass.getuser()
 
     @property
     def authenticator(self) -> auth.Authenticator:
         """
         Return an :class:`~tbot.machine.linux.auth.Authenticator` that allows logging in on this LabHost.
 
-        Defaults to a private key authenticator using ``~/.ssh/id_rsa``.
+        Defaults to a private key authenticator using ``~/.ssh/id_rsa`` or the first key
+        specified in ``~/.ssh/config``.
         """
+        if "identityfile" in self._c:
+            assert isinstance(self._c["identityfile"], list)
+            return auth.PrivateKeyAuthenticator(
+                pathlib.Path(self._c["identityfile"][0])
+            )
+
         return auth.PrivateKeyAuthenticator(pathlib.Path.home() / ".ssh" / "id_rsa")
 
     @property
@@ -84,9 +120,13 @@ class SSHLabHost(LabHost):
         """
         Return the port the remote SSH server is listening on.
 
-        Defaults to ``22``.
+        Defaults to ``22`` or the value of ``Port`` in ``~/.ssh/config``.
         """
-        return 22
+        if "port" in self._c:
+            assert isinstance(self._c["port"], str)
+            return int(self._c["port"])
+        else:
+            return 22
 
     def __repr__(self) -> str:
         return (
@@ -97,6 +137,18 @@ class SSHLabHost(LabHost):
         """Create a new instance of this SSH LabHost."""
         super().__init__()
         self.client = paramiko.SSHClient()
+        self._c: typing.Dict[str, typing.Union[str, typing.List[str]]] = {}
+        try:
+            c = paramiko.config.SSHConfig()
+            c.parse(open(pathlib.Path.home() / ".ssh" / "config"))
+            self._c = c.lookup(self.hostname)
+        except FileNotFoundError:
+            # Config file does not exist
+            pass
+        except Exception:
+            # Invalid config
+            log.message(log.c("Invalid").red + " .ssh/config")
+            raise
 
         if self.ignore_hostkey:
             self.client.set_missing_host_key_policy(paramiko.client.AutoAddPolicy())
@@ -112,6 +164,12 @@ class SSHLabHost(LabHost):
         if isinstance(authenticator, auth.PrivateKeyAuthenticator):
             key_file = str(authenticator.key)
 
+        log.message(
+            "Logging in on "
+            + log.c(f"{self.username}@{self.hostname}:{self.port}").yellow
+            + " ...",
+            verbosity=log.Verbosity.COMMAND,
+        )
         self.client.connect(
             self.hostname,
             username=self.username,

@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- `SSHLabHost` now attempts to use values from `~/.ssh/config` if available.
 
 
 ## [0.6.0] - 2018-11-08
