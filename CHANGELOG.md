@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- `GitRepository` now fetches latest changes from remote by default
+
 ### Changed
 - `SSHLabHost` now attempts to use values from `~/.ssh/config` if available.
 - `SSHMachine`: Use labhost's username by default

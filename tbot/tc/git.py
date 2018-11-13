@@ -57,6 +57,7 @@ class GitRepository(linux.Path[H]):
         url: typing.Optional[str] = None,
         *,
         clean: bool = True,
+        fetch: bool = True,
         rev: typing.Optional[str] = None,
     ) -> None:
         """
@@ -73,10 +74,14 @@ class GitRepository(linux.Path[H]):
         files/ changes will be removed. If ``rev`` is also given, it will be
         checked out.
 
+        If ``fetch`` is ``True`` and ``url`` is given, the latest upstream revision
+        will be checked out.
+
         :param linux.Path target: Where the repository is supposed to be.
         :param str url: Optional remote url. Whether this is set specifies the
             mode the repo is initialized in.
         :param bool clean: Whether to clean the working tree. Defaults to ``True``.
+        :param bool fetch: Whether to fetch remote. Defaults to ``True``.
         :param str rev: Optional revision to checkout. Only has an effect if clean
             is also set. If you don't want to clean, but still perform a checkout,
             call :meth:`~tbot.tc.git.GitRepository.checkout`.
@@ -88,6 +93,8 @@ class GitRepository(linux.Path[H]):
             if not already_cloned:
                 self.host.exec0("mkdir", "-p", self)
                 self.host.exec0("git", "clone", url, self)
+            elif fetch:
+                self.git0("fetch")
 
             if clean and already_cloned:
                 self.reset("origin", ResetMode.HARD)
