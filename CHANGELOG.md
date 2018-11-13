@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Changed
 - `SSHLabHost` now attempts to use values from `~/.ssh/config` if available.
+- `SSHLabHost`: Use labhost's username by default
 
 
 ## [0.6.0] - 2018-11-08

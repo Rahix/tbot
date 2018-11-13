@@ -45,6 +45,15 @@ class SSHMachine(linux.LinuxMachine):
         pass
 
     @property
+    def username(self) -> str:
+        """
+        Return the username for logging in on this machine.
+
+        Defaults to the username on the labhost.
+        """
+        return self.labhost.username
+
+    @property
     def authenticator(self) -> auth.Authenticator:
         """
         Return an authenticator that allows logging in on this machine.
