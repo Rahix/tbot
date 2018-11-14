@@ -51,7 +51,18 @@ class BuildMachine(linux.LinuxMachine):
         pass
 
     def enable(self, arch: str) -> "_ToolchainContext":
-        """Enable the toolchain for ``arch`` on this BuildHost instance."""
+        """
+        Enable the toolchain for ``arch`` on this BuildHost instance.
+
+        **Example**::
+
+            with lh.build() as bh:
+                # Now we are on the buildhost
+
+                with bh.enable("generic-armv7a-hf"):
+                    # Toolchain is enabled here
+                    bh.exec0(linux.Env("CC"), "--version")
+        """
         tc = self.toolchains[arch]
 
         return _ToolchainContext(self, tc)
