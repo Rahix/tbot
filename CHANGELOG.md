@@ -6,6 +6,7 @@
 - `LinuxMachine.subshell`: Spawn subshell to isolate context changes
 
 ### Changed
+- Testcase directories are now traversed recurively
 - `SSHLabHost` now attempts to use values from `~/.ssh/config` if available.
 - `SSHMachine`: Use labhost's username by default
 

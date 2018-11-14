@@ -22,7 +22,7 @@ from termcolor2 import c
 
 
 def list_dir(
-    d: pathlib.Path, recurse: bool = False
+    d: pathlib.Path, recurse: bool = True
 ) -> typing.Generator[pathlib.Path, None, None]:
     for f in d.iterdir():
         if recurse and f.is_dir() and f.name != "__pycache__":
