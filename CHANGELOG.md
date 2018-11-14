@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Added
 - `GitRepository` now fetches latest changes from remote by default
+- `LinuxMachine.subshell`: Spawn subshell to isolate context changes
 
 ### Changed
 - `SSHLabHost` now attempts to use values from `~/.ssh/config` if available.

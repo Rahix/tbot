@@ -217,3 +217,35 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         cmd = self.shell.disable_editing()
         if cmd is not None:
             channel.raw_command(cmd)
+
+    def subshell(self) -> "_SubshellContext":
+        """
+        Start a subshell for isolating environment changes.
+
+        **Example**::
+
+            with tbot.acquire_lab() as lh:
+                lh.exec0("echo", linux.Env("FOOVAR"))  # Empty result
+
+                with lh.subshell():
+                    lh.exec0("export", "FOOVAR=123")
+                    lh.exec0("echo", linux.Env("FOOVAR"))  # 123
+
+                lh.exec0("echo", linux.Env("FOOVAR"))  # Empty result
+        """
+        return _SubshellContext(self)
+
+
+class _SubshellContext(typing.ContextManager):
+
+    def __init__(self, h: LinuxMachine) -> None:
+        self.ch = h._obtain_channel()
+        self.sh = h.shell
+
+    def __enter__(self) -> None:
+        self.ch.send(f"{self.sh.name}\n")
+        self.ch.initialize(sh=self.sh)
+
+    def __exit__(self, exc_type, exc_value, traceback) -> None:  # type: ignore
+        self.ch.send("exit\n")
+        self.ch.read_until_prompt(channel.TBOT_PROMPT)
