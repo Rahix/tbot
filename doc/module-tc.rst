@@ -12,3 +12,13 @@ Git
 .. automodule:: tbot.tc.git
 .. autoclass:: tbot.tc.git.GitRepository
     :members:
+
+
+U-Boot
+------
+.. automodule:: tbot.tc.uboot.build
+    :noindex:
+.. automodule:: tbot.tc.uboot.build_info
+.. autofunction:: tbot.tc.uboot.build
+.. autoclass:: tbot.tc.uboot.BuildInfo
+    :members:

@@ -17,7 +17,17 @@ def build(
     Build U-Boot.
 
     :param linux.BuildMachine build_machine: Machine where to build U-Boot
-    :param uboot.BuildInfo build_info: Build parameters
+    :param uboot.BuildInfo build_info: Build parameters, defaults to the info
+        associated with the selected board.  This info is defined like this::
+
+            class MyBoardUBootBuild(uboot.BuildInfo):
+                name = "myboard"
+                defconfig = "myboard_defconfig"
+                toolchain = "generic-armv7a-hf"
+
+            class MyBoardUBoot(board.UBootMachine[MyBoard]):
+                prompt = "=> "
+                build = MyBoardUBootBuild
     :rtype: linux.Path
     :returns: Path to the build dir
     """
