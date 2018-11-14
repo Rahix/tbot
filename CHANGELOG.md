@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 ### Added
+- Proper buildhost support + U-Boot build testcase
 - `GitRepository` now fetches latest changes from remote by default
 - `LinuxMachine.subshell`: Spawn subshell to isolate context changes
 

@@ -62,18 +62,8 @@ class LabHost(linux.LinuxMachine):
             chan.recv()
         return chan
 
-    @property
-    def default_build(self) -> typing.Type[linux.BuildMachine]:
-        """
-        Return the default buildhost for this lab.
-
-        **Example**::
-
-            with tbot.acquire_lab() as lh:
-                with lh.default_build(arch="generic-armv7a") as bh:
-                    assert bh.exec0("echo", linux.Env("ARCH") == "arm"
-        """
-        raise KeyError("No default build machine available!")
+    def build(self) -> linux.BuildMachine:
+        raise KeyError("No build machine available!")
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}()"

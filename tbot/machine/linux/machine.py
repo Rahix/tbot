@@ -237,6 +237,7 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
 
 
 class _SubshellContext(typing.ContextManager):
+    __slots__ = ("ch", "sh")
 
     def __init__(self, h: LinuxMachine) -> None:
         self.ch = h._obtain_channel()

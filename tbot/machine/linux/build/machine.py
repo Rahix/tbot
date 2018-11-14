@@ -50,31 +50,21 @@ class BuildMachine(linux.LinuxMachine):
         """
         pass
 
-    def enable(self, arch: str) -> None:
-        """
-        Enable the toolchain for ``arch`` on this BuildHost instance.
-
-        **Example**::
-
-            with lh.default_build() as bh:
-                bh.enable("generic-armv7a")
-
-                bh.exec0(linux.Env("CC"), "--version")
-        """
+    def enable(self, arch: str) -> "_ToolchainContext":
+        """Enable the toolchain for ``arch`` on this BuildHost instance."""
         tc = self.toolchains[arch]
 
-        tc.enable(self)
+        return _ToolchainContext(self, tc)
 
-    def __init__(
-        self, arch: typing.Optional[str] = None, *args: typing.Any, **kwargs: typing.Any
-    ) -> None:
-        """
-        Create a new BuildHost instance.
 
-        :param str arch: Optionally enable the toolchain for ``arch``.
-        :param args: Arguments for initializing the underlying linux machine.
-        """
-        super().__init__(*args, **kwargs)  # type: ignore
+class _ToolchainContext(linux._SubshellContext):
+    __slots__ = ("h", "tc")
 
-        if arch is not None:
-            self.enable(arch)
+    def __init__(self, h: BuildMachine, tc: toolchain.Toolchain) -> None:
+        super().__init__(h)
+        self.h = h
+        self.tc = tc
+
+    def __enter__(self) -> None:
+        super().__enter__()
+        self.tc.enable(self.h)

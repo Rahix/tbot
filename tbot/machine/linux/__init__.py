@@ -1,4 +1,4 @@
-from .machine import LinuxMachine
+from .machine import LinuxMachine, _SubshellContext
 from .path import Path
 
 from .build import BuildMachine
@@ -12,6 +12,7 @@ __all__ = (
     "BuildMachine",
     "LabHost",
     "LinuxMachine",
+    "_SubshellContext",
     "Path",
     "SSHMachine",
     "AndThen",
