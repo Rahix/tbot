@@ -45,7 +45,10 @@ class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
 
     .. py:attribute:: autoboot_prompt: str
 
-        Regular expression of the autoboot prompt
+        Regular expression of the autoboot prompt, set to ``None`` if
+        autoboot is disabled for this board.
+
+        Defaults to ``r"Hit any key to stop autoboot:\s+\d+\s+"``.
 
     .. py:attribute:: autoboot_keys: str = "\\n"
 
@@ -56,7 +59,7 @@ class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
         U-Prompt that was configured when building U-Boot
     """
 
-    autoboot_prompt = r"Hit any key to stop autoboot:\s+\d+\s+"
+    autoboot_prompt: typing.Optional[str] = r"Hit any key to stop autoboot:\s+\d+\s+"
     autoboot_keys = "\n"
     prompt = "U-Boot> "
 
@@ -81,13 +84,16 @@ class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
         ) as boot_ev:
             boot_ev.verbosity = tbot.log.Verbosity.STDOUT
             boot_ev.prefix = "   <> "
-            boot_log = self.channel.read_until_prompt(
-                self.autoboot_prompt, regex=True, stream=boot_ev
-            )
+            if self.autoboot_prompt is not None:
+                boot_log = self.channel.read_until_prompt(
+                    self.autoboot_prompt, regex=True, stream=boot_ev
+                )
 
-            boot_ev.data["output"] = boot_log
-        self.channel.send(self.autoboot_keys)
-        self.channel.read_until_prompt(self.prompt)
+                boot_ev.data["output"] = boot_log
+                self.channel.send(self.autoboot_keys)
+                self.channel.read_until_prompt(self.prompt)
+            else:
+                self.channel.read_until_prompt(self.prompt, stream=boot_ev)
 
     def destroy(self) -> None:
         """Destroy this U-Boot machine."""

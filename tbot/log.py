@@ -136,6 +136,7 @@ class EventIO(io.StringIO):
             .replace("\x1B[K", "")
             .replace("\x1B[r", "")
             .replace("\x1B[u", "")
+            .replace("\x08", "")
         )
 
         res = super().write(s)
