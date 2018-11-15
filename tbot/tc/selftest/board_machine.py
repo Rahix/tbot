@@ -57,8 +57,7 @@ function printenv() {
 }
 function setenv() { local var="$1"; shift; eval "$var=\\"$*\\""
 }
-PS1='Test-U-Boot> '
-echo Booting ...  #"""
+PS1=Test-U-Boot'> ' #"""
                 )
             )
 
