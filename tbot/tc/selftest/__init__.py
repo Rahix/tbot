@@ -24,6 +24,7 @@ def selftest_user(lab: typing.Optional[linux.LabHost] = None,) -> None:
 
 @tbot.testcase
 def selftest_failing(lab: typing.Optional[linux.LabHost] = None,) -> None:
+
     class CustomException(Exception):
         pass
 

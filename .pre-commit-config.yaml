@@ -34,11 +34,11 @@ repos:
     - id: generator_html
       name: TBot HTML log generator
       language: system
-      entry: ./generators/generate_htmllog.py /tmp/tbot-log.json
+      entry: sh -c "./generators/generate_htmllog.py /tmp/tbot-log.json >/dev/null"
     - id: generator_junit
       name: TBot junit generator
       language: system
-      entry: ./generators/junit.py /tmp/tbot-log.json
+      entry: sh -c "./generators/junit.py /tmp/tbot-log.json >/dev/null"
     - id: static_tests
       name: TBot type system tests
       language: system

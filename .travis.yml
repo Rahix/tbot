@@ -2,6 +2,6 @@ language: python
 python:
   - "3.6"
 install:
-  - pip install pre-commit mypy junit-xml
+  - pip install pre-commit mypy junit-xml termcolor2 paramiko
 script:
-  - pre-commit run --all-files
+  - pre-commit run --all-files --verbose
