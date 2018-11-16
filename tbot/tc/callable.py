@@ -12,7 +12,8 @@ def interactive_lab() -> None:
 @tbot.testcase
 def interactive_build() -> None:
     with tbot.acquire_lab() as lh:
-        with lh.default_build() as bh:
+        with lh.build() as bh:
+            bh.exec0("cd", bh.workdir)
             bh.interactive()
 
 
