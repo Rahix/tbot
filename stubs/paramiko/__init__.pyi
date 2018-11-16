@@ -1,6 +1,7 @@
 import typing
 import socket
 from . import client
+from . import config
 
 class Channel:
     def exec_command(self, command: str) -> None: ...

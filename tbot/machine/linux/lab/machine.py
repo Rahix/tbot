@@ -1,3 +1,19 @@
+# TBot, Embedded Automation Tool
+# Copyright (C) 2018  Harald Seiler
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import abc
 import typing
 import tbot
@@ -46,18 +62,8 @@ class LabHost(linux.LinuxMachine):
             chan.recv()
         return chan
 
-    @property
-    def default_build(self) -> typing.Type[linux.BuildMachine]:
-        """
-        Return the default buildhost for this lab.
-
-        **Example**::
-
-            with tbot.acquire_lab() as lh:
-                with lh.default_build(arch="generic-armv7a") as bh:
-                    assert bh.exec0("echo", linux.Env("ARCH") == "arm"
-        """
-        raise KeyError("No default build machine available!")
+    def build(self) -> linux.BuildMachine:
+        raise KeyError("No build machine available!")
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}()"

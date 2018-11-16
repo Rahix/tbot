@@ -12,6 +12,7 @@ with open(tbot_dir / "__about__.py") as f:
 setup(
     name=about["__title__"],
     version=about["__version__"],
+    license="GPL-3.0-or-later",
     description=about["__summary__"],
     author=about["__author__"],
     author_email=about["__email__"],

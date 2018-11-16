@@ -10,7 +10,7 @@ def testsuite(*args: typing.Callable, **kwargs: typing.Any) -> None:
     for test in args:
         try:
             test(**kwargs)
-        except Exception as e:
+        except Exception:
             errors.append((test.__name__, traceback.format_exc()))
 
     with tbot.log.message(

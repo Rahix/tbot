@@ -1,3 +1,19 @@
+# TBot, Embedded Automation Tool
+# Copyright (C) 2018  Harald Seiler
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import abc
 import typing
 import shlex
@@ -201,3 +217,36 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         cmd = self.shell.disable_editing()
         if cmd is not None:
             channel.raw_command(cmd)
+
+    def subshell(self) -> "_SubshellContext":
+        """
+        Start a subshell for isolating environment changes.
+
+        **Example**::
+
+            with tbot.acquire_lab() as lh:
+                lh.exec0("echo", linux.Env("FOOVAR"))  # Empty result
+
+                with lh.subshell():
+                    lh.exec0("export", "FOOVAR=123")
+                    lh.exec0("echo", linux.Env("FOOVAR"))  # 123
+
+                lh.exec0("echo", linux.Env("FOOVAR"))  # Empty result
+        """
+        return _SubshellContext(self)
+
+
+class _SubshellContext(typing.ContextManager):
+    __slots__ = ("ch", "sh")
+
+    def __init__(self, h: LinuxMachine) -> None:
+        self.ch = h._obtain_channel()
+        self.sh = h.shell
+
+    def __enter__(self) -> None:
+        self.ch.send(f"{self.sh.name}\n")
+        self.ch.initialize(sh=self.sh)
+
+    def __exit__(self, exc_type, exc_value, traceback) -> None:  # type: ignore
+        self.ch.send("exit\n")
+        self.ch.read_until_prompt(channel.TBOT_PROMPT)

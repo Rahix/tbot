@@ -1,3 +1,19 @@
+# TBot, Embedded Automation Tool
+# Copyright (C) 2018  Harald Seiler
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import abc
 import pathlib
 from tbot import log_event
@@ -29,6 +45,15 @@ class SSHMachine(linux.LinuxMachine):
         pass
 
     @property
+    def username(self) -> str:
+        """
+        Return the username for logging in on this machine.
+
+        Defaults to the username on the labhost.
+        """
+        return self.labhost.username
+
+    @property
     def authenticator(self) -> auth.Authenticator:
         """
         Return an authenticator that allows logging in on this machine.
@@ -57,9 +82,7 @@ class SSHMachine(linux.LinuxMachine):
         return 22
 
     def __repr__(self) -> str:
-        return (
-            f"<{self.__class__.__name__} {self.username}@{self.hostname}:{self.port} (Lab: {self.labhost!r}>"
-        )
+        return f"<{self.__class__.__name__} {self.username}@{self.hostname}:{self.port} (Lab: {self.labhost!r}>"
 
     def _connect(self) -> channel.Channel:
         chan = self.labhost.new_channel()

@@ -24,7 +24,6 @@ def selftest_user(lab: typing.Optional[linux.LabHost] = None,) -> None:
 
 @tbot.testcase
 def selftest_failing(lab: typing.Optional[linux.LabHost] = None,) -> None:
-
     class CustomException(Exception):
         pass
 
@@ -55,6 +54,7 @@ def selftest(lab: typing.Optional[linux.LabHost] = None,) -> None:
             selftest_path_integrity,  # noqa: F405
             selftest_board_power,  # noqa: F405
             selftest_board_uboot,  # noqa: F405
+            selftest_board_uboot_noab,  # noqa: F405
             selftest_board_linux,  # noqa: F405
             selftest_board_linux_uboot,  # noqa: F405
             selftest_board_linux_standalone,  # noqa: F405

@@ -1,3 +1,19 @@
+# TBot, Embedded Automation Tool
+# Copyright (C) 2018  Harald Seiler
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import typing
 import tbot
 import enum
@@ -41,6 +57,7 @@ class GitRepository(linux.Path[H]):
         url: typing.Optional[str] = None,
         *,
         clean: bool = True,
+        fetch: bool = True,
         rev: typing.Optional[str] = None,
     ) -> None:
         """
@@ -57,10 +74,14 @@ class GitRepository(linux.Path[H]):
         files/ changes will be removed. If ``rev`` is also given, it will be
         checked out.
 
+        If ``fetch`` is ``True`` and ``url`` is given, the latest upstream revision
+        will be checked out.
+
         :param linux.Path target: Where the repository is supposed to be.
         :param str url: Optional remote url. Whether this is set specifies the
             mode the repo is initialized in.
         :param bool clean: Whether to clean the working tree. Defaults to ``True``.
+        :param bool fetch: Whether to fetch remote. Defaults to ``True``.
         :param str rev: Optional revision to checkout. Only has an effect if clean
             is also set. If you don't want to clean, but still perform a checkout,
             call :meth:`~tbot.tc.git.GitRepository.checkout`.
@@ -72,6 +93,8 @@ class GitRepository(linux.Path[H]):
             if not already_cloned:
                 self.host.exec0("mkdir", "-p", self)
                 self.host.exec0("git", "clone", url, self)
+            elif fetch:
+                self.git0("fetch")
 
             if clean and already_cloned:
                 self.reset("origin", ResetMode.HARD)

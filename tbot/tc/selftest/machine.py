@@ -149,6 +149,18 @@ def selftest_machine_shell(
             ).strip()
             assert out == "FOO", repr(out)
 
+        tbot.log.message("Testing subshell ...")
+        out = m.exec0("echo", linux.Env("SUBSHELL_TEST_VAR")).strip()
+        assert out == "", repr(out)
+
+        with m.subshell():
+            m.exec0("export", "SUBSHELL_TEST_VAR=123")
+            out = m.exec0("echo", linux.Env("SUBSHELL_TEST_VAR")).strip()
+            assert out == "123", repr(out)
+
+        out = m.exec0("echo", linux.Env("SUBSHELL_TEST_VAR")).strip()
+        assert out == "", repr(out)
+
     if isinstance(m, board.UBootMachine):
         tbot.log.message("Testing env vars ...")
         m.exec0("setenv", "TBOT_TEST", "Lorem ipsum dolor sit amet")

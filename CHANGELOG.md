@@ -3,6 +3,20 @@
 ## [Unreleased]
 
 
+## [0.6.1] - 2018-11-16
+### Added
+- Proper buildhost support + U-Boot build testcase
+- `GitRepository` now fetches latest changes from remote by default
+- `LinuxMachine.subshell`: Spawn subshell to isolate context changes
+
+### Changed
+- Allow setting `autoboot_prompt` to `None`, if the board automatically drops
+  into a U-Boot shell.
+- Testcase directories are now traversed recurively
+- `SSHLabHost` now attempts to use values from `~/.ssh/config` if available.
+- `SSHMachine`: Use labhost's username by default
+
+
 ## [0.6.0] - 2018-11-08
 Version 0.6.0 is finally here!  It is a complete rewrite so none of the old
 stuff is relevant any more.  The changelog below is not everything that was
