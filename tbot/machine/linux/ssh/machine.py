@@ -82,9 +82,7 @@ class SSHMachine(linux.LinuxMachine):
         return 22
 
     def __repr__(self) -> str:
-        return (
-            f"<{self.__class__.__name__} {self.username}@{self.hostname}:{self.port} (Lab: {self.labhost!r}>"
-        )
+        return f"<{self.__class__.__name__} {self.username}@{self.hostname}:{self.port} (Lab: {self.labhost!r}>"
 
     def _connect(self) -> channel.Channel:
         chan = self.labhost.new_channel()
