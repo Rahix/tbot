@@ -177,6 +177,16 @@ class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
         ret, _ = self.exec(*args)
         return ret == 0
 
+    def env(self, var: str) -> str:
+        """
+        Get the value of an environment variable.
+
+        :param str var: The variable's name
+        :rtype: str
+        :returns: Value of the environment variable
+        """
+        return self.exec0("echo", special.Raw(f"${{{var}}}"))[:-1]
+
     def interactive(self) -> None:
         """
         Drop into an interactive U-Boot session.

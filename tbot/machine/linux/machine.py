@@ -22,7 +22,7 @@ import tbot
 from tbot import machine
 from tbot.machine import channel
 from .path import Path
-from .special import Special
+from .special import Raw, Special
 from . import shell as sh
 
 Self = typing.TypeVar("Self", bound="LinuxMachine")
@@ -170,6 +170,16 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         """
         ret, _ = self.exec(*args, stdout=stdout, timeout=timeout)
         return ret == 0
+
+    def env(self, var: str) -> str:
+        """
+        Get the value of an environment variable.
+
+        :param str var: The variable's name
+        :rtype: str
+        :returns: Value of the environment variable
+        """
+        return self.exec0("printf", "%s", Raw(f'"${{{var}}}"'))
 
     def interactive(self) -> None:
         """Drop into an interactive session on this machine."""

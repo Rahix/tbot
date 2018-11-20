@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 ### Added
+- `Machine.env`: Easily get the value of an environment variable
 - Allow specifying a command when spawning a subshell.
 
 

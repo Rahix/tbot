@@ -105,9 +105,10 @@ def selftest_machine_shell(
 
     if isinstance(m, linux.LinuxMachine):
         tbot.log.message("Testing env vars ...")
-        m.exec0("export", "TBOT_TEST_ENV_VAR=121212")
-        out = m.exec0("echo", linux.Env("TBOT_TEST_ENV_VAR"))
-        assert out == "121212\n", repr(out)
+        value = "12\nfoo !? # true; exit\n"
+        m.exec0("export", f"TBOT_TEST_ENV_VAR={value}")
+        out = m.env("TBOT_TEST_ENV_VAR")
+        assert out == value, repr(out)
 
         tbot.log.message("Testing redirection (and weird paths) ...")
         f = m.workdir / ".redir test.txt"
@@ -125,8 +126,8 @@ def selftest_machine_shell(
         assert out == "/tmp/f o/bar:|:foo\n", repr(out)
 
         m.exec0("export", linux.F("NEWPATH={}:{}", tmp, linux.Env("PATH"), quote=False))
-        out = m.exec0("echo", linux.Env("NEWPATH"))
-        assert out != "/tmp/f o/bar:${PATH}\n", repr(out)
+        out = m.env("NEWPATH")
+        assert out != "/tmp/f o/bar:${PATH}", repr(out)
 
         if "jobs" in cap:
             t1 = time.monotonic()
@@ -154,21 +155,21 @@ def selftest_machine_shell(
             assert out == "FOO", repr(out)
 
         tbot.log.message("Testing subshell ...")
-        out = m.exec0("echo", linux.Env("SUBSHELL_TEST_VAR")).strip()
+        out = m.env("SUBSHELL_TEST_VAR")
         assert out == "", repr(out)
 
         with m.subshell():
             m.exec0("export", "SUBSHELL_TEST_VAR=123")
-            out = m.exec0("echo", linux.Env("SUBSHELL_TEST_VAR")).strip()
+            out = m.env("SUBSHELL_TEST_VAR")
             assert out == "123", repr(out)
 
-        out = m.exec0("echo", linux.Env("SUBSHELL_TEST_VAR")).strip()
+        out = m.env("SUBSHELL_TEST_VAR")
         assert out == "", repr(out)
 
         with m.subshell(
             "env", "SUBSHELL_TEST_VAR2=1337", "bash", "--norc", shell=linux.shell.Bash
         ):
-            out = m.exec0("echo", linux.Env("SUBSHELL_TEST_VAR2")).strip()
+            out = m.env("SUBSHELL_TEST_VAR2")
             assert out == "1337", repr(out)
 
     if isinstance(m, board.UBootMachine):
@@ -176,6 +177,9 @@ def selftest_machine_shell(
         m.exec0("setenv", "TBOT_TEST", "Lorem ipsum dolor sit amet")
         out = m.exec0("printenv", "TBOT_TEST")
         assert out == "TBOT_TEST=Lorem ipsum dolor sit amet\n", repr(out)
+
+        out = m.env("TBOT_TEST")
+        assert out == "Lorem ipsum dolor sit amet", repr(out)
 
 
 @tbot.testcase
