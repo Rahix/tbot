@@ -247,7 +247,7 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         cmd = None
         if args != []:
             cmd = self.build_command(*args)
-        return _SubshellContext(self._obtain_channel(), shell or self.shell, cmd)
+        return _SubshellContext(self, shell or self.shell, cmd)
 
 
 class _SubshellContext(typing.ContextManager):
@@ -255,16 +255,19 @@ class _SubshellContext(typing.ContextManager):
 
     def __init__(
         self,
-        ch: channel.Channel,
+        h: LinuxMachine,
         shell: typing.Type[sh.Shell],
         cmd: typing.Optional[str] = None,
     ) -> None:
-        self.ch = ch
+        self.h = h
+        self.ch = h._obtain_channel()
         self.sh = shell
         self.cmd = cmd
 
     def __enter__(self) -> None:
-        self.ch.send(f"{self.cmd or self.sh.name}\n")
+        cmd = self.cmd or self.sh.name
+        tbot.log_event.command(self.h.name, cmd)
+        self.ch.send(f"{cmd}\n")
         self.ch.initialize(sh=self.sh)
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:  # type: ignore
