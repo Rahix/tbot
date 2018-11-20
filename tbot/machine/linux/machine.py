@@ -218,9 +218,18 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         if cmd is not None:
             channel.raw_command(cmd)
 
-    def subshell(self) -> "_SubshellContext":
+    def subshell(
+        self: Self,
+        *args: typing.Union[str, Special[Self], Path[Self]],
+        shell: typing.Optional[typing.Type[sh.Shell]] = None,
+    ) -> "_SubshellContext":
         """
         Start a subshell for isolating environment changes.
+
+        If no arguments are supplied, the shell defined for this machine
+        is used.  If arguments are given, they are expected to open
+        a shell of type ``shell`` which defaults to the shell specified
+        for this machine.
 
         **Example**::
 
@@ -232,19 +241,30 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
                     lh.exec0("echo", linux.Env("FOOVAR"))  # 123
 
                 lh.exec0("echo", linux.Env("FOOVAR"))  # Empty result
+
+        :param Shell shell: Shell that is started
         """
-        return _SubshellContext(self)
+        cmd = None
+        if args != []:
+            cmd = self.build_command(*args)
+        return _SubshellContext(self._obtain_channel(), shell or self.shell, cmd)
 
 
 class _SubshellContext(typing.ContextManager):
     __slots__ = ("ch", "sh")
 
-    def __init__(self, h: LinuxMachine) -> None:
-        self.ch = h._obtain_channel()
-        self.sh = h.shell
+    def __init__(
+        self,
+        ch: channel.Channel,
+        shell: typing.Type[sh.Shell],
+        cmd: typing.Optional[str] = None,
+    ) -> None:
+        self.ch = ch
+        self.sh = shell
+        self.cmd = cmd
 
     def __enter__(self) -> None:
-        self.ch.send(f"{self.sh.name}\n")
+        self.ch.send(f"{self.cmd or self.sh.name}\n")
         self.ch.initialize(sh=self.sh)
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:  # type: ignore

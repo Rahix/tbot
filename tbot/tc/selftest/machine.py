@@ -16,6 +16,7 @@ __all__ = (
 
 @tbot.testcase
 def selftest_machine_reentrant(lab: typing.Optional[linux.LabHost] = None,) -> None:
+    """Test if a machine can be entered multiple times."""
     with lab or tbot.acquire_lab() as lh:
         with lh as h1:
             assert h1.exec0("echo", "FooBar") == "FooBar\n"
@@ -26,6 +27,7 @@ def selftest_machine_reentrant(lab: typing.Optional[linux.LabHost] = None,) -> N
 
 @tbot.testcase
 def selftest_machine_labhost_shell(lab: typing.Optional[linux.LabHost] = None,) -> None:
+    """Test the LabHost's shell."""
     with lab or tbot.acquire_lab() as lh:
         selftest_machine_shell(lh)
 
@@ -35,6 +37,7 @@ def selftest_machine_labhost_shell(lab: typing.Optional[linux.LabHost] = None,) 
 
 @tbot.testcase
 def selftest_machine_ssh_shell(lab: typing.Optional[linux.LabHost] = None,) -> None:
+    """Test an SSH shell."""
     from tbot.tc.selftest import minisshd
 
     with lab or tbot.acquire_lab() as lh:
@@ -49,6 +52,7 @@ def selftest_machine_ssh_shell(lab: typing.Optional[linux.LabHost] = None,) -> N
 
 @tbot.testcase
 def selftest_machine_sshlab_shell(lab: typing.Optional[linux.LabHost] = None,) -> None:
+    """Test an SSH LabHost shell."""
     from tbot.tc.selftest import minisshd
 
     with lab or tbot.acquire_lab() as lh:
@@ -160,6 +164,12 @@ def selftest_machine_shell(
 
         out = m.exec0("echo", linux.Env("SUBSHELL_TEST_VAR")).strip()
         assert out == "", repr(out)
+
+        with m.subshell(
+            "env", "SUBSHELL_TEST_VAR2=1337", "bash", "--norc", shell=linux.shell.Bash
+        ):
+            out = m.exec0("echo", linux.Env("SUBSHELL_TEST_VAR2")).strip()
+            assert out == "1337", repr(out)
 
     if isinstance(m, board.UBootMachine):
         tbot.log.message("Testing env vars ...")

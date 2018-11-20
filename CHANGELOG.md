@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Allow specifying a command when spawning a subshell.
 
 
 ## [0.6.1] - 2018-11-16
