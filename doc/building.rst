@@ -4,12 +4,12 @@
 Building Projects
 =================
 
-TBot has a few facilities to easy building your projects.
+TBot has a few facilities to ease building your projects.
 
 Build-Host
 ----------
 In TBot, your code is compiled on the so called build-host.  The build-host
-should be defined in your lab-config.  It defines the available toolchains.
+should be defined in your lab-config and define the available toolchains.
 To show how this works, I will make three examples:
 
 Local Lab-Host as Build-Host
@@ -51,7 +51,7 @@ You will see later how they can be used.
 
 SSH Lab-Host as Build-Host
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-Make you lab-host class inherit :class:`~tbot.machine.linux.BuildMachine` as shown in the above example
+Make you lab-host class inherit :class:`~tbot.machine.linux.BuildMachine` as shown in the example above
 and define ``toolchains`` and ``build`` in a similar fashion.  There isn't much of a difference ...
 
 Build-Host is another Machine
