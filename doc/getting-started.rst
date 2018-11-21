@@ -169,23 +169,50 @@ Both take the command as one argument per commandline parameter.  For example::
     output = m.exec0("echo", "$!#?")
 
 TBot will ensure that arguments are properly escaped, so you can pass in anything without worrying.
-This poses a problem, when you need special syntaxes.  For example when you try to use shell expansion
-of environment variables.  To do this, use the following::
+This poses a problem, when you need special syntaxes.  For example when you try to pipe the output
+of one command into another command.  To do this in TBot, use code like the following::
 
     from tbot.machine import linux
 
-    user = m.exec0("echo", linux.Env("USER"))
+    usb_msg = m.exec0("dmesg", linux.Pipe, "grep", "usb")
 
 This is not the only special parameter you can use:
 
-* :func:`~tbot.machine.linux.F`: Format string, for complex argument construction.  Please
-  refer to its documentation for more info.
-* :func:`~tbot.machine.linux.Env`: Environment variable expansion
 * :data:`~tbot.machine.linux.Pipe`: A ``|`` for piping command output to another command
 * :data:`~tbot.machine.linux.Then`: A ``;`` for running multiple commands
 * :data:`~tbot.machine.linux.Background`: A ``&`` for running a command in the background
 * :data:`~tbot.machine.linux.AndThen`: A ``&&`` for chaining commands
 * :data:`~tbot.machine.linux.OrElse`: A ``||`` for error handling
+
+There are even more, for more complex use cases:
+
+* :func:`~tbot.machine.linux.F`: Format string, for complex argument construction.  Generally, you
+  won't need this, because you can just pass each parameter separately.  An example, where
+  :func:`~tbot.machine.linux.F` is needed is a parameter that contains a path. Eg::
+
+      # Add a path to $PATH
+      m.exec0("export", linux.F("PATH={}:{}", mypath, m.env("PATH")))
+
+  What happens here?  First of all, ``m.env("PATH")`` retrieves the current path.  Then,
+  we use ``linux.F`` and a format string to create the parameter.  You can't use an
+  f-String in this case, because you can't trivially turn a TBot path into a string.
+
+* :func:`~tbot.machine.linux.Env`: Environment variable expansion.  Sometimes you want to
+  give an environment variable as a parameter.  You can use ``linux.Env`` for exactly that.
+  Example::
+
+      m.exec0("echo", "Compiler:", linux.Env("CC"))
+
+  This isn't the best way to do it, though.  I highly reccomend using the following code instead::
+
+      m.exec0("/bin/ls", "-1", m.env("HOME"))
+
+  :meth:`~tbot.machine.linux.LinuxMachine.env` will retrieve the value of the environment variable
+  and return it as a string.  The benefit of doing it this way is, that the value will be visible
+  in the logfile and can be read when debugging a failure later on.  If you use ``linux.Env``,
+  the log (and TBot) will never actually see the value of the environment variable and you can
+  only guess what it was.
+
 * :func:`~tbot.machine.linux.Raw`: Raw string if TBot isn't expressive enough for your usecase.
   Use this only when no other option works.
 
