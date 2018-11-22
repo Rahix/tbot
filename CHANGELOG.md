@@ -3,6 +3,14 @@
 ## [Unreleased]
 
 
+## [0.6.2] - 2018-11-22
+### Added
+- `Machine.env`: Easily get the value of an environment variable
+- Allow specifying a command when spawning a subshell.
+- `ub.bootlog` and `lnx.bootlog` to allow accessing the bootlog (ref #5)
+- Add `SSHMachine.ssh_config`: List of additional ssh config options
+
+
 ## [0.6.1] - 2018-11-16
 ### Added
 - Proper buildhost support + U-Boot build testcase

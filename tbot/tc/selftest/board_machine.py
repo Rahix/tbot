@@ -84,7 +84,7 @@ def selftest_board_uboot(lab: typing.Optional[tbot.selectable.LabHost] = None) -
         lh = cx.enter_context(lab or tbot.acquire_lab())
         try:
             b = cx.enter_context(tbot.acquire_board(lh))
-            ub = cx.enter_context(tbot.acquire_uboot(b))  # type: ignore
+            ub = cx.enter_context(tbot.acquire_uboot(b))
         except NotImplementedError:
             b = cx.enter_context(TestBoard(lh))
             ub = cx.enter_context(TestBoardUBoot(b))

@@ -66,7 +66,7 @@ def acquire_lab() -> LabHost:
     return LabHost()
 
 
-class Board(board.Board):
+class Board(board.Board, typing.ContextManager):
     """Dummy type that will be replaced by the actual selected board at runtime."""
 
     _unselected = True
@@ -96,7 +96,7 @@ def acquire_board(lh: LabHost) -> Board:
     return Board(lh)
 
 
-class UBootMachine(board.UBootMachine[Board]):
+class UBootMachine(board.UBootMachine[Board], typing.ContextManager):
     """Dummy type that will be replaced by the actual selected U-Boot machine at runtime."""
 
     _unselected = True

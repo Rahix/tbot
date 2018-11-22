@@ -72,7 +72,7 @@ class _ToolchainContext(linux._SubshellContext):
     __slots__ = ("h", "tc")
 
     def __init__(self, h: BuildMachine, tc: toolchain.Toolchain) -> None:
-        super().__init__(h)
+        super().__init__(h, h.shell)
         self.h = h
         self.tc = tc
 

@@ -26,6 +26,7 @@ much modification also allow running tests in an automated setting (CI).
    install
    getting-started
    config
+   building
    recipes
    module-main
    module-machine

@@ -10,7 +10,9 @@ class MiniSSHMachine(linux.SSHMachine):
 
     hostname = "localhost"
     name = "minissh-local"
-    ignore_hostkey = True
+    # This would work as well, but we need to test ssh_config somewhere ...
+    # ignore_hostkey = True
+    ssh_config = ["StrictHostKeyChecking=no"]
 
     @property
     def username(self) -> str:

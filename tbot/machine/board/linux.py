@@ -56,6 +56,7 @@ class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
 
     def __init__(self, b: typing.Union[B, board.UBootMachine[B]]) -> None:
         """Create a new instance of this LinuxMachine."""
+        self.bootlog = ""
         super().__init__(b.board if isinstance(b, board.UBootMachine) else b)
 
     def boot_to_shell(self, stream: typing.TextIO) -> str:
@@ -77,6 +78,7 @@ class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
         chan.send("\n")
         chan.initialize(sh=self.shell)
 
+        self.bootlog = output
         return output
 
 
@@ -151,6 +153,12 @@ class LinuxWithUBootMachine(LinuxMachine[B]):
                 ["tftp", board.Env("loadaddr"), "zImage"],
                 ["bootz", board.Env("loadaddr")],
             ]
+
+    .. py:attribute:: bootlog: str
+
+        Messages that were printed out during startup.  You can access this
+        attribute inside your testcases to get info about what was going on
+        during boot.
     """
 
     boot_commands: typing.Optional[
@@ -273,6 +281,12 @@ class LinuxStandaloneMachine(LinuxMachine[B]):
     .. py:attribute:: shell: tbot.machine.linux.shell.Shell = Ash
 
         Type of the shell that is the default on the board.
+
+    .. py:attribute:: bootlog: str
+
+        Messages that were printed out during startup.  You can access this
+        attribute inside your testcases to get info about what was going on
+        during boot.
     """
 
     def __init__(self, b: typing.Union[B, board.UBootMachine[B]]) -> None:  # noqa: D107
