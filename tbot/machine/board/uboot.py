@@ -57,6 +57,12 @@ class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
     .. py:attribute:: prompt: str = "U-Boot> "
 
         U-Prompt that was configured when building U-Boot
+
+    .. py:attribute:: bootlog: str
+
+        Messages that were printed out during startup.  You can access this
+        attribute inside your testcases to get info about what was going on
+        during boot.
     """
 
     autoboot_prompt: typing.Optional[str] = r"Hit any key to stop autoboot:\s+\d+\s+"
@@ -94,6 +100,8 @@ class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
                 self.channel.read_until_prompt(self.prompt)
             else:
                 self.channel.read_until_prompt(self.prompt, stream=boot_ev)
+
+            self.bootlog = boot_ev.getvalue().split("\n", 1)[1]
 
     def destroy(self) -> None:
         """Destroy this U-Boot machine."""
