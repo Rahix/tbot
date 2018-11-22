@@ -34,13 +34,19 @@ def _scp_copy(
     hostname: str,
     ignore_hostkey: bool,
     port: int,
+    ssh_config: typing.List[str],
     authenticator: auth.Authenticator,
 ) -> None:
     local_host = local_path.host
 
     hk_disable = ["-o", "StrictHostKeyChecking=no"] if ignore_hostkey else []
 
-    scp_command = ["scp", "-P", str(port), *hk_disable]
+    scp_command = [
+        "scp",
+        *["-P", str(port)],
+        *hk_disable,
+        *[arg for opt in ssh_config for arg in ["-o", opt]],
+    ]
 
     if isinstance(authenticator, auth.PrivateKeyAuthenticator):
         scp_command += ["-o", "BatchMode=yes", "-i", str(authenticator.key)]
@@ -87,6 +93,7 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
             hostname=p1.host.hostname,
             ignore_hostkey=p1.host.ignore_hostkey,
             port=p1.host.port,
+            ssh_config=p1.host.ssh_config,
             authenticator=p1.host.authenticator,
         )
     elif isinstance(p2.host, linux.SSHMachine) and p2.host.labhost is p1.host:
@@ -99,6 +106,7 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
             hostname=p2.host.hostname,
             ignore_hostkey=p2.host.ignore_hostkey,
             port=p2.host.port,
+            ssh_config=p2.host.ssh_config,
             authenticator=p2.host.authenticator,
         )
     elif isinstance(p1.host, linux.lab.LocalLabHost) and isinstance(
@@ -113,6 +121,7 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
             hostname=p2.host.hostname,
             ignore_hostkey=p2.host.ignore_hostkey,
             port=p2.host.port,
+            ssh_config=[],
             authenticator=p2.host.authenticator,
         )
     elif isinstance(p2.host, linux.lab.LocalLabHost) and isinstance(
@@ -127,6 +136,7 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
             hostname=p1.host.hostname,
             ignore_hostkey=p1.host.ignore_hostkey,
             port=p1.host.port,
+            ssh_config=[],
             authenticator=p1.host.authenticator,
         )
     else:

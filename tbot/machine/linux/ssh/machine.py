@@ -15,6 +15,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import abc
+import typing
 import pathlib
 from tbot import log_event
 from tbot.machine import channel
@@ -81,6 +82,20 @@ class SSHMachine(linux.LinuxMachine):
         """
         return 22
 
+    @property
+    def ssh_config(self) -> typing.List[str]:
+        """
+        Add additional ssh config options when connecting.
+
+        **Example**::
+
+            class MySSHMach(linux.SSHMachine):
+                ssh_config = ["ProxyJump=foo@example.com"]
+
+        :rtype: list(str)
+        """
+        return []
+
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} {self.username}@{self.hostname}:{self.port} (Lab: {self.labhost!r}>"
 
@@ -99,7 +114,11 @@ class SSHMachine(linux.LinuxMachine):
             raise RuntimeError(f"{authenticator!r} is not supported for SSH hosts!")
 
         cmd_str = self.build_command(
-            *cmd, *hk_disable, "-p", str(self.port), f"{self.username}@{self.hostname}"
+            *cmd,
+            *hk_disable,
+            *["-p", str(self.port)],
+            *[arg for opt in self.ssh_config for arg in ["-o", opt]],
+            f"{self.username}@{self.hostname}",
         )
 
         try:
