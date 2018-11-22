@@ -1,6 +1,6 @@
 Installation
 ============
-Clone `TBot's repository <https://gitlab.denx.de/HaraldSeiler/tbot>`_, then
+Clone `TBot's repository <https://github.com/Rahix/tbot>`_, then
 install TBot using
 
 ::
