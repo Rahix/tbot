@@ -138,7 +138,7 @@ TBot.  There are a lot more, for different tasks.  Take a look at the :ref:`reci
         import tbot
 
         @tbot.testcase
-        def my_testcase(lab = None) -> None:
+        def my_testcase(lab = None):
             with lab or tbot.acquire_lab() as lh:
                 name = lh.exec0("uname", "-n")
                 tbot.log.message(f"Hello {name}!")
