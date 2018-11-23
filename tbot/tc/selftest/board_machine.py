@@ -303,3 +303,52 @@ def selftest_board_linux_standalone(
                 except RuntimeError:
                     raised = True
                 assert raised
+
+
+@tbot.testcase
+def selftest_board_linux_bad_console(
+    lab: typing.Optional[tbot.selectable.LabHost] = None
+) -> None:
+    """Test linux booting standalone."""
+
+    class BadBoard(TestBoard):
+        def connect(self) -> channel.Channel:  # noqa: D102
+            return self.lh.new_channel(
+                linux.Raw(
+                    """\
+bash --norc --noediting; exit
+PS1="$"
+unset HISTFILE
+export UNAME="bad-board"
+bash --norc --noediting
+PS1=""
+unset HISTFILE
+set +o emacs
+set +o vi
+echo ""
+echo "[0.127] We will go into test mode now ..."
+echo "[0.128] Let's see if I can behave bad enough to break you"
+read -p 'bad-board login: [0.129] No clean login prompt for you';\
+sleep 0.02;\
+echo "[0.1337] Oh you though it was this easy?";\
+read -p "Password: [0.ORLY?] Password ain't clean either you fool
+It's even worse tbh";\
+sleep 0.02;\
+echo "[0.512] I have one last trick >:|";\
+sleep 0.2;\
+read -p ""\
+"""
+                )
+            )
+
+    class BadBoardLinux(board.LinuxStandaloneMachine[BadBoard]):
+        username = "root"
+        password = "toor"
+        login_wait = 0.02
+        shell = linux.shell.Bash
+
+    with lab or tbot.acquire_lab() as lh:
+        with BadBoard(lh) as b:
+            with BadBoardLinux(b) as lnx:
+                name = lnx.env("UNAME")
+                assert name == "bad-board", repr(name)

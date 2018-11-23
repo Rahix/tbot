@@ -3,6 +3,8 @@
 ## [Unreleased]
 ### Changed
 - Show any and all output that is received on the channel with `-vvv`
+- `BoardLinuxMachine` now allows the login and password prompts to
+  be clobbered
 
 
 ## [0.6.2] - 2018-11-22
