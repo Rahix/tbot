@@ -60,12 +60,16 @@ class ParamikoChannel(channel.Channel):
         try:
             maxread = min(1024, max) if max else 1024
             buf = self.ch.recv(maxread)
+            self._debug_log(buf)
 
             while self.ch.recv_ready():
                 maxread = min(1024, max - len(buf)) if max else 1024
                 if maxread == 0:
                     break
-                buf += self.ch.recv(maxread)
+
+                new = self.ch.recv(maxread)
+                buf += new
+                self._debug_log(new)
         except socket.timeout:
             raise TimeoutError()
         finally:

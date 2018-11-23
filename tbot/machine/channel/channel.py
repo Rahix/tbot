@@ -279,6 +279,14 @@ class Channel(abc.ABC):
 
         return buf
 
+    def _debug_log(self, data: bytes) -> None:
+        if tbot.log.VERBOSITY >= tbot.log.Verbosity.CHANNEL:
+            tbot.log.EventIO(
+                ["__debug__"],
+                tbot.log.c(repr(data)[1:]).yellow,
+                verbosity=tbot.log.Verbosity.CHANNEL,
+            )
+
     def read_until_prompt(
         self,
         prompt: str,
@@ -327,13 +335,6 @@ class Channel(abc.ABC):
             decoded = (
                 decoded.replace("\r\n", "\n").replace("\r\n", "\n").replace("\r", "\n")
             )
-
-            if tbot.log.VERBOSITY >= tbot.log.Verbosity.CHANNEL:
-                tbot.log.EventIO(
-                    ["__debug__"],
-                    tbot.log.c(repr(decoded)).yellow,
-                    verbosity=tbot.log.Verbosity.CHANNEL,
-                )
 
             buf += decoded
 

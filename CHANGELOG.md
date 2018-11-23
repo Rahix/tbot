@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- Show any and all output that is received on the channel with `-vvv`
 
 
 ## [0.6.2] - 2018-11-22
