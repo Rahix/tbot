@@ -15,7 +15,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import abc
-import time
 import typing
 import tbot
 from tbot.machine import board
@@ -32,9 +31,6 @@ class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
 
     login_prompt = "login: "
     """Prompt that indicates TBot should send the username."""
-
-    login_wait = 0.2
-    """Time to wait after sending login credentials."""
 
     @property
     @abc.abstractmethod
@@ -64,6 +60,15 @@ class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
     def __init__(self, b: typing.Union[B, board.UBootMachine[B]]) -> None:
         """Create a new instance of this LinuxMachine."""
         self.bootlog = ""
+
+        # `login_wait` is deprecated
+        if hasattr(self, "login_wait"):
+            tbot.log.warning(
+                f"""\
+`{self.__class__.__name__}` defines `login_wait`, which is no longer in use!
+    Please remove it from your board-config."""
+            )
+
         super().__init__(b.board if isinstance(b, board.UBootMachine) else b)
 
     def boot_to_shell(self, stream: typing.TextIO) -> str:
@@ -84,7 +89,6 @@ class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
         else:
             stream.write(f"{self.username}\n")
 
-        time.sleep(self.login_wait)
         while True:
             chan.send("echo TBOT''LOGIN\n")
             try:

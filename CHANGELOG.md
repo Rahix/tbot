@@ -10,6 +10,10 @@
   be clobbered
 - `BoardLinuxMachine` login now waits for the shell to respond
 
+### Removed
+- `login_wait` config parameter from `BoardLinuxMachine`.  This "hack"
+  is superseded by the more robust login implementation now.
+
 
 ## [0.6.2] - 2018-11-22
 ### Added

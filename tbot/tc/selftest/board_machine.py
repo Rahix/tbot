@@ -200,7 +200,6 @@ class TestBoardLinuxUB(board.LinuxWithUBootMachine[TestBoard]):
     username = "root"
     password = "rootpw"
     login_prompt = "tb-login: "
-    login_wait = 0.02
     shell = linux.shell.Bash
 
     @property
@@ -252,7 +251,6 @@ def selftest_board_linux_nopw(
         username = "root"
         password = None
         login_prompt = "tb-login: "
-        login_wait = 0.02
         shell = linux.shell.Bash
 
         @property
@@ -284,7 +282,6 @@ def selftest_board_linux_standalone(
         username = "root"
         password = None
         login_prompt = "Autoboot: "
-        login_wait = 0.02
         shell = linux.shell.Bash
 
     with lab or tbot.acquire_lab() as lh:
@@ -344,7 +341,6 @@ read -p ""\
     class BadBoardLinux(board.LinuxStandaloneMachine[BadBoard]):
         username = "root"
         password = "toor"
-        login_wait = 0.02
         shell = linux.shell.Bash
 
     with lab or tbot.acquire_lab() as lh:
