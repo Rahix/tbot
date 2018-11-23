@@ -31,7 +31,10 @@ class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
     """Abstract base class for board linux machines."""
 
     login_prompt = "login: "
+    """Prompt that indicates TBot should send the username."""
+
     login_wait = 1.0
+    """Time to wait after sending login credentials."""
 
     @property
     @abc.abstractmethod
@@ -51,7 +54,11 @@ class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
     @property
     @abc.abstractmethod
     def password(self) -> typing.Optional[str]:
-        """Password for logging in once Linux has booted."""
+        """
+        Password for logging in.
+
+        Can be :class:`None` to indicate that no password is needed.
+        """
         pass
 
     def __init__(self, b: typing.Union[B, board.UBootMachine[B]]) -> None:
@@ -111,51 +118,7 @@ class LinuxWithUBootMachine(LinuxMachine[B]):
         UBOOT = MyBoardUBoot
         LINUX = MyBoardLinux
 
-    .. py:attribute:: login_prompt: str = "login: "
-
-        Prompt that indicates TBot should send the username.
-
-    .. py:attribute:: username: str
-
-        Username for logging in.
-
-    .. py:attribute:: password: str
-
-        Password for logging in. Can be :class:`None` to indicate that
-        no password is needed.
-
-    .. py:attribute:: login_wait: float = 1.0
-
-        Time to wait after sending login credentials.
-
-    .. py:attribute:: shell: tbot.machine.linux.shell.Shell = Ash
-
-        Type of the shell that is the default on the board.
-
-    .. py:attribute:: boot_commands: list[list[]]
-
-        List of commands to boot Linux from U-Boot. Commands are a list,
-        of the arguments that are given to :meth:`~tbot.machine.board.UBootMachine.exec0`
-
-        By default, ``do_boot`` is called, but if ``boot_commands`` is defined, it will
-        be used instead (and ``do_boot`` is ignored).
-
-        **Example**::
-
-            boot_commands = [
-                ["setenv", "console", "ttyS0"],
-                ["setenv", "baudrate", str(115200)],
-                [
-                    "setenv",
-                    "bootargs",
-                    board.Raw("console=${console},${baudrate}"),
-                ],
-                ["tftp", board.Env("loadaddr"), "zImage"],
-                ["bootz", board.Env("loadaddr")],
-            ]
-
-    .. py:attribute:: bootlog: str
-
+    :ivar str bootlog:
         Messages that were printed out during startup.  You can access this
         attribute inside your testcases to get info about what was going on
         during boot.
@@ -164,6 +127,27 @@ class LinuxWithUBootMachine(LinuxMachine[B]):
     boot_commands: typing.Optional[
         typing.List[typing.List[typing.Union[str, special.Special]]]
     ] = None
+    """
+    List of commands to boot Linux from U-Boot. Commands are a list,
+    of the arguments that are given to :meth:`~tbot.machine.board.UBootMachine.exec0`
+
+    By default, ``do_boot`` is called, but if ``boot_commands`` is defined, it will
+    be used instead (and ``do_boot`` is ignored).
+
+    **Example**::
+
+        boot_commands = [
+            ["setenv", "console", "ttyS0"],
+            ["setenv", "baudrate", str(115200)],
+            [
+                "setenv",
+                "bootargs",
+                board.Raw("console=${console},${baudrate}"),
+            ],
+            ["tftp", board.Env("loadaddr"), "zImage"],
+            ["bootz", board.Env("loadaddr")],
+        ]
+    """
 
     def do_boot(
         self, ub: board.UBootMachine[B]
@@ -261,29 +245,7 @@ class LinuxStandaloneMachine(LinuxMachine[B]):
         BOARD = MyBoard
         LINUX = MyBoardLinux
 
-    .. py:attribute:: login_prompt: str = "login: "
-
-        Prompt that indicates TBot should send the username.
-
-    .. py:attribute:: username: str
-
-        Username for logging in.
-
-    .. py:attribute:: password: str
-
-        Password for logging in. Can be :class:`None` to indicate that
-        no password is needed.
-
-    .. py:attribute:: login_wait: float = 1.0
-
-        Time to wait after sending login credentials.
-
-    .. py:attribute:: shell: tbot.machine.linux.shell.Shell = Ash
-
-        Type of the shell that is the default on the board.
-
-    .. py:attribute:: bootlog: str
-
+    :ivar str bootlog:
         Messages that were printed out during startup.  You can access this
         attribute inside your testcases to get info about what was going on
         during boot.
