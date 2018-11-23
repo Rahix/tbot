@@ -33,7 +33,7 @@ class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
     login_prompt = "login: "
     """Prompt that indicates TBot should send the username."""
 
-    login_wait = 1.0
+    login_wait = 0.2
     """Time to wait after sending login credentials."""
 
     @property
@@ -81,8 +81,19 @@ class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
             chan.send(self.password + "\n")
             stream.write("****\n")
             output += "Password: ****\n"
+        else:
+            stream.write(f"{self.username}\n")
+
         time.sleep(self.login_wait)
-        chan.send("\n")
+        while True:
+            chan.send("echo TBOT''LOGIN\n")
+            try:
+                chan.read_until_prompt("TBOTLOGIN", timeout=0.2, must_end=False)
+            except TimeoutError:
+                pass
+            else:
+                break
+
         chan.initialize(sh=self.shell)
 
         self.bootlog = output
