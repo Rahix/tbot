@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- `tbot.log.warning`: Print a warning message
+
 ### Changed
 - Show any and all output that is received on the channel with `-vvv`
 - `BoardLinuxMachine` now allows the login and password prompts to
