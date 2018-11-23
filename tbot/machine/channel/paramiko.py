@@ -42,6 +42,7 @@ class ParamikoChannel(channel.Channel):
             raise channel.ChannelClosedException()
 
         data = data if isinstance(data, bytes) else data.encode("utf-8")
+        self._debug_log(data, True)
 
         length = len(data)
         c = 0

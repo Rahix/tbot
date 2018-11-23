@@ -279,11 +279,16 @@ class Channel(abc.ABC):
 
         return buf
 
-    def _debug_log(self, data: bytes) -> None:
+    def _debug_log(self, data: bytes, out: bool = False) -> None:
         if tbot.log.VERBOSITY >= tbot.log.Verbosity.CHANNEL:
+            msg = tbot.log.c(repr(data)[1:])
             tbot.log.EventIO(
                 ["__debug__"],
-                tbot.log.c(repr(data)[1:]).yellow,
+                (
+                    tbot.log.c("> ").blue.bold + msg.blue
+                    if out
+                    else tbot.log.c("< ").yellow.bold + msg.yellow
+                ),
                 verbosity=tbot.log.Verbosity.CHANNEL,
             )
 
