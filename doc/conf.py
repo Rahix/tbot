@@ -50,7 +50,10 @@ autodoc_default_options = {
 
 # -- Options for HTML output ----------------------------------------------
 html_theme = 'sphinx_rtd_theme'
-# html_theme_options = {}
+html_logo = '_static/tbot-logo-white.png'
+html_theme_options = {
+    'logo_only': True,
+}
 html_static_path = ['_static']
 # refs: http://alabaster.readthedocs.io/en/latest/installation.html#sidebars
 html_sidebars = {
