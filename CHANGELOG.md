@@ -14,6 +14,9 @@
 - `login_wait` config parameter from `BoardLinuxMachine`.  This "hack"
   is superseded by the more robust login implementation now.
 
+### Fixed
+- `importlib.util` needs to be manually imported on some python versions
+
 
 ## [0.6.2] - 2018-11-22
 ### Added
