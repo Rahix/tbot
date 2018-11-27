@@ -3,6 +3,8 @@
 ## [Unreleased]
 ### Added
 - `tbot.log.warning`: Print a warning message
+- If tbot fails to load a testcase source, it will now show the
+  traceback that caused the failure
 
 ### Changed
 - Show any and all output that is received on the channel with `-vvv`
