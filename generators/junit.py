@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# TBot, Embedded Automation Tool
+# tbot, Embedded Automation Tool
 # Copyright (C) 2018  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 Generate a JUnit XML file.
 
 .. warning::
-   Because JUnit's design differs from TBot's a lot, the output is a little
+   Because JUnit's design differs from tbot's a lot, the output is a little
    bit unusual. It should show all information but not always where you would
    expect to find it.
 """
@@ -182,7 +182,7 @@ def main() -> None:
         file=sys.stderr,
     )
 
-    print(junit_xml.TestSuite.to_xml_string([junit_xml.TestSuite("TBot", testcases)]))
+    print(junit_xml.TestSuite.to_xml_string([junit_xml.TestSuite("tbot", testcases)]))
 
 
 if __name__ == "__main__":

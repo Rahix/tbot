@@ -1,7 +1,7 @@
 Configuration
 =============
-TBot's configuration is also done in python.  There are two parts that can
-be configured: The lab and the board.  If no lab is configured, TBot creates
+tbot's configuration is also done in python.  There are two parts that can
+be configured: The lab and the board.  If no lab is configured, tbot creates
 a :class:`~tbot.machine.linux.lab.LocalLabHost`.  If no board is configured,
 testcases trying to access it simply fail.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# TBot, Embedded Automation Tool
+# tbot, Embedded Automation Tool
 # Copyright (C) 2018  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
@@ -172,7 +172,7 @@ def main() -> None:
         template_string = f.read()
 
     data = {
-        "page_title": f"TBot log: {pathlib.Path(filename.stem)}",
+        "page_title": f"tbot log: {pathlib.Path(filename.stem)}",
         "content": "\n".join(map(gen_html, log)),
     }
 

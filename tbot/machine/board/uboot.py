@@ -1,4 +1,4 @@
-# TBot, Embedded Automation Tool
+# tbot, Embedded Automation Tool
 # Copyright (C) 2018  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
@@ -195,7 +195,7 @@ class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
         """
         Drop into an interactive U-Boot session.
 
-        :raises RuntimeError: If TBot was not able to reacquire the shell
+        :raises RuntimeError: If tbot was not able to reacquire the shell
             after the session is over.
         """
         tbot.log.message("Entering interactive shell (CTRL+D to exit) ...")

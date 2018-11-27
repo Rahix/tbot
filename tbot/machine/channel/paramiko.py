@@ -1,4 +1,4 @@
-# TBot, Embedded Automation Tool
+# tbot, Embedded Automation Tool
 # Copyright (C) 2018  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ class ParamikoChannel(channel.Channel):
 
     def __init__(self, ch: paramiko.Channel) -> None:
         """
-        Create a new TBot channel based on a Paramiko channel.
+        Create a new tbot channel based on a Paramiko channel.
 
         :param paramiko.Channel ch: Paramiko Channel
         """

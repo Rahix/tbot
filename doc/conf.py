@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# TBot documentation build configuration file, created by
+# tbot documentation build configuration file, created by
 # sphinx-quickstart on Tue Aug 28 11:57:52 2018.
 
 # -- General configuration ------------------------------------------------
@@ -19,7 +19,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'TBot'
+project = 'tbot'
 copyright = '2018, Rahix'
 author = 'Rahix'
 
@@ -77,22 +77,22 @@ latex_elements = {
 }
 
 latex_documents = [
-    (master_doc, 'TBot.tex', 'TBot Documentation',
+    (master_doc, 'tbot.tex', 'tbot Documentation',
      'Rahix', 'manual'),
 ]
 
 
 # -- Options for manual page output ---------------------------------------
 man_pages = [
-    (master_doc, 'tbot', 'TBot Documentation',
+    (master_doc, 'tbot', 'tbot Documentation',
      [author], 1)
 ]
 
 
 # -- Options for Texinfo output -------------------------------------------
 texinfo_documents = [
-    (master_doc, 'TBot', 'TBot Documentation',
-     author, 'TBot', 'One line description of project.',
+    (master_doc, 'tbot', 'tbot Documentation',
+     author, 'tbot', 'One line description of project.',
      'Miscellaneous'),
 ]
 

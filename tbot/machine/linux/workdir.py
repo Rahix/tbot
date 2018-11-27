@@ -1,4 +1,4 @@
-# TBot, Embedded Automation Tool
+# tbot, Embedded Automation Tool
 # Copyright (C) 2018  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ class Workdir:
             defined.
         :param str path: Fixed workdir path
         :rtype: linux.Path
-        :returns: A TBot-path to the workdir
+        :returns: A tbot-path to the workdir
         """
         p = linux.Path(host, path)
 
@@ -79,7 +79,7 @@ class Workdir:
         :param str subdir: Name of the subdirectory in $HOME which should be
             used as a workdir.
         :rtype: linux.Path
-        :returns: A TBot-path to the workdir
+        :returns: A tbot-path to the workdir
         """
         home = host.exec0("echo", linux.Env("HOME")).strip("\n")
         p = linux.Path(host, home) / subdir

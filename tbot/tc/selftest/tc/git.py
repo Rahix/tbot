@@ -27,8 +27,8 @@ def git_prepare(lab: linux.LabHost) -> str:
         lab.exec0(
             "echo",
             """\
-# TBot Selftest
-This repo exists to test TBot's git testcase.
+# tbot Selftest
+This repo exists to test tbot's git testcase.
 
 You can safely remove it, but please **do not** modify it as that might
 break the tests.""",
@@ -36,7 +36,7 @@ break the tests.""",
         )
 
         repo.add(repo / "README.md")
-        repo.commit("Initial", author="TBot Selftest <none@none>")
+        repo.commit("Initial", author="tbot Selftest <none@none>")
 
         tbot.log.message("Creating test patch ...")
         lab.exec0(
@@ -48,7 +48,7 @@ A second file that will have been added by patching.""",
         )
 
         repo.add(repo / "file2.md")
-        repo.commit("Add file2", author="TBot Selftest <none@none>")
+        repo.commit("Add file2", author="tbot Selftest <none@none>")
         patch_name = repo.git0("format-patch", "HEAD~1").strip()
         lab.exec0("mv", repo / patch_name, lab.workdir / "selftest-git.patch")
 
@@ -88,7 +88,7 @@ def selftest_tc_git_checkout(lab: typing.Optional[linux.LabHost] = None,) -> Non
         tbot.log.message("Add dirty commit ...")
         lh.exec0("echo", "Test 123", stdout=repo / "file.txt")
         repo.add(repo / "file.txt")
-        repo.commit("Add file.txt", author="TBot Selftest <none@none>")
+        repo.commit("Add file.txt", author="tbot Selftest <none@none>")
 
         repo = git.GitRepository(target, remote, clean=False)
         assert (repo / "file.txt").is_file()
@@ -131,7 +131,7 @@ This section was added by a second patch""",
         )
 
         repo.add(repo / "file2.md")
-        repo.commit("Update file2", author="TBot Selftest <none@none>")
+        repo.commit("Update file2", author="tbot Selftest <none@none>")
 
         patch_dir = lh.workdir / "selftest-git-patches"
         lh.exec0("mkdir", "-p", patch_dir)
@@ -166,7 +166,7 @@ def selftest_tc_git_bisect(lab: typing.Optional[linux.LabHost] = None,) -> None:
 
             lh.exec0("echo", str(i), stdout=counter)
             repo.add(counter)
-            repo.commit(f"Set counter to {i}", author="TBot Selftest <none@none>")
+            repo.commit(f"Set counter to {i}", author="tbot Selftest <none@none>")
 
             if i == 0:
                 # Take the first commit with counter as good

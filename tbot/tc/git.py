@@ -1,4 +1,4 @@
-# TBot, Embedded Automation Tool
+# tbot, Embedded Automation Tool
 # Copyright (C) 2018  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ class GitRepository(linux.Path[H]):
 
         There are two modes in which a repo can be initialized:
 
-        1. Only supplying ``target``: TBot assumes, that a repo exists at ``target``
+        1. Only supplying ``target``: tbot assumes, that a repo exists at ``target``
            already and will fail if this is not the case.
         2. Also supplying ``url``: If ``target`` is not already a git repo, one will
            be created by cloning ``url``.

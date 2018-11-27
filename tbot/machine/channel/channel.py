@@ -1,4 +1,4 @@
-# TBot, Embedded Automation Tool
+# tbot, Embedded Automation Tool
 # Copyright (C) 2018  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
@@ -161,7 +161,7 @@ class Channel(abc.ABC):
         self, end_magic: typing.Union[str, bytes, None] = None
     ) -> None:
         """
-        Connect TBot's terminal to this channel.
+        Connect tbot's terminal to this channel.
 
         Allows the user to interact directly with whatever this channel is
         connected to.

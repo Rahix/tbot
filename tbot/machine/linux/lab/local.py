@@ -1,4 +1,4 @@
-# TBot, Embedded Automation Tool
+# tbot, Embedded Automation Tool
 # Copyright (C) 2018  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ LLH = typing.TypeVar("LLH", bound="LocalLabHost")
 
 class LocalLabHost(LabHost):
     """
-    LabHost on the host TBot is running on.
+    LabHost on the host tbot is running on.
 
     Makes use of the :class:`~tbot.machine.channel.SubprocessChannel`.
 
@@ -38,7 +38,7 @@ class LocalLabHost(LabHost):
     @property
     def workdir(self: LLH) -> "linux.Path[LLH]":
         """
-        Return a path to a workdir for TBot.
+        Return a path to a workdir for tbot.
 
         Defaults to ``/tmp/tbot-wd``, but can be overwritten in a lab config.
         """
@@ -52,7 +52,7 @@ class LocalLabHost(LabHost):
 
     @property
     def username(self) -> str:
-        """Return the name of the user running TBot."""
+        """Return the name of the user running tbot."""
         return getpass.getuser()
 
     def __init__(self) -> None:

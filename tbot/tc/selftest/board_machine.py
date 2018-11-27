@@ -79,7 +79,7 @@ class TestBoardUBoot(board.UBootMachine[TestBoard]):
 
 @tbot.testcase
 def selftest_board_uboot(lab: typing.Optional[tbot.selectable.LabHost] = None) -> None:
-    """Test if TBot intercepts U-Boot correctly."""
+    """Test if tbot intercepts U-Boot correctly."""
     with contextlib.ExitStack() as cx:
         lh = cx.enter_context(lab or tbot.acquire_lab())
         try:
@@ -106,7 +106,7 @@ def selftest_board_uboot(lab: typing.Optional[tbot.selectable.LabHost] = None) -
 def selftest_board_uboot_noab(
     lab: typing.Optional[tbot.selectable.LabHost] = None
 ) -> None:
-    """Test if TBot intercepts U-Boot correctly without autoboot."""
+    """Test if tbot intercepts U-Boot correctly without autoboot."""
 
     class TestBoardUBootNoAB(board.UBootMachine[TestBoard]):
         """Dummy Board UBoot."""

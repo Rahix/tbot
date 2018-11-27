@@ -133,8 +133,8 @@ more::
 
 Build on your Localhost regardless of selected LabHost
 ------------------------------------------------------
-Sometimes you want to build something on your machine (TBot Host) and not in
-the lab.  Eg. when you want to hack on the code and have TBot automate the build and deploy
+Sometimes you want to build something on your machine (tbot Host) and not in
+the lab.  Eg. when you want to hack on the code and have tbot automate the build and deploy
 process::
 
     import contextlib
@@ -165,10 +165,10 @@ process::
             )
 
 
-Download artifacts to TBot Host
+Download artifacts to tbot Host
 -------------------------------
 Especially in a CI setting you might want to store build artifacts next to the log.  You can do so
-using the ``copy`` testcase that is built into TBot.  Do note however, that you can't download
+using the ``copy`` testcase that is built into tbot.  Do note however, that you can't download
 artifacts directly from e.g. the buildhost.  To do that, first copy them to the LabHost and download
 them from there.  Here's example code::
 
@@ -194,7 +194,7 @@ them from there.  Here's example code::
 Bisect a git repository
 -----------------------
 When a new version of your software has introduced a bug, *git-bisect* is
-a very helpful tool for narrowing down the cause;  TBot can automate this with
+a very helpful tool for narrowing down the cause;  tbot can automate this with
 just a little bit of code::
 
     import typing
@@ -229,7 +229,7 @@ just a little bit of code::
 
             bad = repo.bisect(
                 good="known-good-revision",
-                # TBot will test if this revision is actually good!
+                # tbot will test if this revision is actually good!
                 # It will also test if the current revision is actuall bad,
                 # so it is ensured that your test gives proper results before
                 # bisecting

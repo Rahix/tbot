@@ -6,7 +6,7 @@ Getting Started
 
 First Steps
 -----------
-TBot works out of the box.  You can run it's selftests like this::
+tbot works out of the box.  You can run it's selftests like this::
 
     ~$ tbot selftest
 
@@ -41,8 +41,8 @@ should greet you host.  Let's disect the code from above::
         ...
 
 This is just a normal python function for our testcase.  The :func:`tbot.testcase`
-decorator tells TBot that it should be treated as a testcase.  In practice this
-means that TBot will allow calling it from the commandline and will hook into
+decorator tells tbot that it should be treated as a testcase.  In practice this
+means that tbot will allow calling it from the commandline and will hook into
 the call so it can gather log data about it.
 
 ::
@@ -50,10 +50,10 @@ the call so it can gather log data about it.
     with tbot.acquire_lab() as lh:
         ...
 
-To understand this line, we first need to get to know one of the core concepts of TBot:
-**Machines** (:class:`~tbot.machine.Machine`).  Every host TBot interacts with is called a machine.
+To understand this line, we first need to get to know one of the core concepts of tbot:
+**Machines** (:class:`~tbot.machine.Machine`).  Every host tbot interacts with is called a machine.
 That includes the labhost, which we use here, a buildhost where your code might be compiled,
-the board you are testing, or any other host you want TBot to connect to.  There are different kinds
+the board you are testing, or any other host you want tbot to connect to.  There are different kinds
 of machines.  Our labhost is special, because it is the base from where connections to other host
 are made.
 
@@ -61,7 +61,7 @@ Machines should always be used inside a ``with`` statement to ensure proper clea
 case.  This is especially important with boardmachines, because if this is not done, the board
 might not be turned off after the tests.
 
-The line you see here requests a new labhost object from TBot so we can interact with it.
+The line you see here requests a new labhost object from tbot so we can interact with it.
 As you will see later, this is not quite the way you would do this normally, but for this simple
 example it is good enough.
 
@@ -82,11 +82,11 @@ want in this case.
 
     tbot.log.message(f"Hello {name}!")
 
-:func:`tbot.log.message` is basically TBot's equivalent of :func:`print`.  The most important difference is, that it does not
+:func:`tbot.log.message` is basically tbot's equivalent of :func:`print`.  The most important difference is, that it does not
 only print it to the terminal, but also store it in the logfile.
 
 .. note::
-    TBot has different **Verbosity** levels:
+    tbot has different **Verbosity** levels:
 
     * ``QUIET``: Only show testcases that are called
     * ``INFO``: Show info messages, such as those created by :func:`tbot.log.message`
@@ -109,7 +109,7 @@ inefficient.  The easiest solution is to require the lab as a parameter like thi
     def my_testcase(lab: linux.LabHost) -> None:
         ...
 
-This has the big disadvantage that a testcase like this can't be called from TBot's commandline, because
+This has the big disadvantage that a testcase like this can't be called from tbot's commandline, because
 where would it get that parameter from?
 
 The solution is a hybrid and looks like the following::
@@ -127,10 +127,10 @@ The solution is a hybrid and looks like the following::
             tbot.log.message(f"Hello {name}!")
 
 This is one of my 'recipes'.  These are code snippets that you will reuse all the time while using
-TBot.  There are a lot more, for different tasks.  Take a look at the :ref:`recipes:Recipes` page.
+tbot.  There are a lot more, for different tasks.  Take a look at the :ref:`recipes:Recipes` page.
 
 .. note::
-    In this documentation and in the TBot sources, type annotations are used everywhere.  This allows
+    In this documentation and in the tbot sources, type annotations are used everywhere.  This allows
     the use of a static type-checker such as ``mypy``, which makes finding bugs before you even run
     the code a lot easier.  Of course, this is optional, the following code would work just as well::
 
@@ -147,7 +147,7 @@ Calling other testcases is just as easy as calling a python function.  From your
 *is* just a python function.  If you want to call testcases from other files, import them like you would
 with a python module.
 
-TBot contains a library of testcases for common tasks that you can make use of.  Take a look at :mod:`tbot.tc`.
+tbot contains a library of testcases for common tasks that you can make use of.  Take a look at :mod:`tbot.tc`.
 
 
 Machine Interaction
@@ -168,9 +168,9 @@ Both take the command as one argument per commandline parameter.  For example::
     output = m.exec0("dmesg")
     output = m.exec0("echo", "$!#?")
 
-TBot will ensure that arguments are properly escaped, so you can pass in anything without worrying.
+tbot will ensure that arguments are properly escaped, so you can pass in anything without worrying.
 This poses a problem, when you need special syntaxes.  For example when you try to pipe the output
-of one command into another command.  To do this in TBot, use code like the following::
+of one command into another command.  To do this in tbot, use code like the following::
 
     from tbot.machine import linux
 
@@ -195,7 +195,7 @@ There are even more, for more complex use cases:
 
   What happens here?  First of all, ``m.env("PATH")`` retrieves the current path.  Then,
   we use ``linux.F`` and a format string to create the parameter.  You can't use an
-  f-String in this case, because you can't trivially turn a TBot path into a string.
+  f-String in this case, because you can't trivially turn a tbot path into a string.
 
 * :func:`~tbot.machine.linux.Env`: Environment variable expansion.  Sometimes you want to
   give an environment variable as a parameter.  You can use ``linux.Env`` for exactly that.
@@ -210,21 +210,21 @@ There are even more, for more complex use cases:
   :meth:`~tbot.machine.linux.LinuxMachine.env` will retrieve the value of the environment variable
   and return it as a string.  The benefit of doing it this way is, that the value will be visible
   in the logfile and can be read when debugging a failure later on.  If you use ``linux.Env``,
-  the log (and TBot) will never actually see the value of the environment variable and you can
+  the log (and tbot) will never actually see the value of the environment variable and you can
   only guess what it was.
 
-* :func:`~tbot.machine.linux.Raw`: Raw string if TBot isn't expressive enough for your usecase.
+* :func:`~tbot.machine.linux.Raw`: Raw string if tbot isn't expressive enough for your usecase.
   Use this only when no other option works.
 
 
-Another thing TBot handles specially is paths.  A :class:`~tbot.machine.linux.Path` can be
+Another thing tbot handles specially is paths.  A :class:`~tbot.machine.linux.Path` can be
 created like this::
 
     from tbot.machine import linux
 
     p = linux.Path(machine, "/foo/bar")
 
-``p`` is now a :class:`~tbot.machine.linux.Path`.  TBot's paths are based on
+``p`` is now a :class:`~tbot.machine.linux.Path`.  tbot's paths are based on
 python's :mod:`pathlib` so you can use all the usual methods / operators::
 
     file_in_p = p / "dirname" / "file.txt"
@@ -233,7 +233,7 @@ python's :mod:`pathlib` so you can use all the usual methods / operators::
     if not p.is_dir():
         raise RuntimeError(f"{p} must be a directory!")
 
-TBot's paths have a very nice property: They are bound to the host they were created with.  This means
+tbot's paths have a very nice property: They are bound to the host they were created with.  This means
 that you cannot accidentally use a path on a wrong machine::
 
     m = tbot.acquire_lab()
@@ -296,7 +296,7 @@ is that this time, we need to first initialize the board::
 
 Interactive
 ^^^^^^^^^^^
-One convenience function of TBot is allowing the user to directly access most machines' shells.  There are
+One convenience function of tbot is allowing the user to directly access most machines' shells.  There are
 two ways to do so.
 
 .. highlight:: guess
@@ -316,7 +316,7 @@ two ways to do so.
             with tbot.acquire_linux(b) as lnx:
                 lnx.exec0("echo", "Doing some setup work")
 
-                # Might raise an Exception if TBot was not able to reaquire the shell after
+                # Might raise an Exception if tbot was not able to reaquire the shell after
                 # the interactive session
                 lnx.interactive()
 

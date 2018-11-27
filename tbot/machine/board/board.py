@@ -1,4 +1,4 @@
-# TBot, Embedded Automation Tool
+# tbot, Embedded Automation Tool
 # Copyright (C) 2018  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
@@ -105,7 +105,7 @@ class Board(contextlib.AbstractContextManager):
         """
         Cleanup the connection.
 
-        Might be necessary if the TBot's default behaviour
+        Might be necessary if the tbot's default behaviour
         of just killing the shell leaves lock files behind.
         """
         pass

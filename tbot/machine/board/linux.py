@@ -1,4 +1,4 @@
-# TBot, Embedded Automation Tool
+# tbot, Embedded Automation Tool
 # Copyright (C) 2018  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
     """Abstract base class for board linux machines."""
 
     login_prompt = "login: "
-    """Prompt that indicates TBot should send the username."""
+    """Prompt that indicates tbot should send the username."""
 
     @property
     @abc.abstractmethod

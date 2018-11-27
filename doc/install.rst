@@ -1,7 +1,7 @@
 Installation
 ============
-Clone `TBot's repository <https://github.com/Rahix/tbot>`_, then
-install TBot using
+Clone `tbot's repository <https://github.com/Rahix/tbot>`_, then
+install tbot using
 
 ::
 
@@ -12,7 +12,7 @@ your ``$PATH``.
 
 Completions
 -----------
-TBot supports command line completions. Enable them by adding
+tbot supports command line completions. Enable them by adding
 
 ::
 

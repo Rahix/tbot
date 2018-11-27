@@ -1,4 +1,4 @@
-# TBot, Embedded Automation Tool
+# tbot, Embedded Automation Tool
 # Copyright (C) 2018  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ H = typing.TypeVar("H", bound="linux.LinuxMachine")
 
 class Path(pathlib.PurePosixPath, typing.Generic[H]):
     """
-    A path that is associated with a TBot machine.
+    A path that is associated with a tbot machine.
 
     A path can only be used with its associated host.  Using it with
     any other host will raise an exception and will be detected by
