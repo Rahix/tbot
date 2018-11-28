@@ -3,6 +3,8 @@
 ## [Unreleased]
 ### Added
 - `-C` parameter to allow setting a different working directory
+- `${TBOTPATH}` environment variable to provide additional testcase
+  directories; `TBOTPATH` is a `:` separated list of directorie
 
 
 ## [0.6.3] - 2018-11-28
