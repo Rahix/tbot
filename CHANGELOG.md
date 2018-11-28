@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- `-C` parameter to allow setting a different working directory
 
 
 ## [0.6.3] - 2018-11-28

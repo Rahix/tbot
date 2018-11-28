@@ -28,6 +28,13 @@ def main() -> None:  # noqa: C901
 
     parser.add_argument("testcase", nargs="*", help="testcase that should be run.")
 
+    parser.add_argument(
+        "-C",
+        metavar="WORKDIR",
+        dest="workdir",
+        help="use WORKDIR as working directory instead of the current directory.",
+    )
+
     parser.add_argument("-b", "--board", help="use this board instead of the default.")
 
     parser.add_argument("-l", "--lab", help="use this lab instead of the default.")
@@ -89,6 +96,11 @@ def main() -> None:  # noqa: C901
         parser.add_argument(*flag_names, action="store_true", help=flag_help)
 
     args = parser.parse_args()
+
+    if args.workdir:
+        import os
+
+        os.chdir(args.workdir)
 
     from tbot import log
 
