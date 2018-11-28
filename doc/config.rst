@@ -93,3 +93,22 @@ For info on the possible configuration options, checkout the docs for
 :class:`~tbot.machine.board.UBootMachine`,
 :class:`~tbot.machine.board.LinuxWithUBootMachine`, and
 :class:`~tbot.machine.board.LinuxStandaloneMachine`.
+
+Flags
+-----
+Sometimes your config needs some flexibility.  To keep you from having to edit the config
+file every time, tbot has a feature called **flags**.  *Flags* can be specified on the commandline
+using ``-f flagname`` and you can check if they are set in your config like this::
+
+    if "flagname" in tbot.flags:
+        tbot.log.message("Flag ist set!")
+    else:
+        tbot.log.message("Flag ist NOT set!")
+
+To make *flags* easily discoverable, you should add all available flags to a global named ``FLAGS``::
+
+    FLAGS = {
+        "flagname": "Short description of this flag",
+    }
+
+You can then list all available flags using ``tbot --list-flags``.
