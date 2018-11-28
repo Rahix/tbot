@@ -28,18 +28,22 @@ repos:
 -   repo: local
     hooks:
     - id: selftests
-      name: TBot Selftest
+      name: tbot selftest
       language: system
       entry: python3 -c "__import__('sys').argv = ['tbot', '--log', '/tmp/tbot-log.json', 'selftest']; __import__('tbot.main').main.main()"
+      files: ^.*\.py$
     - id: generator_html
-      name: TBot HTML log generator
+      name: tbot HTML log generator
       language: system
       entry: sh -c "./generators/generate_htmllog.py /tmp/tbot-log.json >/dev/null"
+      files: ^.*\.py$
     - id: generator_junit
-      name: TBot junit generator
+      name: tbot junit generator
       language: system
       entry: sh -c "./generators/junit.py /tmp/tbot-log.json >/dev/null"
+      files: ^.*\.py$
     - id: static_tests
-      name: TBot type system tests
+      name: tbot type system tests
       language: system
       entry: ./static_tests/run.sh
+      files: ^.*\.py$
