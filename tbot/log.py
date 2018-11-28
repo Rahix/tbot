@@ -1,4 +1,4 @@
-# TBot, Embedded Automation Tool
+# tbot, Embedded Automation Tool
 # Copyright (C) 2018  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
@@ -185,3 +185,12 @@ def message(
     :param Verbosity verbosity: Message verbosity
     """
     return EventIO(["msg", str(verbosity)], msg, verbosity=verbosity, text=str(msg))
+
+
+def warning(msg: typing.Union[str, c]) -> EventIO:
+    """
+    Emit a warning message.
+
+    :param str msg: The message
+    """
+    return message(c("Warning").yellow.bold + ": " + msg, Verbosity.QUIET)

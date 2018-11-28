@@ -1,4 +1,4 @@
-# TBot, Embedded Automation Tool
+# tbot, Embedded Automation Tool
 # Copyright (C) 2018  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
@@ -75,7 +75,7 @@ class F(Special[H]):
         All normal python formatters are supported.
 
         :param str fmt: Format string
-        :param args: Format arguments.  Can be TBot paths as well.
+        :param args: Format arguments.  Can be tbot paths as well.
         :param bool quote: Whether to escape the resulting string.
         """
         self.fmt = fmt

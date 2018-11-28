@@ -1,4 +1,4 @@
-# TBot, Embedded Automation Tool
+# tbot, Embedded Automation Tool
 # Copyright (C) 2018  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
@@ -50,6 +50,7 @@ class SubprocessChannel(channel.Channel):
             raise channel.ChannelClosedException()
 
         data = data if isinstance(data, bytes) else data.encode("utf-8")
+        self._debug_log(data, True)
 
         length = len(data)
         c = 0
@@ -77,6 +78,7 @@ class SubprocessChannel(channel.Channel):
         maxread = min(1024, max) if max else 1024
         try:
             buf = os.read(self.pty_master, maxread)
+            self._debug_log(buf)
         except BlockingIOError:
             # If we don't get anything, and the timeout hasn't triggered
             # this channel is closed
@@ -87,7 +89,9 @@ class SubprocessChannel(channel.Channel):
                 maxread = min(1024, max - len(buf)) if max else 1024
                 if maxread == 0:
                     break
-                buf += os.read(self.pty_master, maxread)
+                new = os.read(self.pty_master, maxread)
+                buf += new
+                self._debug_log(new)
         except BlockingIOError:
             pass
 

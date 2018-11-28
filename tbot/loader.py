@@ -1,4 +1,4 @@
-# TBot, Embedded Automation Tool
+# tbot, Embedded Automation Tool
 # Copyright (C) 2018  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
@@ -65,6 +65,8 @@ def get_file_list(
 
 
 def load_module(p: pathlib.Path) -> importlib.types.ModuleType:
+    import importlib.util
+
     if not p.is_file():
         raise FileNotFoundError(f"The module {str(p)!r} does not exist")
     default_sys_path = sys.path
@@ -126,6 +128,13 @@ The testcase was defined in:
                         func._tbot_files = [f]
                         testcases[name] = func
         except:  # noqa: E722
-            print(c("Warning").yellow.bold + f": Failed to load {f}", file=sys.stderr)
+            import textwrap
+            import traceback
+
+            trace = textwrap.indent(traceback.format_exc(), "    ")
+            print(
+                c("Warning").yellow.bold + f": Failed to load {f}:\n{trace}",
+                file=sys.stderr,
+            )
 
     return testcases

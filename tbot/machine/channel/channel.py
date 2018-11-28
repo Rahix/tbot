@@ -1,4 +1,4 @@
-# TBot, Embedded Automation Tool
+# tbot, Embedded Automation Tool
 # Copyright (C) 2018  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
@@ -161,7 +161,7 @@ class Channel(abc.ABC):
         self, end_magic: typing.Union[str, bytes, None] = None
     ) -> None:
         """
-        Connect TBot's terminal to this channel.
+        Connect tbot's terminal to this channel.
 
         Allows the user to interact directly with whatever this channel is
         connected to.
@@ -279,6 +279,19 @@ class Channel(abc.ABC):
 
         return buf
 
+    def _debug_log(self, data: bytes, out: bool = False) -> None:
+        if tbot.log.VERBOSITY >= tbot.log.Verbosity.CHANNEL:
+            msg = tbot.log.c(repr(data)[1:])
+            tbot.log.EventIO(
+                ["__debug__"],
+                (
+                    tbot.log.c("> ").blue.bold + msg.blue
+                    if out
+                    else tbot.log.c("< ").yellow.bold + msg.yellow
+                ),
+                verbosity=tbot.log.Verbosity.CHANNEL,
+            )
+
     def read_until_prompt(
         self,
         prompt: str,
@@ -286,6 +299,7 @@ class Channel(abc.ABC):
         regex: bool = False,
         stream: typing.Optional[typing.TextIO] = None,
         timeout: typing.Optional[float] = None,
+        must_end: bool = True,
     ) -> str:
         """
         Read until receiving ``prompt``.
@@ -298,13 +312,19 @@ class Channel(abc.ABC):
         :param io.TextIOBase stream: Optional stream where ``read_until_prompt``
             should write everything received up until the prompt is detected.
         :param float timeout: Optional timeout.
+        :param bool must_end: Whether the prompt has to appear at the end of
+            the stream.
         :raises TimeoutError: If a timeout is set and this timeout is reached before
             the prompt is detected.
         :rtype: str
         :returns: Everything read up until the prompt.
         """
         start_time = time.monotonic()
-        expr = f"{prompt}$" if regex else "^$"
+        expr = None
+        if regex:
+            expr = f"{prompt}$" if must_end else prompt
+        elif not must_end:
+            expr = re.escape(prompt)
         buf = ""
 
         timeout_remaining = timeout
@@ -328,22 +348,19 @@ class Channel(abc.ABC):
                 decoded.replace("\r\n", "\n").replace("\r\n", "\n").replace("\r", "\n")
             )
 
-            if tbot.log.VERBOSITY >= tbot.log.Verbosity.CHANNEL:
-                tbot.log.EventIO(
-                    ["__debug__"],
-                    tbot.log.c(repr(decoded)).yellow,
-                    verbosity=tbot.log.Verbosity.CHANNEL,
-                )
-
             buf += decoded
 
-            if (not regex and buf[-len(prompt) :] == prompt) or (
-                regex and re.search(expr, buf) is not None
+            if (expr is None and buf[-len(prompt) :] == prompt) or (
+                expr is not None and re.search(expr, buf) is not None
             ):
                 if stream:
-                    stream.write(decoded[: -len(prompt)])
+                    # Don't clip prompt if it doesn't need to be at the end
+                    if must_end:
+                        stream.write(decoded[: -len(prompt)])
+                    else:
+                        stream.write(decoded)
                 break
-            elif stream:
+            elif stream is not None:
                 stream.write(decoded)
 
             if timeout is not None:

@@ -3,6 +3,26 @@
 ## [Unreleased]
 
 
+## [0.6.3] - 2018-11-28
+### Added
+- `tbot.log.warning`: Print a warning message
+- If tbot fails to load a testcase source, it will now show the
+  traceback that caused the failure
+
+### Changed
+- Show any and all output that is received on the channel with `-vvv`
+- `BoardLinuxMachine` now allows the login and password prompts to
+  be clobbered
+- `BoardLinuxMachine` login now waits for the shell to respond
+
+### Removed
+- `login_wait` config parameter from `BoardLinuxMachine`.  This "hack"
+  is superseded by the more robust login implementation now.
+
+### Fixed
+- `importlib.util` needs to be manually imported on some python versions
+
+
 ## [0.6.2] - 2018-11-22
 ### Added
 - `Machine.env`: Easily get the value of an environment variable

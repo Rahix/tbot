@@ -1,17 +1,21 @@
-# TBot ![Python 3.6](https://img.shields.io/badge/python-3.6-blue.svg) [![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black) [![Build Status](https://travis-ci.org/Rahix/tbot.svg?branch=master)](https://travis-ci.org/Rahix/tbot)
+<p align="center">
+  <img src="doc/_static/tbot-logo-header.png" alt="tbot" /><br />
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.6-blue.svg" alt="Python 3.6" /></a>
+  <a href="http://mypy-lang.org/"><img src="http://www.mypy-lang.org/static/mypy_badge.svg" alt="Checked with mypy" /></a>
+  <a href="https://github.com/ambv/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black" /></a>
+  <a href="https://travis-ci.org/Rahix/tbot"><img src="https://travis-ci.org/Rahix/tbot.svg?branch=master" alt="Build Status" /></a><br />
+  Embedded Test/Automation Tool
+</p>
 
-TBot is a testing/automation tool that is focused on usage in embedded development.
-At its core TBot just provides utilities for interaction with remote hosts/targets
-and an extensive library of routines that are common in embedded development/testing.
+**tbot** is a testing/automation tool that is focused on usage in embedded development.  At its core *tbot* just provides utilities for interaction with remote hosts/targets and an extensive library of routines that are common in embedded development/testing.
 
-TBot aims to be a support for the developer while working on a project and without
-much modification also allow running tests in an automated setting (CI).
+*tbot* aims to be a support for the developer while working on a project and without much modification also allow running tests in an automated setting (CI).
 
-Most info about TBot can be found in its [documentation](https://rahix.de/tbot).
+Most info about *tbot* can be found in its [documentation](https://rahix.de/tbot).  You can also join our mailing list at [lists.denx.de](https://lists.denx.de/listinfo/tbot).
 
-![TBot Architecture](doc/_static/tbot.png)
+![tbot Architecture](doc/_static/tbot.png)
 
-*Note that the TBot and Lab host can be the same machine.  Same with Lab and Build host.*
+*Note that the tbot and Lab host can be the same machine.  Same with Lab and Build host.*
 
 
 ## Installation
@@ -22,7 +26,7 @@ python3 setup.py install --user
 Also, if you haven't done this already, you need to add ``~/.local/bin`` to your ``$PATH``.
 
 ### Completions
-TBot supports command line completions. Enable them by adding
+tbot supports command line completions. Enable them by adding
 
 ```bash
 source /path/to/tbot/completions.sh
@@ -82,4 +86,4 @@ def blink(
 Please make use of the `pre-commit` config in this repo to check your changes!
 
 ## License
-TBot is licensed under the `GNU General Public License v3.0 or later`.  See [LICENSE](LICENSE) for more info.
+tbot is licensed under the `GNU General Public License v3.0 or later`.  See [LICENSE](LICENSE) for more info.

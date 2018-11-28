@@ -59,5 +59,6 @@ def selftest(lab: typing.Optional[linux.LabHost] = None,) -> None:
             selftest_board_linux_uboot,  # noqa: F405
             selftest_board_linux_standalone,  # noqa: F405
             selftest_board_linux_nopw,  # noqa: F405
+            selftest_board_linux_bad_console,  # noqa: F405
             lab=lh,
         )

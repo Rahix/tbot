@@ -1,4 +1,4 @@
-# TBot, Embedded Automation Tool
+# tbot, Embedded Automation Tool
 # Copyright (C) 2018  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import abc
-import time
 import typing
 import tbot
 from tbot.machine import board
@@ -31,7 +30,7 @@ class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
     """Abstract base class for board linux machines."""
 
     login_prompt = "login: "
-    login_wait = 1.0
+    """Prompt that indicates tbot should send the username."""
 
     @property
     @abc.abstractmethod
@@ -51,12 +50,25 @@ class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
     @property
     @abc.abstractmethod
     def password(self) -> typing.Optional[str]:
-        """Password for logging in once Linux has booted."""
+        """
+        Password for logging in.
+
+        Can be :class:`None` to indicate that no password is needed.
+        """
         pass
 
     def __init__(self, b: typing.Union[B, board.UBootMachine[B]]) -> None:
         """Create a new instance of this LinuxMachine."""
         self.bootlog = ""
+
+        # `login_wait` is deprecated
+        if hasattr(self, "login_wait"):
+            tbot.log.warning(
+                f"""\
+`{self.__class__.__name__}` defines `login_wait`, which is no longer in use!
+    Please remove it from your board-config."""
+            )
+
         super().__init__(b.board if isinstance(b, board.UBootMachine) else b)
 
     def boot_to_shell(self, stream: typing.TextIO) -> str:
@@ -64,18 +76,28 @@ class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
         chan = self._obtain_channel()
         output = ""
 
-        output += chan.read_until_prompt(self.login_prompt, stream=stream)
+        output += chan.read_until_prompt(
+            self.login_prompt, stream=stream, must_end=False
+        )
 
         chan.send(self.username + "\n")
-        stream.write(self.login_prompt + self.username + "\n")
-        output += self.login_prompt + self.username + "\n"
         if self.password is not None:
-            chan.read_until_prompt("word: ")
+            chan.read_until_prompt("word: ", stream=stream, must_end=False)
             chan.send(self.password + "\n")
-            stream.write("Password: ****\n")
+            stream.write("****\n")
             output += "Password: ****\n"
-        time.sleep(self.login_wait)
-        chan.send("\n")
+        else:
+            stream.write(f"{self.username}\n")
+
+        while True:
+            chan.send("echo TBOT''LOGIN\n")
+            try:
+                chan.read_until_prompt("TBOTLOGIN", timeout=0.2, must_end=False)
+            except TimeoutError:
+                pass
+            else:
+                break
+
         chan.initialize(sh=self.shell)
 
         self.bootlog = output
@@ -111,51 +133,7 @@ class LinuxWithUBootMachine(LinuxMachine[B]):
         UBOOT = MyBoardUBoot
         LINUX = MyBoardLinux
 
-    .. py:attribute:: login_prompt: str = "login: "
-
-        Prompt that indicates TBot should send the username.
-
-    .. py:attribute:: username: str
-
-        Username for logging in.
-
-    .. py:attribute:: password: str
-
-        Password for logging in. Can be :class:`None` to indicate that
-        no password is needed.
-
-    .. py:attribute:: login_wait: float = 1.0
-
-        Time to wait after sending login credentials.
-
-    .. py:attribute:: shell: tbot.machine.linux.shell.Shell = Ash
-
-        Type of the shell that is the default on the board.
-
-    .. py:attribute:: boot_commands: list[list[]]
-
-        List of commands to boot Linux from U-Boot. Commands are a list,
-        of the arguments that are given to :meth:`~tbot.machine.board.UBootMachine.exec0`
-
-        By default, ``do_boot`` is called, but if ``boot_commands`` is defined, it will
-        be used instead (and ``do_boot`` is ignored).
-
-        **Example**::
-
-            boot_commands = [
-                ["setenv", "console", "ttyS0"],
-                ["setenv", "baudrate", str(115200)],
-                [
-                    "setenv",
-                    "bootargs",
-                    board.Raw("console=${console},${baudrate}"),
-                ],
-                ["tftp", board.Env("loadaddr"), "zImage"],
-                ["bootz", board.Env("loadaddr")],
-            ]
-
-    .. py:attribute:: bootlog: str
-
+    :ivar str bootlog:
         Messages that were printed out during startup.  You can access this
         attribute inside your testcases to get info about what was going on
         during boot.
@@ -164,6 +142,27 @@ class LinuxWithUBootMachine(LinuxMachine[B]):
     boot_commands: typing.Optional[
         typing.List[typing.List[typing.Union[str, special.Special]]]
     ] = None
+    """
+    List of commands to boot Linux from U-Boot. Commands are a list,
+    of the arguments that are given to :meth:`~tbot.machine.board.UBootMachine.exec0`
+
+    By default, ``do_boot`` is called, but if ``boot_commands`` is defined, it will
+    be used instead (and ``do_boot`` is ignored).
+
+    **Example**::
+
+        boot_commands = [
+            ["setenv", "console", "ttyS0"],
+            ["setenv", "baudrate", str(115200)],
+            [
+                "setenv",
+                "bootargs",
+                board.Raw("console=${console},${baudrate}"),
+            ],
+            ["tftp", board.Env("loadaddr"), "zImage"],
+            ["bootz", board.Env("loadaddr")],
+        ]
+    """
 
     def do_boot(
         self, ub: board.UBootMachine[B]
@@ -261,29 +260,7 @@ class LinuxStandaloneMachine(LinuxMachine[B]):
         BOARD = MyBoard
         LINUX = MyBoardLinux
 
-    .. py:attribute:: login_prompt: str = "login: "
-
-        Prompt that indicates TBot should send the username.
-
-    .. py:attribute:: username: str
-
-        Username for logging in.
-
-    .. py:attribute:: password: str
-
-        Password for logging in. Can be :class:`None` to indicate that
-        no password is needed.
-
-    .. py:attribute:: login_wait: float = 1.0
-
-        Time to wait after sending login credentials.
-
-    .. py:attribute:: shell: tbot.machine.linux.shell.Shell = Ash
-
-        Type of the shell that is the default on the board.
-
-    .. py:attribute:: bootlog: str
-
+    :ivar str bootlog:
         Messages that were printed out during startup.  You can access this
         attribute inside your testcases to get info about what was going on
         during boot.

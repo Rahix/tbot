@@ -1,4 +1,4 @@
-# TBot, Embedded Automation Tool
+# tbot, Embedded Automation Tool
 # Copyright (C) 2018  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
@@ -43,31 +43,27 @@ class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
         BOARD = MyBoard
         UBOOT = MyBoardUBoot
 
-    .. py:attribute:: autoboot_prompt: str
-
-        Regular expression of the autoboot prompt, set to ``None`` if
-        autoboot is disabled for this board.
-
-        Defaults to ``r"Hit any key to stop autoboot:\s+\d+\s+"``.
-
-    .. py:attribute:: autoboot_keys: str = "\\n"
-
-        Keys that should be sent to intercept autoboot
-
-    .. py:attribute:: prompt: str = "U-Boot> "
-
-        U-Prompt that was configured when building U-Boot
-
-    .. py:attribute:: bootlog: str
-
+    :ivar str bootlog:
         Messages that were printed out during startup.  You can access this
         attribute inside your testcases to get info about what was going on
         during boot.
     """
 
     autoboot_prompt: typing.Optional[str] = r"Hit any key to stop autoboot:\s+\d+\s+"
+    """
+    Regular expression of the autoboot prompt.
+    Set this to ``None`` if autoboot is disabled for this board.
+    """
+
     autoboot_keys = "\n"
+    """
+    Keys that should be sent to intercept autoboot
+    """
+
     prompt = "U-Boot> "
+    """
+    U-Prompt that was configured when building U-Boot
+    """
 
     @property
     def name(self) -> str:
@@ -199,7 +195,7 @@ class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
         """
         Drop into an interactive U-Boot session.
 
-        :raises RuntimeError: If TBot was not able to reacquire the shell
+        :raises RuntimeError: If tbot was not able to reacquire the shell
             after the session is over.
         """
         tbot.log.message("Entering interactive shell (CTRL+D to exit) ...")

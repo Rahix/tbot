@@ -44,6 +44,8 @@ Linux
 
 .. autoclass:: tbot.machine.board.LinuxWithUBootMachine
     :members:
+    :inherited-members:
 
 .. autoclass:: tbot.machine.board.LinuxStandaloneMachine
     :members:
+    :inherited-members:

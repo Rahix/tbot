@@ -1,4 +1,4 @@
-# TBot, Embedded Automation Tool
+# tbot, Embedded Automation Tool
 # Copyright (C) 2018  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ class ParamikoChannel(channel.Channel):
 
     def __init__(self, ch: paramiko.Channel) -> None:
         """
-        Create a new TBot channel based on a Paramiko channel.
+        Create a new tbot channel based on a Paramiko channel.
 
         :param paramiko.Channel ch: Paramiko Channel
         """
@@ -42,6 +42,7 @@ class ParamikoChannel(channel.Channel):
             raise channel.ChannelClosedException()
 
         data = data if isinstance(data, bytes) else data.encode("utf-8")
+        self._debug_log(data, True)
 
         length = len(data)
         c = 0
@@ -60,12 +61,16 @@ class ParamikoChannel(channel.Channel):
         try:
             maxread = min(1024, max) if max else 1024
             buf = self.ch.recv(maxread)
+            self._debug_log(buf)
 
             while self.ch.recv_ready():
                 maxread = min(1024, max - len(buf)) if max else 1024
                 if maxread == 0:
                     break
-                buf += self.ch.recv(maxread)
+
+                new = self.ch.recv(maxread)
+                buf += new
+                self._debug_log(new)
         except socket.timeout:
             raise TimeoutError()
         finally:

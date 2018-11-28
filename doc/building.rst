@@ -4,11 +4,11 @@
 Building Projects
 =================
 
-TBot has a few facilities to ease building your projects.
+tbot has a few facilities to ease building your projects.
 
 Build-Host
 ----------
-In TBot, your code is compiled on the so called build-host.  The build-host
+In tbot, your code is compiled on the so called build-host.  The build-host
 should be defined in your lab-config and define the available toolchains.
 To show how this works, I will make three examples:
 
@@ -56,7 +56,7 @@ and define ``toolchains`` and ``build`` in a similar fashion.  There isn't much 
 
 Build-Host is another Machine
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-A lot of times, you have a separate server to build your projects.  TBot supports this as well.
+A lot of times, you have a separate server to build your projects.  tbot supports this as well.
 The config will look like this::
 
     class BuildHostSSH(linux.SSHMachine, linux.BuildMachine):
@@ -143,7 +143,7 @@ is defined in your labconfig.
 
 Building U-Boot
 ---------------
-Because this is such a commonly needed program, TBot ships with a testcase to build U-Boot.  You can call
+Because this is such a commonly needed program, tbot ships with a testcase to build U-Boot.  You can call
 it from the commandline like this::
 
     tbot -l mylab.py -b boards/bbb.py uboot_build -vv
