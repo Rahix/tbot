@@ -193,6 +193,17 @@ def selftest_machine_channel(ch: channel.Channel, remote_close: bool) -> None:
     assert out2 == b"echo Foo", repr(out)
     ch.read_until_prompt(channel.TBOT_PROMPT)
 
+    # Check timeout
+    raised = False
+    try:
+        ch.send("echo Foo Bar")
+        ch.read_until_prompt(channel.TBOT_PROMPT, timeout=0)
+    except TimeoutError:
+        raised = True
+    assert raised
+    ch.send("\n")
+    ch.read_until_prompt(channel.TBOT_PROMPT)
+
     assert ch.isopen()
 
     if remote_close:

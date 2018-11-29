@@ -365,7 +365,7 @@ class Channel(abc.ABC):
 
             if timeout is not None:
                 current_time = time.monotonic()
-                timeout_remaining = timeout - (current_time - start_time)
+                timeout_remaining = max(timeout - (current_time - start_time), 0)
 
         return buf
 

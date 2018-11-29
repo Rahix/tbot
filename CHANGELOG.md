@@ -6,6 +6,9 @@
 - `${TBOTPATH}` environment variable to provide additional testcase
   directories; `TBOTPATH` is a `:` separated list of directorie
 
+### Fixed
+- timeout in `read_until_prompt` sometimes being negative
+
 
 ## [0.6.3] - 2018-11-28
 ### Added
