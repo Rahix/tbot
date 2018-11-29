@@ -87,17 +87,18 @@ class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
             boot_ev.verbosity = tbot.log.Verbosity.STDOUT
             boot_ev.prefix = "   <> "
             if self.autoboot_prompt is not None:
-                boot_log = self.channel.read_until_prompt(
+                self.bootlog = self.channel.read_until_prompt(
                     self.autoboot_prompt, regex=True, stream=boot_ev
                 )
 
-                boot_ev.data["output"] = boot_log
                 self.channel.send(self.autoboot_keys)
                 self.channel.read_until_prompt(self.prompt)
             else:
-                self.channel.read_until_prompt(self.prompt, stream=boot_ev)
+                self.bootlog = self.channel.read_until_prompt(
+                    self.prompt, stream=boot_ev
+                )
 
-            self.bootlog = boot_ev.getvalue().split("\n", 1)[1]
+            boot_ev.data["output"] = self.bootlog
 
     def destroy(self) -> None:
         """Destroy this U-Boot machine."""
