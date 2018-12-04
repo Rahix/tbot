@@ -5,6 +5,8 @@
 - `-C` parameter to allow setting a different working directory
 - `${TBOTPATH}` environment variable to provide additional testcase
   directories; `TBOTPATH` is a `:` separated list of directorie
+- `auth.NoneAuthenticator`: Authenticator without key nor password, useful
+  if ssh can figure authentication out by itself (eg with ssh-agent)
 
 ### Fixed
 - timeout in `read_until_prompt` sometimes being negative
