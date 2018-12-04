@@ -49,7 +49,7 @@ def _scp_copy(
     ]
 
     if isinstance(authenticator, auth.PrivateKeyAuthenticator):
-        scp_command += ["-o", "BatchMode=yes", "-i", str(authenticator.key)]
+        scp_command += ["-o", "BatchMode=yes", "-i", str(authenticator.key_file)]
     elif isinstance(authenticator, auth.PasswordAuthenticator):
         scp_command = ["sshpass", "-p", authenticator.password] + scp_command
 

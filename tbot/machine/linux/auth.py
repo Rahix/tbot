@@ -16,12 +16,28 @@
 
 import abc
 import pathlib
+import typing
 
 
 class Authenticator(abc.ABC):
     """Authenticate a connection to a linux host."""
 
-    pass
+    def __init__(
+        self,
+        password: typing.Optional[str] = None,
+        key_file: typing.Optional[pathlib.PurePath] = None,
+        key: typing.Optional[typing.Any] = None,
+    ):
+        """
+        Initializes this authenticator with the given parameters.
+
+        :param str password: Password
+        :param str key_file: Privat key file path.
+        :param any key: Privat key object
+        """
+        self.password = password
+        self.key_file = key_file
+        self.key = key
 
 
 class PasswordAuthenticator(Authenticator):
@@ -34,8 +50,8 @@ class PasswordAuthenticator(Authenticator):
         :param str password: The password that will be used
                              with this authenticator.
         """
-        self.password = password
-        self.key = None
+        super().__init__(password=password)
+        self.password: str
 
 
 class PrivateKeyAuthenticator(Authenticator):
@@ -47,5 +63,5 @@ class PrivateKeyAuthenticator(Authenticator):
 
         :param pathlib.Path key: Path to the private key file
         """
-        self.password = None
-        self.key = key
+        super().__init__(key_file=key)
+        self.key_file: pathlib.PurePath

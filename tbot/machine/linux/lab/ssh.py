@@ -155,15 +155,6 @@ class SSHLabHost(LabHost):
         else:
             self.client.load_system_host_keys()
 
-        password = None
-        key_file = None
-
-        authenticator = self.authenticator
-        if isinstance(authenticator, auth.PasswordAuthenticator):
-            password = authenticator.password
-        if isinstance(authenticator, auth.PrivateKeyAuthenticator):
-            key_file = str(authenticator.key)
-
         log.message(
             "Logging in on "
             + log.c(f"{self.username}@{self.hostname}:{self.port}").yellow
@@ -174,8 +165,8 @@ class SSHLabHost(LabHost):
             self.hostname,
             username=self.username,
             port=self.port,
-            password=password,
-            key_filename=key_file,
+            password=self.authenticator.password,
+            key_filename=str(self.authenticator.key_file),
         )
 
         self.channel = channel.ParamikoChannel(
