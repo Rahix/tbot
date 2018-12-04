@@ -3,7 +3,12 @@ import tbot
 from tbot.machine import linux
 from tbot.tc import git
 
-__all__ = ("selftest_tc_git_checkout", "selftest_tc_git_am", "selftest_tc_git_bisect")
+__all__ = (
+    "selftest_tc_git_checkout",
+    "selftest_tc_git_am",
+    "selftest_tc_git_apply",
+    "selftest_tc_git_bisect",
+)
 
 _GIT: typing.Optional[str] = None
 
@@ -100,6 +105,59 @@ def selftest_tc_git_checkout(lab: typing.Optional[linux.LabHost] = None,) -> Non
 
 
 @tbot.testcase
+def selftest_tc_git_apply(lab: typing.Optional[linux.LabHost] = None,) -> None:
+    with lab or tbot.acquire_lab() as lh:
+        remote = git_prepare(lh)
+        target = lh.workdir / "selftest-git-apply"
+
+        if target.exists():
+            lh.exec0("rm", "-rf", target)
+
+        tbot.log.message("Cloning repo ...")
+        repo = git.GitRepository(target, remote)
+
+        assert (repo / "README.md").is_file()
+        assert not (repo / "file2.md").is_file()
+
+        tbot.log.message("Apply patch ...")
+        repo.apply(lh.workdir / "selftest-git.patch")
+
+        assert (repo / "file2.md").is_file()
+
+        repo.add(repo / "file2.md")
+        repo.commit("Add file2 from patch", author="tbot Selftest <none@none>")
+
+        lh.exec0(
+            "echo",
+            """\
+# File 2
+A second file that will have been added by patching.
+
+## 2.2
+This section was added by a second patch""",
+            stdout=repo / "file2.md",
+        )
+
+        repo.add(repo / "file2.md")
+        repo.commit("Update file2", author="tbot Selftest <none@none>")
+
+        patch_dir = lh.workdir / "selftest-git-patches"
+        lh.exec0("mkdir", "-p", patch_dir)
+        repo.git0("format-patch", "-o", patch_dir, "HEAD~2")
+        repo.reset("HEAD~2", git.ResetMode.HARD)
+
+        assert not (repo / "file2.md").is_file()
+
+        tbot.log.message("Apply multiple patches ...")
+        repo.apply(patch_dir)
+
+        assert lh.test("grep", "2.2", repo / "file2.md")
+
+        lh.exec0("rm", "-rf", target)
+        lh.exec0("rm", "-rf", patch_dir)
+
+
+@tbot.testcase
 def selftest_tc_git_am(lab: typing.Optional[linux.LabHost] = None,) -> None:
     with lab or tbot.acquire_lab() as lh:
         remote = git_prepare(lh)
@@ -135,7 +193,7 @@ This section was added by a second patch""",
 
         patch_dir = lh.workdir / "selftest-git-patches"
         lh.exec0("mkdir", "-p", patch_dir)
-        lh.exec0("git", "-C", repo, "format-patch", "-o", patch_dir, "HEAD~2")
+        repo.git0("format-patch", "-o", patch_dir, "HEAD~2")
         repo.reset("HEAD~2", git.ResetMode.HARD)
 
         assert not (repo / "file2.md").is_file()

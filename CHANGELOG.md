@@ -7,6 +7,7 @@
   directories; `TBOTPATH` is a `:` separated list of directorie
 - `auth.NoneAuthenticator`: Authenticator without key nor password, useful
   if ssh can figure authentication out by itself (eg with ssh-agent)
+- `GitRepository.apply`: Apply patches without committing the changes
 
 ### Fixed
 - timeout in `read_until_prompt` sometimes being negative

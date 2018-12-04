@@ -14,6 +14,7 @@ def selftest_tc(lab: typing.Optional[linux.LabHost] = None,) -> None:
         tc.testsuite(
             selftest_tc_git_checkout,  # noqa: F405
             selftest_tc_git_am,  # noqa: F405
+            selftest_tc_git_apply,  # noqa: F405
             selftest_tc_git_bisect,  # noqa: F405
             selftest_tc_shell_copy,  # noqa: F405
             lab=lh,

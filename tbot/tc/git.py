@@ -252,6 +252,40 @@ class GitRepository(linux.Path[H]):
         return 1
 
     @tbot.testcase
+    def apply(self, patch: linux.Path[H]) -> int:
+        """
+        Apply one or multiple patches to the working tree.
+
+        :param linux.Path patch: Either a path to a `.patch` file or to a
+            directory containing patch files.
+        :rtype: int
+        :returns: Number of patches applied
+        """
+        # Check if we got a single patch or a patchdir
+        if self.host.test("test", "-d", patch):
+            files = [
+                linux.Path(self.host, p)
+                for p in self.host.exec0("find", patch, "-name", "*.patch")
+                .strip("\n")
+                .split("\n")
+            ]
+
+            files.sort()
+
+            for f in files:
+                self.apply(f)
+
+            return len(files)
+        else:
+            try:
+                self.git0("apply", patch)
+            except:  # noqa: E722
+                self.git0("apply", "--abort")
+                raise
+
+        return 1
+
+    @tbot.testcase
     def bisect(self, good: str, test: "typing.Callable[..., bool]") -> str:
         """
         Run a git bisect to find the commit that introduced an error.
