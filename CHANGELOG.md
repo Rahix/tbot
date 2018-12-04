@@ -17,6 +17,7 @@
 ### Fixed
 - timeout in `read_until_prompt` sometimes being negative
 - log missing bootlog for U-Boot if no autoboot is configured
+- tbot ignored ssh host aliases (ref #8)
 
 
 ## [0.6.3] - 2018-11-28

@@ -170,8 +170,14 @@ class SSHLabHost(LabHost):
             + " ...",
             verbosity=log.Verbosity.COMMAND,
         )
+
+        if "hostname" in self._c:
+            hostname = str(self._c["hostname"])
+        else:
+            hostname = self.hostname
+
         self.client.connect(
-            self.hostname,
+            hostname,
             username=self.username,
             port=self.port,
             password=password,
