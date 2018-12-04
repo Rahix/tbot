@@ -30,6 +30,11 @@ loader: Show traceback of errrors
 Fix a few spelling mistakes
 ```
 
+### Licensing
+Always add a signoff-line to your commits.  By doing so, you certify the
+"Developer Certificate of Origin" which can be found at the end of this
+document.
+
 ### Changelog
 Please add your changes to `CHANGELOG.md` in your commits as well.  This way,
 the changelog grows alongside the project and doesn't need to be written
@@ -89,3 +94,45 @@ features in *tbot* that could also fit into their own module.
 **Prefer composition over configuration.**  Or as the kernel calls it: *Mechanism,
 not policy.*  tbot should be flexible and generic over the users needs.  Don't
 force anything on the user that they might want differently!
+
+
+## Developer Certificate of Origin
+```text
+Developer Certificate of Origin
+Version 1.1
+
+Copyright (C) 2004, 2006 The Linux Foundation and its contributors.
+1 Letterman Drive
+Suite D4700
+San Francisco, CA, 94129
+
+Everyone is permitted to copy and distribute verbatim copies of this
+license document, but changing it is not allowed.
+
+
+Developer's Certificate of Origin 1.1
+
+By making a contribution to this project, I certify that:
+
+(a) The contribution was created in whole or in part by me and I
+    have the right to submit it under the open source license
+    indicated in the file; or
+
+(b) The contribution is based upon previous work that, to the best
+    of my knowledge, is covered under an appropriate open source
+    license and I have the right under that license to submit that
+    work with modifications, whether created in whole or in part
+    by me, under the same open source license (unless I am
+    permitted to submit under a different license), as indicated
+    in the file; or
+
+(c) The contribution was provided directly to me by some other
+    person who certified (a), (b) or (c) and I have not modified
+    it.
+
+(d) I understand and agree that this project and the contribution
+    are public and that a record of the contribution (including all
+    personal information I submit with it, including my sign-off) is
+    maintained indefinitely and may be redistributed consistent with
+    this project or the open source license(s) involved.
+```
