@@ -198,7 +198,9 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
             channel.raw_command(cmd)
 
         channel.raw_command(f"stty cols {size.columns}; stty rows {size.lines}")
-        channel.send(f"{self.shell.name}\n")
+
+        shell_cmd = self.build_command(*self.shell.command)
+        channel.send(f"{shell_cmd}\n")
         cmd = self.shell.disable_history()
         if cmd is not None:
             channel.send(f"{cmd}\n")
@@ -206,7 +208,7 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         channel.send(self.shell.set_prompt(endstr) + "\n")
         channel.read_until_prompt(endstr)
 
-        channel.send(f"{self.shell.name}\n")
+        channel.send(f"{shell_cmd}\n")
         cmd = self.shell.set_prompt(
             f"\\[\\033[36m\\]{self.name}: \\[\\033[32m\\]\\w\\[\\033[0m\\]> "
         )
@@ -254,30 +256,24 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
 
         :param Shell shell: Shell that is started
         """
-        cmd = None
-        if args != []:
-            cmd = self.build_command(*args)
-        return _SubshellContext(self, shell or self.shell, cmd)
+        shell = shell or self.shell
+        if args == ():
+            args = tuple(shell.command)
+        return _SubshellContext(self, shell, self.build_command(*args))
 
 
 class _SubshellContext(typing.ContextManager):
     __slots__ = ("ch", "sh")
 
-    def __init__(
-        self,
-        h: LinuxMachine,
-        shell: typing.Type[sh.Shell],
-        cmd: typing.Optional[str] = None,
-    ) -> None:
+    def __init__(self, h: LinuxMachine, shell: typing.Type[sh.Shell], cmd: str) -> None:
         self.h = h
         self.ch = h._obtain_channel()
         self.sh = shell
         self.cmd = cmd
 
     def __enter__(self) -> None:
-        cmd = self.cmd or self.sh.name
-        tbot.log_event.command(self.h.name, cmd)
-        self.ch.send(f"{cmd}\n")
+        tbot.log_event.command(self.h.name, self.cmd)
+        self.ch.send(f"{self.cmd}\n")
         self.ch.initialize(sh=self.sh)
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:  # type: ignore

@@ -9,6 +9,11 @@
   if ssh can figure authentication out by itself (eg with ssh-agent)
 - `GitRepository.apply`: Apply patches without committing the changes
 
+### Changed
+- `linux.shell`: Shells now have a `shell.command`, which allows specifying
+  a command to run the shell.  For example, bash is run using `bash --norc`
+  now.
+
 ### Fixed
 - timeout in `read_until_prompt` sometimes being negative
 - log missing bootlog for U-Boot if no autoboot is configured

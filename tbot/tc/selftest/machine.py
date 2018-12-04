@@ -166,9 +166,8 @@ def selftest_machine_shell(
         out = m.env("SUBSHELL_TEST_VAR")
         assert out == "", repr(out)
 
-        with m.subshell(
-            "env", "SUBSHELL_TEST_VAR2=1337", "bash", "--norc", shell=linux.shell.Bash
-        ):
+        shell = m.shell
+        with m.subshell("env", "SUBSHELL_TEST_VAR2=1337", *shell.command, shell=shell):
             out = m.env("SUBSHELL_TEST_VAR2")
             assert out == "1337", repr(out)
 
