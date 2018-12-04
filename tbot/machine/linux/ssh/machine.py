@@ -109,7 +109,7 @@ class SSHMachine(linux.LinuxMachine):
             # Careful, password WILL BE LEAKED!
             cmd = ["sshpass", "-p", authenticator.password, "ssh"]
         elif isinstance(authenticator, auth.PrivateKeyAuthenticator):
-            cmd = ["ssh", "-o", "BatchMode=yes", "-i", str(authenticator.key)]
+            cmd = ["ssh", "-o", "BatchMode=yes", "-i", str(authenticator.key_file)]
         else:
             raise RuntimeError(f"{authenticator!r} is not supported for SSH hosts!")
 

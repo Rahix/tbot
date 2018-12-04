@@ -162,7 +162,7 @@ class SSHLabHost(LabHost):
         if isinstance(authenticator, auth.PasswordAuthenticator):
             password = authenticator.password
         if isinstance(authenticator, auth.PrivateKeyAuthenticator):
-            key_file = str(authenticator.key)
+            key_file = str(authenticator.key_file)
 
         log.message(
             "Logging in on "
