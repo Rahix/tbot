@@ -110,6 +110,8 @@ class SSHMachine(linux.LinuxMachine):
             cmd = ["sshpass", "-p", authenticator.password, "ssh"]
         elif isinstance(authenticator, auth.PrivateKeyAuthenticator):
             cmd = ["ssh", "-o", "BatchMode=yes", "-i", str(authenticator.key_file)]
+        elif isinstance(authenticator, auth.NoneAuthenticator):
+            cmd = ["ssh", "-o", "BatchMode=yes"]
         else:
             raise RuntimeError(f"{authenticator!r} is not supported for SSH hosts!")
 

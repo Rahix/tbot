@@ -65,3 +65,17 @@ class PrivateKeyAuthenticator(Authenticator):
         """
         super().__init__(key_file=key)
         self.key_file: pathlib.PurePath
+
+
+class NoneAuthenticator(Authenticator):
+    """
+    Authenticates without key or password.
+    Useful if an ssh-agent is running in the background on LabHosts.
+    """
+
+    def __init__(self) -> None:
+        """Initialize this authenticator."""
+        super().__init__()
+        self.password: None
+        self.key: None
+        self.key_file: None
