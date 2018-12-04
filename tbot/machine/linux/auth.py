@@ -16,7 +16,10 @@
 
 import abc
 import pathlib
+import getpass
 import typing
+
+from paramiko import ssh_exception, pkey, rsakey, dsskey, ecdsakey, ed25519key
 
 
 class Authenticator(abc.ABC):
@@ -26,7 +29,7 @@ class Authenticator(abc.ABC):
         self,
         password: typing.Optional[str] = None,
         key_file: typing.Optional[pathlib.PurePath] = None,
-        key: typing.Optional[typing.Any] = None,
+        key: typing.Optional[pkey.PKey] = None,
     ):
         """
         Initializes this authenticator with the given parameters.
@@ -65,6 +68,29 @@ class PrivateKeyAuthenticator(Authenticator):
         """
         super().__init__(key_file=key)
         self.key_file: pathlib.PurePath
+
+        for key_type in (
+            rsakey.RSAKey,
+            dsskey.DSSKey,
+            ecdsakey.ECDSAKey,
+            ed25519key.Ed25519Key,
+        ):
+            for count in range(4):
+                try:
+                    self.key = key_type.from_private_key_file(
+                        filename=str(self.key_file), password=self.password
+                    )
+                    return
+                except ssh_exception.PasswordRequiredException:
+                    if count == 3:
+                        raise
+                    self.password = getpass.getpass(
+                        f"Enter passphrase for key '{self.key_file}': "
+                    )
+                except ssh_exception.SSHException:
+                    break
+
+        raise ssh_exception.SSHException(f"Unable to use key file '{self.key_file}'")
 
 
 class NoneAuthenticator(Authenticator):
