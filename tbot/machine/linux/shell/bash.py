@@ -10,6 +10,7 @@ class Bash(shell.Shell):
     """
 
     name = "bash"
+    command = ["bash", "--norc"]
 
     @staticmethod
     def set_prompt(prompt: str) -> str:  # noqa: D102

@@ -9,3 +9,4 @@ class Ash(shell.Shell):
     """
 
     name = "ash"
+    command = ["ENV=/dev/null", "ash"]

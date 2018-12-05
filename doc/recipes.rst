@@ -82,8 +82,30 @@ powercycling, etc.
 
 Testcase that initializes Board
 -------------------------------
+If you just need to power on the board once, use the following snippet::
+
+    import contextlib
+    import typing
+    import tbot
+    from tbot.machine import board
+
+
+    @tbot.testcase
+    def test_testcase(
+        lab: typing.Optional[tbot.selectable.LabHost] = None,
+    ) -> None:
+        with contextlib.ExitStack() as cx:
+            lh = cx.enter_context(lab or tbot.acquire_lab())
+            b = cx.enter_context(tbot.acquire_board(lh))
+            lnx = cx.enter_context(tbot.acquire_linux(b))
+
+            ...
+
+
+Rebooting
+^^^^^^^^^
 If your testcase is one that is more complex and requires the board
-to powercycle for example, you could write a testcase like this::
+to powercycle at some point, you could write a testcase like this::
 
     import contextlib
     import typing
@@ -109,26 +131,6 @@ to powercycle for example, you could write a testcase like this::
                 lnx = cx.enter_context(tbot.acquire_linux(b))
 
                 ...
-
-If you just need to power on the board once, this can be simplified even
-more::
-
-    import contextlib
-    import typing
-    import tbot
-    from tbot.machine import board
-
-
-    @tbot.testcase
-    def test_testcase(
-        lab: typing.Optional[tbot.selectable.LabHost] = None,
-    ) -> None:
-        with contextlib.ExitStack() as cx:
-            lh = cx.enter_context(lab or tbot.acquire_lab())
-            b = cx.enter_context(tbot.acquire_board(lh))
-            lnx = cx.enter_context(tbot.acquire_linux(b))
-
-            ...
 
 
 Build on your Localhost regardless of selected LabHost

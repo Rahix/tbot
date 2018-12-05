@@ -166,9 +166,8 @@ def selftest_machine_shell(
         out = m.env("SUBSHELL_TEST_VAR")
         assert out == "", repr(out)
 
-        with m.subshell(
-            "env", "SUBSHELL_TEST_VAR2=1337", "bash", "--norc", shell=linux.shell.Bash
-        ):
+        shell = m.shell
+        with m.subshell("env", "SUBSHELL_TEST_VAR2=1337", *shell.command, shell=shell):
             out = m.env("SUBSHELL_TEST_VAR2")
             assert out == "1337", repr(out)
 
@@ -191,6 +190,17 @@ def selftest_machine_channel(ch: channel.Channel, remote_close: bool) -> None:
     ch.send("echo Foo Bar\n")
     out2 = ch.recv_n(8, timeout=1.0)
     assert out2 == b"echo Foo", repr(out)
+    ch.read_until_prompt(channel.TBOT_PROMPT)
+
+    # Check timeout
+    raised = False
+    try:
+        ch.send("echo Foo Bar")
+        ch.read_until_prompt(channel.TBOT_PROMPT, timeout=0)
+    except TimeoutError:
+        raised = True
+    assert raised
+    ch.send("\n")
     ch.read_until_prompt(channel.TBOT_PROMPT)
 
     assert ch.isopen()

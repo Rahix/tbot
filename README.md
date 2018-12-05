@@ -83,7 +83,9 @@ def blink(
 * [termcolor2](https://pypi.org/project/termcolor2/)
 
 ## Contributing
-Please make use of the `pre-commit` config in this repo to check your changes!
+Help is really appreciated!  Please take a look at *tbot*'s [contribution guidelines](CONTRIBUTING.md)
+for more info.  If you are unsure about anything, please open an issue or consult
+the mailing list first!
 
 ## License
 tbot is licensed under the `GNU General Public License v3.0 or later`.  See [LICENSE](LICENSE) for more info.

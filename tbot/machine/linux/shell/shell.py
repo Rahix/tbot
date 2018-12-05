@@ -7,11 +7,17 @@ class Shell:
 
     .. py:data:: name: str = "sh"
 
-        Name of this shell (Also used when creating a new instance of
-        this shell.)
     """
 
     name = "sh"
+    """
+    Name of this shell.
+    """
+
+    command = ["sh"]
+    """
+    Command for starting this shell.
+    """
 
     @staticmethod
     def set_prompt(prompt: str) -> str:

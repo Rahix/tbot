@@ -40,7 +40,7 @@ Command Specials
 
     **Example**::
 
-        m.exec0("daemon", linux.Backround)
+        m.exec0("daemon", linux.Background)
 
 .. py:data:: tbot.machine.linux.OrElse
 

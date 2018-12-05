@@ -15,6 +15,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import sys
+import os
 import pathlib
 import argparse
 from tbot import __about__
@@ -27,6 +28,13 @@ def main() -> None:  # noqa: C901
     )
 
     parser.add_argument("testcase", nargs="*", help="testcase that should be run.")
+
+    parser.add_argument(
+        "-C",
+        metavar="WORKDIR",
+        dest="workdir",
+        help="use WORKDIR as working directory instead of the current directory.",
+    )
 
     parser.add_argument("-b", "--board", help="use this board instead of the default.")
 
@@ -90,6 +98,9 @@ def main() -> None:  # noqa: C901
 
     args = parser.parse_args()
 
+    if args.workdir:
+        os.chdir(args.workdir)
+
     from tbot import log
 
     # Determine LogFile
@@ -123,7 +134,13 @@ def main() -> None:  # noqa: C901
 
     from tbot import loader
 
+    if "TBOTPATH" in os.environ:
+        environ_paths = os.environ["TBOTPATH"].split(":")
+    else:
+        environ_paths = []
+
     files = loader.get_file_list(
+        (pathlib.Path(d).resolve() for d in environ_paths),
         (pathlib.Path(d).resolve() for d in args.tcdirs),
         (pathlib.Path(f).resolve() for f in args.tcfiles),
     )

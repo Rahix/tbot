@@ -33,20 +33,38 @@ def list_dir(
 
 
 def get_file_list(
-    dirs: typing.Iterable[pathlib.Path], files: typing.Iterable[pathlib.Path]
+    env_dirs: typing.Iterable[pathlib.Path],
+    dirs: typing.Iterable[pathlib.Path],
+    files: typing.Iterable[pathlib.Path],
 ) -> typing.Generator[pathlib.Path, None, None]:
+    # Builtin testcases
     builtins = pathlib.Path(__file__).parent / "tc" / "callable.py"
     if builtins.is_file():
         yield builtins
+
+    # tc.py file
     tcpy = pathlib.Path.cwd() / "tc.py"
     if tcpy.is_file():
         yield tcpy
 
+    # tc/ folder
     tcdir = pathlib.Path.cwd() / "tc"
     if tcdir.is_dir():
         for f in list_dir(tcdir):
             yield f
 
+    # Paths from $TBOTPATH
+    for d in env_dirs:
+        if d.is_dir():
+            for f in list_dir(d, recurse=False):
+                yield f
+        else:
+            if d.exists():
+                raise NotADirectoryError(str(d))
+            else:
+                raise FileNotFoundError(str(d))
+
+    # Specified testcase folders
     for d in dirs:
         if d.is_dir():
             for f in list_dir(d):
@@ -57,6 +75,7 @@ def get_file_list(
             else:
                 raise FileNotFoundError(str(d))
 
+    # Specified testcase files
     for f in files:
         if f.is_file():
             yield f
