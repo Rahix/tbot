@@ -18,9 +18,7 @@ import typing
 import shlex
 import tbot
 from tbot import machine
-from tbot.machine import board
-from tbot.machine import linux
-from tbot.machine import channel
+from tbot.machine import board, channel, linux
 from . import special
 
 B = typing.TypeVar("B", bound=board.Board)

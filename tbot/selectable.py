@@ -149,6 +149,7 @@ class LinuxMachine(board.LinuxStandaloneMachine[Board], typing.ContextManager):
     def __init__(self, b: typing.Any) -> None:  # noqa: D107
         raise NotImplementedError("This is a dummy Linux")
 
+    username = "root"
     password = None
     shell = linux.shell.Shell
 

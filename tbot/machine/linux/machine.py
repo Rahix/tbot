@@ -20,9 +20,7 @@ import shlex
 import shutil
 import tbot
 from tbot import machine
-from tbot.machine import channel
-from .path import Path
-from .special import Raw, Special
+from tbot.machine import linux, channel
 from . import special
 from . import shell as sh
 
@@ -45,7 +43,7 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
 
     @property
     @abc.abstractmethod
-    def workdir(self: Self) -> Path[Self]:
+    def workdir(self: Self) -> "linux.Path[Self]":
         """Return a path where testcases can store data on this host."""
         pass
 
@@ -55,8 +53,8 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
 
     def build_command(
         self: Self,
-        *args: typing.Union[str, Special[Self], Path[Self]],
-        stdout: typing.Optional[Path[Self]] = None,
+        *args: typing.Union[str, special.Special[Self], linux.Path[Self]],
+        stdout: typing.Optional[linux.Path[Self]] = None,
     ) -> str:
         """
         Build the string representation of a command.
@@ -72,19 +70,19 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         """
         command = ""
         for arg in args:
-            if isinstance(arg, Path):
+            if isinstance(arg, linux.Path):
                 if arg.host is not self:
                     raise machine.WrongHostException(self, arg)
 
                 command += shlex.quote(arg._local_str()) + " "
-            elif isinstance(arg, Special):
+            elif isinstance(arg, special.Special):
                 command += arg.resolve_string(self) + " "
             elif isinstance(arg, str):
                 command += shlex.quote(arg) + " "
             else:
                 raise TypeError(f"{arg!r} is not a supported argument type!")
 
-        if isinstance(stdout, Path):
+        if isinstance(stdout, linux.Path):
             if stdout.host is not self:
                 raise Exception(
                     f"{self!r}: Provided {stdout!r} is not associated with this host"
@@ -96,8 +94,8 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
 
     def exec(
         self: Self,
-        *args: typing.Union[str, Special[Self], Path[Self]],
-        stdout: typing.Optional[Path[Self]] = None,
+        *args: typing.Union[str, special.Special[Self], linux.Path[Self]],
+        stdout: typing.Optional[linux.Path[Self]] = None,
         timeout: typing.Optional[float] = None,
     ) -> typing.Tuple[int, str]:
         """
@@ -127,8 +125,8 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
 
     def exec0(
         self: Self,
-        *args: typing.Union[str, Special[Self], Path[Self]],
-        stdout: typing.Optional[Path[Self]] = None,
+        *args: typing.Union[str, special.Special[Self], linux.Path[Self]],
+        stdout: typing.Optional[linux.Path[Self]] = None,
         timeout: typing.Optional[float] = None,
     ) -> str:
         """
@@ -153,8 +151,8 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
 
     def test(
         self: Self,
-        *args: typing.Union[str, Special[Self], Path[Self]],
-        stdout: typing.Optional[Path[Self]] = None,
+        *args: typing.Union[str, special.Special[Self], linux.Path[Self]],
+        stdout: typing.Optional[linux.Path[Self]] = None,
         timeout: typing.Optional[float] = None,
     ) -> bool:
         """
@@ -175,7 +173,7 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
     def env(
         self: Self,
         var: str,
-        value: typing.Union[str, Special[Self], Path[Self], None] = None,
+        value: typing.Union[str, special.Special[Self], linux.Path[Self], None] = None,
     ) -> str:
         """
         Get or set the value of an environment variable.
@@ -187,9 +185,9 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         :returns: Value of the environment variable
         """
         if value is not None:
-            self.exec0("export", special.F("{}={}", var, value))
+            self.exec0("export", linux.F("{}={}", var, value))
 
-        return self.exec0("printf", "%s", Raw(f'"${{{var}}}"'))
+        return self.exec0("printf", "%s", linux.Raw(f'"${{{var}}}"'))
 
     def interactive(self) -> None:
         """Drop into an interactive session on this machine."""
@@ -242,7 +240,7 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
 
     def subshell(
         self: Self,
-        *args: typing.Union[str, Special[Self], Path[Self]],
+        *args: typing.Union[str, special.Special[Self], linux.Path[Self]],
         shell: typing.Optional[typing.Type[sh.Shell]] = None,
     ) -> "_SubshellContext":
         """
