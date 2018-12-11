@@ -1,6 +1,13 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- `mach.env()` can now be used to set environment variables as well:
+  `env("name", "value")`
+
+### Fixed
+- `selftest_path_stat` assuming the existence of `/dev/sda`, which makes
+  it fail on systems without this block device.
 
 
 ## [0.6.4] - 2018-12-05
