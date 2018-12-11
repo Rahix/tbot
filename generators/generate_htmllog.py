@@ -163,6 +163,7 @@ def main() -> None:
             or ev.type == ["tbot", "info"]
             or ev.type[0] == "custom"
             or ev.type[0] == "doc"
+            or ev.type[0] == "__debug__"
         ):
             return ""
 
