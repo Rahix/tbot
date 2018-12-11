@@ -23,6 +23,7 @@ from tbot import machine
 from tbot.machine import channel
 from .path import Path
 from .special import Raw, Special
+from . import special
 from . import shell as sh
 
 Self = typing.TypeVar("Self", bound="LinuxMachine")
@@ -171,14 +172,23 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         ret, _ = self.exec(*args, stdout=stdout, timeout=timeout)
         return ret == 0
 
-    def env(self, var: str) -> str:
+    def env(
+        self: Self,
+        var: str,
+        value: typing.Union[str, Special[Self], Path[Self], None] = None,
+    ) -> str:
         """
-        Get the value of an environment variable.
+        Get or set the value of an environment variable.
 
         :param str var: The variable's name
+        :param str value: The value the var should be set to.  If this parameter
+            is given, ``env`` will set, else it will just read a variable
         :rtype: str
         :returns: Value of the environment variable
         """
+        if value is not None:
+            self.exec0("export", special.F("{}={}", var, value))
+
         return self.exec0("printf", "%s", Raw(f'"${{{var}}}"'))
 
     def interactive(self) -> None:
@@ -249,7 +259,7 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
                 lh.exec0("echo", linux.Env("FOOVAR"))  # Empty result
 
                 with lh.subshell():
-                    lh.exec0("export", "FOOVAR=123")
+                    lh.env("FOOVAR", "123")
                     lh.exec0("echo", linux.Env("FOOVAR"))  # 123
 
                 lh.exec0("echo", linux.Env("FOOVAR"))  # Empty result
