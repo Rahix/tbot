@@ -29,7 +29,7 @@ class LabHost(lab.LocalLabHost, typing.ContextManager):
     """
 
     def __enter__(self) -> "LabHost":
-        return typing.cast(LabHost, super().__enter__())
+        return super().__enter__()  # type: ignore
 
     @property
     def workdir(self) -> "linux.Path[LabHost]":  # noqa: D102
