@@ -8,6 +8,8 @@
 ### Fixed
 - `selftest_path_stat` assuming the existence of `/dev/sda`, which makes
   it fail on systems without this block device.
+- tbot will now only color its output if appropriate.
+  It honors [CLICOLOR](https://bixense.com/clicolors/).
 
 
 ## [0.6.4] - 2018-12-05

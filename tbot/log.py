@@ -18,10 +18,21 @@ import enum
 import io
 import itertools
 import json
+import os
 import sys
 import time
 import typing
-from termcolor2 import c
+import termcolor2
+
+
+IS_UNICODE = sys.stdout.encoding == "UTF-8"
+IS_COLOR = False
+
+# Taken from https://bixense.com/clicolors/
+if (os.getenv("CLICOLOR", "1") != "0" and sys.stdout.isatty()) or os.getenv(
+    "CLICOLOR_FORCE", "0"
+) != "0":
+    IS_COLOR = True
 
 
 def u(with_unicode: str, without_unicode: str) -> str:
@@ -33,9 +44,21 @@ def u(with_unicode: str, without_unicode: str) -> str:
     :rtype: str
     :returns: The selected string
     """
-    if sys.stdout.encoding == "UTF-8":
+    if IS_UNICODE:
         return with_unicode
     return without_unicode
+
+
+class _C(termcolor2._C):
+    def __str__(self) -> str:
+        if IS_COLOR:
+            return super().__str__()
+        else:
+            return self.string
+
+
+c = _C
+_TC = typing.Union[_C, termcolor2._C]
 
 
 @enum.unique
@@ -65,7 +88,7 @@ class EventIO(io.StringIO):
     def __init__(
         self,
         ty: typing.List[str],
-        initial: typing.Union[str, c, None] = None,
+        initial: typing.Union[str, _TC, None] = None,
         *,
         verbosity: Verbosity = Verbosity.INFO,
         nest_first: typing.Optional[str] = None,
@@ -118,7 +141,7 @@ class EventIO(io.StringIO):
         if last and buf != "":
             print(self._prefix() + buf)
 
-    def writeln(self, s: typing.Union[str, c]) -> int:
+    def writeln(self, s: typing.Union[str, _TC]) -> int:
         """Add a line to this log event."""
         return self.write(s + "\n")
 
@@ -176,7 +199,7 @@ class EventIO(io.StringIO):
 
 
 def message(
-    msg: typing.Union[str, c], verbosity: Verbosity = Verbosity.INFO
+    msg: typing.Union[str, _TC], verbosity: Verbosity = Verbosity.INFO
 ) -> EventIO:
     """
     Log a message.
@@ -187,7 +210,7 @@ def message(
     return EventIO(["msg", str(verbosity)], msg, verbosity=verbosity, text=str(msg))
 
 
-def warning(msg: typing.Union[str, c]) -> EventIO:
+def warning(msg: typing.Union[str, _TC]) -> EventIO:
     """
     Emit a warning message.
 
