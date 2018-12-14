@@ -4,6 +4,12 @@
 ### Added
 - `mach.env()` can now be used to set environment variables as well:
   `env("name", "value")`
+- `-p` for setting testcase parameters.  Provided values are parsed
+  using `eval`, so be careful ... Example:
+
+  ```bash
+  $ tbot -p int_param=42 -p boolean=True -p string=\'str\'
+  ```
 
 ### Fixed
 - `selftest_path_stat` assuming the existence of `/dev/sda`, which makes

@@ -18,7 +18,26 @@ import sys
 import os
 import pathlib
 import argparse
+import typing
 from tbot import __about__
+
+
+def _import_hightlighter() -> typing.Callable[[str], str]:
+    """
+    Attempt importing pygments and if that fails use a fall back implementation.
+
+    The reason for this to be a function is to minimize startup time and only
+    import pygments if it is actually needed.
+    """
+    try:
+        highlight = __import__("pygments").highlight
+        lexer = __import__("pygments.lexers").lexers.PythonLexer
+        formatter = __import__("pygments.formatters").formatters.TerminalFormatter
+
+        return lambda s: typing.cast(str, highlight(s, lexer(), formatter()).strip())
+    except ImportError:
+        c = __import__("tbot.log").log.c
+        return lambda s: str(c(s).bold.yellow)
 
 
 def main() -> None:  # noqa: C901
@@ -65,6 +84,15 @@ def main() -> None:  # noqa: C901
         action="append",
         default=[],
         help="set a user defined flag to change testcase behaviour",
+    )
+
+    parser.add_argument(
+        "-p",
+        metavar="NAME=VALUE",
+        dest="params",
+        action="append",
+        default=[],
+        help="set a testcase parameter, value is parsed using `eval`",
     )
 
     parser.add_argument(
@@ -161,23 +189,14 @@ def main() -> None:  # noqa: C901
         import textwrap
         import inspect
 
+        highlight = _import_hightlighter()
+
         for i, name in enumerate(args.testcase):
             if i != 0:
                 print(log.c("\n=================================\n").dark)
             func = testcases[name]
             signature = f"def {name}{str(inspect.signature(func))}:\n    ..."
-            try:
-                import pygments
-                from pygments.lexers import PythonLexer
-                from pygments.formatters import TerminalFormatter
-
-                print(
-                    pygments.highlight(
-                        signature, PythonLexer(), TerminalFormatter()
-                    ).strip()
-                )
-            except ImportError:
-                print(log.c(signature).bold.yellow)
+            print(highlight(signature))
             print(log.c(f"----------------").dark)
             print(
                 log.c(
@@ -217,8 +236,6 @@ def main() -> None:  # noqa: C901
         pass
 
     if args.list_flags:
-        import typing
-
         all_flags: typing.Dict[str, str] = dict()
         if lab is not None and "FLAGS" in lab.__dict__:
             all_flags.update(lab.__dict__["FLAGS"])
@@ -232,9 +249,24 @@ def main() -> None:  # noqa: C901
 
     from tbot import log_event
 
+    parameters = {}
+    for param in args.params:
+        name, eval_code = param.split("=", maxsplit=1)
+        parameters[name] = eval(eval_code)
+
+    if parameters != {}:
+        highlight = _import_hightlighter()
+        tbot.log.message(
+            tbot.log.c("Parameters:\n").bold
+            + "\n".join(
+                f"    {name:10}: " + highlight(f"{value!r}")
+                for name, value in parameters.items()
+            )
+        )
+
     try:
         for tc in args.testcase:
-            testcases[tc]()
+            testcases[tc](**parameters)
     except Exception as e:  # noqa: E722
         import traceback
 
