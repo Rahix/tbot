@@ -29,6 +29,11 @@ def _import_hightlighter() -> typing.Callable[[str], str]:
     The reason for this to be a function is to minimize startup time and only
     import pygments if it is actually needed.
     """
+    from tbot import log
+
+    if not log.IS_COLOR:
+        return lambda s: s
+
     try:
         highlight = __import__("pygments").highlight
         lexer = __import__("pygments.lexers").lexers.PythonLexer
@@ -36,8 +41,7 @@ def _import_hightlighter() -> typing.Callable[[str], str]:
 
         return lambda s: typing.cast(str, highlight(s, lexer(), formatter()).strip())
     except ImportError:
-        c = __import__("tbot.log").log.c
-        return lambda s: str(c(s).bold.yellow)
+        return lambda s: str(log.c(s).bold.yellow)
 
 
 def main() -> None:  # noqa: C901
