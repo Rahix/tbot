@@ -117,8 +117,6 @@ def main() -> None:  # noqa: C901
 
     flags = [
         (["--list-testcases"], "list all testcases in the current search path."),
-        (["--list-labs"], "list all available labs."),
-        (["--list-boards"], "list all available boards."),
         (["--list-files"], "list all testcase files."),
         (["--list-flags"], "list all flags defined in lab or board config."),
         (["-s", "--show"], "show testcase signatures instead of running them."),
@@ -156,13 +154,7 @@ def main() -> None:  # noqa: C901
 
         log.LOGFILE = open(logfile, "w")
 
-    log.VERBOSITY = log.Verbosity(1 + args.verbosity - args.quiet)
-
-    if args.list_labs:
-        raise NotImplementedError()
-
-    if args.list_boards:
-        raise NotImplementedError()
+    log.VERBOSITY = log.Verbosity(log.Verbosity.INFO + args.verbosity - args.quiet)
 
     from tbot import loader
 
@@ -263,7 +255,7 @@ def main() -> None:  # noqa: C901
         tbot.log.message(
             tbot.log.c("Parameters:\n").bold
             + "\n".join(
-                f"    {name:10}: " + highlight(f"{value!r}")
+                f"    {name:10} = " + highlight(f"{value!r}")
                 for name, value in parameters.items()
             )
         )
@@ -293,7 +285,7 @@ def main() -> None:  # noqa: C901
             verbosity=log.Verbosity.QUIET,
         )
         log_event.tbot_end(False)
-        sys.exit(2)
+        sys.exit(130)
     else:
         log_event.tbot_end(True)
 

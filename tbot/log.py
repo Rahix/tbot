@@ -77,7 +77,7 @@ class Verbosity(enum.IntEnum):
 
 NESTING = 0
 INTERACTIVE = False
-VERBOSITY = Verbosity.INFO
+VERBOSITY = Verbosity.COMMAND
 LOGFILE: typing.Optional[typing.TextIO] = None
 START_TIME = time.monotonic()
 

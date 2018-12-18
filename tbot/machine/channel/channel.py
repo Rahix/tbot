@@ -281,6 +281,12 @@ class Channel(abc.ABC):
 
     def _debug_log(self, data: bytes, out: bool = False) -> None:
         if tbot.log.VERBOSITY >= tbot.log.Verbosity.CHANNEL:
+            json_data: str
+            try:
+                json_data = data.decode("utf-8")
+            except UnicodeDecodeError:
+                json_data = data.decode("latin1")
+
             msg = tbot.log.c(repr(data)[1:])
             tbot.log.EventIO(
                 ["__debug__"],
@@ -290,6 +296,8 @@ class Channel(abc.ABC):
                     else tbot.log.c("< ").yellow.bold + msg.yellow
                 ),
                 verbosity=tbot.log.Verbosity.CHANNEL,
+                direction="send" if out else "recv",
+                data=json_data,
             )
 
     def read_until_prompt(
