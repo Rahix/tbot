@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 ### Added
+- `Machine.lh`: You can acces the lab-host from every machine now.  The idea
+  behind this is to allow access to lab-specific configuration in a much
+  easier way.
 - `mach.env()` can now be used to set environment variables as well:
   `env("name", "value")`
 - `-p` for setting testcase parameters.  Provided values are parsed

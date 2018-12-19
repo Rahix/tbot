@@ -165,3 +165,7 @@ class SSHMachine(linux.LinuxMachine):
     def destroy(self) -> None:
         """Destory this SSHMachine instance."""
         self.channel.close()
+
+    @property
+    def lh(self) -> linux.LabHost:
+        return self.labhost

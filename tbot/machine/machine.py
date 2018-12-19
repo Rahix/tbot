@@ -16,6 +16,7 @@
 
 import abc
 import typing
+import tbot
 
 Self = typing.TypeVar("Self", bound="Machine")
 
@@ -27,6 +28,12 @@ class Machine(typing.ContextManager):
     @abc.abstractmethod
     def name(self) -> str:
         """Name of this machine."""
+        pass
+
+    @property
+    @abc.abstractmethod
+    def lh(self) -> "tbot.machine.linux.LabHost":
+        """Return the LabHost that was used to establish the connection for this machine."""
         pass
 
     @abc.abstractmethod
