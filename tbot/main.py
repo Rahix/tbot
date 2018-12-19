@@ -22,6 +22,7 @@ import typing
 from tbot import __about__
 
 
+# Highlighter {{{
 def _import_hightlighter() -> typing.Callable[[str], str]:
     """
     Attempt importing pygments and if that fails use a fall back implementation.
@@ -44,8 +45,13 @@ def _import_hightlighter() -> typing.Callable[[str], str]:
         return lambda s: str(log.c(s).bold.yellow)
 
 
+# }}}
+
+
 def main() -> None:  # noqa: C901
     """Tbot main entry point."""
+
+    # ArgumentParser {{{
     parser = argparse.ArgumentParser(
         prog=__about__.__title__, description=__about__.__summary__
     )
@@ -126,17 +132,18 @@ def main() -> None:  # noqa: C901
     for flag_names, flag_help in flags:
         parser.add_argument(*flag_names, action="store_true", help=flag_help)
 
+    # }}}
+
     args = parser.parse_args()
 
     if args.workdir:
         os.chdir(args.workdir)
 
-    from tbot import log
+    from tbot import log, log_event
 
-    # Determine LogFile
-    if args.log:
-        log.LOGFILE = open(args.log, "w")
-    else:
+    # Logging {{{
+    # Determine log-file location
+    if args.log is None:
         logdir = pathlib.Path.cwd() / "log"
         logdir.mkdir(exist_ok=True)
 
@@ -153,11 +160,20 @@ def main() -> None:  # noqa: C901
             logfile = logdir / f"{prefix}-{new_num:04}.json"
 
         log.LOGFILE = open(logfile, "w")
+    elif args.log != "":
+        log.LOGFILE = open(args.log, "w")
 
+    # Set verbosity
     log.VERBOSITY = log.Verbosity(log.Verbosity.INFO + args.verbosity - args.quiet)
+
+    # Enable interactive mode
+    if args.interactive:
+        log.INTERACTIVE = True
+    # }}}
 
     from tbot import loader
 
+    # Load testcases {{{
     if "TBOTPATH" in os.environ:
         environ_paths = os.environ["TBOTPATH"].split(":")
     else:
@@ -200,17 +216,16 @@ def main() -> None:  # noqa: C901
                 ).green
             )
         return
+    # }}}
 
-    if args.interactive:
-        log.INTERACTIVE = True
-
-    print(log.c("tbot").yellow.bold + " starting ...")
+    log_event.tbot_start()
 
     import tbot
 
     for flag in args.flags:
         tbot.flags.add(flag)
 
+    # Load configs {{{
     # Set the actual selected types, needs to be ignored by mypy
     # beause this is obviously not good python
     lab = None
@@ -242,9 +257,9 @@ def main() -> None:  # noqa: C901
         width = max(map(len, flags))
         for name, description in all_flags.items():
             log.message(log.c(name.ljust(width)).blue + ": " + description)
+    # }}}
 
-    from tbot import log_event
-
+    # Testcase Parameters {{{
     parameters = {}
     for param in args.params:
         name, eval_code = param.split("=", maxsplit=1)
@@ -259,6 +274,7 @@ def main() -> None:  # noqa: C901
                 for name, value in parameters.items()
             )
         )
+    # }}}
 
     try:
         for tc in args.testcase:
@@ -267,23 +283,11 @@ def main() -> None:  # noqa: C901
         import traceback
 
         trace = traceback.format_exc()
-        with log.EventIO(
-            ["exception"],
-            log.c("Exception").red.bold + ":",
-            verbosity=log.Verbosity.QUIET,
-            name=e.__class__.__name__,
-            trace=trace,
-        ) as ev:
-            ev.prefix = "  "
-            ev.write(trace)
-
+        log_event.exception(e.__class__.__name__, trace)
         log_event.tbot_end(False)
         sys.exit(1)
     except KeyboardInterrupt:
-        log.message(
-            log.c("Exception").red.bold + ":\n    Test run manually aborted.",
-            verbosity=log.Verbosity.QUIET,
-        )
+        log_event.exception("KeyboardInterrupt", "Test run manually aborted.")
         log_event.tbot_end(False)
         sys.exit(130)
     else:
@@ -292,3 +296,6 @@ def main() -> None:  # noqa: C901
 
 if __name__ == "__main__":
     main()
+
+
+# vim: foldmethod=marker foldmarker={{{,}}}

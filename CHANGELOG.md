@@ -14,6 +14,9 @@
   $ tbot -p int_param=42 -p boolean=True -p string=\'str\'
   ```
 
+### Changed
+- You can now use `--log=` to suppress the creation of a log file.
+
 ### Fixed
 - `selftest_path_stat` assuming the existence of `/dev/sda`, which makes
   it fail on systems without this block device.
