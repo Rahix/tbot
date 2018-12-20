@@ -86,6 +86,10 @@ def command(mach: str, cmd: str) -> log.EventIO:
     return ev
 
 
+def tbot_start() -> None:
+    print(log.c("tbot").yellow.bold + " starting ...")
+
+
 def tbot_end(success: bool) -> None:
     log.message(
         log.c(
@@ -109,3 +113,18 @@ def tbot_end(success: bool) -> None:
         success=success,
         duration=duration,
     )
+
+
+def exception(name: str, trace: str) -> log.EventIO:
+    ev = log.EventIO(
+        ["exception"],
+        log.c("Exception").red.bold + ":",
+        verbosity=log.Verbosity.QUIET,
+        name=name,
+        trace=trace,
+    )
+
+    ev.prefix = "  "
+    ev.write(trace)
+
+    return ev

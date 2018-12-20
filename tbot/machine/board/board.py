@@ -19,8 +19,7 @@ import contextlib
 import time
 import typing
 import tbot
-from tbot.machine import linux
-from tbot.machine import channel
+from tbot.machine import linux, channel
 
 Self = typing.TypeVar("Self", bound="Board")
 

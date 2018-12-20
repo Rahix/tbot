@@ -106,7 +106,7 @@ def selftest_machine_shell(
     if isinstance(m, linux.LinuxMachine):
         tbot.log.message("Testing env vars ...")
         value = "12\nfoo !? # true; exit\n"
-        m.exec0("export", f"TBOT_TEST_ENV_VAR={value}")
+        m.env("TBOT_TEST_ENV_VAR", value)
         out = m.env("TBOT_TEST_ENV_VAR")
         assert out == value, repr(out)
 
@@ -159,7 +159,7 @@ def selftest_machine_shell(
         assert out == "", repr(out)
 
         with m.subshell():
-            m.exec0("export", "SUBSHELL_TEST_VAR=123")
+            m.env("SUBSHELL_TEST_VAR", "123")
             out = m.env("SUBSHELL_TEST_VAR")
             assert out == "123", repr(out)
 

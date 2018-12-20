@@ -18,9 +18,7 @@ import typing
 import shlex
 import tbot
 from tbot import machine
-from tbot.machine import board
-from tbot.machine import linux
-from tbot.machine import channel
+from tbot.machine import board, channel, linux
 from . import special
 
 B = typing.TypeVar("B", bound=board.Board)
@@ -182,15 +180,21 @@ class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
         ret, _ = self.exec(*args)
         return ret == 0
 
-    def env(self, var: str) -> str:
+    def env(self, var: str, value: typing.Optional[str] = None) -> str:
         """
-        Get the value of an environment variable.
+        Get or set the value of an environment variable.
 
         :param str var: The variable's name
+        :param str value: The value the var should be set to.  If this parameter
+            is given, ``env`` will set, else it will just read a variable
         :rtype: str
         :returns: Value of the environment variable
         """
-        return self.exec0("echo", special.Raw(f"${{{var}}}"))[:-1]
+        if value is not None:
+            self.exec0("setenv", var, value)
+            return value
+        else:
+            return self.exec0("echo", special.Raw(f"${{{var}}}"))[:-1]
 
     def interactive(self) -> None:
         """

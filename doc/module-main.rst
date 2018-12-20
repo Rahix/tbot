@@ -31,6 +31,18 @@
 
 Helpers
 ^^^^^^^
+.. autoattribute:: tbot.log.IS_UNICODE
+
+    Boolean that is set if stdout supports unicode.
+
+    You should use :func:`tbot.log.u` instead of querying this flag.
+
+.. autoattribute:: tbot.log.IS_COLOR
+
+    Boolean that is set if tbot's output should be colored.
+
+    You can use :class:`tbot.log.c` as an easy way to colorize your strings.
+
 .. autofunction:: tbot.log.u
 
 .. py:class:: tbot.log.c(s: str) -> tbot.log.c

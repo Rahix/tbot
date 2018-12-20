@@ -64,4 +64,3 @@ def testcase(tc: F) -> F:
 
 
 flags: typing.Set[str] = set()
-configs: typing.Dict[str, str] = dict()

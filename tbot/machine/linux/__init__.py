@@ -1,5 +1,5 @@
-from .machine import LinuxMachine, _SubshellContext
 from .path import Path
+from .machine import LinuxMachine, _SubshellContext
 
 from .build import BuildMachine
 from .lab import LabHost

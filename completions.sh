@@ -48,14 +48,12 @@ _tbot()
     fi
 
     if [[ "$cur" == -* ]]; then
-        COMPREPLY=( $( compgen -W '-h -b -l -T -t -f -v -q -s -i -C
+        COMPREPLY=( $( compgen -W '-h -b -l -T -t -f -v -q -s -i -C -p
             --help
             --board
             --lab
             --version
             --list-testcases
-            --list-labs
-            --list-boards
             --list-files
             --list-flags
             --show

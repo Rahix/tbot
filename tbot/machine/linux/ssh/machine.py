@@ -18,8 +18,7 @@ import abc
 import typing
 import pathlib
 from tbot import log_event
-from tbot.machine import channel
-from tbot.machine import linux
+from tbot.machine import channel, linux
 from tbot.machine.linux import auth
 
 
@@ -166,3 +165,7 @@ class SSHMachine(linux.LinuxMachine):
     def destroy(self) -> None:
         """Destory this SSHMachine instance."""
         self.channel.close()
+
+    @property
+    def lh(self) -> linux.LabHost:
+        return self.labhost

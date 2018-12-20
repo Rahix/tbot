@@ -35,3 +35,7 @@ class BoardMachine(machine.Machine, typing.Generic[B]):
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.board!r})"
+
+    @property
+    def lh(self) -> machine.linux.LabHost:
+        return self.board.lh

@@ -6,6 +6,10 @@ from tbot.machine import channel
 class DummyMach(machine.Machine):
     name = "dummy"
 
+    @property
+    def lh(self) -> linux.LabHost:
+        raise NotImplementedError()
+
     def destroy(self) -> None:
         pass
 
@@ -21,6 +25,10 @@ class DummyLinuxMach(linux.LinuxMachine):
     def destroy(self) -> None:
         pass
 
+    @property
+    def lh(self) -> linux.LabHost:
+        raise NotImplementedError()
+
     def _obtain_channel(self) -> channel.Channel:
         raise NotImplementedError()
 
@@ -35,6 +43,10 @@ class DummyLinuxMach2(linux.LinuxMachine):
 
     def destroy(self) -> None:
         pass
+
+    @property
+    def lh(self) -> linux.LabHost:
+        raise NotImplementedError()
 
     def _obtain_channel(self) -> channel.Channel:
         raise NotImplementedError()

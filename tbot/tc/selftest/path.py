@@ -48,6 +48,21 @@ def selftest_path_stat(lab: typing.Optional[linux.LabHost] = None,) -> None:
         if nonexistent.exists():
             lh.exec0("rm", nonexistent)
 
+        # Block device
+        block_list = (
+            lh.exec0(
+                *["find", "/dev", "-type", "b"],
+                linux.Raw("2>/dev/null"),
+                linux.OrElse,
+                "true",
+            )
+            .strip()
+            .split("\n")
+        )
+        block_dev = None
+        if block_list != []:
+            block_dev = linux.Path(lh, "/dev") / block_list[0]
+
         # Existence checks
         tbot.log.message("Checking existence ...")
         assert not (lh.workdir / "nonexistent").exists()
@@ -58,7 +73,8 @@ def selftest_path_stat(lab: typing.Optional[linux.LabHost] = None,) -> None:
         assert linux.Path(lh, "/dev").is_dir()
         assert linux.Path(lh, "/proc/version").is_file()
         assert symlink.is_symlink()
-        assert linux.Path(lh, "/dev/sda").is_block_device()
+        if block_dev is not None:
+            assert linux.Path(lh, block_dev).is_block_device()
         assert linux.Path(lh, "/dev/tty").is_char_device()
         assert fifo.is_fifo()
 
@@ -76,10 +92,12 @@ def selftest_path_stat(lab: typing.Optional[linux.LabHost] = None,) -> None:
             (linux.Path(lh, "/dev"), stat.S_ISDIR),
             (linux.Path(lh, "/proc/version"), stat.S_ISREG),
             (symlink, stat.S_ISLNK),
-            (linux.Path(lh, "/dev/sda"), stat.S_ISBLK),
             (linux.Path(lh, "/dev/tty"), stat.S_ISCHR),
             (fifo, stat.S_ISFIFO),
         ]
+
+        if block_dev is not None:
+            stat_list.insert(3, (linux.Path(lh, block_dev), stat.S_ISBLK))
 
         tbot.log.message("Checking stat results ...")
         for p, check in stat_list:

@@ -3,6 +3,30 @@
 ## [Unreleased]
 
 
+## [0.6.5] - 2018-12-20
+### Added
+- `Machine.lh`: You can access the lab-host from every machine now.  The idea
+  behind this is to allow access to lab-specific configuration in a much
+  easier way.
+- `mach.env()` can now be used to set environment variables as well:
+  `env("name", "value")`
+- `-p` for setting testcase parameters.  Provided values are parsed
+  using `eval`, so be careful ... Example:
+
+  ```bash
+  $ tbot -p int_param=42 -p boolean=True -p string=\'str\'
+  ```
+
+### Changed
+- You can now use `--log=` to suppress the creation of a log file.
+
+### Fixed
+- `selftest_path_stat` assuming the existence of `/dev/sda`, which makes
+  it fail on systems without this block device.
+- tbot will now only color its output if appropriate.
+  It honors [CLICOLOR](https://bixense.com/clicolors/).
+
+
 ## [0.6.4] - 2018-12-05
 ### Added
 - `-C` parameter to allow setting a different working directory

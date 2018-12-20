@@ -29,7 +29,7 @@ class LabHost(lab.LocalLabHost, typing.ContextManager):
     """
 
     def __enter__(self) -> "LabHost":
-        return typing.cast(LabHost, super().__enter__())
+        return super().__enter__()  # type: ignore
 
     @property
     def workdir(self) -> "linux.Path[LabHost]":  # noqa: D102
@@ -149,6 +149,7 @@ class LinuxMachine(board.LinuxStandaloneMachine[Board], typing.ContextManager):
     def __init__(self, b: typing.Any) -> None:  # noqa: D107
         raise NotImplementedError("This is a dummy Linux")
 
+    username = "root"
     password = None
     shell = linux.shell.Shell
 
