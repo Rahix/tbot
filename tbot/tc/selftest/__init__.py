@@ -4,11 +4,12 @@ from tbot.machine import linux
 
 from tbot import tc
 
-from . import path, machine, board_machine
+from . import path, machine, board_machine, testcase
 from .path import *  # noqa: F403, F401
 from .machine import *  # noqa: F403, F401
 from .board_machine import *  # noqa: F403, F401
 from .tc import *  # noqa: F403, F401
+from .testcase import *  # noqa: F403
 
 
 @tbot.testcase
@@ -69,5 +70,8 @@ def selftest(lab: typing.Optional[linux.LabHost] = None,) -> None:
             board_machine.selftest_board_linux_standalone,
             board_machine.selftest_board_linux_nopw,
             board_machine.selftest_board_linux_bad_console,
+            testcase.selftest_with_lab,
+            testcase.selftest_with_uboot,
+            testcase.selftest_with_linux,
             lab=lh,
         )

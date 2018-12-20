@@ -15,8 +15,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import typing
-import time
-import functools
 from tbot import log, log_event
 
 from . import selectable
@@ -27,6 +25,7 @@ from .selectable import (
     acquire_linux,
     acquire_local,
 )
+from .decorators import testcase, named_testcase, with_lab, with_uboot, with_linux
 
 __all__ = (
     "selectable",
@@ -35,74 +34,13 @@ __all__ = (
     "acquire_uboot",
     "acquire_linux",
     "acquire_local",
-    "testcase",
     "log",
     "log_event",
+    "testcase",
+    "named_testcase",
+    "with_lab",
+    "with_uboot",
+    "with_linux",
 )
-
-F = typing.TypeVar("F", bound=typing.Callable[..., typing.Any])
-
-
-def testcase(tc: F) -> F:
-    """
-    Decorate a function to make it a testcase.
-
-    **Example**::
-
-        @tbot.testcase
-        def foobar_testcase(x: str) -> int:
-            return int(x, 16)
-    """
-
-    @functools.wraps(tc)
-    def wrapped(*args: typing.Any, **kwargs: typing.Any) -> typing.Any:
-        log_event.testcase_begin(tc.__name__)
-        start = time.monotonic()
-        try:
-            result = tc(*args, **kwargs)
-        except:  # noqa: E722
-            log_event.testcase_end(tc.__name__, time.monotonic() - start, False)
-            raise
-        log_event.testcase_end(tc.__name__, time.monotonic() - start, True)
-        return result
-
-    setattr(wrapped, "_tbot_testcase", tc.__name__)
-    return typing.cast(F, wrapped)
-
-
-def named_testcase(name: str) -> typing.Callable[[F], F]:
-    """
-    Decorate a function to make it a testcase, but with a different name.
-
-    The testcase's name is relevant for log-events and when calling
-    it from the commandline.
-
-    **Example**::
-
-        @tbot.named_testcase("my_different_testcase")
-        def foobar_testcase(x: str) -> int:
-            return int(x, 16)
-
-    (On the commandline you'll have to run ``tbot my_different_testcase`` now.)
-    """
-
-    def _named_testcase(tc: F) -> F:
-        @functools.wraps(tc)
-        def wrapped(*args: typing.Any, **kwargs: typing.Any) -> typing.Any:
-            log_event.testcase_begin(name)
-            start = time.monotonic()
-            try:
-                result = tc(*args, **kwargs)
-            except:  # noqa: E722
-                log_event.testcase_end(name, time.monotonic() - start, False)
-                raise
-            log_event.testcase_end(name, time.monotonic() - start, True)
-            return result
-
-        setattr(wrapped, "_tbot_testcase", name)
-        return typing.cast(F, wrapped)
-
-    return _named_testcase
-
 
 flags: typing.Set[str] = set()
