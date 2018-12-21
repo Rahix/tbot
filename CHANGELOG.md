@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Fixed
+- Duplication warning when star-importing another testcase-file.
 
 
 ## [0.6.5] - 2018-12-20

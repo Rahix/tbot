@@ -116,6 +116,11 @@ def collect_testcases(
             for name, func in module.__dict__.items():
                 if hasattr(func, "_tbot_testcase"):
                     if name in testcases:
+                        # If it already exists, check so we don't warn about the
+                        # testcase being imported into another files global namespace
+                        if testcases[name].__code__ is func.__code__:
+                            continue
+
                         print(
                             c("Warning").yellow.bold + f": Duplicate testcase {name!r}",
                             file=sys.stderr,
