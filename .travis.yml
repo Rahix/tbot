@@ -4,5 +4,5 @@ python:
 install:
   - pip install pre-commit mypy junit-xml termcolor2 paramiko
 script:
-  - pre-commit run --all-files --verbose
+  - env CLICOLOR_FORCE=1 pre-commit run --all-files --verbose
   - python3 -c "__import__('tbot.main').main.main()" --log /dev/null -vv selftest_tc
