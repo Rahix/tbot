@@ -30,7 +30,7 @@ repos:
     - id: selftests
       name: tbot selftest
       language: system
-      entry: python3 -c "__import__('sys').argv = ['tbot', '--log', '/tmp/tbot-log.json', 'selftest']; __import__('tbot.main').main.main()"
+      entry: python3 -c "__import__('sys').argv = ['tbot', '--log', '/tmp/tbot-log.json', '-vv', 'selftest']; __import__('tbot.main').main.main()"
       files: ^.*\.py$
     - id: generator_html
       name: tbot HTML log generator
