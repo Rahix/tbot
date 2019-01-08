@@ -1,6 +1,13 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Graphviz `dot` diagram generator
+
+### Changed
+- `generators/generate_htmllog.py` -> `generators/htmllog.py`
+- `generators/debug_messages.py` -> `generators/messages.py`
+
 ### Fixed
 - Duplication warning when star-importing another testcase-file.
 

@@ -37,7 +37,7 @@ repos:
     - id: generator_html
       name: tbot HTML log generator
       language: system
-      entry: sh -c "./generators/generate_htmllog.py /tmp/tbot-log.json >/dev/null"
+      entry: sh -c "./generators/htmllog.py /tmp/tbot-log.json >/dev/null"
       files: ^.*\.py$
       pass_filenames: false
       parallel: false
