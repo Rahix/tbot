@@ -159,9 +159,10 @@ def selftest_machine_shell(
         assert out == "", repr(out)
 
         with m.subshell():
-            m.env("SUBSHELL_TEST_VAR", "123")
+            out_b = m.env("SUBSHELL_TEST_VAR", "123")
             out = m.env("SUBSHELL_TEST_VAR")
             assert out == "123", repr(out)
+            assert out_b == "123", repr(out_b)
 
         out = m.env("SUBSHELL_TEST_VAR")
         assert out == "", repr(out)

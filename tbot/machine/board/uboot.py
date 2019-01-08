@@ -180,7 +180,9 @@ class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
         ret, _ = self.exec(*args)
         return ret == 0
 
-    def env(self, var: str, value: typing.Optional[str] = None) -> str:
+    def env(
+        self, var: str, value: typing.Union[str, special.Special, None] = None
+    ) -> str:
         """
         Get or set the value of an environment variable.
 
@@ -192,7 +194,7 @@ class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
         """
         if value is not None:
             self.exec0("setenv", var, value)
-            return value
+            return self.build_command(value)
         else:
             return self.exec0("echo", special.Raw(f"${{{var}}}"))[:-1]
 

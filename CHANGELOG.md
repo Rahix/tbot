@@ -7,6 +7,7 @@
 ### Changed
 - `generators/generate_htmllog.py` -> `generators/htmllog.py`
 - `generators/debug_messages.py` -> `generators/messages.py`
+- `UBootMachine.env()` now also accepts `board.Special`s.
 
 ### Fixed
 - Duplication warning when star-importing another testcase-file.
