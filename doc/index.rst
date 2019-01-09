@@ -25,15 +25,18 @@ much modification also allow running tests in an automated setting (CI).
 
    install
    quickstart
-   getting-started
    config
    building
    recipes
+   logging
+
    module-main
    module-machine
    module-linux
    module-board
    module-tc
+
+   getting-started
 
 
 
