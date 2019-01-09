@@ -24,6 +24,7 @@ much modification also allow running tests in an automated setting (CI).
    :caption: Contents:
 
    install
+   quickstart
    getting-started
    config
    building
