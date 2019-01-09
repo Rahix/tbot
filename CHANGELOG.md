@@ -5,6 +5,9 @@
 - Graphviz `dot` diagram generator
 
 ### Changed
+- tbot no longer automatically creates a log file.  If you want
+  the previous behavior, use `--log-auto`.  `--log=<file>` will
+  still behave as before.
 - `generators/generate_htmllog.py` -> `generators/htmllog.py`
 - `generators/debug_messages.py` -> `generators/messages.py`
 - `UBootMachine.env()` now also accepts `board.Special`s.

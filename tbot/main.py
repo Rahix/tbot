@@ -118,7 +118,13 @@ def main() -> None:  # noqa: C901
     )
 
     parser.add_argument(
-        "--log", metavar="LOGFILE", help="Alternative location for the json log file"
+        "--log", metavar="LOGFILE", help="Write a log to the specified file"
+    )
+
+    parser.add_argument(
+        "--log-auto",
+        action="store_true",
+        help="Write a log to `log/<lab>-<board>-NNNN.json`",
     )
 
     flags = [
@@ -143,7 +149,7 @@ def main() -> None:  # noqa: C901
 
     # Logging {{{
     # Determine log-file location
-    if args.log is None:
+    if args.log_auto:
         logdir = pathlib.Path.cwd() / "log"
         logdir.mkdir(exist_ok=True)
 
@@ -160,7 +166,7 @@ def main() -> None:  # noqa: C901
             logfile = logdir / f"{prefix}-{new_num:04}.json"
 
         log.LOGFILE = open(logfile, "w")
-    elif args.log != "":
+    elif args.log:
         log.LOGFILE = open(args.log, "w")
 
     # Set verbosity
