@@ -1,6 +1,8 @@
 .. highlight:: guess
    :linenothreshold: 3
 
+.. _quickstart:
+
 Quick Start
 ===========
 

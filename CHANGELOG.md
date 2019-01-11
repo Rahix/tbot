@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Added
 - Graphviz `dot` diagram generator
+- New and improved documentation!
 
 ### Changed
 - tbot no longer automatically creates a log file.  If you want
