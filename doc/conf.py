@@ -3,6 +3,7 @@
 #
 # tbot documentation build configuration file, created by
 # sphinx-quickstart on Tue Aug 28 11:57:52 2018.
+from recommonmark.parser import CommonMarkParser
 
 # -- General configuration ------------------------------------------------
 needs_sphinx = '1.6'
@@ -12,10 +13,14 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
-    'sphinx.ext.autosectionlabel',
 ]
 templates_path = ['_templates']
-source_suffix = '.rst'
+
+source_parsers = {
+    '.md': CommonMarkParser,
+}
+source_suffix = ['.rst', '.md']
+
 master_doc = 'index'
 
 # General information about the project.
@@ -30,8 +35,6 @@ release = subprocess.run(
     stdout=subprocess.PIPE
 ).stdout.decode().strip()[1:]
 version = release
-
-autosectionlabel_prefix_document = True
 
 language = None
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']

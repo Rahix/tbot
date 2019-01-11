@@ -183,6 +183,10 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
             is given, ``env`` will set, else it will just read a variable
         :rtype: str
         :returns: Value of the environment variable
+
+        .. versionadded:: 0.6.2
+        .. versionchanged:: 0.6.5
+            You can use ``env()`` to set environment variables as well.
         """
         if value is not None:
             self.exec0("export", linux.F("{}={}", var, value))
@@ -263,6 +267,8 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
                 lh.exec0("echo", linux.Env("FOOVAR"))  # Empty result
 
         :param Shell shell: Shell that is started
+
+        .. versionadded:: 0.6.1
         """
         shell = shell or self.shell
         if args == ():

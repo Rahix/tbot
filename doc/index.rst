@@ -36,6 +36,8 @@ much modification also allow running tests in an automated setting (CI).
    module-board
    module-tc
 
+   CHANGELOG
+
    getting-started
 
 

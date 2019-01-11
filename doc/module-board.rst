@@ -1,3 +1,5 @@
+.. _mod:board:
+
 ``tbot.machine.board`` Module
 =============================
 .. automodule:: tbot.machine.board.board

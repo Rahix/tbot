@@ -1,3 +1,5 @@
+.. _install:installation:
+
 Installation
 ============
 Clone `tbot's repository <https://github.com/Rahix/tbot>`_, then

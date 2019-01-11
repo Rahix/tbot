@@ -85,6 +85,9 @@ class GitRepository(linux.Path[H]):
         :param str rev: Optional revision to checkout. Only has an effect if clean
             is also set. If you don't want to clean, but still perform a checkout,
             call :meth:`~tbot.tc.git.GitRepository.checkout`.
+
+        .. versionchanged:: 0.6.1
+            ``GitRepository`` now fetches latest changes from remote by default.
         """
         super().__init__(target.host, target)
         if url is not None:
@@ -260,6 +263,8 @@ class GitRepository(linux.Path[H]):
             directory containing patch files.
         :rtype: int
         :returns: Number of patches applied
+
+        .. versionadded:: 0.6.4
         """
         # Check if we got a single patch or a patchdir
         if self.host.test("test", "-d", patch):

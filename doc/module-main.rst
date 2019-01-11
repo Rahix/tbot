@@ -1,3 +1,5 @@
+.. _mod:main:
+
 ``tbot`` Module
 ===============
 

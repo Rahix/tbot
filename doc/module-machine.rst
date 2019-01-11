@@ -1,3 +1,5 @@
+.. _mod:machine:
+
 ``tbot.machine`` Module
 =======================
 

@@ -215,5 +215,7 @@ def warning(msg: typing.Union[str, _TC]) -> EventIO:
     Emit a warning message.
 
     :param str msg: The message
+
+    .. versionadded:: 0.6.3
     """
     return message(c("Warning").yellow.bold + ": " + msg, Verbosity.QUIET)

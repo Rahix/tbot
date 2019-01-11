@@ -409,5 +409,12 @@ similar patterns that you can easily copy to your code: :ref:`recipes:Recipes`
 That's it for the quick-start.  I hope I got you hooked!  The next step is to look deeper into
 each individual part.  Docs are here:
 
-.. todo::
-    More docs
+* **TODO** - In depth docs for machines, paths and a lot more.
+* :ref:`config:Configuration` - Everything you need to know about tbot's configuration.
+* :ref:`recipes:Recipes` - As mentioned above, a list of "testcase templates".
+* :ref:`logging:Logging` - I didn't mention in this quick-start guide, but tbot as extensive
+  logging facilities!
+* :ref:`building:Building Projects` - tbot has some helpers for compiling code on a machine called "build-host".
+* :ref:`mod:main` - API Reference (also :ref:`Machines <mod:machine>`, :ref:`Linux <mod:linux>` and
+  :ref:`Board <mod:board>`).
+* :ref:`mod:builtin` - tbot's builtin testcases

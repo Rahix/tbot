@@ -1,3 +1,5 @@
+.. _mod:builtin:
+
 ``tbot.tc`` Module
 ==================
 

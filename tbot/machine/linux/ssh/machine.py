@@ -92,6 +92,8 @@ class SSHMachine(linux.LinuxMachine):
                 ssh_config = ["ProxyJump=foo@example.com"]
 
         :rtype: list(str)
+
+        .. versionadded:: 0.6.2
         """
         return []
 
