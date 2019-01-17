@@ -295,6 +295,8 @@ class GitRepository(linux.Path[H]):
         """
         Run a git bisect to find the commit that introduced an error.
 
+        **Example**: :ref:`recipes:bisect`
+
         :param str good: A known good commit, the current head will be assumed as bad.
         :param test: A function to check the state of the current commit.  Should return
             ``True`` if it is good and ``False`` if it is bad.  An exception is interpreded

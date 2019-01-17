@@ -195,6 +195,7 @@ them from there.  Here's example code::
                 linux.Path(lo, "/tmp/documentation.tgz"),
             )
 
+.. _recipes:bisect:
 
 Bisect a git repository
 -----------------------

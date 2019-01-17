@@ -74,8 +74,28 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
     """
     Copy a file, possibly from one host to another.
 
-    If one of the paths is associated with an SSHMachine,
-    ``scp`` will be used to do the transfer.
+    The following transfers are currently supported:
+
+    * ``H`` 🢥 ``H`` (transfer without changing host)
+    * :class:`~tbot.machine.linux.LabHost`
+      🢥 :class:`~tbot.machine.linux.SSHMachine` (Using ``scp``)
+    * :class:`~tbot.machine.linux.SSHMachine`
+      🢥 :class:`~tbot.machine.linux.LabHost` (Using ``scp``)
+    * :class:`~tbot.machine.linux.lab.LocalLabHost`
+      🢥 :class:`~tbot.machine.linux.lab.SSHLabHost` (Using ``scp``)
+    * :class:`~tbot.machine.linux.lab.SSHLabHost`
+      🢥 :class:`~tbot.machine.linux.lab.LocalLabHost` (Using ``scp``)
+
+    The following transfers are **not** supported:
+
+    * :class:`~tbot.machine.linux.SSHMachine`
+      🢥 :class:`~tbot.machine.linux.SSHMachine` (There is no guarantee
+      that two remote hosts can connect to each other.  If you need this,
+      transfer to the lab-host first and then to the other remote)
+    * :class:`~tbot.machine.linux.LabHost`
+      🢥 :class:`~tbot.machine.board.BoardMachine` (Transfers over serial
+      are not (yet) implemented.  To 'upload' files, connect to your target
+      via ssh or use a tftp download)
 
     :param linux.Path p1: Exisiting path to be copied
     :param linux.Path p2: Target where ``p1`` should be copied
