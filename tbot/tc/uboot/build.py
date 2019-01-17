@@ -32,6 +32,11 @@ def build(
     """
     Build U-Boot.
 
+    .. deprecated:: 0.6.6
+        This testcase has serious design flaws.  You can still use it until
+        the new version is implemented, but be aware that it will change at
+        some point.
+
     :param linux.BuildMachine build_machine: Machine where to build U-Boot
     :param uboot.BuildInfo build_info: Build parameters, defaults to the info
         associated with the selected board.  This info is defined like this::
