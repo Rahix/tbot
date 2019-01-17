@@ -40,6 +40,7 @@ much modification also allow running tests in an automated setting (CI).
 
    getting-started
 
+   CONTRIBUTING
 
 
 Indices and tables
