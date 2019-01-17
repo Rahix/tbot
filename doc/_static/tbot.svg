@@ -1,469 +1,66 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="220mm"
-   height="155mm"
-   viewBox="0 0 220 155"
-   version="1.1"
-   id="svg8"
-   inkscape:version="0.92.2 2405546, 2018-03-11"
-   sodipodi:docname="tbot.svg"
-   enable-background="new"
-   inkscape:export-filename="/home/filip/Desktop/tbot.png"
-   inkscape:export-xdpi="163.83"
-   inkscape:export-ydpi="163.83">
-  <defs
-     id="defs2">
-    <filter
-       inkscape:collect="always"
-       style="color-interpolation-filters:sRGB"
-       id="filter1573">
-      <feBlend
-         inkscape:collect="always"
-         mode="saturation"
-         in2="BackgroundImage"
-         id="feBlend1575" />
+<svg xmlns="http://www.w3.org/2000/svg" width="220mm" height="155mm" enable-background="new" viewBox="0 0 220 155">
+  <defs>
+    <filter id="a" color-interpolation-filters="sRGB">
+      <feBlend in2="BackgroundImage" mode="saturation"/>
     </filter>
   </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="328.78264"
-     inkscape:cy="314.33892"
-     inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
-     showgrid="false"
-     inkscape:window-width="1920"
-     inkscape:window-height="1028"
-     inkscape:window-x="1600"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     fit-margin-top="5"
-     fit-margin-bottom="5"
-     fit-margin-left="5"
-     fit-margin-right="5"
-     showguides="true"
-     inkscape:guide-bbox="true" />
-  <metadata
-     id="metadata5">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     id="layer1"
-     transform="translate(0,-187)"
-     style="opacity:1;filter:url(#filter1573)">
-    <text
-       id="text931-9"
-       y="49.767963"
-       x="61.968796"
-       style="font-style:normal;font-weight:normal;font-size:21.33333397px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.99999994;filter:url(#filter1573);"
-       xml:space="preserve"
-       transform="matrix(0.26458333,0,0,0.26458333,141.53079,265.92134)"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.99999994;"
-         y="49.767963"
-         x="61.968796"
-         sodipodi:role="line"
-         id="tspan902-3">Serial</tspan></text>
-    <path
-       sodipodi:nodetypes="ccccccccccc"
-       inkscape:connector-curvature="0"
-       id="path881-6"
-       d="M 1.9938978,41.872108 34.494434,4.0768323 V 22.97447 H 88.661943 V 4.0768323 L 121.16248,41.872108 88.661943,79.667384 V 60.769746 H 34.494434 v 18.897638 z"
-       style="opacity:1;fill:#ff4040;fill-opacity:1;stroke:#df0c0c;stroke-width:3.02362204;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter1573)"
-       transform="matrix(0.26458333,0,0,0.26458333,141.53079,265.92134)" />
-    <rect
-       id="buildhost-9"
-       width="40"
-       height="135"
-       x="297.52917"
-       y="-140.52916"
-       style="opacity:1;fill:#d8bb05;fill-opacity:1;stroke:none;stroke-width:0.36212277"
-       inkscape:label="#rect872"
-       transform="rotate(90)" />
-    <rect
-       id="rect4514-6-1"
-       width="40"
-       height="14.157739"
-       x="175.52916"
-       y="245.54477"
-       style="opacity:1;fill:#2c3079;fill-opacity:1;stroke:none;stroke-width:0.11726972" />
-    <rect
-       id="rect4508-2"
-       width="40"
-       height="30.000002"
-       x="175.52916"
-       y="262.52917"
-       style="opacity:1;fill:#308480;fill-opacity:1;stroke:none;stroke-width:0.1707063" />
-    <rect
-       style="opacity:1;fill:#308480;fill-opacity:1;stroke:none;stroke-width:0.1707063"
-       y="192.52916"
-       x="175.52916"
-       height="30.000002"
-       width="40"
-       id="rect4510-7" />
-    <rect
-       id="rect4514-0"
-       width="40"
-       height="14.157739"
-       x="175.52916"
-       y="225.45029"
-       style="opacity:1;fill:#2c3079;fill-opacity:1;stroke:none;stroke-width:0.11726972" />
-    <rect
-       style="fill:#18713a;fill-opacity:1;stroke:none;stroke-width:0.34845281"
-       y="192.52916"
-       x="90.529167"
-       height="100"
-       width="50"
-       id="rect4506" />
-    <rect
-       style="opacity:1;fill:#1e914a;fill-opacity:1;stroke:none;stroke-width:0.34845281"
-       y="192"
-       x="90"
-       height="100"
-       width="50"
-       id="rect4506-9" />
-    <rect
-       id="rect3699-2"
-       width="50"
-       height="100"
-       x="5.5291667"
-       y="192.52914"
-       style="opacity:1;fill:#e72900;fill-opacity:0.99371069;stroke:none;stroke-width:0.34845281" />
-    <rect
-       id="rect4514-6"
-       width="40"
-       height="14.157739"
-       x="175"
-       y="245.01561"
-       style="opacity:1;fill:#393e9c;fill-opacity:1;stroke:none;stroke-width:0.11726972" />
-    <rect
-       id="rect3699"
-       width="50"
-       height="100"
-       x="5"
-       y="192"
-       style="fill:#ff4c25;fill-opacity:1;stroke:none;stroke-width:0.34845281" />
-    <rect
-       id="rect4508"
-       width="40"
-       height="30"
-       x="175"
-       y="262"
-       style="fill:#399c99;fill-opacity:1;stroke:none;stroke-width:0.1707063" />
-    <rect
-       style="fill:#399c99;fill-opacity:1;stroke:none;stroke-width:0.1707063"
-       y="192"
-       x="175"
-       height="30"
-       width="40"
-       id="rect4510" />
-    <rect
-       id="rect4514"
-       width="40"
-       height="14.157739"
-       x="175"
-       y="224.92113"
-       style="fill:#393e9c;fill-opacity:1;stroke:none;stroke-width:0.11726972" />
-    <path
-       style="fill:#bad53a;fill-opacity:1;stroke:#94ac24;stroke-width:0.78806323;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.93333334"
-       d="m 56.689147,242 8.733425,-10 v 5 h 14.55571 v -5 l 8.733425,10 -8.733425,10 v -5 h -14.55571 v 5 z"
-       id="path879"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccccccccccc" />
-    <path
-       sodipodi:nodetypes="ccccccccccc"
-       inkscape:connector-curvature="0"
-       id="path881"
-       d="m 141.73499,207 8.5991,-10 v 5 h 14.33182 v -5 l 8.5991,10 -8.5991,10 v -5 h -14.33182 v 5 z"
-       style="fill:#ff4040;fill-opacity:1;stroke:#df0c0c;stroke-width:0.8;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none" />
-    <path
-       sodipodi:nodetypes="ccccccccccc"
-       inkscape:connector-curvature="0"
-       id="path885"
-       d="m 142.55174,252 8.15359,-5 v 2.5 h 13.58934 V 247 l 8.15359,5 -8.15359,5 v -2.5 h -13.58934 v 2.5 z"
-       style="fill:#0fde90;fill-opacity:1;stroke:#0ec97f;stroke-width:0.76145357;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    <path
-       style="fill:#0fde90;fill-opacity:1;stroke:#0ec97f;stroke-width:0.76145357;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 142.55174,232 8.15359,-5 v 2.5 h 13.58934 V 227 l 8.15359,5 -8.15359,5 v -2.5 h -13.58934 v 2.5 z"
-       id="path887"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccccccccccc" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Roboto Slab';-inkscape-font-specification:'Roboto Slab Bold';letter-spacing:0px;word-spacing:0px;fill:#fcffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="5.7785678"
-       y="202.79509"
-       id="text891"><tspan
-         sodipodi:role="line"
-         x="5.7785678"
-         y="202.79509"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.17222214px;font-family:'Roboto Slab';-inkscape-font-specification:'Roboto Slab Bold';fill:#fcffff;fill-opacity:1;stroke-width:0.26458332"
-         id="tspan893">tbot Host</tspan></text>
-    <text
-       id="text899"
-       y="202.79495"
-       x="114.97761"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Roboto Slab';-inkscape-font-specification:'Roboto Slab Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       xml:space="preserve"><tspan
-         id="tspan897"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.17222214px;font-family:'Roboto Slab';-inkscape-font-specification:'Roboto Slab Bold';text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
-         y="202.79495"
-         x="114.97761"
-         sodipodi:role="line">Lab Host</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:8.46666622px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="179.4268"
-       y="210.1812"
-       id="text903"><tspan
-         sodipodi:role="line"
-         x="179.4268"
-         y="210.1812"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46666622px;font-family:'Roboto Slab';-inkscape-font-specification:'Roboto Slab';fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
-         id="tspan905">Board 1</tspan></text>
-    <text
-       id="text919"
-       y="231.18871"
-       x="178.27626"
-       style="font-style:normal;font-weight:normal;font-size:4.23333311px;line-height:1.10000002;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       xml:space="preserve"><tspan
-         id="tspan917"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.10000002;font-family:'Roboto Slab';-inkscape-font-specification:'Roboto Slab';fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
-         y="231.18871"
-         x="178.27626"
-         sodipodi:role="line">Board 1</tspan><tspan
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.10000002;font-family:'Roboto Slab';-inkscape-font-specification:'Roboto Slab';fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
-         y="235.99251"
-         x="178.27626"
-         sodipodi:role="line"
-         id="tspan894">Power Switch</tspan></text>
-    <text
-       id="text931"
-       y="209.08911"
-       x="157.60335"
-       style="font-style:normal;font-weight:normal;font-size:5.64444447px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       xml:space="preserve"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444447px;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
-         y="209.08911"
-         x="157.60335"
-         sodipodi:role="line"
-         id="tspan902">Serial</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:7.05555534px;line-height:1.04999995;font-family:sans-serif;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="9.4248581"
-       y="214.01675"
-       id="text943"><tspan
-         sodipodi:role="line"
-         id="tspan941"
-         x="9.4248581"
-         y="214.01675"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722242px;line-height:1.04999995;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:start;letter-spacing:0px;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332">This is the</tspan><tspan
-         sodipodi:role="line"
-         x="9.4248581"
-         y="221.42508"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722242px;line-height:1.04999995;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:start;letter-spacing:0px;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
-         id="tspan945">computer</tspan><tspan
-         sodipodi:role="line"
-         x="9.4248581"
-         y="228.83342"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722242px;line-height:1.04999995;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:start;letter-spacing:0px;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
-         id="tspan947">that tbot</tspan><tspan
-         sodipodi:role="line"
-         x="9.4248581"
-         y="236.24174"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722242px;line-height:1.04999995;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:start;letter-spacing:0px;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
-         id="tspan949">runs on.</tspan><tspan
-         sodipodi:role="line"
-         x="9.4248581"
-         y="243.65009"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722242px;line-height:1.04999995;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:start;letter-spacing:0px;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
-         id="tspan951">It has the test-</tspan><tspan
-         sodipodi:role="line"
-         x="9.4248581"
-         y="251.05841"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722242px;line-height:1.04999995;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:start;letter-spacing:0px;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
-         id="tspan953">cases and</tspan><tspan
-         sodipodi:role="line"
-         x="9.4248581"
-         y="258.46674"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722242px;line-height:1.04999995;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:start;letter-spacing:0px;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
-         id="tspan955">configuration</tspan><tspan
-         sodipodi:role="line"
-         x="9.4248581"
-         y="265.87509"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722242px;line-height:1.04999995;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:start;letter-spacing:0px;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
-         id="tspan957">stored.</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05555534px;line-height:1.04999995;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#f6f6f6;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="95.256844"
-       y="212.8101"
-       id="text961"><tspan
-         sodipodi:role="line"
-         id="tspan959"
-         x="95.256844"
-         y="212.8101"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722242px;line-height:1.04999995;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:start;baseline-shift:baseline;text-anchor:start;fill:#f6f6f6;fill-opacity:1;stroke-width:0.26458332">This PC is</tspan><tspan
-         sodipodi:role="line"
-         x="95.256844"
-         y="220.21843"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722242px;line-height:1.04999995;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:start;baseline-shift:baseline;text-anchor:start;fill:#f6f6f6;fill-opacity:1;stroke-width:0.26458332"
-         id="tspan963">located in the</tspan><tspan
-         sodipodi:role="line"
-         x="95.256844"
-         y="227.62677"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722242px;line-height:1.04999995;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:start;baseline-shift:baseline;text-anchor:start;fill:#f6f6f6;fill-opacity:1;stroke-width:0.26458332"
-         id="tspan965">lab and has</tspan><tspan
-         sodipodi:role="line"
-         x="95.256844"
-         y="235.0351"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722242px;line-height:1.04999995;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:start;baseline-shift:baseline;text-anchor:start;fill:#f6f6f6;fill-opacity:1;stroke-width:0.26458332"
-         id="tspan967">access to a</tspan><tspan
-         sodipodi:role="line"
-         x="95.256844"
-         y="242.44344"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722242px;line-height:1.04999995;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:start;baseline-shift:baseline;text-anchor:start;fill:#f6f6f6;fill-opacity:1;stroke-width:0.26458332"
-         id="tspan969">serial con-</tspan><tspan
-         sodipodi:role="line"
-         x="95.256844"
-         y="249.85176"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722242px;line-height:1.04999995;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:start;baseline-shift:baseline;text-anchor:start;fill:#f6f6f6;fill-opacity:1;stroke-width:0.26458332"
-         id="tspan971">nection to the</tspan><tspan
-         sodipodi:role="line"
-         x="95.256844"
-         y="257.2601"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722242px;line-height:1.04999995;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:start;baseline-shift:baseline;text-anchor:start;fill:#f6f6f6;fill-opacity:1;stroke-width:0.26458332"
-         id="tspan975">boards. It can</tspan><tspan
-         sodipodi:role="line"
-         x="95.256844"
-         y="264.66843"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722242px;line-height:1.04999995;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:start;baseline-shift:baseline;text-anchor:start;fill:#f6f6f6;fill-opacity:1;stroke-width:0.26458332"
-         id="tspan979">also toggle</tspan><tspan
-         sodipodi:role="line"
-         x="95.256844"
-         y="272.07675"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722242px;line-height:1.04999995;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:start;baseline-shift:baseline;text-anchor:start;fill:#f6f6f6;fill-opacity:1;stroke-width:0.26458332"
-         id="tspan981">their power.</tspan></text>
-    <path
-       style="fill:#bad53a;fill-opacity:1;stroke:#94ad24;stroke-width:3.02362209;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:0.92156863;stroke-miterlimit:4;stroke-dasharray:none"
-       d="M 302.36133 279.84375 L 302.36133 298.74219 L 255.11719 298.74219 L 255.11719 317.48047 L 255.11719 336.53711 L 255.11719 374.17383 L 236.2207 374.17383 L 274.01562 408.18945 L 311.81055 374.17383 L 292.91406 374.17383 L 292.91406 336.53711 L 302.36133 336.53711 L 302.36133 355.43359 L 336.37891 317.63867 L 302.36133 279.84375 z "
-       transform="matrix(0.26458333,0,0,0.26458333,0,187)"
-       id="path864" />
-    <text
-       id="text870"
-       y="273.06363"
-       x="76.140762"
-       style="font-style:normal;font-weight:normal;font-size:5.64444447px;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#596817;fill-opacity:1;stroke:none;stroke-width:0.26458332;"
-       xml:space="preserve"><tspan
-         dy="0"
-         id="tspan868"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444447px;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:center;text-anchor:middle;fill:#596817;fill-opacity:1;stroke-width:0.26458332;"
-         y="273.06363"
-         x="76.140762"
-         sodipodi:role="line">SSH</tspan></text>
-    <rect
-       id="buildhost"
-       width="40"
-       height="135"
-       x="297"
-       y="-140"
-       style="fill:#fadd27;fill-opacity:1;stroke:none;stroke-width:0.36212277"
-       inkscape:label="#rect872"
-       transform="rotate(90)" />
-    <text
-       id="text884"
-       y="306.86014"
-       x="72.477608"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.17222214px;font-family:Roboto;-inkscape-font-specification:'Roboto Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       xml:space="preserve"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.17222214px;font-family:'Roboto Slab';-inkscape-font-specification:'Roboto Slab Bold';text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke-width:0.26458332"
-         y="306.86014"
-         x="72.477608"
-         sodipodi:role="line"
-         id="tspan886">Buildhost</tspan></text>
-    <text
-       id="text922"
-       y="315.17435"
-       x="10.682415"
-       style="font-style:normal;font-weight:normal;font-size:7.05555534px;line-height:1.04999995;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       xml:space="preserve"><tspan
-         id="tspan920"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722242px;line-height:1.04999995;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:start;text-anchor:start;stroke-width:0.26458332"
-         y="315.17435"
-         x="10.682415"
-         sodipodi:role="line">A separate machine that is used to</tspan><tspan
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722242px;line-height:1.04999995;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:start;text-anchor:start;stroke-width:0.26458332"
-         y="322.58267"
-         x="10.682415"
-         sodipodi:role="line"
-         id="tspan960">compile your software automatically</tspan><tspan
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722242px;line-height:1.04999995;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:start;text-anchor:start;stroke-width:0.26458332"
-         y="329.991"
-         x="10.682415"
-         sodipodi:role="line"
-         id="tspan962">(eg. U-Boot or Linux)</tspan></text>
-    <text
-       id="text919-7"
-       y="251.28319"
-       x="178.27625"
-       style="font-style:normal;font-weight:normal;font-size:4.23333311px;line-height:1.10000002;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;opacity:0.93000034;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       xml:space="preserve"><tspan
-         id="tspan917-5"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.10000002;font-family:'Roboto Slab';-inkscape-font-specification:'Roboto Slab';fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
-         y="251.28319"
-         x="178.27625"
-         sodipodi:role="line">Board 2</tspan><tspan
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.10000002;font-family:'Roboto Slab';-inkscape-font-specification:'Roboto Slab';fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
-         y="256.08698"
-         x="178.27625"
-         sodipodi:role="line"
-         id="tspan894-3">Power Switch</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:8.46666622px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;opacity:0.93000034;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="179.4268"
-       y="280.18121"
-       id="text903-5"><tspan
-         sodipodi:role="line"
-         x="179.4268"
-         y="280.18121"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46666622px;font-family:'Roboto Slab';-inkscape-font-specification:'Roboto Slab';fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
-         id="tspan881">Board 2</tspan></text>
-    <text
-       id="text870-0"
-       y="244.00642"
-       x="72.827209"
-       style="font-style:normal;font-weight:normal;font-size:5.64444447px;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;opacity:0.93000034;fill:#434f10;fill-opacity:0.87058824;stroke:none;stroke-width:0.26458332;"
-       xml:space="preserve"><tspan
-         dy="0"
-         id="tspan868-3"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444447px;font-family:Roboto;-inkscape-font-specification:Roboto;text-align:center;text-anchor:middle;fill:#434f10;fill-opacity:0.87058824;stroke-width:0.26458332;"
-         y="244.00642"
-         x="72.827209"
-         sodipodi:role="line">SSH</tspan></text>
-  </g>
+  <text x="61.97" y="49.77" fill="#fff" filter="url(#a)" font-family="sans-serif" font-size="21.33" font-weight="400" letter-spacing="0" text-anchor="middle" transform="translate(141.53 78.92) scale(.26458)" word-spacing="0" style="line-height:1.25;text-align:center">
+    <tspan style="-inkscape-font-specification:Roboto;text-align:center" x="61.97" y="49.77" font-family="Roboto">Serial</tspan>
+  </text>
+  <path fill="#ff4040" stroke="#df0c0c" stroke-width="3.02" d="M2 41.87l32.5-37.8v18.9h54.16V4.07l32.5 37.8-32.5 37.8v-18.9H34.5v18.9z" filter="url(#a)" transform="translate(141.53 78.92) scale(.26458)"/>
+  <path fill="#d8bb05" d="M140.53 110.53v40h-135v-40z"/>
+  <path fill="#2c3079" d="M175.53 58.55h40V72.7h-40z"/>
+  <path fill="#308480" d="M175.53 75.53h40v30h-40zm0-70h40v30h-40z"/>
+  <path fill="#2c3079" d="M175.53 38.45h40v14.16h-40z"/>
+  <path fill="#18713a" d="M90.53 5.53h50v100h-50z"/>
+  <path fill="#1e914a" d="M90 5h50v100H90z"/>
+  <path fill="#e72900" fill-opacity=".99" d="M5.53 5.53h50v100h-50z"/>
+  <path fill="#393e9c" d="M175 58.02h40v14.15h-40z"/>
+  <path fill="#ff4c25" d="M5 5h50v100H5z"/>
+  <path fill="#399c99" d="M175 75h40v30h-40zm0-70h40v30h-40z"/>
+  <path fill="#393e9c" d="M175 37.92h40v14.16h-40z"/>
+  <path fill="#bad53a" stroke="#94ac24" stroke-opacity=".93" stroke-width=".79" d="M56.69 55l8.73-10v5h14.56v-5l8.73 10-8.73 10v-5H65.42v5z"/>
+  <path fill="#ff4040" stroke="#df0c0c" stroke-width=".8" d="M141.74 20l8.6-10v5h14.33v-5l8.6 10-8.6 10v-5h-14.33v5z"/>
+  <path fill="#0fde90" stroke="#0ec97f" stroke-width=".76" d="M142.55 65l8.15-5v2.5h13.6V60l8.15 5-8.16 5v-2.5H150.7V70zm0-20l8.15-5v2.5h13.6V40l8.15 5-8.16 5v-2.5H150.7V50z"/>
+  <text x="114.98" y="202.79" fill="#fff" stroke-width=".27" font-family="Roboto Slab" font-size="10.58" font-weight="700" letter-spacing="0" transform="translate(0 -187)" word-spacing="0" style="line-height:1.25;-inkscape-font-specification:'Roboto Slab Bold'">
+    <tspan style="-inkscape-font-specification:'Roboto Slab Bold';text-align:center" x="114.98" y="202.79" font-size="9.17" text-anchor="middle">Lab Host</tspan>
+  </text>
+  <text style="line-height:1.25" x="179.43" y="210.18" fill="#fff" stroke-width=".27" font-family="sans-serif" font-size="8.47" font-weight="400" letter-spacing="0" transform="translate(0 -187)" word-spacing="0">
+    <tspan x="179.43" y="210.18" font-family="Roboto Slab" style="-inkscape-font-specification:'Roboto Slab'">Board 1</tspan>
+  </text>
+  <text x="178.28" y="231.19" fill="#fff" stroke-width=".27" font-family="sans-serif" font-size="4.23" font-weight="400" letter-spacing="0" transform="translate(0 -187)" word-spacing="0" style="line-height:1.10000002">
+    <tspan style="line-height:1.10000002;-inkscape-font-specification:'Roboto Slab'" x="178.28" y="231.19" font-family="Roboto Slab">Board 1</tspan> <tspan style="line-height:1.10000002;-inkscape-font-specification:'Roboto Slab'" x="178.28" y="235.99" font-family="Roboto Slab">Power Switch</tspan>
+  </text>
+  <text x="157.6" y="209.09" fill="#fff" stroke-width=".27" font-family="sans-serif" font-size="5.64" font-weight="400" letter-spacing="0" text-anchor="middle" transform="translate(0 -187)" word-spacing="0" style="line-height:1.25;text-align:center">
+    <tspan style="-inkscape-font-specification:Roboto;text-align:center" x="157.6" y="209.09" font-family="Roboto">Serial</tspan>
+  </text>
+  <text style="line-height:1.04999995;text-align:start" x="9.43" y="214.02" fill="#fff" stroke-width=".27" font-family="sans-serif" font-size="7.06" font-weight="400" letter-spacing="0" transform="translate(0 -187)" word-spacing="0">
+    <tspan x="9.43" y="214.02" font-family="Roboto" font-size="6" style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start">This is the</tspan> <tspan x="9.43" y="221.43" font-family="Roboto" font-size="6" style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start">computer</tspan> <tspan x="9.43" y="228.83" font-family="Roboto" font-size="6" style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start">that tbot</tspan> <tspan x="9.43" y="236.24" font-family="Roboto" font-size="6" style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start">runs on.</tspan> <tspan x="9.43" y="243.65" font-family="Roboto" font-size="6" style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start">It has the test-</tspan> <tspan x="9.43" y="251.06" font-family="Roboto" font-size="6" style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start">cases and</tspan> <tspan x="9.43" y="258.47" font-family="Roboto" font-size="6" style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start">configuration</tspan> <tspan x="9.43" y="265.88" font-family="Roboto" font-size="6" style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start">stored.</tspan>
+  </text>
+  <text style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:center" x="95.26" y="212.81" fill="#f6f6f6" stroke-width=".27" font-family="Roboto" font-size="7.06" font-weight="400" letter-spacing="0" text-anchor="middle" transform="translate(0 -187)" word-spacing="0">
+    <tspan x="95.26" y="212.81" font-size="6" text-anchor="start" style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start">This PC is</tspan> <tspan x="95.26" y="220.22" font-size="6" text-anchor="start" style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start">located in the</tspan> <tspan x="95.26" y="227.63" font-size="6" text-anchor="start" style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start">lab and has</tspan> <tspan x="95.26" y="235.03" font-size="6" text-anchor="start" style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start">access to a</tspan> <tspan x="95.26" y="242.44" font-size="6" text-anchor="start" style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start">serial con-</tspan> <tspan x="95.26" y="249.85" font-size="6" text-anchor="start" style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start">nection to the</tspan> <tspan x="95.26" y="257.26" font-size="6" text-anchor="start" style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start">boards. It can</tspan> <tspan x="95.26" y="264.67" font-size="6" text-anchor="start" style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start">also toggle</tspan> <tspan x="95.26" y="272.08" font-size="6" text-anchor="start" style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start">their power.</tspan>
+  </text>
+  <path fill="#bad53a" stroke="#94ad24" stroke-opacity=".92" stroke-width=".8" d="M80 74.04v5H67.5V99h-5l10 9 10-9h-5v-9.96H80v5l9-10-9-10z"/>
+  <text x="76.14" y="273.06" fill="#596817" stroke-width=".27" font-family="sans-serif" font-size="5.64" font-weight="400" letter-spacing="0" text-anchor="middle" transform="translate(0 -187)" word-spacing="0" style="text-align:center">
+    <tspan style="-inkscape-font-specification:Roboto;text-align:center" x="76.14" y="273.06" dy="0" font-family="Roboto">SSH</tspan>
+  </text>
+  <path fill="#fadd27" d="M140 110v40H5v-40z"/>
+  <text x="72.48" y="306.86" stroke-width=".27" font-family="Roboto" font-size="9.17" font-weight="700" letter-spacing="0" text-anchor="middle" transform="translate(0 -187)" word-spacing="0" style="-inkscape-font-specification:'Roboto Bold';text-align:center">
+    <tspan style="-inkscape-font-specification:'Roboto Slab Bold';text-align:center" x="72.48" y="306.86" font-family="Roboto Slab">Buildhost</tspan>
+  </text>
+  <text x="10.68" y="315.17" stroke-width=".27" font-family="sans-serif" font-size="7.06" font-weight="400" letter-spacing="0" text-anchor="middle" transform="translate(0 -187)" word-spacing="0" style="line-height:1.04999995;text-align:center">
+    <tspan style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start" x="10.68" y="315.17" font-family="Roboto" font-size="6" text-anchor="start">A separate machine that is used to</tspan> <tspan style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start" x="10.68" y="322.58" font-family="Roboto" font-size="6" text-anchor="start">compile your software automatically</tspan> <tspan style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start" x="10.68" y="329.99" font-family="Roboto" font-size="6" text-anchor="start">(eg. U-Boot or Linux)</tspan>
+  </text>
+  <text x="178.28" y="251.28" fill="#fff" stroke-width=".27" font-family="sans-serif" font-size="4.23" font-weight="400" letter-spacing="0" opacity=".93" transform="translate(0 -187)" word-spacing="0" style="line-height:1.10000002">
+    <tspan style="line-height:1.10000002;-inkscape-font-specification:'Roboto Slab'" x="178.28" y="251.28" font-family="Roboto Slab">Board 2</tspan> <tspan style="line-height:1.10000002;-inkscape-font-specification:'Roboto Slab'" x="178.28" y="256.09" font-family="Roboto Slab">Power Switch</tspan>
+  </text>
+  <text style="line-height:1.25" x="179.43" y="280.18" fill="#fff" stroke-width=".27" font-family="sans-serif" font-size="8.47" font-weight="400" letter-spacing="0" opacity=".93" transform="translate(0 -187)" word-spacing="0">
+    <tspan x="179.43" y="280.18" font-family="Roboto Slab" style="-inkscape-font-specification:'Roboto Slab'">Board 2</tspan>
+  </text>
+  <text x="72.83" y="244.01" fill="#434f10" fill-opacity=".87" stroke-width=".27" font-family="sans-serif" font-size="5.64" font-weight="400" letter-spacing="0" opacity=".93" text-anchor="middle" transform="translate(0 -187)" word-spacing="0" style="text-align:center">
+    <tspan style="-inkscape-font-specification:Roboto;text-align:center" x="72.83" y="244.01" dy="0" font-family="Roboto">SSH</tspan>
+  </text>
+  <text style="line-height:1.25;-inkscape-font-specification:'Roboto Slab Bold'" x="29.78" y="15.79" fill="#fff" stroke-width=".26" font-family="Roboto Slab" font-size="10.58" font-weight="700" letter-spacing="0" word-spacing="0">
+    <tspan x="29.78" y="15.79" font-size="9.17" text-anchor="middle" style="-inkscape-font-specification:'Roboto Slab Bold';text-align:center">tbot Host</tspan>
+  </text>
 </svg>
