@@ -10,18 +10,104 @@ Commandline
 -----------
 First of all, install tbot.  Instructions are here: :ref:`install:Installation`.
 
-Let's get started!  To check if the installation went smoothly, try running tbot's selftests::
+Let's get started!  To check if the installation went smoothly, try running tbot's selftests:
 
-    $ tbot selftest
+.. raw:: html
+
+    <div class="highlight">
+    <pre>bash-4.4$ tbot selftest
+    <font color="#F4BF75"><b>tbot</b></font> starting ...
+    ├─Calling <font color="#A1EFE4"><b>selftest</b></font> ...
+    │   ├─Calling <font color="#A1EFE4"><b>testsuite</b></font> ...
+    │   │   ├─Calling <font color="#A1EFE4"><b>selftest_failing</b></font> ...
+    │   │   │   ├─Calling <font color="#A1EFE4"><b>inner</b></font> ...
+    │   │   │   │   └─<font color="#F92672"><b>Fail</b></font>. (0.000s)
+    │   │   │   └─<font color="#A6E22E"><b>Done</b></font>. (0.001s)
+    │   │   ├─Calling <font color="#A1EFE4"><b>selftest_uname</b></font> ...
+    │   │   │   └─<font color="#A6E22E"><b>Done</b></font>. (0.003s)
+    │   │   ├─Calling <font color="#A1EFE4"><b>selftest_user</b></font> ...
+    │   │   │   └─<font color="#A6E22E"><b>Done</b></font>. (0.001s)
+    [...]
+    │   │   ├─Calling <font color="#A1EFE4"><b>selftest_board_linux</b></font> ...
+    │   │   │   ├─<font color="#F4BF75"><b>Skipped</b></font> because no board available.
+    │   │   │   └─<font color="#A6E22E"><b>Done</b></font>. (0.000s)
+    [...]
+    │   │   ├─Calling <font color="#A1EFE4"><b>selftest_board_linux_bad_console</b></font> ...
+    │   │   │   ├─<b>POWERON</b> (test)
+    │   │   │   ├─<b>LINUX</b> (test-linux)
+    │   │   │   ├─<b>POWEROFF</b> (test)
+    │   │   │   └─<font color="#A6E22E"><b>Done</b></font>. (0.460s)
+    │   │   ├─────────────────────────────────────────
+    │   │   │ <font color="#A6E22E"><b>Success</b></font>: 17/17 tests passed
+    │   │   └─<font color="#A6E22E"><b>Done</b></font>. (4.675s)
+    │   └─<font color="#A6E22E"><b>Done</b></font>. (4.742s)
+    ├─────────────────────────────────────────
+    └─<font color="#A6E22E"><b>SUCCESS</b></font> (4.845s)</pre>
+    </div>
 
 If you feel adventurous, there are even more selftests that check if the built-in testcases
-work as intended.  Of course, these can't test board-related functionality, but it's a start::
+work as intended:
 
-    $ tbot selftest_tc
+.. raw:: html
 
-tbot also allows you to run multiple testcases at once::
+    <div class="highlight">
+    <pre>bash-4.4$ tbot selftest_tc
+    <font color="#F4BF75"><b>tbot</b></font> starting ...
+    ├─Calling <font color="#A1EFE4"><b>selftest_tc</b></font> ...
+    │   ├─Calling <font color="#A1EFE4"><b>testsuite</b></font> ...
+    │   │   ├─Calling <font color="#A1EFE4"><b>selftest_tc_git_checkout</b></font> ...
+    │   │   │   ├─Calling <font color="#A1EFE4"><b>git_prepare</b></font> ...
+    │   │   │   │   ├─Setting up test repo ...
+    │   │   │   │   ├─Calling <font color="#A1EFE4"><b>commit</b></font> ...
+    │   │   │   │   │   └─<font color="#A6E22E"><b>Done</b></font>. (0.009s)
+    │   │   │   │   ├─Creating test patch ...
+    │   │   │   │   ├─Calling <font color="#A1EFE4"><b>commit</b></font> ...
+    │   │   │   │   │   └─<font color="#A6E22E"><b>Done</b></font>. (0.004s)
+    │   │   │   │   ├─Resetting repo ...
+    │   │   │   │   └─<font color="#A6E22E"><b>Done</b></font>. (0.126s)
+    │   │   │   ├─Cloning repo ...
+    │   │   │   ├─Make repo dirty ...
+    │   │   │   ├─Add dirty commit ...
+    │   │   │   ├─Calling <font color="#A1EFE4"><b>commit</b></font> ...
+    │   │   │   │   └─<font color="#A6E22E"><b>Done</b></font>. (0.004s)
+    │   │   │   └─<font color="#A6E22E"><b>Done</b></font>. (0.321s)
+    [...]
+    │   │   ├─Calling <font color="#A1EFE4"><b>selftest_tc_build_toolchain</b></font> ...
+    │   │   │   ├─Creating dummy toolchain ...
+    │   │   │   ├─Attempt using it ...
+    │   │   │   └─<font color="#A6E22E"><b>Done</b></font>. (0.153s)
+    │   │   ├─────────────────────────────────────────
+    │   │   │ <font color="#A6E22E"><b>Success</b></font>: 6/6 tests passed
+    │   │   └─<font color="#A6E22E"><b>Done</b></font>. (3.679s)
+    │   └─<font color="#A6E22E"><b>Done</b></font>. (3.764s)
+    ├─────────────────────────────────────────
+    └─<font color="#A6E22E"><b>SUCCESS</b></font> (3.894s)</pre>
+    </div>
 
-    $ tbot selftest selftest_tc
+tbot also allows you to run multiple testcases at once:
+
+.. raw:: html
+
+    <div class="highlight">
+    <pre>bash-4.4$ tbot selftest selftest_tc
+    <font color="#F4BF75"><b>tbot</b></font> starting ...
+    ├─Calling <font color="#A1EFE4"><b>selftest</b></font> ...
+    │   ├─Calling <font color="#A1EFE4"><b>testsuite</b></font> ...
+    [...]
+    │   │   ├─────────────────────────────────────────
+    │   │   │ <font color="#A6E22E"><b>Success</b></font>: 17/17 tests passed
+    │   │   └─<font color="#A6E22E"><b>Done</b></font>. (4.788s)
+    │   └─<font color="#A6E22E"><b>Done</b></font>. (4.873s)
+    ├─Calling <font color="#A1EFE4"><b>selftest_tc</b></font> ...
+    │   ├─Calling <font color="#A1EFE4"><b>testsuite</b></font> ...
+    [...]
+    │   │   ├─────────────────────────────────────────
+    │   │   │ <font color="#A6E22E"><b>Success</b></font>: 6/6 tests passed
+    │   │   └─<font color="#A6E22E"><b>Done</b></font>. (3.390s)
+    │   └─<font color="#A6E22E"><b>Done</b></font>. (3.459s)
+    ├─────────────────────────────────────────
+    └─<font color="#A6E22E"><b>SUCCESS</b></font> (8.453s)</pre>
+    </div>
 
 If you want an overview of the available testcases, use this command::
 
@@ -33,9 +119,23 @@ The output you saw during the testcase runs was just a rough overview of what is
 might not be detailed enough for you.  By adding ``-v``, tbot will show all commands as they are
 executed.  Add another one: ``-vv`` and you will also see command outputs!
 
-::
+.. raw:: html
 
-    $ tbot selftest_path_stat -vv
+    <div class="highlight">
+    <pre>bash-4.4$ tbot selftest_path_stat -vv
+    <font color="#F4BF75"><b>tbot</b></font> starting ...
+    ├─Calling <font color="#A1EFE4"><b>selftest_path_stat</b></font> ...
+    │   ├─Setting up test files ...
+    [...]
+    │   ├─[<font color="#F4BF75">local</font>] test -S /tmp/tbot-wd/nonexistent
+    │   ├─Checking stat results ...
+    │   ├─[<font color="#F4BF75">local</font>] stat -t /dev
+    │   │    ## /dev 4060 0 41ed 0 0 6 1025 20 0 0 1547723442 1547715500 1547715500 0 4096 system_u:object_r:device_t:s0
+    [...]
+    │   └─<font color="#A6E22E"><b>Done</b></font>. (0.145s)
+    ├─────────────────────────────────────────
+    └─<font color="#A6E22E"><b>SUCCESS</b></font> (0.278s)</pre>
+    </div>
 
 .. note::
     There is one more verbosity level: ``-vvv``.  This is for debugging, if something doesn't quite work.
@@ -43,9 +143,20 @@ executed.  Add another one: ``-vv`` and you will also see command outputs!
     It will look quite messy!
 
 One more commandline feature before we dive into python code:  If you are afraid of a destructive
-command, you can run tbot with ``--interactive``::
+command, you can run tbot with ``--interactive``:
 
-    $ tbot selftest_uname -vi
+.. raw:: html
+
+    <div class="highlight">
+    <pre>bash-4.4$ tbot selftest_uname -vi
+    <font color="#F4BF75"><b>tbot</b></font> starting ...
+    ├─Calling <font color="#A1EFE4"><b>selftest_uname</b></font> ...
+    │   ├─[<font color="#F4BF75">local</font>] uname -a
+    <font color="#AE81FF">OK [Y/n]? </font>Y
+    │   └─<font color="#A6E22E"><b>Done</b></font>. (2.721s)
+    ├─────────────────────────────────────────
+    └─<font color="#A6E22E"><b>SUCCESS</b></font> (2.848s)</pre>
+    </div>
 
 Now tbot will kindly ask you before running each command!  (See? ``-emacs`` wouldn't answer as nicely!)
 
@@ -64,9 +175,17 @@ Ok, commandline isn't all that fun.  Let's dive deeper!  Some code please!
 This is tbot's hello world.  Stick this code into a file named ``tc.py``.  Now, if you check the list
 of testcases (``tbot --list-testcases``), ``hello_world`` pops up.  Run it!
 
-::
+.. raw:: html
 
-    $ tbot hello_world
+    <div class="highlight">
+    <pre>bash-4.4$ tbot hello_world
+    <font color="#F4BF75"><b>tbot</b></font> starting ...
+    ├─Calling <font color="#A1EFE4"><b>hello_world</b></font> ...
+    │   ├─Hello World!
+    │   └─<font color="#A6E22E"><b>Done</b></font>. (0.000s)
+    ├─────────────────────────────────────────
+    └─<font color="#A6E22E"><b>SUCCESS</b></font> (0.127s)</pre>
+    </div>
 
 Hello tbot!
 
@@ -112,9 +231,21 @@ parameters.  There are two ways to "fix" this:
         tbot.log.message(f"Hello {name}!!")
 
 2. Setting a value for the parameter!  That's right, you can set the parameter from the commandline.  It looks
-   like this::
+   like this:
 
-    $ tbot greet -p name=\"tbot\"
+   .. raw:: html
+
+    <div class="highlight">
+    <pre>bash-4.4$ tbot greet -p name=\&quot;tbot\&quot;
+    <font color="#F4BF75"><b>tbot</b></font> starting ...
+    ├─<b>Parameters:</b>
+    │     name       = <font color="#F4BF75">&apos;tbot&apos;</font>
+    ├─Calling <font color="#A1EFE4"><b>greet</b></font> ...
+    │   ├─Hello tbot!!
+    │   └─<font color="#A6E22E"><b>Done</b></font>. (0.000s)
+    ├─────────────────────────────────────────
+    └─<font color="#A6E22E"><b>SUCCESS</b></font> (0.238s)</pre>
+    </div>
 
    Note the escaped quotes around ``\"tbot\"``.  They are necessary because the value is `eval()`-uated
    internally.  This is done to allow you to set values of any type with ease.  Any python
@@ -143,11 +274,23 @@ Let's start simple though:  Just run a command on the lab-host::
 
             tbot.log.message(f"Hello {name}!")
 
-Now try::
+Now try:
 
-    $ tbot greet_user -v
+.. raw:: html
 
-As you can see, tbot ran ``whoami`` to find your name.  You might be curious about the ``[local]``
+    <div class="highlight">
+    <pre>bash-4.4$ tbot greet_user -v
+    <font color="#F4BF75"><b>tbot</b></font> starting ...
+    ├─Calling <font color="#A1EFE4"><b>greet_user</b></font> ...
+    │   ├─[<font color="#F4BF75">local</font>] id --user --name
+    │   ├─Hello hws!
+    │   └─<font color="#A6E22E"><b>Done</b></font>. (0.070s)
+    ├─────────────────────────────────────────
+    └─<font color="#A6E22E"><b>SUCCESS</b></font> (0.173s)
+    </pre>
+    </div>
+
+As you can see, tbot ran ``id --user --name`` to find your name.  You might be curious about the ``[local]``
 part: That's the machine tbot ran the command on.  By default, the lab-host is your localhost. We'll
 see later how to change that.
 
@@ -179,9 +322,25 @@ One more feature I want to mention in this quick guide:  Most machines have an
 channel to the terminal and allows you to directly enter commands.  You can use it to make tbot
 do some work, then do something manually.  Like a symbiotic development process.  It really makes
 you a lot more productive if you embrace this idea!  There is also a testcase to call it from the
-commandline::
+commandline:
 
-    $ tbot interactive_lab
+.. raw:: html
+
+    <div class="highlight">
+    <pre>bash-4.4$ tbot interactive_lab
+    <font color="#F4BF75"><b>tbot</b></font> starting ...
+    ├─Calling <font color="#A1EFE4"><b>interactive_lab</b></font> ...
+    │   ├─Entering interactive shell ...
+
+    <font color="#A1EFE4">local: </font><font color="#A6E22E">/tmp</font>&gt; whoami
+    hws
+    <font color="#A1EFE4">local: </font><font color="#A6E22E">/tmp</font>&gt; exit
+
+    │   ├─Exiting interactive shell ...
+    │   └─<font color="#A6E22E"><b>Done</b></font>. (49.746s)
+    ├─────────────────────────────────────────
+    └─<font color="#A6E22E"><b>SUCCESS</b></font> (49.851s)</pre>
+    </div>
 
 Configuration
 -------------
@@ -219,9 +378,31 @@ Try using your config now!
     $ tbot -l <name-of-lab-config>.py interactive_lab
 
 Congratulations! You now have a remote session on your lab-host!  You could also run some selftest to verify
-that tbot can run these commands on your new lab-host as well::
+that tbot can run these commands on your new lab-host as well:
 
-    $ tbot -l lab.py selftest_path_integrity -vv
+.. raw:: html
+
+    <div class="highlight">
+    <pre>bash-4.4$ tbot -l lab.py selftest_path_integrity -vv
+    <font color="#F4BF75"><b>tbot</b></font> starting ...
+    ├─Calling <font color="#A1EFE4"><b>selftest_path_integrity</b></font> ...
+    │   ├─Logging in on <font color="#F4BF75">hws@78.79.32.85:22</font> ...
+    │   ├─[<font color="#F4BF75">awesome-lab</font>] echo ${HOME}
+    │   │    ## /home/hws
+    │   ├─[<font color="#F4BF75">awesome-lab</font>] test -d /home/hws/tbot-workdir
+    │   ├─[<font color="#F4BF75">awesome-lab</font>] mkdir -p /home/hws/tbot-workdir
+    │   ├─Logging in on <font color="#F4BF75">hws@78.79.32.85:22</font> ...
+    │   ├─[<font color="#F4BF75">awesome-lab</font>] mkdir -p /home/hws/tbot-workdir/folder
+    │   ├─[<font color="#F4BF75">awesome-lab</font>] test -d /home/hws/tbot-workdir/folder
+    │   ├─[<font color="#F4BF75">awesome-lab</font>] uname -a &gt;/home/hws/tbot-workdir/folder/file.txt
+    │   ├─[<font color="#F4BF75">awesome-lab</font>] test -f /home/hws/tbot-workdir/folder/file.txt
+    │   ├─[<font color="#F4BF75">awesome-lab</font>] rm -r /home/hws/tbot-workdir/folder
+    │   ├─[<font color="#F4BF75">awesome-lab</font>] test -e /home/hws/tbot-workdir/folder/file.txt
+    │   ├─[<font color="#F4BF75">awesome-lab</font>] test -e /home/hws/tbot-workdir/folder
+    │   └─<font color="#A6E22E"><b>Done</b></font>. (2.833s)
+    ├─────────────────────────────────────────
+    └─<font color="#A6E22E"><b>SUCCESS</b></font> (2.959s)</pre>
+    </div>
 
 As you can see, now it says ``[awesome-lab]`` in front of the commands.  tbot is running commands
 remotely!
@@ -235,9 +416,8 @@ Hardware Interaction
 We haven't even talked to actual hardware yet!  Let's change that.  Unfortunately, as each device
 is different, you'll have to figure out a few things yourself.
 
-First Step:  Another config file.  The board needs to be configured in a second file.  I'll show
-you a heavily commented example.  Change it to match your hardware!  I'll separate it into parts
-that we add as we go.  This is the first::
+First Step:  Another config file.  The board needs to be configured in a second file.  Let's
+start simple::
 
     import tbot
     from tbot.machine import board, channel, linux
@@ -326,6 +506,89 @@ If you set everything correctly, you should be able to run::
 You now have a shell on the board!  As before, you can also try running a selftest::
 
     $ tbot -l lab.py -b my-board.py selftest_board_linux -vv
+
+.. raw:: html
+
+    <div class="highlight">
+    <pre>bash-4.4$ tbot -l lab.py -b my-board.py selftest_board_linux -vv
+    <font color="#F4BF75"><b>tbot</b></font> starting ...
+    ├─Calling <font color="#A1EFE4"><b>selftest_board_linux</b></font> ...
+    │   ├─Logging in on <font color="#F4BF75">hws@78.79.32.85:22</font> ...
+    │   ├─[<font color="#F4BF75">awesome-lab</font>] connect bbb
+    │   ├─[<font color="#F4BF75">awesome-lab</font>] remote_power bbb -l
+    │   │    ## bbb         	off
+    │   ├─<b>POWERON</b> (bbb)
+    │   ├─[<font color="#F4BF75">awesome-lab</font>] remote_power bbb on
+    │   │    ## Power on   bbb: OK
+    │   ├─<b>UBOOT</b> (bbb-uboot)
+    │   │    &lt;&gt;
+    │   │    &lt;&gt; U-Boot 2018.11-00191-gd73d81fd85 (Nov 20 2018 - 06:01:01 +0100)
+    │   │    &lt;&gt;
+    │   │    &lt;&gt; CPU  : AM335X-GP rev 2.1
+    │   │    &lt;&gt; Model: TI AM335x BeagleBone Black
+    │   │    &lt;&gt; DRAM:  512 MiB
+    │   │    &lt;&gt; NAND:  0 MiB
+    │   │    &lt;&gt; MMC:   OMAP SD/MMC: 0, OMAP SD/MMC: 1
+    │   │    &lt;&gt; Loading Environment from FAT... ** No partition table - mmc 0 **
+    │   │    &lt;&gt; No USB device found
+    │   │    &lt;&gt; &lt;ethaddr&gt; not set. Validating first E-fuse MAC
+    │   │    &lt;&gt; Net:   eth0: ethernet@4a100000
+    │   ├─<b>LINUX</b> (bbb-linux)
+    │   ├─[<font color="#F4BF75">bbb-uboot</font>] setenv serverip 192.168.1.1
+    │   ├─[<font color="#F4BF75">bbb-uboot</font>] setenv netmask 255.255.255.0
+    │   ├─[<font color="#F4BF75">bbb-uboot</font>] setenv ipaddr 192.168.1.10
+    │   ├─[<font color="#F4BF75">bbb-uboot</font>] mw 0x81000000 0 0x4000
+    │   ├─[<font color="#F4BF75">bbb-uboot</font>] setenv rootpath /opt/core-image-lsb-sdk-generic-armv7a-hf
+    │   ├─[<font color="#F4BF75">bbb-uboot</font>] run netnfsboot
+    │   │    &lt;&gt; Booting from network ... with nfsargs ...
+    │   │    &lt;&gt; link up on port 0, speed 100, full duplex
+    │   │    &lt;&gt; TFTP from server 192.168.1.1; our IP address is 192.168.1.10
+    │   │    &lt;&gt; Load address: 0x82000000
+    │   │    &lt;&gt; Loading: #################################################################
+    │   │    &lt;&gt; 	 ########################
+    │   │    &lt;&gt; 	 2.9 MiB/s
+    │   │    &lt;&gt; done
+    │   │    &lt;&gt; Bytes transferred = 9883000 (96cd78 hex)
+    │   │    &lt;&gt; link up on port 0, speed 100, full duplex
+    │   │    &lt;&gt; TFTP from server 192.168.1.1; our IP address is 192.168.1.10
+    │   │    &lt;&gt; Load address: 0x88000000
+    │   │    &lt;&gt; Loading: #####
+    │   │    &lt;&gt; 	 1.1 MiB/s
+    │   │    &lt;&gt; done
+    │   │    &lt;&gt; Bytes transferred = 64051 (fa33 hex)
+    │   │    &lt;&gt; ## Flattened Device Tree blob at 88000000
+    │   │    &lt;&gt;    Booting using the fdt blob at 0x88000000
+    │   │    &lt;&gt;    Loading Device Tree to 8ffed000, end 8ffffa32 ... OK
+    │   │    &lt;&gt;
+    │   │    &lt;&gt; Starting kernel ...
+    │   │    &lt;&gt;
+    │   │    &lt;&gt; [    0.000000] Booting Linux on physical CPU 0x0
+    │   │    &lt;&gt; [    0.000000] Linux version 4.9.126 (build@denx) (gcc version 7.2.1 20171011 (Linaro GCC 7.2-2017.11) ) #1 SMP PREEMPT Wed Dec 12 03:12:29 CET 2018
+    │   │    &lt;&gt; [    0.000000] CPU: ARMv7 Processor [413fc082] revision 2 (ARMv7), cr=10c5387d
+    │   │    &lt;&gt; [    0.000000] CPU: PIPT / VIPT nonaliasing data cache, VIPT aliasing instruction cache                                              Hello there ;)
+    │   │    &lt;&gt; [    0.000000] OF: fdt:Machine model: TI AM335x BeagleBone Black
+    │   │    &lt;&gt; [    0.000000] efi: Getting EFI parameters from FDT:
+    │   │    &lt;&gt; [    0.000000] efi: UEFI not found.
+    │   │    &lt;&gt; [    0.000000] cma: Reserved 48 MiB at 0x9c800000
+    [...]
+    │   │    &lt;&gt; Poky (Yocto Project Reference Distro) 2.4 generic-armv7a-hf /dev/ttyS0
+    │   │    &lt;&gt;
+    │   │    &lt;&gt; generic-armv7a-hf login: root
+    │   ├─Calling <font color="#A1EFE4"><b>selftest_machine_shell</b></font> ...
+    │   │   ├─Testing command output ...
+    │   │   ├─[<font color="#F4BF75">bbb-linux</font>] echo &apos;Hello World&apos;
+    │   │   │    ## Hello World
+    │   │   ├─[<font color="#F4BF75">bbb-linux</font>] echo &apos;$?&apos; &apos;!#&apos;
+    │   │   │    ## $? !#
+    [...]
+    │   │   └─<font color="#A6E22E"><b>Done</b></font>. (3.355s)
+    │   ├─<b>POWEROFF</b> (bbb)
+    │   ├─[<font color="#F4BF75">pollux</font>] remote_power bbb off
+    │   │    ## Power off  bbb: OK
+    │   └─<font color="#A6E22E"><b>Done</b></font>. (44.150s)
+    ├─────────────────────────────────────────
+    └─<font color="#A6E22E"><b>SUCCESS</b></font> (44.624s)</pre>
+    </div>
 
 Nice!
 
