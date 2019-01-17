@@ -1,6 +1,11 @@
 ``tbot.tc`` Module
 ==================
 
+Common
+------
+.. automodule:: tbot.tc
+.. autofunction:: tbot.tc.testsuite
+
 Shell
 -----
 .. automodule:: tbot.tc.shell

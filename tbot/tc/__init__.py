@@ -5,6 +5,37 @@ import traceback
 
 @tbot.testcase
 def testsuite(*args: typing.Callable, **kwargs: typing.Any) -> None:
+    """
+    Run a number of tests and report, how many of them succeeded.
+
+    :param args: Testcases
+    :param kwargs: Named-Arguments that should be given to each testcase.
+        Be aware that this requires all testcases to have compatible
+        signatures.
+
+    **Example**::
+
+        import tbot
+        from tbot import tc, machine
+
+        @tbot.testcase
+        def test_a(lab: machine.linux.LabHost) -> None:
+            lab.exec0("echo", "Test", "A")
+
+        @tbot.testcase
+        def test_b(lab: machine.linux.LabHost) -> None:
+            lab.exec0("uname", "-a")
+
+        @tbot.testcase
+        def all_tests() -> None:
+            with tbot.acquire_lab() as lh:
+                tc.testsuite(
+                    test_a,
+                    test_b,
+
+                    lab=lh,
+                )
+    """
     errors: typing.List[typing.Tuple[str, str]] = []
 
     for test in args:

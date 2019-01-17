@@ -168,4 +168,5 @@ class SSHMachine(linux.LinuxMachine):
 
     @property
     def lh(self) -> linux.LabHost:
+        """Return the lab-host that was used to establish this machines connection."""
         return self.labhost

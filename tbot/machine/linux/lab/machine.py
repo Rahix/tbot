@@ -63,6 +63,7 @@ class LabHost(linux.LinuxMachine):
         return chan
 
     def build(self) -> linux.BuildMachine:
+        """Return the default build-host for this lab."""
         raise KeyError("No build machine available!")
 
     def __repr__(self) -> str:
@@ -70,4 +71,5 @@ class LabHost(linux.LinuxMachine):
 
     @property
     def lh(self) -> "LabHost":
+        """Return this labhost."""
         return self

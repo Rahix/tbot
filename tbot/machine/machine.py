@@ -16,7 +16,7 @@
 
 import abc
 import typing
-import tbot
+import tbot  # noqa: F401
 
 Self = typing.TypeVar("Self", bound="Machine")
 
