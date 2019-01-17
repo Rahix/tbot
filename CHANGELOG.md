@@ -4,6 +4,8 @@
 ### Added
 - Graphviz `dot` diagram generator
 - New and improved documentation!
+- `LinuxMachine.fsroot`: A little convenience helper: You can now write
+  `mach.fsroot / "proc/version"` instead of `linux.Path(mach, "/proc/version")`
 
 ### Changed
 - tbot no longer automatically creates a log file.  If you want

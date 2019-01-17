@@ -115,6 +115,10 @@ def selftest_machine_shell(
         if f.exists():
             m.exec0("rm", f)
 
+        assert (
+            m.fsroot / "proc" / "version"
+        ).exists(), "/proc/version is missing for some reason ..."
+
         m.exec0("echo", "Some data\nAnd some more", stdout=f)
 
         out = m.exec0("cat", f)

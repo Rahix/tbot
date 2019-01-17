@@ -47,6 +47,19 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         """Return a path where testcases can store data on this host."""
         pass
 
+    @property
+    def fsroot(self: Self) -> "linux.Path[Self]":
+        """
+        Return a path to the filesystem root.
+
+        This is a helper to allow the following::
+
+            vers = lh.fsroot / "proc" / "version"
+
+        .. versionadded:: 0.6.6
+        """
+        return linux.Path(self, "/")
+
     @abc.abstractmethod
     def _obtain_channel(self) -> channel.Channel:
         pass
