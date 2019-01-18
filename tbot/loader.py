@@ -24,6 +24,14 @@ from termcolor2 import c
 def list_dir(
     d: pathlib.Path, recurse: bool = True
 ) -> typing.Generator[pathlib.Path, None, None]:
+    """
+    List all files ending in ``.py`` inside ``d``.
+
+    :param pathlib.Path d: Where to search
+    :param bool recurse: Whether to recurse into subdirectories
+    :rtype: pathlib.Path
+    :returns: A generator for iterating over all python files
+    """
     for f in d.iterdir():
         if recurse and f.is_dir() and f.name != "__pycache__":
             for subf in list_dir(f, recurse):
@@ -37,6 +45,28 @@ def get_file_list(
     dirs: typing.Iterable[pathlib.Path],
     files: typing.Iterable[pathlib.Path],
 ) -> typing.Generator[pathlib.Path, None, None]:
+    """
+    Find all files which should testcases should be read from.
+
+    The order is the following:
+
+    1. Builtin testcases, defined in ``tbot.tc.callable``,
+       eg. ``interactive_linux``
+    2. A file named ``tc.py`` in the current working directory
+       (affected by ``-C``)
+    3. All python files (recursively) from a folder named
+       ``tc/`` in the current working directory
+    4. Python files (non recursively) from all paths in the
+       ``$TBOTPATH`` environment variable
+    5. All python files (recursively) from folders specified
+       using ``-T``.
+    6. Files specified using ``-t``
+
+    :param env_dirs: Paths from ``$TBOTPATH``
+    :param dirs: Paths from ``-T``
+    :param files: Paths from ``-t``
+    :returns: Generator over all testcase files
+    """
     # Builtin testcases
     builtins = pathlib.Path(__file__).parent / "tc" / "callable.py"
     if builtins.is_file():
@@ -84,6 +114,12 @@ def get_file_list(
 
 
 def load_module(p: pathlib.Path) -> importlib.types.ModuleType:
+    """
+    Load a python module from a path.
+
+    :param pathlib.Path p: Path to ``<module>.py``
+    :rtype: Module
+    """
     import importlib.util
 
     if not p.is_file():
@@ -107,6 +143,16 @@ def load_module(p: pathlib.Path) -> importlib.types.ModuleType:
 def collect_testcases(
     files: typing.Iterable[pathlib.Path],
 ) -> typing.Dict[str, typing.Callable]:
+    """
+    Create a dict of all testcases found in the given files.
+
+    Reads all files in order and finds all functions annotated with
+    :func:`tbot.testcase`.  Will print a warning if two testcases
+    have the same name.
+
+    :param files: Iterator of files
+    :returns: A mapping of names to testcases (functions)
+    """
     testcases: typing.Dict[str, typing.Callable] = {}
 
     for f in files:
@@ -116,6 +162,11 @@ def collect_testcases(
             for name, func in module.__dict__.items():
                 if hasattr(func, "_tbot_testcase"):
                     if name in testcases:
+                        # If it already exists, check so we don't warn about the
+                        # testcase being imported into another files global namespace
+                        if testcases[name].__code__ is func.__code__:
+                            continue
+
                         print(
                             c("Warning").yellow.bold + f": Duplicate testcase {name!r}",
                             file=sys.stderr,

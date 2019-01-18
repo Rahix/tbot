@@ -47,6 +47,19 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         """Return a path where testcases can store data on this host."""
         pass
 
+    @property
+    def fsroot(self: Self) -> "linux.Path[Self]":
+        """
+        Return a path to the filesystem root.
+
+        This is a helper to allow the following::
+
+            vers = lh.fsroot / "proc" / "version"
+
+        .. versionadded:: 0.6.6
+        """
+        return linux.Path(self, "/")
+
     @abc.abstractmethod
     def _obtain_channel(self) -> channel.Channel:
         pass
@@ -183,6 +196,10 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
             is given, ``env`` will set, else it will just read a variable
         :rtype: str
         :returns: Value of the environment variable
+
+        .. versionadded:: 0.6.2
+        .. versionchanged:: 0.6.5
+            You can use ``env()`` to set environment variables as well.
         """
         if value is not None:
             self.exec0("export", linux.F("{}={}", var, value))
@@ -263,6 +280,8 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
                 lh.exec0("echo", linux.Env("FOOVAR"))  # Empty result
 
         :param Shell shell: Shell that is started
+
+        .. versionadded:: 0.6.1
         """
         shell = shell or self.shell
         if args == ():

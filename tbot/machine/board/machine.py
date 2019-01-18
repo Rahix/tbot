@@ -38,4 +38,5 @@ class BoardMachine(machine.Machine, typing.Generic[B]):
 
     @property
     def lh(self) -> machine.linux.LabHost:
+        """Return the lab-host of this board."""
         return self.board.lh

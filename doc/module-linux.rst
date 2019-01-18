@@ -1,3 +1,5 @@
+.. _mod:linux:
+
 ``tbot.machine.linux`` Module
 =============================
 

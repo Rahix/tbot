@@ -17,6 +17,8 @@ class Shell:
     command = ["sh"]
     """
     Command for starting this shell.
+
+    .. versionadded:: 0.6.4
     """
 
     @staticmethod

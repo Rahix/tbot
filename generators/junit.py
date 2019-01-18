@@ -155,23 +155,7 @@ def testcase_to_junit(
 def main() -> None:
     """Generate a JUnit XML file."""
 
-    try:
-        log = logparser.logfile(sys.argv[1])
-    except IndexError:
-        sys.stderr.write(
-            f"""\
-\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m
-"""
-        )
-        sys.exit(1)
-    except OSError:
-        sys.stderr.write(
-            f"""\
-\x1B[31mopen failed!\x1B[0m
-\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m
-"""
-        )
-        sys.exit(1)
+    log = logparser.from_argv()
 
     toplevels = parse_log(log)
     testcases: typing.List[junit_xml.TestCase] = []

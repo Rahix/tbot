@@ -3,6 +3,25 @@
 ## [Unreleased]
 
 
+## [0.6.6] - 2019-01-18
+### Added
+- Graphviz `dot` diagram generator
+- New and improved documentation!
+- `LinuxMachine.fsroot`: A little convenience helper: You can now write
+  `mach.fsroot / "proc/version"` instead of `linux.Path(mach, "/proc/version")`
+
+### Changed
+- tbot no longer automatically creates a log file.  If you want
+  the previous behavior, use `--log-auto`.  `--log=<file>` will
+  still behave as before.
+- `generators/generate_htmllog.py` -> `generators/htmllog.py`
+- `generators/debug_messages.py` -> `generators/messages.py`
+- `UBootMachine.env()` now also accepts `board.Special`s.
+
+### Fixed
+- Duplication warning when star-importing another testcase-file.
+
+
 ## [0.6.5] - 2018-12-20
 ### Added
 - `Machine.lh`: You can access the lab-host from every machine now.  The idea

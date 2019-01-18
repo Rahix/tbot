@@ -1,3 +1,5 @@
+.. _install:installation:
+
 Installation
 ============
 Clone `tbot's repository <https://github.com/Rahix/tbot>`_, then
@@ -9,6 +11,9 @@ install tbot using
 
 Also, if you haven't done this already, you need to add ``~/.local/bin`` to
 your ``$PATH``.
+
+.. note::
+    *tbot* requires at least **Python 3.6**.  Any version older than that **will not work**.
 
 Completions
 -----------

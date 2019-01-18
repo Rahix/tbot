@@ -1,6 +1,8 @@
 .. highlight:: python
    :linenothreshold: 3
 
+.. _building:building projects:
+
 Building Projects
 =================
 

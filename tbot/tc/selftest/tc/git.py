@@ -15,6 +15,7 @@ _GIT: typing.Optional[str] = None
 
 @tbot.testcase
 def git_prepare(lab: linux.LabHost) -> str:
+    """Prepare a test git repo."""
     global _GIT
 
     if _GIT is None:
@@ -68,6 +69,7 @@ A second file that will have been added by patching.""",
 
 @tbot.testcase
 def selftest_tc_git_checkout(lab: typing.Optional[linux.LabHost] = None,) -> None:
+    """Test checking out a repository."""
     with lab or tbot.acquire_lab() as lh:
         remote = git_prepare(lh)
         target = lh.workdir / "selftest-git-checkout"
@@ -106,6 +108,7 @@ def selftest_tc_git_checkout(lab: typing.Optional[linux.LabHost] = None,) -> Non
 
 @tbot.testcase
 def selftest_tc_git_apply(lab: typing.Optional[linux.LabHost] = None,) -> None:
+    """Test applying patches."""
     with lab or tbot.acquire_lab() as lh:
         remote = git_prepare(lh)
         target = lh.workdir / "selftest-git-apply"
@@ -159,6 +162,7 @@ This section was added by a second patch""",
 
 @tbot.testcase
 def selftest_tc_git_am(lab: typing.Optional[linux.LabHost] = None,) -> None:
+    """Test applying patches as commits."""
     with lab or tbot.acquire_lab() as lh:
         remote = git_prepare(lh)
         target = lh.workdir / "selftest-git-am"
@@ -209,6 +213,7 @@ This section was added by a second patch""",
 
 @tbot.testcase
 def selftest_tc_git_bisect(lab: typing.Optional[linux.LabHost] = None,) -> None:
+    """Test the git-bisect testcase."""
     with lab or tbot.acquire_lab() as lh:
         remote = git_prepare(lh)
         target = lh.workdir / "selftest-git-bisect"

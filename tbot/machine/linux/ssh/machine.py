@@ -92,6 +92,8 @@ class SSHMachine(linux.LinuxMachine):
                 ssh_config = ["ProxyJump=foo@example.com"]
 
         :rtype: list(str)
+
+        .. versionadded:: 0.6.2
         """
         return []
 
@@ -168,4 +170,5 @@ class SSHMachine(linux.LinuxMachine):
 
     @property
     def lh(self) -> linux.LabHost:
+        """Return the lab-host that was used to establish this machines connection."""
         return self.labhost

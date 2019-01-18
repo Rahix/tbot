@@ -5,12 +5,14 @@ from uboot import build as uboot_build  # noqa
 
 @tbot.testcase
 def interactive_lab() -> None:
+    """Start an interactive shell on the lab-host."""
     with tbot.acquire_lab() as lh:
         lh.interactive()
 
 
 @tbot.testcase
 def interactive_build() -> None:
+    """Start an interactive shell on the build-host."""
     with tbot.acquire_lab() as lh:
         with lh.build() as bh:
             bh.exec0("cd", bh.workdir)
@@ -19,6 +21,7 @@ def interactive_build() -> None:
 
 @tbot.testcase
 def interactive_board() -> None:
+    """Start an interactive session on the selected boards serial console."""
     with tbot.acquire_lab() as lh:
         with tbot.acquire_board(lh) as b:
             b.channel.attach_interactive()
@@ -26,6 +29,7 @@ def interactive_board() -> None:
 
 @tbot.testcase
 def interactive_uboot() -> None:
+    """Start an interactive U-Boot shell on the selected board."""
     with tbot.acquire_lab() as lh:
         with tbot.acquire_board(lh) as b:
             with tbot.acquire_uboot(b) as ub:
@@ -34,6 +38,7 @@ def interactive_uboot() -> None:
 
 @tbot.testcase
 def interactive_linux() -> None:
+    """Start an interactive Linux shell on the selected board."""
     with tbot.acquire_lab() as lh:
         with tbot.acquire_board(lh) as b:
             with tbot.acquire_linux(b) as lnx:

@@ -1,5 +1,12 @@
+.. _mod:builtin:
+
 ``tbot.tc`` Module
 ==================
+
+Common
+------
+.. automodule:: tbot.tc
+.. autofunction:: tbot.tc.testsuite
 
 Shell
 -----

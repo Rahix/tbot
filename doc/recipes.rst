@@ -1,3 +1,5 @@
+.. _recipes:recipes:
+
 Recipes
 =======
 
@@ -20,6 +22,7 @@ as a parameter, so it won't open a parallel connection each time::
         with lab or tbot.acquire_lab() as lh:
             ...
 
+.. _recipes:testcase with u-boot:
 
 Testcase with U-Boot
 --------------------
@@ -192,6 +195,7 @@ them from there.  Here's example code::
                 linux.Path(lo, "/tmp/documentation.tgz"),
             )
 
+.. _recipes:bisect:
 
 Bisect a git repository
 -----------------------

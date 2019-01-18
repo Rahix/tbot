@@ -4,7 +4,6 @@ repos:
     hooks:
     - id: black
       args: [--line-length=88, --safe]
-      python_version: python3.6
       exclude: ^(setup\.py$|doc)
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v1.2.1-1
@@ -30,20 +29,28 @@ repos:
     - id: selftests
       name: tbot selftest
       language: system
-      entry: python3 -c "__import__('sys').argv = ['tbot', '--log', '/tmp/tbot-log.json', 'selftest']; __import__('tbot.main').main.main()"
+      entry: python3 -c "__import__('sys').argv = ['tbot', '--log', '/tmp/tbot-log.json', '-vv', 'selftest']; __import__('tbot.main').main.main()"
       files: ^.*\.py$
+      pass_filenames: false
+      require_serial: true
     - id: generator_html
       name: tbot HTML log generator
       language: system
-      entry: sh -c "./generators/generate_htmllog.py /tmp/tbot-log.json >/dev/null"
+      entry: sh -c "./generators/htmllog.py /tmp/tbot-log.json >/dev/null"
       files: ^.*\.py$
+      pass_filenames: false
+      require_serial: true
     - id: generator_junit
       name: tbot junit generator
       language: system
       entry: sh -c "./generators/junit.py /tmp/tbot-log.json >/dev/null"
       files: ^.*\.py$
+      pass_filenames: false
+      require_serial: true
     - id: static_tests
       name: tbot type system tests
       language: system
       entry: ./static_tests/run.sh
       files: ^.*\.py$
+      pass_filenames: false
+      require_serial: true

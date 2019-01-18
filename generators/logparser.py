@@ -14,8 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import typing
 import json
+import pathlib
+import sys
+import typing
 
 
 class LogEvent:
@@ -35,8 +37,10 @@ class LogEvent:
 
 READ_SIZE = 8192
 
+Log = typing.Generator[LogEvent, None, None]
 
-def logfile(filename: str) -> typing.Generator[LogEvent, None, None]:
+
+def logfile(filename: str) -> Log:
     """Parse a logfile."""
     with open(filename, "r") as f:
         buf = f.read(READ_SIZE)
@@ -59,8 +63,28 @@ def logfile(filename: str) -> typing.Generator[LogEvent, None, None]:
             buf = buf[idx:].lstrip()
 
 
-if __name__ == "__main__":
-    import sys
+def from_argv() -> Log:
+    """Read logfile from location specified on commandline."""
+    try:
+        filename = pathlib.Path(sys.argv[1])
+        return logfile(str(filename))
+    except IndexError:
+        sys.stderr.write(
+            f"""\
+\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m
+"""
+        )
+        sys.exit(1)
+    except OSError:
+        sys.stderr.write(
+            f"""\
+\x1B[31mopen failed!\x1B[0m
+\x1B[1mUsage: {sys.argv[0]} <logfile>\x1B[0m
+"""
+        )
+        sys.exit(1)
 
-    for ev in logfile(sys.argv[1]):
+
+if __name__ == "__main__":
+    for ev in from_argv():
         print(repr(ev))

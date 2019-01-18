@@ -42,6 +42,12 @@ _tbot()
         return
     fi
 
+    if [[ "$prev" == "--log" ]]; then
+        cd "${workdir}" && _filedir
+        cd "${curdir}"
+        return
+    fi
+
     if [[ "$prev" == @(-f) ]]; then
         COMPREPLY=()
         return
@@ -52,6 +58,8 @@ _tbot()
             --help
             --board
             --lab
+            --log
+            --log-auto
             --version
             --list-testcases
             --list-files

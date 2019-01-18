@@ -1,3 +1,5 @@
+.. _config:configuration:
+
 Configuration
 =============
 tbot's configuration is also done in python.  There are two parts that can

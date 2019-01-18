@@ -135,6 +135,8 @@ class LinuxWithUBootMachine(LinuxMachine[B]):
         Messages that were printed out during startup.  You can access this
         attribute inside your testcases to get info about what was going on
         during boot.
+
+        .. versionadded:: 0.6.2
     """
 
     boot_commands: typing.Optional[
@@ -262,6 +264,8 @@ class LinuxStandaloneMachine(LinuxMachine[B]):
         Messages that were printed out during startup.  You can access this
         attribute inside your testcases to get info about what was going on
         during boot.
+
+        .. versionadded:: 0.6.2
     """
 
     def __init__(self, b: typing.Union[B, board.UBootMachine[B]]) -> None:  # noqa: D107

@@ -4,6 +4,10 @@
 Getting Started
 ===============
 
+.. warning::
+    This is the old tbot introduction.  The new version can be found
+    :ref:`here <quickstart>`.
+
 First Steps
 -----------
 tbot works out of the box.  You can run it's selftests like this::

@@ -115,6 +115,10 @@ def selftest_machine_shell(
         if f.exists():
             m.exec0("rm", f)
 
+        assert (
+            m.fsroot / "proc" / "version"
+        ).exists(), "/proc/version is missing for some reason ..."
+
         m.exec0("echo", "Some data\nAnd some more", stdout=f)
 
         out = m.exec0("cat", f)
@@ -159,9 +163,10 @@ def selftest_machine_shell(
         assert out == "", repr(out)
 
         with m.subshell():
-            m.env("SUBSHELL_TEST_VAR", "123")
+            out_b = m.env("SUBSHELL_TEST_VAR", "123")
             out = m.env("SUBSHELL_TEST_VAR")
             assert out == "123", repr(out)
+            assert out_b == "123", repr(out_b)
 
         out = m.env("SUBSHELL_TEST_VAR")
         assert out == "", repr(out)

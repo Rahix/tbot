@@ -45,6 +45,8 @@ class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
         Messages that were printed out during startup.  You can access this
         attribute inside your testcases to get info about what was going on
         during boot.
+
+        .. versionadded:: 0.6.2
     """
 
     autoboot_prompt: typing.Optional[str] = r"Hit any key to stop autoboot:\s+\d+\s+"
@@ -180,7 +182,9 @@ class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
         ret, _ = self.exec(*args)
         return ret == 0
 
-    def env(self, var: str, value: typing.Optional[str] = None) -> str:
+    def env(
+        self, var: str, value: typing.Union[str, special.Special, None] = None
+    ) -> str:
         """
         Get or set the value of an environment variable.
 
@@ -189,10 +193,16 @@ class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
             is given, ``env`` will set, else it will just read a variable
         :rtype: str
         :returns: Value of the environment variable
+
+        .. versionadded:: 0.6.2
+        .. versionchanged:: 0.6.5
+            You can use ``env()`` to set environment variables as well.
+        .. versionchanged:: 0.6.6
+            The value can now be any :mod:`tbot.machine.board.special`
         """
         if value is not None:
             self.exec0("setenv", var, value)
-            return value
+            return self.build_command(value)
         else:
             return self.exec0("echo", special.Raw(f"${{{var}}}"))[:-1]
 

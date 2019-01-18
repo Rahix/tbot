@@ -24,16 +24,23 @@ much modification also allow running tests in an automated setting (CI).
    :caption: Contents:
 
    install
-   getting-started
+   quickstart
    config
    building
    recipes
+   logging
+
    module-main
    module-machine
    module-linux
    module-board
    module-tc
 
+   CHANGELOG
+
+   getting-started
+
+   CONTRIBUTING
 
 
 Indices and tables

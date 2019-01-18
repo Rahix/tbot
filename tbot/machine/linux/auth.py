@@ -58,4 +58,6 @@ class NoneAuthenticator(Authenticator):
     Authenticates without key or password.
 
     Useful if an ssh-agent is running in the background on lab-hosts.
+
+    .. versionadded:: 0.6.4
     """
