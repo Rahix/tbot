@@ -1,0 +1,296 @@
+.TH TBOT 1 2019-01-23 "tbot 0.6.6-dev" "User Commands"
+.SH NAME
+tbot - Automation/Testing tool for Embedded Linux Development
+.\" ===========================================================================
+.SH SYNOPSIS
+.\" Normal usage
+.B tbot
+.RI [\| options \|]
+.RB [\| \-b \||\| \-\-board
+.IR board-config \|]
+.RB [\| \-l \||\| \-\-lab
+.IR lab-config \|]
+.RB [\| \-f
+.IR flag \|]
+.RB [\| \-p
+.IR name \|=\| expr \|]
+.IR testcase \ .\|.\|.\&
+.\" List files
+.br
+.B tbot
+.RI [\| options \|]
+.B \-\-list\-files
+.\" List testcases
+.br
+.B tbot
+.RI [\| options \|]
+.B \-\-list\-testcases
+.\" List flags
+.br
+.B tbot
+.RI [\| options \|]
+.RB [\| \-b \||\| \-\-board
+.IR board-config \|]
+.RB [\| \-l \||\| \-\-lab
+.IR lab-config \|]
+.B \-\-list\-flags
+.\" Show testcase signature
+.br
+.B tbot
+.RI [\| options \|]
+.BR \-s \||\| \-\-show
+.IR testcase \ .\|.\|.\&
+.\" Option file
+.br
+.B tbot
+.BI @ \&argsfile
+\|.\|.\|.\&
+
+.\" ===========================================================================
+.SH DESCRIPTION
+.B tbot
+is an automation and testing tool specifically tuned for embedded Linux development.
+.B tbot
+is written in Python 3.6+.  In normal operation
+.B tbot
+will execute the specified testcases in order.  If any failures occur, it will
+stop early.
+
+.\" ===========================================================================
+.SH OPTIONS
+.TP
+.BI @ \&argsfile
+I an argument starts with
+.BR @ \&,
+it will be interpreted as a filename, from which additional command-line arguments
+should be read, each line containing one.
+.\" ---------------------------------------------------------------------------
+.SS "Mode Determining Options"
+.TP
+.B \-\-version
+Print
+.BR tbot \(aqs
+version.
+.TP
+.B \-\-list\-files
+Show all python files that
+.B tbot
+will search for testcases.
+.TP
+.B \-\-list\-testcases
+List all testcases that can be called from the command-line (See
+.B TESTCASE\ SEARCH\ PATH
+below).
+.TP
+.B \-\-list\-flags
+List all flags defined in either the lab- or board-config.  Only useful if
+at least one of
+.BR \-l \||\| \-\-lab\  \fIlab-config
+and
+.BR \-b \||\| \-\-board\  \fIboard-config
+is also specified.
+.TP
+.BR \-s \||\| \-\-show\ \fItestcase\ \fR.\|.\|.
+Show the function signature and doc-string of all given
+.IR testcase \&s.
+.P
+If none of the above options are given,
+.B tbot
+will run all testcases specified on the command-line in order and
+abort early if any of them fail.
+
+.SS "Normal Mode Options"
+Options when calling
+.B tbot
+to run testcases.
+.TP
+.BR \-l \||\| \-\-lab\  \fIlab-config
+Load
+.I lab-config
+as the selected lab.  Refer to the online documentation for more info on
+configuration.
+.TP
+.BR \-b \||\| \-\-board\  \fIboard-config
+Load
+.I board-config
+as the selected board.  Refer to the online documentation for more info on
+configuration.
+.TP
+.BI \-f\  flag
+Set
+.I flag
+which can be used in one of the configuration files to change some behavior.
+Use
+.B \-\-list\-flags
+to see a list of defined flags.
+.TP
+.BI \-p\  name \fR\|=\| expr
+Set a parameter for the testcases that are called.
+.I name
+refers to the parameter name and
+.I expr
+is a python expression which is
+.BR eval \&uated
+and then given to the testcase.  Because of this, string values need to be
+surrounded by escaped quotes:
+.in +2
+.B -p\ string_arg=\(rs\(dqHello\ World\(rs\(dq
+.TP
+.BR \-i \||\| \-\-interactive
+Instruct
+.B tbot
+to ask the user for each command, whether she actually wants to run it.
+.TP
+.BI \-\-log-auto
+Automatically create a log-file named
+.I log/<lab>-<board>-<NNNN>.json
+where
+.I lab
+is the name of the selected lab,
+.I board
+the name of the selected board and
+.I NNNN
+an incrementing number.
+.TP
+.BI \-\-log\  log-file
+Write the log to
+.IR log-file \&.
+
+.\" ---------------------------------------------------------------------------
+.SS "General Options"
+.TP
+.BI \-C\  workdir
+Change the workdir to
+.I workdir
+before searching any files.  This means all paths on the commandline have to be
+relative to
+.IR workdir \&.
+.TP
+.BI \-T\  testcase-dir
+Search
+.I testcase-dir
+recursively for python files to be loaded as testcase sources.  All testcases
+from those files are available on the command-line (See
+.B TESTCASE\ SEARCH\ PATH
+below).
+.TP
+.BI \-t\  testcase-source
+Load the python file
+.I testcase-source
+and make all testcases it contains available on the command-line (See
+.B TESTCASE\ SEARCH\ PATH
+below).
+.TP
+.B \-v
+Make
+.BR tbot \(aqs
+output more verbose.  Each
+.B -v
+increases the verbosity level by one.  The following verbosity levels are
+available:
+.TS
+tab (@);
+l l r.
+Number@Name@Description
+_
+0@QUIET@Only show testcase starts and ends
+1@INFO@Default level.  Same as QUIET but also shows messages
+2@COMMAND@Show all commands that are executed
+3@STDOUT@Additionally show stdout of those commands
+4@CHANNEL@Show all data being sent and received on all channels
+.TE
+
+.TP
+.B \-q
+Make
+.BR tbot \(aqs
+output less verbose.  Each
+.B -q
+decreases the verbosity level by one.  See
+.B -v
+for available verbosity levels.
+
+.\" ===========================================================================
+.SH TESTCASE SEARCH PATH
+.B tbot
+searches for testcases in the following places in order.  All python files found
+are loaded as modules and each function they contain that is decorated with
+.B @tbot.testcase
+will be added to a global
+.I dict
+of available testcases.  If this dict already contains a testcase with a certain
+name,
+.B tbot
+will emit a warning and overwrite it.  This means the last file loaded has the
+highest "priority".
+.TP
+.B Built-in Testcases
+.B tbot
+will load its built-in testcases first.  They are located in
+.I tbot/tc/callable.py
+\&.
+.TP
+.B Default Locations
+Next,
+.B tbot
+will load a file named
+.I tc.py
+from the current directory (affected by
+.BR \-C \|)
+and search a folder
+.I tc/
+recursively.
+.B tbot
+silently ignores those if they don't exist.
+.TP
+.B TBOTPATH
+If an environment variable
+.B TBOTPATH
+exists, it will be interpreted as a colon separated list of directories to
+search nonrecursively for testcase files.
+.TP
+.BI \-T\  testcase-dir
+All
+.IR testcase-dir \&s
+will be searched recursively for testcase sources.
+.TP
+.BI \-t\  testcase-source
+Finally, files specified using
+.B \-t
+will be loaded.
+
+.\" ===========================================================================
+.SH ENVIRONMENT
+.TP
+.B TBOTPATH
+If
+.B TBOTPATH
+exists, it will be interpreted as a colon separated list of directories to
+search nonrecursively for testcase files.  See
+.B TESTCASE\ SEARCH\ PATH
+for more info.
+.TP
+.B CLICOLOR
+.B tbot
+adheres to the CLICOLOR convention:  If
+.B CLICOLOR
+is not 0 and it is not piped, it will output ANSI colors.  If
+.B CLICOLOR
+is 0, it will never output colors.
+.TP
+.B CLICOLOR_FORCE
+If
+.B CLICOLOR_FORCE
+is set to anything but 0,
+.B tbot
+will always output ANSI colors even if its output is piped.
+
+.\" ===========================================================================
+.SH "SEE ALSO"
+The
+.UR https://rahix.de/tbot
+online documentation
+.UE
+contains more info about
+.B tbot
+and its python API.

@@ -5,6 +5,7 @@
 - Read commandline arguments from files:  You can now specify a file using
   `@filename` and each line from that file will be interpreted as a commandline
   argument.
+- A [man-page](./doc/tbot.1)!
 
 
 ## [0.6.6] - 2019-01-18
