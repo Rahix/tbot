@@ -69,8 +69,12 @@ class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
 
         super().__init__(b.board if isinstance(b, board.UBootMachine) else b)
 
-    def boot_to_shell(self, stream: typing.TextIO) -> str:
-        """Wait for the login prompt."""
+    def _boot_to_shell(self, stream: typing.TextIO) -> str:
+        """
+        Wait for the login prompt.
+
+        You are not supposed to call this function from testcases!
+        """
         chan = self._obtain_channel()
         output = ""
 
@@ -227,7 +231,7 @@ class LinuxWithUBootMachine(LinuxMachine[B]):
             with tbot.log_event.command(ub.name, last_command) as ev:
                 ev.prefix = "   <> "
                 self.channel.send(last_command + "\n")
-                log = self.boot_to_shell(channel.SkipStream(ev, len(last_command) + 1))
+                log = self._boot_to_shell(channel.SkipStream(ev, len(last_command) + 1))
 
                 boot_ev.data["output"] = log[len(last_command) + 1 :]
 
@@ -285,7 +289,7 @@ class LinuxStandaloneMachine(LinuxMachine[B]):
         ) as ev:
             ev.prefix = "   <> "
             ev.verbosity = tbot.log.Verbosity.STDOUT
-            log = self.boot_to_shell(ev)
+            log = self._boot_to_shell(ev)
 
             ev.data["output"] = log
 
