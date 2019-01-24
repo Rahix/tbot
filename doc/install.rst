@@ -15,6 +15,12 @@ your ``$PATH``.
 .. note::
     *tbot* requires at least **Python 3.6**.  Any version older than that **will not work**.
 
+You can install tbot's man-page using
+
+::
+
+    sudo python3 setup.py install_data
+
 Completions
 -----------
 tbot supports command line completions. Enable them by adding

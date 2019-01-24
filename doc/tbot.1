@@ -60,10 +60,10 @@ stop early.
 .SH OPTIONS
 .TP
 .BI @ \&argsfile
-I an argument starts with
+If an argument starts with
 .BR @ \&,
 it will be interpreted as a filename, from which additional command-line arguments
-should be read, each line containing one.
+will be read, each line containing one.
 .\" ---------------------------------------------------------------------------
 .SS "Mode Determining Options"
 .TP
@@ -85,9 +85,9 @@ below).
 .B \-\-list\-flags
 List all flags defined in either the lab- or board-config.  Only useful if
 at least one of
-.BR \-l \||\| \-\-lab\  \fIlab-config
-and
-.BR \-b \||\| \-\-board\  \fIboard-config
+.BR \-l \||\| \-\-lab
+or
+.BR \-b \||\| \-\-board
 is also specified.
 .TP
 .BR \-s \||\| \-\-show\ \fItestcase\ \fR.\|.\|.
