@@ -6,6 +6,11 @@
   `@filename` and each line from that file will be interpreted as a commandline
   argument.
 - A man-page: `doc/tbot.1`!
+- `tbot.named_testcase`: Define testcases with a different name in log-files
+  than the function name.  The motivation is to reduce name ambiguity
+  (e.g. `uboot.build` and `linux.build` would both be called `build` in the
+  log).  This also affects the testcases name when calling it from the
+  commandline (you have to use the new name).
 
 ### Fixed
 - `boot_to_shell` is no longer a public method of `BoardLinux` machines.
