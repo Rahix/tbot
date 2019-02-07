@@ -12,6 +12,31 @@
   log).  This also affects the testcases name when calling it from the
   commandline (you have to use the new name).
 
+### Changed
+- The U-Boot build testcase has been completely rewritten.  You will need to
+  adapt you board config to work with the new version:
+
+  * The build-info no longer exists, instead you define a `UBootBuilder`.  Take
+    a look at the docs to see available options.
+  * The build attribute of your U-Boot machine must now be an **instance** of
+    your `UBootBuilder`, **not** the class itself.
+
+  Example of the new config:
+
+  ```python
+  from tbot.machine import board
+  from tbot.tc import uboot
+
+  class MyUBootBuilder(uboot.UBootBuilder):
+      name = "my-builder"
+      defconfig = "my_defconfig"
+      toolchain = "generic-armv7a-hf"
+
+  class MyUBootMachine(board.UBootMachine):
+      ...
+      build = MyUBootBuilder()
+  ```
+
 ### Fixed
 - `boot_to_shell` is no longer a public method of `BoardLinux` machines.
 
