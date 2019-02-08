@@ -6,6 +6,7 @@ from tbot.machine import linux
 from .git import *  # noqa: F403
 from .shell import *  # noqa: F403
 from .build import *  # noqa: F403
+from .uboot import *  # noqa: F403
 
 
 @tbot.testcase
@@ -19,5 +20,8 @@ def selftest_tc(lab: typing.Optional[linux.LabHost] = None,) -> None:
             selftest_tc_git_bisect,  # noqa: F405
             selftest_tc_shell_copy,  # noqa: F405
             selftest_tc_build_toolchain,  # noqa: F405
+            selftest_tc_uboot_checkout,  # noqa: F405
+            selftest_tc_uboot_build,  # noqa: F405
+            selftest_tc_uboot_patched_bisect,  # noqa: F405
             lab=lh,
         )

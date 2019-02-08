@@ -3,6 +3,47 @@
 ## [Unreleased]
 
 
+## [0.7.0] - 2019-02-08
+### Added
+- Read commandline arguments from files:  You can now specify a file using
+  `@filename` and each line from that file will be interpreted as a commandline
+  argument.
+- A man-page: `doc/tbot.1`!
+- `tbot.named_testcase`: Define testcases with a different name in log-files
+  than the function name.  The motivation is to reduce name ambiguity
+  (e.g. `uboot.build` and `linux.build` would both be called `build` in the
+  log).  This also affects the testcases name when calling it from the
+  commandline (you have to use the new name).
+
+### Changed
+- The U-Boot build testcase has been completely rewritten.  You will need to
+  adapt you board config to work with the new version:
+
+  * The build-info no longer exists, instead you define a `UBootBuilder`.  Take
+    a look at the docs to see available options.
+  * The build attribute of your U-Boot machine must now be an **instance** of
+    your `UBootBuilder`, **not** the class itself.
+
+  Example of the new config:
+
+  ```python
+  from tbot.machine import board
+  from tbot.tc import uboot
+
+  class MyUBootBuilder(uboot.UBootBuilder):
+      name = "my-builder"
+      defconfig = "my_defconfig"
+      toolchain = "generic-armv7a-hf"
+
+  class MyUBootMachine(board.UBootMachine):
+      ...
+      build = MyUBootBuilder()
+  ```
+
+### Fixed
+- `boot_to_shell` is no longer a public method of `BoardLinux` machines.
+
+
 ## [0.6.6] - 2019-01-18
 ### Added
 - Graphviz `dot` diagram generator

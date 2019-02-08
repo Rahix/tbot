@@ -41,6 +41,7 @@ class GitRepository(linux.Path[H]):
         url: typing.Optional[str] = None,
         *,
         clean: bool = True,
+        fetch: bool = True,
         rev: typing.Optional[str] = None,
     ) -> "GitRepository[H]":
         # Casting madness required because parent defines __new__
@@ -330,12 +331,12 @@ class GitRepository(linux.Path[H]):
 
                 success = test(self)
                 if success:
-                    self.git0("bisect", "good")
+                    self.git0("bisect", "good", current)
                     tbot.log.message(
                         f"Commit {current} is " + tbot.log.c("good").green + "."
                     )
                 else:
-                    self.git0("bisect", "bad")
+                    self.git0("bisect", "bad", current)
                     tbot.log.message(
                         f"Commit {current} is " + tbot.log.c("BAD").red + "."
                     )

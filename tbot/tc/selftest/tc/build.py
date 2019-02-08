@@ -17,17 +17,21 @@ class LocalDummyBuildhost(linux.lab.LocalLabHost, linux.BuildMachine):
             )
         }
 
+    @staticmethod
+    def prepare(h: linux.lab.LocalLabHost) -> None:
+        h.exec0(
+            "echo",
+            "export CC=dummy-none-gcc",
+            stdout=h.workdir / ".selftest-toolchain.sh",
+        )
+
 
 @tbot.testcase
 def selftest_tc_build_toolchain(lab: typing.Optional[linux.LabHost] = None,) -> None:
     """Test connecting to a buildhost and enabling a toolchain on there."""
     with LocalDummyBuildhost() as bh:
         tbot.log.message("Creating dummy toolchain ...")
-        bh.exec0(
-            "echo",
-            "export CC=dummy-none-gcc",
-            stdout=bh.workdir / ".selftest-toolchain.sh",
-        )
+        bh.prepare(bh)
 
         tbot.log.message("Attempt using it ...")
         cc = bh.env("CC")

@@ -53,7 +53,9 @@ def main() -> None:  # noqa: C901
 
     # ArgumentParser {{{
     parser = argparse.ArgumentParser(
-        prog=__about__.__title__, description=__about__.__summary__
+        prog=__about__.__title__,
+        description=__about__.__summary__,
+        fromfile_prefix_chars="@",
     )
 
     parser.add_argument("testcase", nargs="*", help="testcase that should be run.")

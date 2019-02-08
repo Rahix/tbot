@@ -19,7 +19,9 @@ setup(
     packages=find_packages(include=("tbot", "tbot.*")),
     install_requires=["paramiko", "termcolor2"],
     entry_points={
-        "console_scripts": ["tbot = tbot.main:main", "tbot-mgr = tbot.mgr:main"]
+        "console_scripts": ["tbot = tbot.main:main"]
     },
-    package_data={"tbot": ["builtin/*.py", "builtin/**/*.py"]},
+    data_files=[
+        ("man/man1", ["doc/tbot.1"]),
+    ],
 )

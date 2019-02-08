@@ -159,8 +159,9 @@ def collect_testcases(
         try:
             module = load_module(f)
 
-            for name, func in module.__dict__.items():
-                if hasattr(func, "_tbot_testcase"):
+            for func in module.__dict__.values():
+                name = getattr(func, "_tbot_testcase", None)
+                if name is not None:
                     if name in testcases:
                         # If it already exists, check so we don't warn about the
                         # testcase being imported into another files global namespace

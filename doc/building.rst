@@ -151,18 +151,21 @@ it from the commandline like this::
     tbot -l mylab.py -b boards/bbb.py uboot_build -vv
 
 
-For this to work, your board-config has to specify some U-Boot build options::
+For this to work, your board-config has to define a U-Boot builder::
 
-    class BeagleBoneUBootBuild(denx.DenxUBootBuildInfo):
+    from tbot.tc import uboot
+
+    class BeagleBoneUBootBuilder(uboot.UBootBuilder):
         name = "bbb"
         defconfig = "am335x_evm_defconfig"
         toolchain = "generic-armv7a-hf"
 
     class BeagleBoneUBoot(board.UBootMachine[BeagleBoneBlack]):
         prompt = "=> "
-        build = BeagleBoneUBootBuild
+        # Instanciate the builder for your U-Boot machine
+        build = BeagleBoneUBootBuilder()
 
     UBOOT = BeagleBoneUBoot
 
-Take a look at :class:`~tbot.tc.uboot.BuildInfo` for available options.  And don't forget setting ``build``
+Take a look at :class:`~tbot.tc.uboot.UBootBuilder` for available options.  And don't forget setting ``build``
 in your ``UBootMachine``!

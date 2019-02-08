@@ -212,6 +212,24 @@ This section was added by a second patch""",
 
 
 @tbot.testcase
+def git_increment_commits(repo: git.GitRepository) -> str:
+    counter = repo / "counter.txt"
+
+    for i in range(0, 24):
+        tbot.log.message(f"Create commit ({i+1:2}/24) ...")
+
+        repo.host.exec0("echo", str(i), stdout=counter)
+        repo.add(counter)
+        repo.commit(f"Set counter to {i}", author="tbot Selftest <none@none>")
+
+        if i == 0:
+            # Take the first commit with counter as good
+            rev = repo.head
+
+    return rev
+
+
+@tbot.testcase
 def selftest_tc_git_bisect(lab: typing.Optional[linux.LabHost] = None,) -> None:
     """Test the git-bisect testcase."""
     with lab or tbot.acquire_lab() as lh:
@@ -222,18 +240,7 @@ def selftest_tc_git_bisect(lab: typing.Optional[linux.LabHost] = None,) -> None:
             lh.exec0("rm", "-rf", target)
 
         repo = git.GitRepository(target, remote)
-        counter = repo / "counter.txt"
-
-        for i in range(0, 24):
-            tbot.log.message(f"Create commit ({i+1:2}/24) ...")
-
-            lh.exec0("echo", str(i), stdout=counter)
-            repo.add(counter)
-            repo.commit(f"Set counter to {i}", author="tbot Selftest <none@none>")
-
-            if i == 0:
-                # Take the first commit with counter as good
-                rev = repo.head
+        good = git_increment_commits(repo)
 
         @tbot.testcase
         def check_counter(repo: git.GitRepository) -> bool:
@@ -242,8 +249,7 @@ def selftest_tc_git_bisect(lab: typing.Optional[linux.LabHost] = None,) -> None:
 
         head = repo.symbolic_head
 
-        bad = repo.bisect(good=rev, test=check_counter)
-
+        bad = repo.bisect(good=good, test=check_counter)
         tbot.log.message(f"Bad commit is {bad}!")
 
         repo.git0("show", bad, linux.Pipe, "cat")

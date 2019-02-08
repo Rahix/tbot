@@ -20,7 +20,7 @@ as a parameter, so it won't open a parallel connection each time::
         lab: typing.Optional[linux.LabHost] = None,
     ) -> None:
         with lab or tbot.acquire_lab() as lh:
-            ...
+            lh.exec0("uname", "-a")
 
 .. _recipes:testcase with u-boot:
 
@@ -51,7 +51,7 @@ etc.
                 b = cx.enter_context(tbot.acquire_board(lh))
                 ub = cx.enter_context(tbot.acquire_uboot(b))
 
-            ...
+            ub.exec0("version")
 
 Testcase with Board Linux
 -------------------------
@@ -80,7 +80,7 @@ powercycling, etc.
                 b = cx.enter_context(tbot.acquire_board(lh))
                 lnx = cx.enter_context(tbot.acquire_linux(b))
 
-            ...
+            lnx.exec0("uname", "-a")
 
 
 Testcase that initializes Board

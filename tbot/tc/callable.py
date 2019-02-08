@@ -1,6 +1,7 @@
 import tbot
 from selftest import *  # noqa
-from uboot import build as uboot_build  # noqa
+from tbot.tc.uboot import build as uboot_build  # noqa
+from tbot.tc.uboot import checkout as uboot_checkout  # noqa
 
 
 @tbot.testcase

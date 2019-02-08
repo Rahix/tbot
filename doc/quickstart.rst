@@ -254,6 +254,11 @@ parameters.  There are two ways to "fix" this:
 As you'll see later on, there are cases where you should have default values and ones where
 it doesn't make sense.  You'll have to decide individually ...
 
+One more thing:  You'd expect a testcase to somehow be able to show whether it succeeded.  In tbot,
+a testcase that returns normally passes and one that raises an ``Exception`` has failed.  This is
+pretty convenient:  You can easily catch failures by using a try-block and your testcases will also
+automatically fail if anything unexpected happens.
+
 Machines
 --------
 Next up: Machines!  Machines are what tbot is made for.  Let's take a look at the diagram from the

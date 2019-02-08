@@ -23,9 +23,10 @@ Git
 
 U-Boot
 ------
+.. automodule:: tbot.tc.uboot
 .. automodule:: tbot.tc.uboot.build
     :noindex:
-.. automodule:: tbot.tc.uboot.build_info
 .. autofunction:: tbot.tc.uboot.build
-.. autoclass:: tbot.tc.uboot.BuildInfo
+.. autofunction:: tbot.tc.uboot.checkout
+.. autoclass:: tbot.tc.uboot.UBootBuilder
     :members:
