@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Fixed
+- `selftest`s sometimes failing if dropbear does not start fast enough
 
 
 ## [0.7.0] - 2019-02-08
