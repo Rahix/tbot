@@ -44,6 +44,13 @@ _tbot()
         return
     fi
 
+    if [[ "$cur" == \@* ]]; then
+        cur="${cur:1}"
+        _filedir
+        COMPREPLY=("${COMPREPLY[@]/#/@}")
+        return
+    fi
+
     if [[ "$prev" == "--log" ]]; then
         cd "${workdir}" && _filedir
         cd "${curdir}"
