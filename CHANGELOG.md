@@ -7,6 +7,8 @@
 
 ### Fixed
 - `selftest`s sometimes failing if dropbear does not start fast enough
+- `SSHMachine`s using the local user's home dir instead of the one on the
+  lab-host.
 
 
 ## [0.7.0] - 2019-02-08

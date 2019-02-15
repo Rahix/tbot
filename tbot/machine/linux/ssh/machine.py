@@ -16,7 +16,6 @@
 
 import abc
 import typing
-import pathlib
 from tbot import log_event
 from tbot.machine import channel, linux
 from tbot.machine.linux import auth
@@ -70,7 +69,7 @@ class SSHMachine(linux.LinuxMachine):
 
         :rtype: tbot.machine.linux.auth.Authenticator
         """
-        return auth.PrivateKeyAuthenticator(pathlib.Path.home() / ".ssh" / "id_rsa")
+        return auth.PrivateKeyAuthenticator(self.labhost.home / ".ssh" / "id_rsa")
 
     @property
     def port(self) -> int:
@@ -110,7 +109,7 @@ class SSHMachine(linux.LinuxMachine):
             # Careful, password WILL BE LEAKED!
             cmd = ["sshpass", "-p", authenticator.password, "ssh"]
         elif isinstance(authenticator, auth.PrivateKeyAuthenticator):
-            cmd = ["ssh", "-o", "BatchMode=yes", "-i", str(authenticator.key_file)]
+            cmd = ["ssh", "-o", "BatchMode=yes", "-i", authenticator.key_file]
         elif isinstance(authenticator, auth.NoneAuthenticator):
             cmd = ["ssh", "-o", "BatchMode=yes"]
         else:

@@ -50,7 +50,7 @@ class PrivateKeyAuthenticator(Authenticator):
 
         :param pathlib.Path key_file: Path to the private key file
         """
-        self.key_file = key_file
+        self.key_file = pathlib.PurePath.__str__(key_file)
 
 
 class NoneAuthenticator(Authenticator):
