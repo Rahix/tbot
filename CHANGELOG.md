@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- `tbot.tc.kconfig`:  Testcases for modifying a kernel config file
+
 ### Fixed
 - `selftest`s sometimes failing if dropbear does not start fast enough
 
