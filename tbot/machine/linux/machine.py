@@ -60,6 +60,17 @@ class LinuxMachine(machine.Machine, machine.InteractiveMachine):
         """
         return linux.Path(self, "/")
 
+    @property
+    def home(self: Self) -> "linux.Path[Self]":
+        """
+        Return a path to the current user's home directory.
+
+        Example::
+
+            bashrc = h.exec0("cat", h.home / ".bashrc").strip()
+        """
+        return linux.Path(self, self.env("HOME"))
+
     @abc.abstractmethod
     def _obtain_channel(self) -> channel.Channel:
         pass

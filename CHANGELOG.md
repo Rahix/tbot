@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Added
 - `tbot.tc.kconfig`:  Testcases for modifying a kernel config file
+- `LinuxMachine.home`: Path to the current user's home
 
 ### Fixed
 - `selftest`s sometimes failing if dropbear does not start fast enough
