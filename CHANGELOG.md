@@ -5,6 +5,10 @@
 - `tbot.tc.kconfig`:  Testcases for modifying a kernel config file
 - `LinuxMachine.home`: Path to the current user's home
 
+### Changed
+- Unknown parameters are now ignored if running multiple testcases so
+  you can specify parameters that are just relevant to a single one.
+
 ### Fixed
 - `selftest`s sometimes failing if dropbear does not start fast enough
 - `SSHMachine`s using the local user's home dir instead of the one on the

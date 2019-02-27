@@ -18,6 +18,7 @@ import sys
 import os
 import pathlib
 import argparse
+import inspect
 import typing
 from tbot import __about__
 
@@ -207,7 +208,6 @@ def main() -> None:  # noqa: C901
 
     if args.show:
         import textwrap
-        import inspect
 
         highlight = _import_hightlighter()
 
@@ -286,7 +286,30 @@ def main() -> None:  # noqa: C901
 
     try:
         for tc in args.testcase:
-            testcases[tc](**parameters)
+            func = testcases[tc]
+
+            if len(args.testcase) == 1:
+                params = parameters
+            else:
+                # Filter parameter list if multiple testcases are scheduled to run
+
+                try:
+                    func_code = getattr(func, "__wrapped__").__code__
+                except AttributeError:
+                    func_code = func.__code__
+                # Get list of argument names
+                argspec = inspect.getargs(func_code)
+
+                params = {}
+                for name, value in parameters.items():
+                    if argspec.varkw is not None or name in argspec.args:
+                        params[name] = value
+                    else:
+                        tbot.log.warning(
+                            f"Parameter {name!r} not defined for testcase {tc!r}, ignoring ..."
+                        )
+
+            func(**params)
     except Exception as e:  # noqa: E722
         import traceback
 
