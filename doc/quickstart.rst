@@ -12,9 +12,8 @@ First of all, install tbot.  Instructions are here: :ref:`install:Installation`.
 
 Let's get started!  To check if the installation went smoothly, try running tbot's selftests:
 
-.. raw:: html
+.. html-console::
 
-    <div class="highlight">
     <pre>bash-4.4$ tbot selftest
     <font color="#F4BF75"><b>tbot</b></font> starting ...
     ├─Calling <font color="#A1EFE4"><b>selftest</b></font> ...
@@ -43,14 +42,12 @@ Let's get started!  To check if the installation went smoothly, try running tbot
     │   └─<font color="#A6E22E"><b>Done</b></font>. (4.742s)
     ├─────────────────────────────────────────
     └─<font color="#A6E22E"><b>SUCCESS</b></font> (4.845s)</pre>
-    </div>
 
 If you feel adventurous, there are even more selftests that check if the built-in testcases
 work as intended:
 
-.. raw:: html
+.. html-console::
 
-    <div class="highlight">
     <pre>bash-4.4$ tbot selftest_tc
     <font color="#F4BF75"><b>tbot</b></font> starting ...
     ├─Calling <font color="#A1EFE4"><b>selftest_tc</b></font> ...
@@ -82,13 +79,11 @@ work as intended:
     │   └─<font color="#A6E22E"><b>Done</b></font>. (3.764s)
     ├─────────────────────────────────────────
     └─<font color="#A6E22E"><b>SUCCESS</b></font> (3.894s)</pre>
-    </div>
 
 tbot also allows you to run multiple testcases at once:
 
-.. raw:: html
+.. html-console::
 
-    <div class="highlight">
     <pre>bash-4.4$ tbot selftest selftest_tc
     <font color="#F4BF75"><b>tbot</b></font> starting ...
     ├─Calling <font color="#A1EFE4"><b>selftest</b></font> ...
@@ -107,7 +102,6 @@ tbot also allows you to run multiple testcases at once:
     │   └─<font color="#A6E22E"><b>Done</b></font>. (3.459s)
     ├─────────────────────────────────────────
     └─<font color="#A6E22E"><b>SUCCESS</b></font> (8.453s)</pre>
-    </div>
 
 If you want an overview of the available testcases, use this command::
 
@@ -119,9 +113,8 @@ The output you saw during the testcase runs was just a rough overview of what is
 might not be detailed enough for you.  By adding ``-v``, tbot will show all commands as they are
 executed.  Add another one: ``-vv`` and you will also see command outputs!
 
-.. raw:: html
+.. html-console::
 
-    <div class="highlight">
     <pre>bash-4.4$ tbot selftest_path_stat -vv
     <font color="#F4BF75"><b>tbot</b></font> starting ...
     ├─Calling <font color="#A1EFE4"><b>selftest_path_stat</b></font> ...
@@ -135,7 +128,6 @@ executed.  Add another one: ``-vv`` and you will also see command outputs!
     │   └─<font color="#A6E22E"><b>Done</b></font>. (0.145s)
     ├─────────────────────────────────────────
     └─<font color="#A6E22E"><b>SUCCESS</b></font> (0.278s)</pre>
-    </div>
 
 .. note::
     There is one more verbosity level: ``-vvv``.  This is for debugging, if something doesn't quite work.
@@ -145,9 +137,8 @@ executed.  Add another one: ``-vv`` and you will also see command outputs!
 One more commandline feature before we dive into python code:  If you are afraid of a destructive
 command, you can run tbot with ``--interactive``:
 
-.. raw:: html
+.. html-console::
 
-    <div class="highlight">
     <pre>bash-4.4$ tbot selftest_uname -vi
     <font color="#F4BF75"><b>tbot</b></font> starting ...
     ├─Calling <font color="#A1EFE4"><b>selftest_uname</b></font> ...
@@ -156,7 +147,6 @@ command, you can run tbot with ``--interactive``:
     │   └─<font color="#A6E22E"><b>Done</b></font>. (2.721s)
     ├─────────────────────────────────────────
     └─<font color="#A6E22E"><b>SUCCESS</b></font> (2.848s)</pre>
-    </div>
 
 Now tbot will kindly ask you before running each command!  (See? ``-emacs`` wouldn't answer as nicely!)
 
@@ -175,9 +165,8 @@ Ok, commandline isn't all that fun.  Let's dive deeper!  Some code please!
 This is tbot's hello world.  Stick this code into a file named ``tc.py``.  Now, if you check the list
 of testcases (``tbot --list-testcases``), ``hello_world`` pops up.  Run it!
 
-.. raw:: html
+.. html-console::
 
-    <div class="highlight">
     <pre>bash-4.4$ tbot hello_world
     <font color="#F4BF75"><b>tbot</b></font> starting ...
     ├─Calling <font color="#A1EFE4"><b>hello_world</b></font> ...
@@ -185,7 +174,6 @@ of testcases (``tbot --list-testcases``), ``hello_world`` pops up.  Run it!
     │   └─<font color="#A6E22E"><b>Done</b></font>. (0.000s)
     ├─────────────────────────────────────────
     └─<font color="#A6E22E"><b>SUCCESS</b></font> (0.127s)</pre>
-    </div>
 
 Hello tbot!
 
@@ -233,9 +221,8 @@ parameters.  There are two ways to "fix" this:
 2. Setting a value for the parameter!  That's right, you can set the parameter from the commandline.  It looks
    like this:
 
-   .. raw:: html
+   .. html-console::
 
-    <div class="highlight">
     <pre>bash-4.4$ tbot greet -p name=\&quot;tbot\&quot;
     <font color="#F4BF75"><b>tbot</b></font> starting ...
     ├─<b>Parameters:</b>
@@ -245,7 +232,6 @@ parameters.  There are two ways to "fix" this:
     │   └─<font color="#A6E22E"><b>Done</b></font>. (0.000s)
     ├─────────────────────────────────────────
     └─<font color="#A6E22E"><b>SUCCESS</b></font> (0.238s)</pre>
-    </div>
 
    Note the escaped quotes around ``\"tbot\"``.  They are necessary because the value is `eval()`-uated
    internally.  This is done to allow you to set values of any type with ease.  Any python
@@ -264,7 +250,13 @@ Machines
 Next up: Machines!  Machines are what tbot is made for.  Let's take a look at the diagram from the
 landing page again:
 
-.. image:: _static/tbot.svg
+.. only:: html
+
+   .. image:: _static/tbot.svg
+
+.. only:: latex
+
+   .. image:: _static/tbot.png
 
 Lab-host? It's a machine! Buildhost?  Just as well!  The boards you are testing?  You guessed it!
 
@@ -281,9 +273,8 @@ Let's start simple though:  Just run a command on the lab-host::
 
 Now try:
 
-.. raw:: html
+.. html-console::
 
-    <div class="highlight">
     <pre>bash-4.4$ tbot greet_user -v
     <font color="#F4BF75"><b>tbot</b></font> starting ...
     ├─Calling <font color="#A1EFE4"><b>greet_user</b></font> ...
@@ -291,9 +282,7 @@ Now try:
     │   ├─Hello hws!
     │   └─<font color="#A6E22E"><b>Done</b></font>. (0.070s)
     ├─────────────────────────────────────────
-    └─<font color="#A6E22E"><b>SUCCESS</b></font> (0.173s)
-    </pre>
-    </div>
+    └─<font color="#A6E22E"><b>SUCCESS</b></font> (0.173s)</pre>
 
 As you can see, tbot ran ``id --user --name`` to find your name.  You might be curious about the ``[local]``
 part: That's the machine tbot ran the command on.  By default, the lab-host is your localhost. We'll
@@ -329,9 +318,8 @@ do some work, then do something manually.  Like a symbiotic development process.
 you a lot more productive if you embrace this idea!  There is also a testcase to call it from the
 commandline:
 
-.. raw:: html
+.. html-console::
 
-    <div class="highlight">
     <pre>bash-4.4$ tbot interactive_lab
     <font color="#F4BF75"><b>tbot</b></font> starting ...
     ├─Calling <font color="#A1EFE4"><b>interactive_lab</b></font> ...
@@ -345,7 +333,6 @@ commandline:
     │   └─<font color="#A6E22E"><b>Done</b></font>. (49.746s)
     ├─────────────────────────────────────────
     └─<font color="#A6E22E"><b>SUCCESS</b></font> (49.851s)</pre>
-    </div>
 
 Configuration
 -------------
@@ -385,9 +372,8 @@ Try using your config now!
 Congratulations! You now have a remote session on your lab-host!  You could also run some selftest to verify
 that tbot can run these commands on your new lab-host as well:
 
-.. raw:: html
+.. html-console::
 
-    <div class="highlight">
     <pre>bash-4.4$ tbot -l lab.py selftest_path_integrity -vv
     <font color="#F4BF75"><b>tbot</b></font> starting ...
     ├─Calling <font color="#A1EFE4"><b>selftest_path_integrity</b></font> ...
@@ -407,7 +393,6 @@ that tbot can run these commands on your new lab-host as well:
     │   └─<font color="#A6E22E"><b>Done</b></font>. (2.833s)
     ├─────────────────────────────────────────
     └─<font color="#A6E22E"><b>SUCCESS</b></font> (2.959s)</pre>
-    </div>
 
 As you can see, now it says ``[awesome-lab]`` in front of the commands.  tbot is running commands
 remotely!
@@ -512,9 +497,8 @@ You now have a shell on the board!  As before, you can also try running a selfte
 
     $ tbot -l lab.py -b my-board.py selftest_board_linux -vv
 
-.. raw:: html
+.. html-console::
 
-    <div class="highlight">
     <pre>bash-4.4$ tbot -l lab.py -b my-board.py selftest_board_linux -vv
     <font color="#F4BF75"><b>tbot</b></font> starting ...
     ├─Calling <font color="#A1EFE4"><b>selftest_board_linux</b></font> ...
@@ -593,7 +577,6 @@ You now have a shell on the board!  As before, you can also try running a selfte
     │   └─<font color="#A6E22E"><b>Done</b></font>. (44.150s)
     ├─────────────────────────────────────────
     └─<font color="#A6E22E"><b>SUCCESS</b></font> (44.624s)</pre>
-    </div>
 
 Nice!
 
