@@ -27,7 +27,7 @@ Self = typing.TypeVar("Self", bound="LinuxMachine")
 class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
     """Abstract base class for board linux machines."""
 
-    login_prompt = "login: "
+    login_prompt = "login:"
     """Prompt that indicates tbot should send the username."""
 
     @property
