@@ -30,6 +30,9 @@ class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
     login_prompt = "login:"
     """Prompt that indicates tbot should send the username."""
 
+    login_delay = 0
+    """The delay between first occurence of login_prompt and actual login."""
+
     @property
     @abc.abstractmethod
     def shell(self) -> typing.Type[linux.shell.Shell]:
@@ -81,6 +84,18 @@ class LinuxMachine(linux.LinuxMachine, board.BoardMachine[B]):
         output += chan.read_until_prompt(
             self.login_prompt, stream=stream, must_end=False
         )
+
+        # On purpose do not login immediately as we may get some
+        # console flooding from upper SW layers (and tbot's console setup
+        # may get broken)
+        if self.password is None and self.login_delay != 0:
+            try:
+                output += chan.read_until_prompt(
+                    "", stream=stream, timeout=self.login_delay
+                )
+            except TimeoutError:
+                pass
+            chan.send("\n")
 
         chan.send(self.username + "\n")
         if self.password is not None:

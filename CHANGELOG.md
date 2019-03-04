@@ -4,6 +4,8 @@
 ### Added
 - `tbot.tc.kconfig`:  Testcases for modifying a kernel config file
 - `LinuxMachine.home`: Path to the current user's home
+- `login_delay`: Time to wait before logging in on the board.  This should
+  allow working with boards that clobber the console a lot during boot.
 
 ### Changed
 - Unknown parameters are now ignored if running multiple testcases so
