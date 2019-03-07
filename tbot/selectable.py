@@ -66,6 +66,28 @@ def acquire_lab() -> LabHost:
     return LabHost()
 
 
+def acquire_local() -> linux.lab.LocalLabHost:
+    """
+    Acquire a machine for the local host.
+
+    Localhost machines are very cheap so they do not need to be shared
+    like the others and you can create as many as you want.  One usecase
+    might be copying test-results to you local machine after the run.
+
+    Example::
+
+        import tbot
+
+        @tbot.testcase
+        def my_testcase() -> None:
+            with tbot.acquire_local() as lo:
+                lo.exec0("id", "-un")
+                # On local machines you can access tbot's working directory:
+                tbot.log.message(f"CWD: {lo.tbotdir}")
+    """
+    return linux.lab.LocalLabHost()
+
+
 class Board(board.Board, typing.ContextManager):
     """Dummy type that will be replaced by the actual selected board at runtime."""
 

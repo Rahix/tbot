@@ -2,8 +2,11 @@
 
 ## [Unreleased]
 ### Added
-- `tbot.tc.kconfig`:  Testcases for modifying a kernel config file
+- `tbot.acquire_local()`: Quick access to a localhost machine
 - `LinuxMachine.home`: Path to the current user's home
+- `LocalLabHost.tbotdir`: tbot's current working directory on the localhost (either
+  from where you ran `tbot` or the path given with `-C`)
+- `tbot.tc.kconfig`:  Testcases for modifying a kernel config file
 - `login_delay`: Time to wait before logging in on the board.  This should
   allow working with boards that clobber the console a lot during boot.
 
