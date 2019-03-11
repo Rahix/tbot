@@ -178,6 +178,9 @@ def main() -> None:  # noqa: C901
     # Enable interactive mode
     if args.interactive:
         log.INTERACTIVE = True
+
+        # Verbosity has to be at least command level
+        log.VERBOSITY = max(log.VERBOSITY, log.Verbosity.COMMAND)
     # }}}
 
     from tbot import loader
