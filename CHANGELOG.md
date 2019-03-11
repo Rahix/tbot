@@ -13,6 +13,7 @@
 ### Changed
 - Unknown parameters are now ignored if running multiple testcases so
   you can specify parameters that are just relevant to a single one.
+- `SSHMachine`s now use `NoneAuthenticator` by default.
 
 ### Fixed
 - `selftest`s sometimes failing if dropbear does not start fast enough

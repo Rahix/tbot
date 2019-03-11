@@ -69,7 +69,7 @@ class SSHMachine(linux.LinuxMachine):
 
         :rtype: tbot.machine.linux.auth.Authenticator
         """
-        return auth.PrivateKeyAuthenticator(self.labhost.home / ".ssh" / "id_rsa")
+        return auth.NoneAuthenticator()
 
     @property
     def port(self) -> int:
