@@ -76,12 +76,12 @@ def command(mach: str, cmd: str) -> log.EventIO:
         verbosity=log.Verbosity.COMMAND,
         cmd=cmd,
     )
-    ev.prefix = "   ## "
 
     if log.INTERACTIVE:
-        if input(c("OK [Y/n]? ").magenta).upper() not in ("", "Y"):
+        if input(ev._prefix() + c("  OK [Y/n]? ").magenta).upper() not in ("", "Y"):
             raise RuntimeError("Aborted by user")
 
+    ev.prefix = "   ## "
     ev.verbosity = log.Verbosity.STDOUT
     return ev
 

@@ -41,7 +41,7 @@ def main() -> None:
             return f"""\
                        <div class="section block">
                          <div class="section-header block-header">
-                           {ev.data['name']}
+                           <span class="testcase">{ev.data['name']}</span>
                          </div>
                          <div class="section-content block-content">
                            """
@@ -60,7 +60,7 @@ def main() -> None:
                          </div>
                        </div>"""
         elif ev.type[0] == "cmd":
-            shell_type = f"[{ev.type[1]}]"
+            shell_type = f'[<span class="host">{ev.type[1]}</span>]'
             command = ev.data["cmd"]
             try:
                 output = (

@@ -101,7 +101,14 @@ def minisshd(h: linux.LabHost, port: int = 2022) -> typing.Generator:
 
     h.exec0("dropbear", "-p", "127.0.0.1:2022", "-r", key_file, "-P", pid_file)
 
-    pid = h.exec0("cat", pid_file).strip()
+    # Try reading the file again if it does not yet exist
+    for i in range(10):
+        ret, pid = h.exec("cat", pid_file)
+        if ret == 0:
+            pid = pid.strip()
+            break
+    else:
+        raise RuntimeError("dropbear did not create a pid-file!")
 
     try:
         ssh_machine = MiniSSHMachine(h, port)

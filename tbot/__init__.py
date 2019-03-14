@@ -20,7 +20,13 @@ import functools
 from tbot import log, log_event
 
 from . import selectable
-from .selectable import acquire_lab, acquire_board, acquire_uboot, acquire_linux
+from .selectable import (
+    acquire_lab,
+    acquire_board,
+    acquire_uboot,
+    acquire_linux,
+    acquire_local,
+)
 
 __all__ = (
     "selectable",
@@ -28,6 +34,7 @@ __all__ = (
     "acquire_board",
     "acquire_uboot",
     "acquire_linux",
+    "acquire_local",
     "testcase",
     "log",
     "log_event",

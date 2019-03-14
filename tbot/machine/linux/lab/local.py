@@ -16,6 +16,7 @@
 
 import typing
 import getpass
+import os
 from tbot.machine import linux
 from tbot.machine import channel
 from .machine import LabHost
@@ -49,6 +50,13 @@ class LocalLabHost(LabHost):
                 self.exec0("mkdir", "-p", p)
             setattr(self, "_wd_marker", None)
         return p
+
+    @property
+    def tbotdir(self: LLH) -> "linux.Path[LLH]":
+        """
+        Return the path to tbot's working directory.
+        """
+        return linux.Path(self, os.getcwd())
 
     @property
     def username(self) -> str:

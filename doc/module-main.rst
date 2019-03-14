@@ -6,6 +6,7 @@
 .. autofunction:: tbot.testcase
 .. autofunction:: tbot.named_testcase
 .. autofunction:: tbot.acquire_lab
+.. autofunction:: tbot.acquire_local
 .. autofunction:: tbot.acquire_board
 .. autofunction:: tbot.acquire_uboot
 .. autofunction:: tbot.acquire_linux

@@ -118,7 +118,7 @@ def selftest_tc_uboot_checkout(lab: typing.Optional[linux.LabHost] = None) -> No
 def selftest_tc_uboot_build(lab: typing.Optional[linux.LabHost] = None) -> None:
     from tbot.tc.selftest.tc import build
 
-    with linux.lab.LocalLabHost() as lh:
+    with tbot.acquire_local() as lh:
         builder = _uboot_prepare(lh)
 
         build.LocalDummyBuildhost.prepare(lh)

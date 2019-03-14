@@ -30,3 +30,12 @@ U-Boot
 .. autofunction:: tbot.tc.uboot.checkout
 .. autoclass:: tbot.tc.uboot.UBootBuilder
     :members:
+
+Kconfig
+-------
+.. automodule:: tbot.tc.kconfig
+.. autofunction:: tbot.tc.kconfig.enable
+.. autofunction:: tbot.tc.kconfig.module
+.. autofunction:: tbot.tc.kconfig.disable
+.. autofunction:: tbot.tc.kconfig.set_string_value
+.. autofunction:: tbot.tc.kconfig.set_hex_value

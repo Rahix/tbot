@@ -13,7 +13,13 @@ and an extensive library of routines that are common in embedded development/tes
 tbot aims to be a support for the developer while working on a project and without
 much modification also allow running tests in an automated setting (CI).
 
-.. image:: _static/tbot.svg
+.. only:: html
+
+   .. image:: _static/tbot.svg
+
+.. only:: latex
+
+   .. image:: _static/tbot.png
 
 .. note::
     The **tbot Host** and the **Lab Host** can also be the same machine in which case

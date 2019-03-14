@@ -40,7 +40,10 @@ language = None
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'monokai'
+if tags.has("pygments-light"):
+    pygments_style = 'default'
+else:
+    pygments_style = 'monokai'
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
@@ -73,10 +76,15 @@ htmlhelp_basename = 'tbotdoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
+latex_logo = '_static/tbot-logo.png'
 latex_elements = {
     'papersize': 'a4paper',
     # 'pointsize': '10pt',
-    # 'preamble': '',
+    'preamble': r"""
+\usepackage{alltt}
+
+\DeclareUnicodeCharacter{1F8A5}{$\Rightarrow$}
+""",
 
     # Latex figure (float) alignment
     # 'figure_align': 'htbp',
@@ -110,8 +118,53 @@ intersphinx_mapping = {
 }
 
 
-# Fix instance variables being cross-referenced
+# -- html-console extension -----------------------------------------------
+from docutils.parsers import rst
 from docutils import nodes
+import re
+
+def setup(app):
+    app.add_directive("html-console", HtmlConsoleDirective)
+
+
+class HtmlConsoleDirective(rst.Directive):
+    has_content = True
+    required_arguments = 0
+    optional_arguments = 0
+    option_spec = {}
+
+    pat_pre = re.compile(r'</?pre>')
+    pat_color = re.compile(r'<font color="#([A-Z0-9]+)">(.+?)</font>')
+    pat_bold = re.compile(r'<b>(.+?)</b>')
+
+    def run(self):
+        self.assert_has_content()
+        text = '\n'.join(self.content)
+
+        gen = []
+        # Add html version
+        html_text = '<div class="highlight">\n' + text + '\n</div>'
+        gen.append(nodes.raw(text, html_text, format="html"))
+
+        # Add latex version
+        latex_text = "\\begin{sphinxVerbatim}[commandchars=\\\\\\{\\}]\n"
+        transformed = text
+        transformed = transformed.replace("\\", "\\textbackslash{}")
+        transformed = self.pat_pre.sub('', transformed)
+        transformed = self.pat_color.sub(r'\\textcolor[HTML]{\1}{\2}', transformed)
+        transformed = self.pat_bold.sub(r'\\textbf{\1}', transformed)
+        transformed = transformed.replace("&lt;", "<")
+        transformed = transformed.replace("&gt;", ">")
+        transformed = transformed.replace("&apos;", r"\textsc{\char39}")
+        transformed = transformed.replace("&quot;", '"')
+        latex_text += transformed
+        latex_text += "\n\\end{sphinxVerbatim}"
+        gen.append(nodes.raw(text, latex_text, format="latex"))
+
+        return gen
+
+
+# Fix instance variables being cross-referenced
 from sphinx.util.docfields import TypedField
 from sphinx import addnodes
 

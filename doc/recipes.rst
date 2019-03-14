@@ -151,8 +151,8 @@ process::
 
     @tbot.testcase
     def build_my_code() -> None:
-        with linux.lab.LocalLabHost() as lo:
-            lo.exec0("cd", "/home/hws/Documents/Developing/tbot")
+        with tbot.acquire_local() as lo:
+            lo.exec0("cd", lo.tbotdir)
             lo.exec0("sphinx-build", "-M", "html", "doc/", "doc/_build/")
             lo.exec0("cd", "doc/_build")
             lo.exec0("tar", "czvf", "documentation.tgz", "html")
@@ -162,7 +162,7 @@ process::
         lab: typing.Optional[linux.LabHost] = None,
     ) -> None:
         with contextlib.ExitStack() as cx:
-            lo = cx.enter_context(linux.lab.LocalLabHost())
+            lo = cx.enter_context(tbot.acquire_local())
             lh = cx.enter_context(lab or tbot.acquire_lab())
             shell.copy(
                 linux.Path(lo, "/home/hws/Documents/Developing/tbot/doc/_build/documentation.tgz"),
@@ -188,7 +188,7 @@ them from there.  Here's example code::
         lab: typing.Optional[linux.LabHost] = None,
     ) -> None:
         with contextlib.ExitStack() as cx:
-            lo = cx.enter_context(linux.lab.LocalLabHost())
+            lo = cx.enter_context(tbot.acquire_local())
             lh = cx.enter_context(lab or tbot.acquire_lab())
             shell.copy(
                 lh.workdir / "doc.tgz",

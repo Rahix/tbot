@@ -3,6 +3,29 @@
 ## [Unreleased]
 
 
+## [0.7.1] - 2019-03-14
+### Added
+- `tbot.acquire_local()`: Quick access to a localhost machine
+- `LinuxMachine.home`: Path to the current user's home
+- `LocalLabHost.tbotdir`: tbot's current working directory on the localhost (either
+  from where you ran `tbot` or the path given with `-C`)
+- `tbot.tc.kconfig`:  Testcases for modifying a kernel config file
+- `login_delay`: Time to wait before logging in on the board.  This should
+  allow working with boards that clobber the console a lot during boot.
+
+### Changed
+- Unknown parameters are now ignored if running multiple testcases so
+  you can specify parameters that are just relevant to a single one.
+- `SSHMachine`s now use `NoneAuthenticator` by default.
+
+### Fixed
+- `selftest`s sometimes failing if dropbear does not start fast enough
+- `SSHMachine`s using the local user's home dir instead of the one on the
+  lab-host.
+- Local channels now correctly end the session which fixes weird bugs like
+  picocom not being able to reaquire the shell.
+
+
 ## [0.7.0] - 2019-02-08
 ### Added
 - Read commandline arguments from files:  You can now specify a file using
