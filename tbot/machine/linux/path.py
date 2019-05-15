@@ -147,3 +147,6 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self._host!r}, {super().__str__()!r})"
+
+    def __fspath__(self) -> str:
+        raise NotImplementedError("__fspath__ does not exist for tbot paths!")
