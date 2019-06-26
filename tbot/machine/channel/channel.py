@@ -141,6 +141,11 @@ class Channel(abc.ABC):
         """
         pass
 
+    def __init__(self) -> None:
+        """Create a new channel."""
+        self.cleanup: typing.Callable[[], None] = lambda: None
+        self.initialize()
+
     def _interactive_setup(self) -> None:
         """Do some setup before making a channel interactive."""
         pass
@@ -253,11 +258,6 @@ class Channel(abc.ABC):
         cmd = sh.set_prompt2("")
         if cmd is not None:
             self.raw_command(cmd)
-
-    def __init__(self) -> None:
-        """Create a new channel."""
-        self.cleanup: typing.Callable[[], None] = lambda: None
-        self.initialize()
 
     def recv_n(self, n: int, timeout: typing.Optional[float] = None) -> bytes:
         """
