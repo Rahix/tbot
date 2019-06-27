@@ -48,6 +48,10 @@ class ChannelIO(typing.ContextManager):
     def closed(self) -> bool:
         pass
 
+    @abc.abstractmethod
+    def update_pty(self, columns: int, lines: int) -> None:
+        pass
+
     def __enter__(self: ChanIO) -> ChanIO:
         return self
 

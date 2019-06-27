@@ -18,7 +18,9 @@ import fcntl
 import os
 import pty
 import select
+import struct
 import subprocess
+import termios
 import time
 import typing
 
@@ -122,3 +124,7 @@ class SubprocessChannelIO(channel.ChannelIO):
     def closed(self) -> bool:
         self.p.poll()
         return self.p.returncode is not None
+
+    def update_pty(self, columns: int, lines: int) -> None:
+        s = struct.pack("HHHH", lines, columns, 0, 0)
+        fcntl.ioctl(self.pty_master, termios.TIOCSWINSZ, s)

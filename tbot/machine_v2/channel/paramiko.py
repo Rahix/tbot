@@ -29,6 +29,7 @@ class ParamikoChannelIO(channel.ChannelIO):
 
         self.ch.get_pty("xterm-256color", 80, 25, 1024, 1024)
         self.ch.invoke_shell()
+        self.ch.settimeout(0.0)
 
     def write(self, buf: bytes) -> None:
         if self.closed:
@@ -43,8 +44,7 @@ class ParamikoChannelIO(channel.ChannelIO):
             cursor += bytes_written
 
     def read(self, max: int = -1, timeout: typing.Optional[float] = None) -> bytes:
-        if timeout is not None:
-            self.ch.settimeout(timeout)
+        self.ch.settimeout(timeout)
 
         try:
             max_read = min(1024, max) if max > 0 else 1024
@@ -60,8 +60,7 @@ class ParamikoChannelIO(channel.ChannelIO):
         except socket.timeout:
             raise TimeoutError()
         finally:
-            if timeout is not None:
-                self.ch.settimeout(None)
+            self.ch.settimeout(0.0)
 
         return buf
 
@@ -77,3 +76,6 @@ class ParamikoChannelIO(channel.ChannelIO):
     @property
     def closed(self) -> bool:
         return self.ch.exit_status_ready()
+
+    def update_pty(self, columns: int, lines: int) -> None:
+        self.ch.resize_pty(columns, lines, 1024, 1024)
