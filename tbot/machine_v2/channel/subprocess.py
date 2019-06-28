@@ -47,20 +47,16 @@ class SubprocessChannelIO(channel.ChannelIO):
         flags = flags | os.O_NONBLOCK
         fcntl.fcntl(self.pty_master, fcntl.F_SETFL, flags)
 
-    def write(self, buf: bytes) -> None:
+    def write(self, buf: bytes) -> int:
         if self.closed:
             raise channel.ChannelClosedException()
 
-        length = len(buf)
-        cursor = 0
-        while cursor < length:
-            bytes_written = os.write(self.pty_master, buf[cursor:])
-            if bytes_written == 0:
-                raise Exception("closed")
-            cursor += bytes_written
+        bytes_written = os.write(self.pty_master, buf)
+        if bytes_written == 0:
+            raise channel.ChannelClosedException
+        return bytes_written
 
-    def read(self, n: int = -1, timeout: typing.Optional[float] = None) -> bytes:
-        start_time = time.clock()
+    def read(self, n: int, timeout: typing.Optional[float] = None) -> bytes:
         if not self.closed:
             # If the process is still running, wait
             # for one byte or the timeout to arrive
@@ -68,45 +64,10 @@ class SubprocessChannelIO(channel.ChannelIO):
             if self.pty_master not in r:
                 raise TimeoutError()
 
-        # Read the first chunk.  If this fails, it is because the channel is closed.
-        # This is guaranteed because we waited using the select above.
-        max_read = min(READ_CHUNK_SIZE, n) if n > 0 else READ_CHUNK_SIZE
         try:
-            buf = os.read(self.pty_master, max_read)
+            return os.read(self.pty_master, n)
         except (BlockingIOError, OSError):
             raise channel.ChannelClosedException
-
-        # Read remaining chunks until a BlockingIOError which signals that no more
-        # bytes can be read for now.
-        while True:
-            max_read = min(READ_CHUNK_SIZE, n - len(buf)) if n > 0 else READ_CHUNK_SIZE
-            if max_read == 0:
-                # We have read exactly n bytes and can return now
-                break
-
-            try:
-                new = os.read(self.pty_master, max_read)
-                buf += new
-            except BlockingIOError:
-                if n > 0:
-                    # If we are doing an exact read, wait until new bytes become
-                    # available
-                    timeout_remaining = None
-                    if timeout is not None:
-                        timeout_remaining = timeout - (time.clock() - start_time)
-                        if timeout_remaining <= 0:
-                            raise TimeoutError()
-
-                    r, _, _ = select.select(
-                        [self.pty_master], [], [], timeout_remaining
-                    )
-                    if self.pty_master not in r:
-                        raise TimeoutError()
-                else:
-                    # Otherwise we have read until the end and can return
-                    break
-
-        return buf
 
     def close(self) -> None:
         if self.closed:
