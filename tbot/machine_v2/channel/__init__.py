@@ -1,12 +1,12 @@
 from .channel import Channel, ChannelClosedException, ChannelIO
 
-from .subprocess import SubprocessChannelIO
-from .paramiko import ParamikoChannelIO
+from .subprocess import SubprocessChannel
+from .paramiko import ParamikoChannel
 
 __all__ = (
     "Channel",
     "ChannelClosedException",
     "ChannelIO",
-    "SubprocessChannelIO",
-    "ParamikoChannelIO",
+    "SubprocessChannel",
+    "ParamikoChannel",
 )

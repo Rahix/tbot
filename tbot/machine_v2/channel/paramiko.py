@@ -67,3 +67,8 @@ class ParamikoChannelIO(channel.ChannelIO):
 
     def update_pty(self, columns: int, lines: int) -> None:
         self.ch.resize_pty(columns, lines, 1024, 1024)
+
+
+class ParamikoChannel(channel.Channel[ParamikoChannelIO]):
+    def __init__(self, ch: paramiko.Channel) -> None:
+        super().__init__(ParamikoChannelIO(ch))

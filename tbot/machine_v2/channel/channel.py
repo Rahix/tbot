@@ -84,10 +84,7 @@ class ChannelIO(typing.ContextManager):
         """
         Whether this channel was already closed.
 
-        .. warning::
-            A ``channel.write()`` immediately after checking ``channel.closed`` might
-            still fail in the unlucky case where the remote end closed the channel just
-            in between the two calls.
+        :rtype: bool
         """
         pass
 
@@ -110,13 +107,13 @@ class ChannelIO(typing.ContextManager):
         self.close()
 
 
-class Channel(typing.Generic[ChanIO]):
+class Channel(typing.Generic[ChanIO], typing.ContextManager):
     __slots__ = ("_c",)
 
     def __init__(self, channel_io: ChanIO) -> None:
         self._c = channel_io
 
-    # Raw byte-level IO {{{
+    # raw byte-level IO {{{
     def write(self, buf: bytes) -> None:
         """
         Write some bytes to this channel.
@@ -193,13 +190,49 @@ class Channel(typing.Generic[ChanIO]):
     # }}}
 
     # file-like interface {{{
+    def fileno(self) -> int:
+        """
+        Return a file descriptor which represents this channel.
+
+        :rtype: int
+        """
+        return self._c.fileno()
+
+    def close(self) -> None:
+        """
+        Close this channel.
+
+        The following is always true:
+
+            channel.close()
+            assert channel.closed
+        """
+        self._c.close()
+
     @property
     def closed(self) -> bool:
+        """
+        Whether this channel was already closed.
+
+        .. warning::
+            A ``channel.write()`` immediately after checking ``channel.closed`` might
+            still fail in the unlucky case where the remote end closed the channel just
+            in between the two calls.
+        """
         return self._c.closed
 
     # }}}
 
-    # Standard pexpect-like interface {{{
+    # context manager {{{
+    def __enter__(self) -> "Channel[ChanIO]":
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback) -> None:  # type: ignore
+        self.close()
+
+    # }}}
+
+    # pexpect-like interface {{{
     def send(self, s: typing.Union[str, bytes]) -> None:
         s = s.encode("utf-8") if isinstance(s, str) else s
         self.write(s)

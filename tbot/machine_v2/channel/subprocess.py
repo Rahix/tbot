@@ -108,3 +108,8 @@ class SubprocessChannelIO(channel.ChannelIO):
     def update_pty(self, columns: int, lines: int) -> None:
         s = struct.pack("HHHH", lines, columns, 0, 0)
         fcntl.ioctl(self.pty_master, termios.TIOCSWINSZ, s)
+
+
+class SubprocessChannel(channel.Channel[SubprocessChannelIO]):
+    def __init__(self) -> None:
+        super().__init__(SubprocessChannelIO())
