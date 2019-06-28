@@ -26,6 +26,8 @@ import typing
 
 from . import channel
 
+READ_CHUNK_SIZE = 4096
+
 
 class SubprocessChannelIO(channel.ChannelIO):
     __slots__ = ("pty_master", "p")
@@ -57,9 +59,8 @@ class SubprocessChannelIO(channel.ChannelIO):
                 raise Exception("closed")
             cursor += bytes_written
 
-    def read(self, max: int = -1, timeout: typing.Optional[float] = None) -> bytes:
-        buf = b""
-
+    def read(self, n: int = -1, timeout: typing.Optional[float] = None) -> bytes:
+        start_time = time.clock()
         if not self.closed:
             # If the process is still running, wait
             # for one byte or the timeout to arrive
@@ -69,7 +70,7 @@ class SubprocessChannelIO(channel.ChannelIO):
 
         # Read the first chunk.  If this fails, it is because the channel is closed.
         # This is guaranteed because we waited using the select above.
-        max_read = min(1024, max) if max > 0 else 1024
+        max_read = min(READ_CHUNK_SIZE, n) if n > 0 else READ_CHUNK_SIZE
         try:
             buf = os.read(self.pty_master, max_read)
         except (BlockingIOError, OSError):
@@ -77,15 +78,33 @@ class SubprocessChannelIO(channel.ChannelIO):
 
         # Read remaining chunks until a BlockingIOError which signals that no more
         # bytes can be read for now.
-        try:
-            while True:
-                max_read = min(1024, max - len(buf)) if max > 0 else 1024
-                if max_read == 0:
-                    break
+        while True:
+            max_read = min(READ_CHUNK_SIZE, n - len(buf)) if n > 0 else READ_CHUNK_SIZE
+            if max_read == 0:
+                # We have read exactly n bytes and can return now
+                break
+
+            try:
                 new = os.read(self.pty_master, max_read)
                 buf += new
-        except BlockingIOError:
-            pass
+            except BlockingIOError:
+                if n > 0:
+                    # If we are doing an exact read, wait until new bytes become
+                    # available
+                    timeout_remaining = None
+                    if timeout is not None:
+                        timeout_remaining = timeout - (time.clock() - start_time)
+                        if timeout_remaining <= 0:
+                            raise TimeoutError()
+
+                    r, _, _ = select.select(
+                        [self.pty_master], [], [], timeout_remaining
+                    )
+                    if self.pty_master not in r:
+                        raise TimeoutError()
+                else:
+                    # Otherwise we have read until the end and can return
+                    break
 
         return buf
 

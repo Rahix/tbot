@@ -16,9 +16,12 @@
 
 import paramiko
 import socket
+import time
 import typing
 
 from . import channel
+
+READ_CHUNK_SIZE = 4096
 
 
 class ParamikoChannelIO(channel.ChannelIO):
@@ -43,20 +46,29 @@ class ParamikoChannelIO(channel.ChannelIO):
                 raise Exception("closed")
             cursor += bytes_written
 
-    def read(self, max: int = -1, timeout: typing.Optional[float] = None) -> bytes:
+    def read(self, n: int = -1, timeout: typing.Optional[float] = None) -> bytes:
         self.ch.settimeout(timeout)
+        start_time = time.clock()
 
         try:
-            max_read = min(1024, max) if max > 0 else 1024
+            max_read = min(READ_CHUNK_SIZE, n) if n > 0 else READ_CHUNK_SIZE
             buf = self.ch.recv(max_read)
 
-            while self.ch.recv_ready():
-                max_read = min(1024, max - len(buf)) if max else 1024
+            while self.ch.recv_ready() or n > 0:
+                max_read = (
+                    min(READ_CHUNK_SIZE, n - len(buf)) if n > 0 else READ_CHUNK_SIZE
+                )
                 if max_read == 0:
                     break
 
                 new = self.ch.recv(max_read)
                 buf += new
+
+                if timeout is not None:
+                    timeout_remaining = timeout - (time.clock() - start_time)
+                    if timeout_remaining <= 0:
+                        raise TimeoutError()
+                    self.ch.settimeout(timeout_remaining)
         except socket.timeout:
             raise TimeoutError()
         finally:

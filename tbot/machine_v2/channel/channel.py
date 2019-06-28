@@ -29,27 +29,85 @@ class ChannelIO(typing.ContextManager):
 
     @abc.abstractmethod
     def write(self, buf: bytes) -> None:
+        """
+        Write some bytes to this channel.
+
+        ``write()`` ensures the whole buffer was written before it returns.
+
+        :param bytes buf: Buffer with bytes to be written.
+        :raises ChannelClosedException:  If the channel was closed previous to, or
+            during writing.
+        """
         pass
 
     @abc.abstractmethod
-    def read(self, max: int = -1, timeout: typing.Optional[float] = None) -> bytes:
+    def read(self, n: int = -1, timeout: typing.Optional[float] = None) -> bytes:
+        """
+        Receive somy bytes from this channel.
+
+        If ``n`` is ``-1``, ``read()`` will wait until at least one byte is available
+        and will then return all available bytes.  Otherwise it will wait until exactly
+        ``n`` bytes could be read.  If timeout is not None and expires before this is
+        the case, ``read()`` will raise an exception.
+
+        .. warning::
+            ``read()`` does not ensure that the returned bytes end with the end of a
+            Unicode character boundary.  This means, decoding as Unicode can fail and
+            code using ``read()`` should be prepared to deal with this case.
+
+        :param int n: Number of bytes to read.  If ``n`` is not ``-1``, ``read()`` will
+            return **exactly** ``n`` bytes.  If ``n`` is ``-1``, at least one byte is
+            returned.
+        :param float timeout:  Optional timeout.  If ``timout`` is not ``None``, ``read()``
+            will return early after ``timeout`` seconds.
+        :rtype: bytes
+        """
         pass
 
     @abc.abstractmethod
     def close(self) -> None:
+        """
+        Close this channel.
+
+        The following invariant **must** be upheld by an implementation:
+
+            channel.close()
+            assert channel.closed
+        """
         pass
 
     @abc.abstractmethod
     def fileno(self) -> int:
+        """
+        Return a file descriptor which represents this channel.
+
+        :rtype: int
+        """
         pass
 
     @property
     @abc.abstractmethod
     def closed(self) -> bool:
+        """
+        Whether this channel was already closed.
+
+        .. warning::
+            A ``channel.write()`` immediately after checking ``channel.closed`` might
+            still fail in the unlucky case where the remote end closed the channel just
+            in between the two calls.
+        """
         pass
 
     @abc.abstractmethod
     def update_pty(self, columns: int, lines: int) -> None:
+        """
+        Update the terminal window size of this channel.
+
+        Channels lacking this functionality should silently ignore this call.
+
+        :param int colums: The new width of the pty.
+        :param int lines: The new height of the pty.
+        """
         pass
 
     def __enter__(self: ChanIO) -> ChanIO:
@@ -72,7 +130,7 @@ class Channel(typing.Generic[ChanIO]):
 
     def sendline(self, s: typing.Union[str, bytes] = "") -> None:
         s = s.encode("utf-8") if isinstance(s, str) else s
-        # TODO: \n or \r?
+        # The "Enter" key sends '\r'
         self.c.write(s + b"\r")
 
     def sendcontrol(self, c: str) -> None:
