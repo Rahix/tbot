@@ -15,6 +15,9 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import abc
+import collections
+import contextlib
+import re
 import time
 import typing
 
@@ -28,6 +31,7 @@ class ChannelClosedException(Exception):
 class ChannelIO(typing.ContextManager):
     __slots__ = ()
 
+    # generic channel interface {{{
     @abc.abstractmethod
     def write(self, buf: bytes) -> int:
         """
@@ -100,6 +104,8 @@ class ChannelIO(typing.ContextManager):
         """
         pass
 
+    # }}}
+
     def __enter__(self: ChanIO) -> ChanIO:
         return self
 
@@ -107,11 +113,61 @@ class ChannelIO(typing.ContextManager):
         self.close()
 
 
-class Channel(typing.Generic[ChanIO], typing.ContextManager):
-    __slots__ = ("_c",)
+class BoundedPattern:
+    __slots__ = ("pattern", "_length")
 
-    def __init__(self, channel_io: ChanIO) -> None:
+    def __init__(self, pattern: typing.Pattern[bytes]) -> None:
+        self.pattern = pattern
+
+        import sre_parse
+
+        parsed = sre_parse.parse(
+            typing.cast(str, self.pattern.pattern), flags=self.pattern.flags
+        )
+        width = parsed.getwidth()
+        if isinstance(width, int):
+            self._length = width
+        elif isinstance(width, tuple):
+            self._length = width[1]
+
+        if self._length == getattr(sre_parse, "MAXREPEAT", 2 ** 32 - 1):
+            raise Exception(f"Expression {self.pattern.pattern!r} is not bounded")
+
+    def __len__(self) -> int:
+        return self._length
+
+
+SearchString = typing.Union[bytes, BoundedPattern]
+ConvenientSearchString = typing.Union[SearchString, typing.Pattern, str]
+
+
+def _convert_search_string(string: ConvenientSearchString) -> SearchString:
+    if isinstance(string, str):
+        return string.encode()
+    elif isinstance(string, typing.Pattern):
+        return BoundedPattern(string)
+    else:
+        return string
+
+
+class DeathStringException(Exception):
+    __slots__ = "string"
+
+    def __init__(self, string: bytes):
+        self.string = string
+
+    def __repr__(self) -> str:
+        return f"DeathStringException({self.string!r})"
+
+
+class Channel(typing.ContextManager):
+    __slots__ = ("_c", "prompt", "death_strings", "_ringbuf")
+
+    def __init__(self, channel_io: ChannelIO) -> None:
         self._c = channel_io
+        self.prompt: typing.Optional[SearchString] = None
+        self.death_strings: typing.List[SearchString] = []
+        self._ringbuf: typing.Deque[int] = collections.deque([], maxlen=2)
 
     # raw byte-level IO {{{
     def write(self, buf: bytes) -> None:
@@ -158,6 +214,7 @@ class Channel(typing.Generic[ChanIO], typing.ContextManager):
 
         max_read = min(self.READ_CHUNK_SIZE, n) if n > 0 else self.READ_CHUNK_SIZE
         buf = self._c.read(max_read, timeout)
+        self._check_for_death_strings(buf)
 
         while True:
             max_read = (
@@ -182,6 +239,7 @@ class Channel(typing.Generic[ChanIO], typing.ContextManager):
                     # the end of readable data.  Return now.
                     break
 
+            self._check_for_death_strings(new)
             buf += new
 
         assert (n == -1) or (len(buf) == n)
@@ -224,11 +282,60 @@ class Channel(typing.Generic[ChanIO], typing.ContextManager):
     # }}}
 
     # context manager {{{
-    def __enter__(self) -> "Channel[ChanIO]":
+    def __enter__(self) -> "Channel":
         return self
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:  # type: ignore
         self.close()
+
+    # }}}
+
+    # death string handling {{{
+
+    # Channel keeps a ringbuffer with enough space to match the longest death-string
+    # and checks it for each chunk of data coming in.  If any of the strings matches,
+    # the channel will throw an exception.
+
+    @contextlib.contextmanager
+    def with_death_string(
+        self, string_in: ConvenientSearchString
+    ) -> "typing.Iterator[Channel]":
+        string = _convert_search_string(string_in)
+
+        previous_length = typing.cast(int, self._ringbuf.maxlen)
+        self.death_strings.insert(0, string)
+        new_length = len(string) * 2
+        if new_length > previous_length:
+            self._ringbuf = collections.deque(self._ringbuf, maxlen=new_length)
+
+        try:
+            yield self
+        finally:
+            self.death_strings.remove(string)
+            if new_length > previous_length:
+                self._ringbuf = collections.deque(self._ringbuf, maxlen=previous_length)
+
+    def _check_for_death_strings(self, incoming: bytes) -> None:
+        if self.death_strings == []:
+            return
+
+        # Chunk size is the longest death-string.
+        chunk_size = typing.cast(int, self._ringbuf.maxlen) // 2
+
+        for chunk in (
+            incoming[i : i + chunk_size] for i in range(0, len(incoming), chunk_size)
+        ):
+            self._ringbuf.extend(chunk)
+            ringbuf_bytes = bytes(self._ringbuf)
+
+            for string in self.death_strings:
+                if isinstance(string, bytes):
+                    if string in ringbuf_bytes:
+                        raise DeathStringException(string)
+                elif isinstance(string, BoundedPattern):
+                    match = string.pattern.search(ringbuf_bytes)
+                    if match is not None:
+                        raise DeathStringException(match[0])
 
     # }}}
 
@@ -256,3 +363,38 @@ class Channel(typing.Generic[ChanIO], typing.ContextManager):
 
     # TODO: Reading
     # pexpect-like }}}
+
+    # prompt handling {{{
+    @contextlib.contextmanager
+    def with_prompt(
+        self, prompt_in: ConvenientSearchString
+    ) -> "typing.Iterator[Channel]":
+        prompt = _convert_search_string(prompt_in)
+
+        # If the prompt is a pattern, we need to recompile it with an additional $ in the
+        # end to ensure that it only matches the end of the stream
+        if isinstance(prompt, BoundedPattern):
+            new_pattern = re.compile(
+                prompt.pattern.pattern + b"$", prompt.pattern.flags
+            )
+            prompt = BoundedPattern(new_pattern)
+
+        previous = self.prompt
+        self.prompt = prompt
+        try:
+            yield self
+        finally:
+            self.prompt = previous
+
+    def read_until_prompt(self, prompt: typing.Optional[ConvenientSearchString]) -> str:
+        if prompt is not None:
+            ctx = self.with_prompt(prompt)
+        else:
+            ctx = contextlib.nullcontext()  # type: ignore
+
+        with ctx:
+            pass
+
+        raise NotImplementedError()
+
+    # }}}

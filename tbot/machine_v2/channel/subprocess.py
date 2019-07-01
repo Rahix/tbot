@@ -110,6 +110,6 @@ class SubprocessChannelIO(channel.ChannelIO):
         fcntl.ioctl(self.pty_master, termios.TIOCSWINSZ, s)
 
 
-class SubprocessChannel(channel.Channel[SubprocessChannelIO]):
+class SubprocessChannel(channel.Channel):
     def __init__(self) -> None:
         super().__init__(SubprocessChannelIO())
