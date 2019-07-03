@@ -18,6 +18,7 @@ import abc
 import collections
 import contextlib
 import re
+import sys
 import time
 import typing
 
@@ -210,40 +211,48 @@ class Channel(typing.ContextManager):
             will return early after ``timeout`` seconds.
         :rtype: bytes
         """
-        start_time = time.clock()
+        if n < 0:
+            # Block first and then read non-blocking
+            buf = bytearray(self._c.read(self.READ_CHUNK_SIZE, timeout))
+            self._check(buf)
+            reader = self.read_iter(timeout=0.0)
+        else:
+            # Read n bytes non-blocking
+            buf = bytearray()
+            reader = self.read_iter(max=n, timeout=timeout)
 
-        max_read = min(self.READ_CHUNK_SIZE, n) if n > 0 else self.READ_CHUNK_SIZE
-        buf = self._c.read(max_read, timeout)
-        self._check_for_death_strings(buf)
-
-        while True:
-            max_read = (
-                min(self.READ_CHUNK_SIZE, n - len(buf))
-                if n > 0
-                else self.READ_CHUNK_SIZE
-            )
-            if max_read == 0:
-                # The end of an exact read.
-                break
-
-            if timeout is not None:
-                timeout_remaining = timeout - (time.clock() - start_time)
-                if timeout_remaining <= 0:
-                    raise TimeoutError()
-                new = self._c.read(max_read, timeout_remaining)
-            else:
-                try:
-                    new = self._c.read(max_read, None if n > 0 else 0.0)
-                except TimeoutError:
-                    # When the user did not set a timeout, this means we have reached
-                    # the end of readable data.  Return now.
-                    break
-
-            self._check_for_death_strings(new)
-            buf += new
+        try:
+            for chunk in reader:
+                buf += chunk
+        except TimeoutError:
+            if n != -1:
+                raise
 
         assert (n == -1) or (len(buf) == n)
         return buf
+
+    def read_iter(
+        self, max: int = sys.maxsize, timeout: typing.Optional[float] = None
+    ) -> typing.Iterator[bytes]:
+        start_time = time.clock()
+
+        bytes_read = 0
+        while True:
+            timeout_remaining = None
+            if timeout is not None:
+                timeout_remaining = timeout - (time.clock() - start_time)
+                if timeout <= 0:
+                    raise TimeoutError()
+
+            max_read = min(self.READ_CHUNK_SIZE, max - bytes_read)
+            new = self._c.read(max_read, timeout_remaining)
+            bytes_read += len(new)
+            self._check(new)
+            yield new
+
+            assert bytes_read <= max, "read overflow"
+            if bytes_read == max:
+                break
 
     # }}}
 
@@ -315,7 +324,7 @@ class Channel(typing.ContextManager):
             if new_length > previous_length:
                 self._ringbuf = collections.deque(self._ringbuf, maxlen=previous_length)
 
-    def _check_for_death_strings(self, incoming: bytes) -> None:
+    def _check(self, incoming: bytes) -> None:
         if self.death_strings == []:
             return
 
@@ -386,15 +395,29 @@ class Channel(typing.ContextManager):
         finally:
             self.prompt = previous
 
-    def read_until_prompt(self, prompt: typing.Optional[ConvenientSearchString]) -> str:
+    def read_until_prompt(
+        self,
+        prompt: typing.Optional[ConvenientSearchString] = None,
+        timeout: typing.Optional[float] = None,
+    ) -> str:
         if prompt is not None:
             ctx = self.with_prompt(prompt)
         else:
             ctx = contextlib.nullcontext()  # type: ignore
 
-        with ctx:
-            pass
+        buf = bytearray()
 
-        raise NotImplementedError()
+        with ctx:
+            for new in self.read_iter(timeout=timeout):
+                buf += new
+
+                if isinstance(self.prompt, bytes):
+                    if buf.endswith(self.prompt):
+                        break
+                elif isinstance(self.prompt, BoundedPattern):
+                    if self.prompt.pattern.search(buf) is not None:
+                        break
+
+        return buf.decode()
 
     # }}}
