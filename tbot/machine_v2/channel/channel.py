@@ -17,6 +17,7 @@
 import abc
 import collections
 import contextlib
+import copy
 import re
 import sys
 import time
@@ -112,6 +113,50 @@ class ChannelIO(typing.ContextManager):
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:  # type: ignore
         self.close()
+
+
+class ChannelBorrowedException(Exception):
+    def __str__(self) -> str:
+        return "This channel is currently borrowed by another machine."
+
+
+class ChannelTakenException(Exception):
+    def __str__(self) -> str:
+        return "Another machine has taken this channel.  It can no longer from here."
+
+
+class ChannelBorrowed(ChannelIO):
+    exception: typing.Type[Exception] = ChannelBorrowedException
+
+    def write(self, buf: bytes) -> int:
+        raise self.exception()
+
+    def read(self, n: int, timeout: typing.Optional[float] = None) -> bytes:
+        raise self.exception()
+
+    def close(self) -> None:
+        raise self.exception()
+
+    def fileno(self) -> int:
+        raise self.exception()
+
+    @property
+    def closed(self) -> bool:
+        raise self.exception()
+
+    def update_pty(self, columns: int, lines: int) -> None:
+        raise self.exception()
+
+
+class ChannelTaken(ChannelBorrowed):
+    exception = ChannelTakenException
+
+    def close(self) -> None:
+        pass
+
+    @property
+    def closed(self) -> bool:
+        return True
 
 
 class BoundedPattern:
@@ -419,5 +464,28 @@ class Channel(typing.ContextManager):
                         break
 
         return buf.decode()
+
+    # }}}
+
+    # borrowing & taking }}}
+    @contextlib.contextmanager
+    def borrow(self) -> "typing.Iterator[Channel]":
+        chan_io = self._c
+        try:
+            self._c = ChannelBorrowed()
+            new = copy.deepcopy(self)
+            new._c = chan_io
+            yield new
+
+            # TODO: Maybe don't allow exceptions here?
+        finally:
+            self._c = chan_io
+
+    def take(self) -> "Channel":
+        chan_io = self._c
+        self._c = ChannelTaken()
+        new = copy.deepcopy(self)
+        new._c = chan_io
+        return new
 
     # }}}

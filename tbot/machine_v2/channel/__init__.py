@@ -1,8 +1,10 @@
 from .channel import (
+    BoundedPattern,
     Channel,
+    ChannelBorrowedException,
     ChannelClosedException,
     ChannelIO,
-    BoundedPattern,
+    ChannelTakenException,
     DeathStringException,
 )
 
@@ -14,6 +16,8 @@ __all__ = (
     "BoundedPattern",
     "Channel",
     "ChannelClosedException",
+    "ChannelBorrowedException",
+    "ChannelTakenException",
     "ChannelIO",
     "SubprocessChannel",
     "ParamikoChannel",
