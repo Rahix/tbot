@@ -12,13 +12,13 @@ from .subprocess import SubprocessChannel
 from .paramiko import ParamikoChannel
 
 __all__ = (
-    "DeathStringException",
     "BoundedPattern",
     "Channel",
-    "ChannelClosedException",
     "ChannelBorrowedException",
-    "ChannelTakenException",
+    "ChannelClosedException",
     "ChannelIO",
-    "SubprocessChannel",
+    "ChannelTakenException",
+    "DeathStringException",
     "ParamikoChannel",
+    "SubprocessChannel",
 )

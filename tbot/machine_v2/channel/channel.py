@@ -467,7 +467,7 @@ class Channel(typing.ContextManager):
 
     # }}}
 
-    # borrowing & taking }}}
+    # borrowing & taking {{{
     @contextlib.contextmanager
     def borrow(self) -> "typing.Iterator[Channel]":
         chan_io = self._c
