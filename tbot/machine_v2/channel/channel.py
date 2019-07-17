@@ -22,6 +22,7 @@ import re
 import sys
 import time
 import typing
+import tbot
 
 ChanIO = typing.TypeVar("ChanIO", bound="ChannelIO")
 
@@ -113,6 +114,30 @@ class ChannelIO(typing.ContextManager):
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:  # type: ignore
         self.close()
+
+
+def _debug_log(data: bytes, is_out: bool = False) -> bytes:
+    if tbot.log.VERBOSITY >= tbot.log.Verbosity.CHANNEL:
+        json_data: str
+        try:
+            json_data = data.decode("utf-8")
+        except UnicodeDecodeError:
+            json_data = data.decode("latin1")
+
+        msg = tbot.log.c(repr(data)[1:])
+        tbot.log.EventIO(
+            ["__debug__"],
+            (
+                tbot.log.c("> ").blue.bold + msg.blue
+                if is_out
+                else tbot.log.c("< ").yellow.bold + msg.yellow
+            ),
+            verbosity=tbot.log.Verbosity.CHANNEL,
+            direction="send" if is_out else "recv",
+            data=json_data,
+        )
+
+    return data
 
 
 class ChannelBorrowedException(Exception):
