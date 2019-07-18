@@ -118,11 +118,7 @@ class ChannelIO(typing.ContextManager):
 
 def _debug_log(data: bytes, is_out: bool = False) -> bytes:
     if tbot.log.VERBOSITY >= tbot.log.Verbosity.CHANNEL:
-        json_data: str
-        try:
-            json_data = data.decode("utf-8")
-        except UnicodeDecodeError:
-            json_data = data.decode("latin1")
+        json_data = data.decode("utf-8", errors="replace")
 
         msg = tbot.log.c(repr(data)[1:])
         tbot.log.EventIO(
@@ -488,7 +484,7 @@ class Channel(typing.ContextManager):
                     if self.prompt.pattern.search(buf) is not None:
                         break
 
-        return buf.decode()
+        return buf.decode("utf-8", errors="replace")
 
     # }}}
 
