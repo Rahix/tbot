@@ -11,6 +11,11 @@ class Machine(abc.ABC):
 
     ch: channel.Channel
 
+    @property
+    @abc.abstractmethod
+    def name(self) -> str:
+        raise NotImplementedError("abstract method")
+
     # Abstract methods that will be implemented by connector and shell
     @abc.abstractmethod
     def _connect(self) -> typing.ContextManager[channel.Channel]:
