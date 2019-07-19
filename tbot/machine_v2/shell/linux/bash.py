@@ -36,17 +36,19 @@ class Bash(linux_shell.LinuxShell):
         finally:
             pass
 
-    def build_command(self, *args: str) -> str:
+    def build_command(self, *args: linux_shell.ArgTypes) -> str:
         string_args = []
         for arg in args:
             if isinstance(arg, str):
                 string_args.append(shlex.quote(arg))
+            elif isinstance(arg, linux_shell.Special):
+                string_args.append(arg._to_string(self))
             else:
-                raise TypeError("{arg!r} is not of a supported argument type!")
+                raise TypeError(f"{type(arg)!r} is not a supported argument type!")
 
         return " ".join(string_args)
 
-    def exec(self, *args: str) -> typing.Tuple[int, str]:
+    def exec(self, *args: linux_shell.ArgTypes) -> typing.Tuple[int, str]:
         cmd = self.build_command(*args)
 
         with tbot.log_event.command(self.name, cmd) as ev:
@@ -59,8 +61,12 @@ class Bash(linux_shell.LinuxShell):
 
         return (int(retcode), out)
 
-    def exec0(self, *args: str) -> str:
+    def exec0(self, *args: linux_shell.ArgTypes) -> str:
         retcode, out = self.exec(*args)
         if retcode != 0:
             raise Exception(f"command {args!r} failed")
         return out
+
+    def test(self, *args: linux_shell.ArgTypes) -> bool:
+        retcode, _ = self.exec(*args)
+        return retcode == 0
