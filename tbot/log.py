@@ -160,6 +160,9 @@ class EventIO(io.StringIO):
             .replace("\x1B[r", "")
             .replace("\x1B[u", "")
             .replace("\x08", "")
+            .replace("\r\n", "\n")
+            .replace("\n\r", "\n")
+            .replace("\r", "\n")
         )
 
         res = super().write(s)
