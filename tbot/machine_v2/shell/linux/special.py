@@ -13,6 +13,29 @@ class Special(typing.Generic[H]):
         raise NotImplementedError("abstract method")
 
 
+class _Stdio(Special):
+    __slots__ = ("file",)
+
+    @property
+    @abc.abstractmethod
+    def _redir_token(self) -> str:
+        raise NotImplementedError("abstract method")
+
+    def __init__(self, file: str) -> None:
+        self.file = file
+
+    def _to_string(self, _: H) -> str:
+        return self._redir_token + self.file
+
+
+class RedirStdout(_Stdio):
+    _redir_token = ">"
+
+
+class RedirStderr(_Stdio):
+    _redir_token = "2>"
+
+
 class _Static(Special):
     __slots__ = ("string",)
 
