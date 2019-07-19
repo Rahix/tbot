@@ -1,6 +1,5 @@
 import contextlib
 import shlex
-import time
 import typing
 
 import tbot
@@ -50,12 +49,18 @@ class Bash(linux_shell.LinuxShell):
     def exec(self, *args: str) -> typing.Tuple[int, str]:
         cmd = self.build_command(*args)
 
-        with tbot.log_event.command(self.name, cmd):
-            self.ch.sendline(cmd)
-            time.sleep(0.2)
-            ret = self.ch.read()
+        with tbot.log_event.command(self.name, cmd) as ev:
+            self.ch.sendline(cmd, read_back=True)
+            with self.ch.with_stream(ev, show_prompt=False):
+                out = self.ch.read_until_prompt()
 
-        return (0, ret.decode())
+            self.ch.sendline("echo $?", read_back=True)
+            retcode = self.ch.read_until_prompt()
+
+        return (int(retcode), out)
 
     def exec0(self, *args: str) -> str:
-        return self.exec(*args)[1]
+        retcode, out = self.exec(*args)
+        if retcode != 0:
+            raise Exception(f"command {args!r} failed")
+        return out
