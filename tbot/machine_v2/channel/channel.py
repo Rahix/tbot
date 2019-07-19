@@ -228,13 +228,24 @@ class DeathStringException(Exception):
 
 
 class Channel(typing.ContextManager):
-    __slots__ = ("_c", "prompt", "death_strings", "_ringbuf")
+    __slots__ = (
+        "_c",
+        "_log_prompt",
+        "_ringbuf",
+        "_stream",
+        "_streambuf",
+        "death_strings",
+        "prompt",
+    )
 
     def __init__(self, channel_io: ChannelIO) -> None:
         self._c = channel_io
         self.prompt: typing.Optional[SearchString] = None
         self.death_strings: typing.List[SearchString] = []
         self._ringbuf: typing.Deque[int] = collections.deque([], maxlen=2)
+        self._stream: typing.Optional[typing.TextIO] = None
+        self._streambuf = bytearray()
+        self._log_prompt = True
 
     # raw byte-level IO {{{
     def write(self, buf: bytes) -> None:
@@ -280,6 +291,7 @@ class Channel(typing.ContextManager):
         if n < 0:
             # Block first and then read non-blocking
             buf = bytearray(self._c.read(self.READ_CHUNK_SIZE, timeout))
+            self._write_stream(buf)
             self._check(buf)
             reader = self.read_iter(timeout=0.0)
         else:
@@ -313,12 +325,42 @@ class Channel(typing.ContextManager):
             max_read = min(self.READ_CHUNK_SIZE, max - bytes_read)
             new = self._c.read(max_read, timeout_remaining)
             bytes_read += len(new)
+            self._write_stream(new)
             self._check(new)
             yield new
 
             assert bytes_read <= max, "read overflow"
             if bytes_read == max:
                 break
+
+    # }}}
+
+    # log-event streams {{{
+    @contextlib.contextmanager
+    def with_stream(
+        self, stream: typing.TextIO, show_prompt: bool = True
+    ) -> "typing.Iterator[Channel]":
+        previous_stream = self._stream
+        previous_log_prompt = self._log_prompt
+
+        try:
+            self._stream = stream
+            self._log_prompt = show_prompt
+            self._streambuf = bytearray()
+            yield self
+        finally:
+            self._stream = previous_stream
+            self._log_prompt = previous_log_prompt
+
+    def _write_stream(self, buf: bytes) -> None:
+        if self._stream is not None:
+            if self._log_prompt or self.prompt is None:
+                self._stream.write(buf.decode("utf-8", errors="replace"))
+            else:
+                self._streambuf += buf
+                fragment = self._streambuf[: -len(self.prompt)]
+                self._stream.write(fragment.decode("utf-8", errors="replace"))
+                self._streambuf = self._streambuf[-len(self.prompt) :]
 
     # }}}
 
@@ -419,10 +461,19 @@ class Channel(typing.ContextManager):
         s = s.encode("utf-8") if isinstance(s, str) else s
         self.write(s)
 
-    def sendline(self, s: typing.Union[str, bytes] = "") -> None:
+    def sendline(
+        self,
+        s: typing.Union[str, bytes] = "",
+        read_back: bool = False,
+        timeout: typing.Optional[float] = None,
+    ) -> None:
         s = s.encode("utf-8") if isinstance(s, str) else s
         # The "Enter" key sends '\r'
         self.write(s + b"\r")
+
+        if read_back:
+            # Read back command + `\r\n`
+            self.read(n=len(s) + 2, timeout=timeout)
 
     def sendcontrol(self, c: str) -> None:
         assert len(c) == 1
@@ -479,12 +530,15 @@ class Channel(typing.ContextManager):
 
                 if isinstance(self.prompt, bytes):
                     if buf.endswith(self.prompt):
-                        break
+                        return buf[: -len(self.prompt)].decode(
+                            "utf-8", errors="replace"
+                        )
                 elif isinstance(self.prompt, BoundedPattern):
-                    if self.prompt.pattern.search(buf) is not None:
-                        break
+                    match = self.prompt.pattern.search(buf)
+                    if match is not None:
+                        return buf[: match.span()[0]].decode("utf-8", errors="replace")
 
-        return buf.decode("utf-8", errors="replace")
+        raise RuntimeError("unreachable")
 
     # }}}
 
