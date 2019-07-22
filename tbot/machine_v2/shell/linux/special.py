@@ -13,6 +13,16 @@ class Special(typing.Generic[H]):
         raise NotImplementedError("abstract method")
 
 
+class Raw(Special):
+    __slots__ = ("string",)
+
+    def __init__(self, string: str) -> None:
+        self.string = string
+
+    def _to_string(self, _: H) -> str:
+        return self.string
+
+
 class _Stdio(Special):
     __slots__ = ("file",)
 

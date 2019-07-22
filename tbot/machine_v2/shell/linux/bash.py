@@ -3,7 +3,7 @@ import shlex
 import typing
 
 import tbot
-from . import linux_shell, util
+from . import linux_shell, util, special
 
 TBOT_PROMPT = b"TBOT-VEJPVC1QUk9NUFQK$ "
 
@@ -36,7 +36,7 @@ class Bash(linux_shell.LinuxShell):
         finally:
             pass
 
-    def build_command(self, *args: linux_shell.ArgTypes) -> str:
+    def escape(self, *args: linux_shell.ArgTypes) -> str:
         string_args = []
         for arg in args:
             if isinstance(arg, str):
@@ -49,7 +49,7 @@ class Bash(linux_shell.LinuxShell):
         return " ".join(string_args)
 
     def exec(self, *args: linux_shell.ArgTypes) -> typing.Tuple[int, str]:
-        cmd = self.build_command(*args)
+        cmd = self.escape(*args)
 
         with tbot.log_event.command(self.name, cmd) as ev:
             self.ch.sendline(cmd, read_back=True)
@@ -70,3 +70,11 @@ class Bash(linux_shell.LinuxShell):
     def test(self, *args: linux_shell.ArgTypes) -> bool:
         retcode, _ = self.exec(*args)
         return retcode == 0
+
+    def env(self, var: str, value: typing.Optional[linux_shell.ArgTypes] = None) -> str:
+        if value is not None:
+            self.exec0(
+                "export", special.Raw(f"{self.escape(var)}={self.escape(value)}")
+            )
+
+        return self.exec0("echo", special.Raw(f'"${{{self.escape(var)}}}"'))[:-2]
