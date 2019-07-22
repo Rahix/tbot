@@ -7,7 +7,7 @@ Self = typing.TypeVar("Self", bound="Machine")
 
 
 class Machine(abc.ABC):
-    __slots__ = ("_cx", "ch")
+    __slots__ = ("_cx", "_rc", "ch")
 
     ch: channel.Channel
 
@@ -30,6 +30,12 @@ class Machine(abc.ABC):
         raise NotImplementedError("abstract method")
 
     def __enter__(self: Self) -> Self:
+        self._rc = getattr(self, "_rc", 0)
+        self._rc += 1
+
+        if self._rc > 1:
+            return self
+
         self._cx = contextlib.ExitStack().__enter__()
 
         # This inner stack is meant to protect the __enter__() implementations
@@ -55,7 +61,10 @@ class Machine(abc.ABC):
         return self
 
     def __exit__(self, *args: typing.Any) -> None:
-        self._cx.__exit__(*args)
+        self._rc -= 1
+
+        if self._rc == 0:
+            self._cx.__exit__(*args)
 
 
 class Initializer(Machine):
