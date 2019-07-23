@@ -1,5 +1,7 @@
 import contextlib
+import re
 import shlex
+import shutil
 import typing
 
 import tbot
@@ -78,3 +80,42 @@ class Bash(linux_shell.LinuxShell):
             )
 
         return self.exec0("echo", special.Raw(f'"${{{self.escape(var)}}}"'))[:-2]
+
+    def interactive(self) -> None:
+        # Generate the endstring instead of having it as a constant
+        # so opening this files won't trigger an exit
+        endstr = (
+            "INTERACTIVE-END-"
+            + hex(165_380_656_580_165_943_945_649_390_069_628_824_191)[2:]
+        )
+
+        termsize = shutil.get_terminal_size()
+        self.ch.sendline(self.escape("stty", "cols", str(termsize.columns)))
+        self.ch.sendline(self.escape("stty", "rows", str(termsize.lines)))
+
+        # Outer shell which is used to detect the end of the interactive session
+        self.ch.sendline(f"bash --norc")
+        self.ch.sendline(f"PS1={endstr}")
+        self.ch.read_until_prompt(prompt=endstr)
+
+        # Inner shell which will be used by the user
+        self.ch.sendline("bash --norc")
+        self.ch.sendline("set -o emacs")
+        prompt = self.escape(
+            f"\\[\\033[36m\\]{self.name}: \\[\\033[32m\\]\\w\\[\\033[0m\\]> "
+        )
+        self.ch.sendline(f"PS1={prompt}")
+
+        self.ch.read_until_prompt(prompt=re.compile(b"> (\x1B\\[.{0,10})?"))
+        self.ch.sendline()
+        tbot.log.message("Entering interactive shell ...")
+
+        self.ch.attach_interactive(end_magic=endstr)
+
+        tbot.log.message("Exiting interactive shell ...")
+
+        try:
+            self.ch.sendline("exit")
+            self.ch.read_until_prompt(timeout=0.5)
+        except TimeoutError:
+            raise Exception("Failed to reacquire shell after interactive session!")

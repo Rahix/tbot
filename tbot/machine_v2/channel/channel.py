@@ -18,10 +18,15 @@ import abc
 import collections
 import contextlib
 import copy
+import itertools
 import re
+import select
 import sys
+import termios
 import time
+import tty
 import typing
+
 import tbot
 
 ChanIO = typing.TypeVar("ChanIO", bound="ChannelIO")
@@ -562,5 +567,74 @@ class Channel(typing.ContextManager):
         new = copy.deepcopy(self)
         new._c = chan_io
         return new
+
+    # }}}
+
+    # interactive {{{
+    def attach_interactive(
+        self, end_magic: typing.Union[str, bytes, None] = None
+    ) -> None:
+        """
+        Connect tbot's terminal to this channel.
+
+        Allows the user to interact directly with whatever this channel is
+        connected to.
+
+        :param str, bytes end_magic: String that, when detected, should end the
+            interactive session.
+        """
+        end_magic_bytes = (
+            end_magic.encode("utf-8") if isinstance(end_magic, str) else end_magic
+        )
+
+        end_ring_buffer: typing.Deque[int] = collections.deque(
+            maxlen=len(end_magic_bytes) if end_magic_bytes is not None else 1
+        )
+
+        previous: typing.Deque[int] = collections.deque(maxlen=3)
+
+        oldtty = termios.tcgetattr(sys.stdin)
+        try:
+            tty.setraw(sys.stdin.fileno())
+            tty.setcbreak(sys.stdin.fileno())
+
+            mode = termios.tcgetattr(sys.stdin)
+            special_chars = mode[6]
+            assert isinstance(special_chars, list)
+            special_chars[termios.VMIN] = b"\0"
+            special_chars[termios.VTIME] = b"\0"
+            termios.tcsetattr(sys.stdin, termios.TCSAFLUSH, mode)
+
+            while True:
+                r, _, _ = select.select([self, sys.stdin], [], [])
+
+                if self in r:
+                    data = self._c.read(4096)
+                    if isinstance(end_magic_bytes, bytes):
+                        end_ring_buffer.extend(data)
+                        for a, b in itertools.zip_longest(
+                            end_ring_buffer, end_magic_bytes
+                        ):
+                            if a != b:
+                                break
+                        else:
+                            break
+                    sys.stdout.buffer.write(data)
+                    sys.stdout.buffer.flush()
+                if sys.stdin in r:
+                    data = sys.stdin.buffer.read(4096)
+                    previous.extend(data)
+                    if end_magic is None and data == b"\x04":
+                        break
+                    for a, b in itertools.zip_longest(previous, b"\r~."):
+                        if a != b:
+                            break
+                    else:
+                        break
+                    self.send(data)
+
+            sys.stdout.write("\r\n")
+        finally:
+            termios.tcsetattr(sys.stdin, termios.TCSADRAIN, oldtty)
 
     # }}}

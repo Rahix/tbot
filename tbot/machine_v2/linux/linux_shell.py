@@ -23,3 +23,7 @@ class LinuxShell(shell.Shell):
     @abc.abstractmethod
     def env(self: Self, var: str, value: typing.Optional[ArgTypes] = None) -> str:
         raise NotImplementedError("abstract method")
+
+    @abc.abstractmethod
+    def interactive(self) -> None:
+        raise NotImplementedError("abstract method")
