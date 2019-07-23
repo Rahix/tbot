@@ -85,6 +85,17 @@ class Bash(linux_shell.LinuxShell):
 
         return self.exec0("echo", special.Raw(f'"${{{self.escape(var)}}}"'))[:-2]
 
+    @contextlib.contextmanager
+    def subshell(self) -> "typing.Iterator[Bash]":
+        tbot.log_event.command(self.name, "bash --norc")
+        self.ch.sendline("bash --norc")
+        try:
+            with self._init_shell():
+                yield self
+        finally:
+            self.ch.sendline("exit")
+            self.ch.read_until_prompt()
+
     def interactive(self) -> None:
         # Generate the endstring instead of having it as a constant
         # so opening this files won't trigger an exit

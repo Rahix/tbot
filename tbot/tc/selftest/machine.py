@@ -176,25 +176,18 @@ def selftest_machine_shell(
             ).strip()
             assert out == "FOO", repr(out)
 
-        tbot.log.skip("subshell")
-        # TODO: Reimplement subshell
-        # tbot.log.message("Testing subshell ...")
-        # out = m.env("SUBSHELL_TEST_VAR")
-        # assert out == "", repr(out)
+        tbot.log.message("Testing subshell ...")
+        out = m.env("SUBSHELL_TEST_VAR")
+        assert out == "", repr(out)
 
-        # with m.subshell():
-        #     out_b = m.env("SUBSHELL_TEST_VAR", "123")
-        #     out = m.env("SUBSHELL_TEST_VAR")
-        #     assert out == "123", repr(out)
-        #     assert out_b == "123", repr(out_b)
+        with m.subshell():
+            out_b = m.env("SUBSHELL_TEST_VAR", "123")
+            out = m.env("SUBSHELL_TEST_VAR")
+            assert out == "123", repr(out)
+            assert out_b == "123", repr(out_b)
 
-        # out = m.env("SUBSHELL_TEST_VAR")
-        # assert out == "", repr(out)
-
-        # shell = m.shell
-        # with m.subshell("env", "SUBSHELL_TEST_VAR2=1337", *shell.command, shell=shell):
-        #     out = m.env("SUBSHELL_TEST_VAR2")
-        #     assert out == "1337", repr(out)
+        out = m.env("SUBSHELL_TEST_VAR")
+        assert out == "", repr(out)
 
     if isinstance(m, board.UBootMachine):
         tbot.log.message("Testing env vars ...")

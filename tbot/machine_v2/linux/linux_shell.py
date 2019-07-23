@@ -31,6 +31,10 @@ class LinuxShell(shell.Shell):
     def interactive(self) -> None:
         raise NotImplementedError("abstract method")
 
+    @abc.abstractmethod
+    def subshell(self: Self) -> typing.ContextManager[Self]:
+        pass
+
     @property
     def fsroot(self: Self) -> path.Path[Self]:
         return path.Path(self, "/")
