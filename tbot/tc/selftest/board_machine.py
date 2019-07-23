@@ -80,6 +80,9 @@ class TestBoardUBoot(board.UBootMachine[TestBoard]):
 @tbot.testcase
 def selftest_board_uboot(lab: typing.Optional[tbot.selectable.LabHost] = None) -> None:
     """Test if tbot intercepts U-Boot correctly."""
+    tbot.log.skip("board-uboot")
+    return
+
     with contextlib.ExitStack() as cx:
         lh = cx.enter_context(lab or tbot.acquire_lab())
         try:
@@ -107,6 +110,8 @@ def selftest_board_uboot_noab(
     lab: typing.Optional[tbot.selectable.LabHost] = None
 ) -> None:
     """Test if tbot intercepts U-Boot correctly without autoboot."""
+    tbot.log.skip("board-uboot noab")
+    return
 
     class TestBoardUBootNoAB(board.UBootMachine[TestBoard]):
         """Dummy Board UBoot."""
@@ -135,6 +140,10 @@ def selftest_board_uboot_noab(
 @tbot.testcase
 def selftest_board_linux(lab: typing.Optional[tbot.selectable.LabHost] = None) -> None:
     """Test board's linux."""
+
+    tbot.log.skip("board-linux")
+    return
+
     with contextlib.ExitStack() as cx:
         lh = cx.enter_context(lab or tbot.acquire_lab())
 
@@ -154,6 +163,10 @@ def selftest_board_linux(lab: typing.Optional[tbot.selectable.LabHost] = None) -
 @tbot.testcase
 def selftest_board_power(lab: typing.Optional[tbot.selectable.LabHost] = None) -> None:
     """Test if the board is powered on and off correctly."""
+
+    tbot.log.skip("board-power")
+    return
+
     with lab or tbot.acquire_lab() as lh:
         power_path = lh.workdir / "selftest_power"
         if power_path.exists():
@@ -213,6 +226,10 @@ def selftest_board_linux_uboot(
     lab: typing.Optional[tbot.selectable.LabHost] = None
 ) -> None:
     """Test linux booting from U-Boot."""
+
+    tbot.log.skip("board-linux & u-boot")
+    return
+
     with lab or tbot.acquire_lab() as lh:
         tbot.log.message("Testing without UB ...")
         with TestBoard(lh) as b:
@@ -232,6 +249,9 @@ def selftest_board_linux_nopw(
     lab: typing.Optional[tbot.selectable.LabHost] = None
 ) -> None:
     """Test linux without a password."""
+
+    tbot.log.skip("board-linux nopw")
+    return
 
     class TestBoardLinuxUB_NOPW(board.LinuxWithUBootMachine[TestBoard]):
         uboot = TestBoardUBoot
@@ -278,6 +298,9 @@ def selftest_board_linux_standalone(
 ) -> None:
     """Test linux booting standalone."""
 
+    tbot.log.skip("board-linux standalone")
+    return
+
     class TestBoardLinuxStandalone(board.LinuxStandaloneMachine[TestBoard]):
         username = "root"
         password = None
@@ -307,6 +330,9 @@ def selftest_board_linux_bad_console(
     lab: typing.Optional[tbot.selectable.LabHost] = None
 ) -> None:
     """Test linux booting standalone."""
+
+    tbot.log.skip("board-linux bad console")
+    return
 
     class BadBoard(TestBoard):
         def connect(self) -> channel.Channel:  # noqa: D102

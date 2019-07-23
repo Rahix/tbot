@@ -21,7 +21,7 @@ def selftest_uname(lab: typing.Optional[linux.LabHost] = None,) -> None:
 def selftest_user(lab: typing.Optional[linux.LabHost] = None,) -> None:
     """Test lab-host variable expansion."""
     with lab or tbot.acquire_lab() as lh:
-        lh.exec0("echo", linux.Env("USER"))
+        lh.exec0("echo", lh.env("USER"))
 
 
 @tbot.testcase
