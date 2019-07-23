@@ -1,13 +1,16 @@
 import abc
 import typing
 from .. import shell
+from . import path
 from .special import Special
 
 Self = typing.TypeVar("Self", bound="LinuxShell")
-ArgTypes = typing.Union[str, Special[Self]]
+ArgTypes = typing.Union[str, Special[Self], path.Path[Self]]
 
 
 class LinuxShell(shell.Shell):
+    __slots__ = ("_workdir",)
+
     @abc.abstractmethod
     def exec(self: Self, *args: ArgTypes) -> typing.Tuple[int, str]:
         raise NotImplementedError("abstract method")
@@ -27,3 +30,16 @@ class LinuxShell(shell.Shell):
     @abc.abstractmethod
     def interactive(self) -> None:
         raise NotImplementedError("abstract method")
+
+    @property
+    def fsroot(self: Self) -> path.Path[Self]:
+        return path.Path(self, "/")
+
+    @property
+    def workdir(self: Self) -> path.Path[Self]:
+        try:
+            return self._workdir
+        except AttributeError:
+            self._workdir: path.Path[Self] = path.Path(self, "/tmp/tbot-wd")
+            self.exec0("mkdir", "-p", self._workdir)
+            return self._workdir

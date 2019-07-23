@@ -1,9 +1,18 @@
 import typing
-import pathlib
 
 from .linux_shell import LinuxShell
 from .bash import Bash
-from .special import AndThen, Background, OrElse, Pipe, RedirStderr, RedirStdout, Then
+from .path import Path
+from .special import (
+    AndThen,
+    Background,
+    OrElse,
+    Pipe,
+    Raw,
+    RedirStderr,
+    RedirStdout,
+    Then,
+)
 
 __all__ = (
     "AndThen",
@@ -11,7 +20,9 @@ __all__ = (
     "Bash",
     "LinuxShell",
     "OrElse",
+    "Path",
     "Pipe",
+    "Raw",
     "RedirStderr",
     "RedirStdout",
     "Then",
@@ -25,11 +36,6 @@ LabHost = LinuxShell
 SSHMachine = NotImplementedError
 
 ANY = typing.TypeVar("ANY")
-
-
-class Path(pathlib.Path, typing.Generic[ANY]):
-    def __init__(self) -> None:
-        raise NotImplementedError
 
 
 class build:

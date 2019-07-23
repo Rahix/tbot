@@ -1,7 +1,6 @@
 import typing
 import stat
 import tbot
-from tbot import machine
 from tbot.machine import linux
 
 __all__ = ["selftest_path_integrity", "selftest_path_stat"]
@@ -11,9 +10,6 @@ __all__ = ["selftest_path_integrity", "selftest_path_stat"]
 def selftest_path_integrity(lab: typing.Optional[linux.LabHost] = None,) -> None:
     """Test if using a path on the wrong host fails."""
 
-    tbot.log.skip("path")
-    return
-
     with lab or tbot.acquire_lab() as lh:
         p = lh.workdir / "folder" / "file.txt"
 
@@ -22,13 +18,14 @@ def selftest_path_integrity(lab: typing.Optional[linux.LabHost] = None,) -> None
             try:
                 # mypy detects that this is wrong
                 lh2.exec0("echo", p)  # type: ignore
-            except machine.WrongHostException:
+            # TODO: Proper exception type
+            except:  # noqa: E722
                 raised = True
             assert raised
 
         lh.exec0("mkdir", "-p", p.parent)
         assert p.parent.is_dir()
-        lh.exec0("uname", "-a", stdout=p)
+        lh.exec0("uname", "-a", linux.RedirStdout(p))
         assert p.is_file()
         lh.exec0("rm", "-r", p.parent)
         assert not p.exists()
@@ -38,9 +35,6 @@ def selftest_path_integrity(lab: typing.Optional[linux.LabHost] = None,) -> None
 @tbot.testcase
 def selftest_path_stat(lab: typing.Optional[linux.LabHost] = None,) -> None:
     """Test path stat utilities."""
-
-    tbot.log.skip("path")
-    return
 
     with lab or tbot.acquire_lab() as lh:
         tbot.log.message("Setting up test files ...")
@@ -67,7 +61,7 @@ def selftest_path_stat(lab: typing.Optional[linux.LabHost] = None,) -> None:
                 "true",
             )
             .strip()
-            .split("\n")
+            .split("\r\n")
         )
         block_dev = None
         if block_list != []:

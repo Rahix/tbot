@@ -1,6 +1,6 @@
 import abc
 import typing
-from . import linux_shell  # noqa: F401
+from . import linux_shell, path  # noqa: F401
 
 H = typing.TypeVar("H", bound="linux_shell.LinuxShell")
 
@@ -31,11 +31,13 @@ class _Stdio(Special):
     def _redir_token(self) -> str:
         raise NotImplementedError("abstract method")
 
-    def __init__(self, file: str) -> None:
+    def __init__(self, file: path.Path[H]) -> None:
         self.file = file
 
-    def _to_string(self, _: H) -> str:
-        return self._redir_token + self.file
+    def _to_string(self, h: H) -> str:
+        if self.file.host is not h:
+            raise Exception("wrong host")
+        return self._redir_token + self.file._local_str()
 
 
 class RedirStdout(_Stdio):
