@@ -1,5 +1,5 @@
 import re
-from ... import channel
+from .. import channel
 
 
 def wait_for_shell(ch: channel.Channel) -> None:

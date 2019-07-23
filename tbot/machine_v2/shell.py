@@ -1,6 +1,6 @@
 import abc
 import typing
-from .. import machine
+from . import machine
 
 
 class Shell(machine.Machine):

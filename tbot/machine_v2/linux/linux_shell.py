@@ -1,6 +1,6 @@
 import abc
 import typing
-from ... import shell
+from .. import shell
 from .special import Special
 
 Self = typing.TypeVar("Self", bound="LinuxShell")
