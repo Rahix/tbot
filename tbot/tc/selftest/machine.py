@@ -124,22 +124,20 @@ def selftest_machine_shell(
         assert out == value, repr(out)
 
         tbot.log.skip("paths")
-        # TODO: Add workdir
-        # tbot.log.message("Testing redirection (and weird paths) ...")
-        # f = m.workdir / ".redir test.txt"
-        # if f.exists():
-        #     m.exec0("rm", f)
+        tbot.log.message("Testing redirection (and weird paths) ...")
+        f = m.workdir / ".redir test.txt"
+        if f.exists():
+            m.exec0("rm", f)
 
-        # TODO: Add paths
-        # assert (
-        #     m.fsroot / "proc" / "version"
-        # ).exists(), "/proc/version is missing for some reason ..."
+        assert (
+            m.fsroot / "proc" / "version"
+        ).exists(), "/proc/version is missing for some reason ..."
 
-        # m.exec0("echo", "Some data\nAnd some more", stdout=f)
+        m.exec0("echo", "Some data - And some more", linux.RedirStdout(f))
 
-        # TODO: Add paths
-        # out = m.exec0("cat", f)
-        # assert out == "Some data\nAnd some more\n", repr(out)
+        out = m.exec0("cat", f)
+        # TODO: Newline
+        assert out == "Some data - And some more\r\n", repr(out)
 
         # TODO: Evaluate what to do with this
         # tbot.log.message("Testing formatting ...")

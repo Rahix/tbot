@@ -1,5 +1,7 @@
 import abc
+import shlex
 import typing
+
 from . import linux_shell, path  # noqa: F401
 
 H = typing.TypeVar("H", bound="linux_shell.LinuxShell")
@@ -37,7 +39,7 @@ class _Stdio(Special):
     def _to_string(self, h: H) -> str:
         if self.file.host is not h:
             raise Exception("wrong host")
-        return self._redir_token + self.file._local_str()
+        return self._redir_token + shlex.quote(self.file._local_str())
 
 
 class RedirStdout(_Stdio):
