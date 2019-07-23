@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- `tbot.log.skip()`: A testcase skip message
+
 ### Fixed
 - `Path.__fspath__()` erroneously returning a result, even though the contract
   that is assumed with this method cannot be upheld by tbot.

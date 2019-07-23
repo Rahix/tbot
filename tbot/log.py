@@ -222,3 +222,14 @@ def warning(msg: typing.Union[str, _TC]) -> EventIO:
     .. versionadded:: 0.6.3
     """
     return message(c("Warning").yellow.bold + ": " + msg, Verbosity.QUIET)
+
+
+def skip(what: typing.Union[str, _TC]) -> EventIO:
+    """
+    Emit a testcase skip message.
+
+    :param str what: What test is being skipped
+
+    .. versionadded:: IN-DEV
+    """
+    return message(c("Skip").yellow.bold + " " + what, Verbosity.INFO)

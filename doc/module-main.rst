@@ -145,6 +145,8 @@ Helpers
 Log Events
 ^^^^^^^^^^
 .. autofunction:: tbot.log.message
+.. autofunction:: tbot.log.warning
+.. autofunction:: tbot.log.skip
 .. autofunction:: tbot.log_event.command
 .. autofunction:: tbot.log_event.testcase_begin
 .. autofunction:: tbot.log_event.testcase_end
