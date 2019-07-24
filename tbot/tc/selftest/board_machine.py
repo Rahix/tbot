@@ -1,27 +1,25 @@
 import contextlib
+import re
 import typing
+
 import tbot
-from tbot.machine import channel
-from tbot.machine import linux
-from tbot.machine import board
+from tbot import machine
+from tbot.machine import channel, linux, board, connector
 from . import machine as mach
 
 
-class TestBoard(board.Board):
-    """Dummy Board."""
+class DummyConnector(connector.Connector):
+    def __init__(self, mach: machine.Machine, autoboot: bool = True) -> None:
+        self.mach = mach
+        self.autoboot = autoboot
 
-    name = "test"
-
-    def poweron(self) -> None:  # noqa: D102
-        self.lh.exec0("touch", self.lh.workdir / "selftest_power")
-
-    def poweroff(self) -> None:  # noqa: D102
-        self.lh.exec0("rm", self.lh.workdir / "selftest_power")
-
-    def connect(self) -> channel.Channel:  # noqa: D102
-        if self.has_autoboot:
-            return self.lh.new_channel(
-                linux.Raw(
+    @contextlib.contextmanager
+    def _connect(self) -> typing.Iterator[channel.Channel]:
+        with self.mach.clone() as cloned:
+            ch = cloned.ch.take()
+            tbot.log_event.command(self.mach.name, "dummy-connect")
+            if self.autoboot:
+                ch.sendline(
                     """\
 bash --norc --noediting; exit
 unset HISTFILE
@@ -36,16 +34,19 @@ function printenv() {
 }
 function setenv() { local var="$1"; shift; eval "$var=\\"$*\\""
 }
-bash --norc --noediting
+bash --norc --noediting""",
+                    read_back=True,
+                )
+                ch.sendline(
+                    """\
 unset HISTFILE
 set +o emacs
 set +o vi
-read -p 'Autoboot: '"""
+read -p 'Autoboot: '; exit""",
+                    read_back=True,
                 )
-            )
-        else:
-            return self.lh.new_channel(
-                linux.Raw(
+            else:
+                ch.sendline(
                     """\
 bash --norc --noediting; exit
 unset HISTFILE
@@ -59,38 +60,43 @@ function printenv() {
 }
 function setenv() { local var="$1"; shift; eval "$var=\\"$*\\""
 }
-PS1=Test-U-Boot'> ' #"""
+PS1=Test-U-Boot'> ' #""",
+                    read_back=True,
                 )
-            )
 
-    def __init__(
-        self, lh: linux.LabHost, has_autoboot: bool = True
-    ) -> None:  # noqa: D107
-        self.has_autoboot = has_autoboot
-        super().__init__(lh)
+            yield ch
+
+    def clone(self) -> typing.NoReturn:
+        raise NotImplementedError("can't clone a serial connection")
 
 
-class TestBoardUBoot(board.UBootMachine[TestBoard]):
+class TestBoard(board.Board):
+    """Dummy Board."""
+
+
+class TestUBoot(DummyConnector, board.UBootAutobootIntercept, board.UBootShell):
     """Dummy Board UBoot."""
 
-    autoboot_prompt = "Autoboot: "
+    name = "test-ub"
+
+    autoboot_prompt = re.compile(b"Autoboot: ")
     prompt = "Test-U-Boot> "
+
+
+class TestBoardUBoot:
+    pass
 
 
 @tbot.testcase
 def selftest_board_uboot(lab: typing.Optional[tbot.selectable.LabHost] = None) -> None:
     """Test if tbot intercepts U-Boot correctly."""
-    tbot.log.skip("board-uboot")
-    return
 
     with contextlib.ExitStack() as cx:
         lh = cx.enter_context(lab or tbot.acquire_lab())
         try:
-            b = cx.enter_context(tbot.acquire_board(lh))
-            ub = cx.enter_context(tbot.acquire_uboot(b))
+            ub: board.UBootShell = cx.enter_context(tbot.acquire_uboot(lh))
         except NotImplementedError:
-            b = cx.enter_context(TestBoard(lh))
-            ub = cx.enter_context(TestBoardUBoot(b))
+            ub = cx.enter_context(TestUBoot(lh))
 
         ub.exec0("version")
         env = ub.exec0("printenv").strip().split("\n")
@@ -99,7 +105,7 @@ def selftest_board_uboot(lab: typing.Optional[tbot.selectable.LabHost] = None) -
             if line != "" and line[0].isalnum():
                 assert "=" in line, repr(line)
 
-        out = ub.exec0("echo", board.F("0x{}", str(1234))).strip()
+        out = ub.exec0("echo", hex(0x1234)).strip()
         assert out == "0x1234", repr(out)
 
         mach.selftest_machine_shell(ub)
@@ -110,19 +116,17 @@ def selftest_board_uboot_noab(
     lab: typing.Optional[tbot.selectable.LabHost] = None
 ) -> None:
     """Test if tbot intercepts U-Boot correctly without autoboot."""
-    tbot.log.skip("board-uboot noab")
-    return
 
-    class TestBoardUBootNoAB(board.UBootMachine[TestBoard]):
+    class TestUBootNoAB(DummyConnector, board.UBootShell):
         """Dummy Board UBoot."""
 
-        autoboot_prompt = None
+        name = "test-ub-noab"
+
         prompt = "Test-U-Boot> "
 
     with contextlib.ExitStack() as cx:
         lh = cx.enter_context(lab or tbot.acquire_lab())
-        b = cx.enter_context(TestBoard(lh, has_autoboot=False))
-        ub = cx.enter_context(TestBoardUBootNoAB(b))
+        ub = cx.enter_context(TestUBootNoAB(lh, autoboot=False))
 
         ub.exec0("version")
         env = ub.exec0("printenv").strip().split("\n")
@@ -131,7 +135,7 @@ def selftest_board_uboot_noab(
             if line != "" and line[0].isalnum():
                 assert "=" in line, repr(line)
 
-        out = ub.exec0("echo", board.F("0x{}", str(1234))).strip()
+        out = ub.exec0("echo", hex(0x1234)).strip()
         assert out == "0x1234", repr(out)
 
         mach.selftest_machine_shell(ub)
@@ -218,7 +222,8 @@ class TestBoardLinuxUB(board.LinuxWithUBootMachine[TestBoard]):
     @property
     def workdir(self) -> "linux.Path[TestBoardLinuxUB]":
         """Return workdir."""
-        return linux.Workdir.static(self, "/tmp/tbot-wd")
+        raise NotImplementedError("workdir")
+        # return linux.Workdir.static(self, "/tmp/tbot-wd")
 
 
 @tbot.testcase
