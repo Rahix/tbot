@@ -70,7 +70,8 @@ class Bash(linux_shell.LinuxShell):
     def exec0(self, *args: linux_shell.ArgTypes) -> str:
         retcode, out = self.exec(*args)
         if retcode != 0:
-            raise Exception(f"command {args!r} failed")
+            cmd = self.escape(*args)
+            raise Exception(f"command {cmd!r} failed")
         return out
 
     def test(self, *args: linux_shell.ArgTypes) -> bool:

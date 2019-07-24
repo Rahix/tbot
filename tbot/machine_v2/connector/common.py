@@ -22,8 +22,6 @@ SelfSerial = typing.TypeVar("SelfSerial", bound="SerialConsoleConnector")
 
 
 class SerialConsoleConnector(connector.Connector):
-    __slots__ = ("mach",)
-
     def __init__(self, mach: machine.Machine) -> None:
         self.mach = mach
 
