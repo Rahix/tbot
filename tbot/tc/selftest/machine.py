@@ -192,10 +192,8 @@ def selftest_machine_shell(
         out = m.exec0("printenv", "TBOT_TEST")
         assert out == "TBOT_TEST=Lorem ipsum dolor sit amet\n", repr(out)
 
-        tbot.log.skip("u-boot env")
-        # TODO: U-Boot environment
-        # out = m.env("TBOT_TEST")
-        # assert out == "Lorem ipsum dolor sit amet", repr(out)
+        out = m.env("TBOT_TEST")
+        assert out == "Lorem ipsum dolor sit amet", repr(out)
 
 
 @tbot.testcase

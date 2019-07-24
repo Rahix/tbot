@@ -5,6 +5,7 @@ import typing
 
 import tbot
 from .. import shell, machine
+from ..linux import special
 
 
 class UBootAutobootIntercept(machine.Initializer):
@@ -20,7 +21,7 @@ class UBootAutobootIntercept(machine.Initializer):
         yield None
 
 
-ArgTypes = typing.Union[str]
+ArgTypes = typing.Union[str, special.Special]
 
 
 class UBootShell(shell.Shell):
@@ -46,6 +47,8 @@ class UBootShell(shell.Shell):
         for arg in args:
             if isinstance(arg, str):
                 string_args.append(shlex.quote(arg))
+            elif isinstance(arg, special.Special):
+                string_args.append(arg._to_string(self))
             else:
                 raise TypeError(f"{type(arg)!r} is not a supported argument type!")
 
@@ -76,14 +79,12 @@ class UBootShell(shell.Shell):
         return retcode == 0
 
     def env(self, var: str, value: typing.Optional[ArgTypes] = None) -> str:
-        # TODO: Special
-        # if value is not None:
-        #     self.exec0(
-        #         "export", special.Raw(f"{self.escape(var)}={self.escape(value)}")
-        #     )
+        if value is not None:
+            self.exec0(
+                "export", special.Raw(f"{self.escape(var)}={self.escape(value)}")
+            )
 
-        # return self.exec0("echo", special.Raw(f'"${{{self.escape(var)}}}"'))[:-1]
-        raise NotImplementedError("uboot.env")
+        return self.exec0("echo", special.Raw(f'"${{{self.escape(var)}}}"'))[:-1]
 
     def interactive(self) -> None:
         tbot.log.message("Entering interactive shell (CTRL+D to exit) ...")

@@ -3,10 +3,15 @@ import typing
 from .uboot import UBootShell, UBootAutobootIntercept
 from .board import PowerControl
 from .linux import LinuxBootLogin
+from ..linux.special import Then, AndThen, OrElse, Raw
 
 __all__ = (
+    "AndThen",
     "LinuxBootLogin",
+    "OrElse",
     "PowerControl",
+    "Raw",
+    "Then",
     "UBootAutobootIntercept",
     "UBootMachine",
     "UBootShell",
@@ -37,6 +42,3 @@ class LinuxWithUBootMachine(typing.Generic[ANY]):
 class LinuxStandaloneMachine(typing.Generic[ANY]):
     def __init__(*args) -> None:
         raise NotImplementedError
-
-
-from ..linux.special import *  # noqa
