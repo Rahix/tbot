@@ -3,13 +3,12 @@ import re
 import typing
 
 import tbot
-from tbot import machine
 from tbot.machine import channel, linux, board, connector
 from . import machine as mach
 
 
 class DummyConnector(connector.Connector):
-    def __init__(self, mach: machine.Machine, autoboot: bool = True) -> None:
+    def __init__(self, mach: linux.LinuxShell, autoboot: bool = True) -> None:
         self.mach = mach
         self.autoboot = autoboot
 
@@ -168,8 +167,24 @@ def selftest_board_linux(lab: typing.Optional[tbot.selectable.LabHost] = None) -
 def selftest_board_power(lab: typing.Optional[tbot.selectable.LabHost] = None) -> None:
     """Test if the board is powered on and off correctly."""
 
-    tbot.log.skip("board-power")
-    return
+    class TestPowerUBoot(
+        DummyConnector,
+        board.PowerControl,
+        board.UBootAutobootIntercept,
+        board.UBootShell,
+    ):
+        """Dummy Board UBoot."""
+
+        name = "test-ub-power"
+
+        autoboot_prompt = re.compile(b"Autoboot: ")
+        prompt = "Test-U-Boot> "
+
+        def poweron(self) -> None:
+            self.mach.exec0("touch", self.mach.workdir / "selftest_power")
+
+        def poweroff(self) -> None:
+            self.mach.exec0("rm", self.mach.workdir / "selftest_power")
 
     with lab or tbot.acquire_lab() as lh:
         power_path = lh.workdir / "selftest_power"
@@ -178,7 +193,7 @@ def selftest_board_power(lab: typing.Optional[tbot.selectable.LabHost] = None) -
 
         tbot.log.message("Emulating a normal run ...")
         assert not power_path.exists()
-        with TestBoard(lh):
+        with TestPowerUBoot(lh):
             assert power_path.exists()
 
         assert not power_path.exists()
@@ -188,7 +203,7 @@ def selftest_board_power(lab: typing.Optional[tbot.selectable.LabHost] = None) -
 
         tbot.log.message("Emulating a failing run ...")
         try:
-            with TestBoard(lh):
+            with TestPowerUBoot(lh):
                 assert power_path.exists()
                 tbot.log.message("raise TestException()")
                 raise TestException()
