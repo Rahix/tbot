@@ -83,7 +83,7 @@ class Bash(linux_shell.LinuxShell):
                 "export", special.Raw(f"{self.escape(var)}={self.escape(value)}")
             )
 
-        return self.exec0("echo", special.Raw(f'"${{{self.escape(var)}}}"'))[:-2]
+        return self.exec0("echo", special.Raw(f'"${{{self.escape(var)}}}"'))[:-1]
 
     @contextlib.contextmanager
     def subshell(self) -> "typing.Iterator[Bash]":

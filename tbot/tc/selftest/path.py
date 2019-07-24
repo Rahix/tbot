@@ -61,7 +61,7 @@ def selftest_path_stat(lab: typing.Optional[linux.LabHost] = None,) -> None:
                 "true",
             )
             .strip()
-            .split("\r\n")
+            .split("\n")
         )
         block_dev = None
         if block_list != []:

@@ -19,10 +19,10 @@ def selftest_machine_reentrant(lab: typing.Optional[linux.LabHost] = None,) -> N
     """Test if a machine can be entered multiple times."""
     with lab or tbot.acquire_lab() as lh:
         with lh as h1:
-            assert h1.exec0("echo", "FooBar") == "FooBar\r\n"
+            assert h1.exec0("echo", "FooBar") == "FooBar\n"
 
         with lh as h2:
-            assert h2.exec0("echo", "FooBar2") == "FooBar2\r\n"
+            assert h2.exec0("echo", "FooBar2") == "FooBar2\n"
 
 
 @tbot.testcase
@@ -90,26 +90,24 @@ def selftest_machine_shell(
 
     tbot.log.message("Testing command output ...")
     out = m.exec0("echo", "Hello World")
-    assert out == "Hello World\r\n", repr(out)
+    assert out == "Hello World\n", repr(out)
 
     out = m.exec0("echo", "$?", "!#")
-    assert out == "$? !#\r\n", repr(out)
+    assert out == "$? !#\n", repr(out)
 
     if "printf" in cap:
         out = m.exec0("printf", "Hello World")
         assert out == "Hello World", repr(out)
 
-        tbot.log.skip("newline printf")
-        # TODO: Fix newline handling
-        # out = m.exec0("printf", "Hello\\nWorld")
-        # assert out == "Hello\r\nWorld", repr(out)
+        out = m.exec0("printf", "Hello\\nWorld")
+        assert out == "Hello\nWorld", repr(out)
 
-        # out = m.exec0("printf", "Hello\nWorld")
-        # assert out == "Hello\nWorld", repr(out)
+        out = m.exec0("printf", "Hello\nWorld")
+        assert out == "Hello\nWorld", repr(out)
 
     s = "_".join(map(lambda i: f"{i:02}", range(80)))
     out = m.exec0("echo", s)
-    assert out == f"{s}\r\n", repr(out)
+    assert out == f"{s}\n", repr(out)
 
     tbot.log.message("Testing return codes ...")
     assert m.test("true")
@@ -117,13 +115,11 @@ def selftest_machine_shell(
 
     if isinstance(m, linux.LinuxMachine):
         tbot.log.message("Testing env vars ...")
-        # TODO: Add newlines
-        value = "12 - foo !? # true; exit -"
+        value = "12\nfoo !? # true; exit\n"
         m.env("TBOT_TEST_ENV_VAR", value)
         out = m.env("TBOT_TEST_ENV_VAR")
         assert out == value, repr(out)
 
-        tbot.log.skip("paths")
         tbot.log.message("Testing redirection (and weird paths) ...")
         f = m.workdir / ".redir test.txt"
         if f.exists():
@@ -137,7 +133,7 @@ def selftest_machine_shell(
 
         out = m.exec0("cat", f)
         # TODO: Newline
-        assert out == "Some data - And some more\r\n", repr(out)
+        assert out == "Some data - And some more\n", repr(out)
 
         # TODO: Evaluate what to do with this
         # tbot.log.message("Testing formatting ...")
@@ -158,7 +154,7 @@ def selftest_machine_shell(
             ).strip()
             t2 = time.monotonic()
 
-            assert re.match(r"\[\d+\] \d+\r\nHello World", out), repr(out)
+            assert re.match(r"\[\d+\] \d+\nHello World", out), repr(out)
             assert (
                 t2 - t1
             ) < 9.0, (

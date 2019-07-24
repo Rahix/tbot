@@ -462,9 +462,21 @@ class Channel(typing.ContextManager):
     # }}}
 
     # pexpect-like interface {{{
-    def send(self, s: typing.Union[str, bytes]) -> None:
+    def send(
+        self,
+        s: typing.Union[str, bytes],
+        read_back: bool = False,
+        timeout: typing.Optional[float] = None,
+    ) -> None:
         s = s.encode("utf-8") if isinstance(s, str) else s
         self.write(s)
+
+        if read_back:
+            # Read back what was just sent.  Assume a well-behaved other side
+            # and read two characters for every '\r' or '\n' sent.  This might
+            # be flawed in some cases, though ...
+            length = len(s) + s.count(b"\r") + s.count(b"\n")
+            self.read(n=length, timeout=timeout)
 
     def sendline(
         self,
@@ -474,11 +486,7 @@ class Channel(typing.ContextManager):
     ) -> None:
         s = s.encode("utf-8") if isinstance(s, str) else s
         # The "Enter" key sends '\r'
-        self.write(s + b"\r")
-
-        if read_back:
-            # Read back command + `\r\n`
-            self.read(n=len(s) + 2, timeout=timeout)
+        self.send(s + b"\r", read_back, timeout)
 
     def sendcontrol(self, c: str) -> None:
         assert len(c) == 1
@@ -535,13 +543,21 @@ class Channel(typing.ContextManager):
 
                 if isinstance(self.prompt, bytes):
                     if buf.endswith(self.prompt):
-                        return buf[: -len(self.prompt)].decode(
-                            "utf-8", errors="replace"
+                        return (
+                            buf[: -len(self.prompt)]
+                            .decode("utf-8", errors="replace")
+                            .replace("\r\n", "\n")
+                            .replace("\n\r", "\n")
                         )
                 elif isinstance(self.prompt, BoundedPattern):
                     match = self.prompt.pattern.search(buf)
                     if match is not None:
-                        return buf[: match.span()[0]].decode("utf-8", errors="replace")
+                        return (
+                            buf[: match.span()[0]]
+                            .decode("utf-8", errors="replace")
+                            .replace("\r\n", "\n")
+                            .replace("\n\r", "\n")
+                        )
 
         raise RuntimeError("unreachable")
 
