@@ -28,11 +28,16 @@ class UBootShell(shell.Shell):
 
     @contextlib.contextmanager
     def _init_shell(self) -> typing.Iterator:
-        self.ch.sendintr()
         self.ch.prompt = (
             self.prompt.encode("utf-8") if isinstance(self.prompt, str) else self.prompt
         )
-        self.ch.read_until_prompt()
+
+        while True:
+            try:
+                self.ch.read_until_prompt(timeout=0.2)
+                break
+            except TimeoutError:
+                self.ch.sendintr()
 
         yield None
 

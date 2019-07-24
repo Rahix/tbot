@@ -19,12 +19,14 @@ ANY = typing.TypeVar("ANY")
 
 
 class UBootMachine(typing.Generic[ANY], UBootShell):
+    # Old UBootMachine had a generic parameter.  This wrapper is necessary to
+    # "emulate" that fake generic.
     pass
 
 
 class Board:
     def __init__(*args) -> None:
-        raise NotImplementedError
+        raise NotImplementedError("board class no longer exists")
 
 
 class LinuxWithUBootMachine(typing.Generic[ANY]):
