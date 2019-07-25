@@ -38,7 +38,7 @@ This repo exists to test tbot's git testcase.
 
 You can safely remove it, but please **do not** modify it as that might
 break the tests.""",
-            stdout=repo / "README.md",
+            linux.RedirStdout(repo / "README.md"),
         )
 
         repo.add(repo / "README.md")
@@ -50,7 +50,7 @@ break the tests.""",
             """\
 # File 2
 A second file that will have been added by patching.""",
-            stdout=repo / "file2.md",
+            linux.RedirStdout(repo / "file2.md"),
         )
 
         repo.add(repo / "file2.md")
@@ -84,7 +84,7 @@ def selftest_tc_git_checkout(lab: typing.Optional[linux.LabHost] = None,) -> Non
         assert not (repo / "file2.md").is_file()
 
         tbot.log.message("Make repo dirty ...")
-        lh.exec0("echo", "Test 123", stdout=repo / "file.txt")
+        lh.exec0("echo", "Test 123", linux.RedirStdout(repo / "file.txt"))
 
         repo = git.GitRepository(target, remote, clean=False)
         assert (repo / "file.txt").is_file()
@@ -93,7 +93,7 @@ def selftest_tc_git_checkout(lab: typing.Optional[linux.LabHost] = None,) -> Non
         assert not (repo / "file.txt").is_file()
 
         tbot.log.message("Add dirty commit ...")
-        lh.exec0("echo", "Test 123", stdout=repo / "file.txt")
+        lh.exec0("echo", "Test 123", linux.RedirStdout(repo / "file.txt"))
         repo.add(repo / "file.txt")
         repo.commit("Add file.txt", author="tbot Selftest <none@none>")
 
@@ -138,7 +138,7 @@ A second file that will have been added by patching.
 
 ## 2.2
 This section was added by a second patch""",
-            stdout=repo / "file2.md",
+            linux.RedirStdout(repo / "file2.md"),
         )
 
         repo.add(repo / "file2.md")
@@ -189,7 +189,7 @@ A second file that will have been added by patching.
 
 ## 2.2
 This section was added by a second patch""",
-            stdout=repo / "file2.md",
+            linux.RedirStdout(repo / "file2.md"),
         )
 
         repo.add(repo / "file2.md")
@@ -218,7 +218,7 @@ def git_increment_commits(repo: git.GitRepository) -> str:
     for i in range(0, 24):
         tbot.log.message(f"Create commit ({i+1:2}/24) ...")
 
-        repo.host.exec0("echo", str(i), stdout=counter)
+        repo.host.exec0("echo", str(i), linux.RedirStdout(counter))
         repo.add(counter)
         repo.commit(f"Set counter to {i}", author="tbot Selftest <none@none>")
 

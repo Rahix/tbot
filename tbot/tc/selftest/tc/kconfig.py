@@ -24,7 +24,7 @@ CONFIG_BAR=m
 # CONFIG_BAZ is not set
 CONFIG_STRING="a happy string"
 CONFIG_HEX=0xC0FFEE""",
-                stdout=conf,
+                linux.RedirStdout(conf),
             )
 
             if i == 0:

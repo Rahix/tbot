@@ -14,7 +14,7 @@ def selftest_tc_shell_copy(lab: typing.Optional[linux.LabHost] = None,) -> None:
     def do_test(a: linux.Path, b: linux.Path, msg: str) -> None:
         if b.exists():
             b.host.exec0("rm", b)
-        a.host.exec0("echo", msg, stdout=a)
+        a.host.exec0("echo", msg, linux.RedirStdout(a))
 
         shell.copy(a, b)
 
