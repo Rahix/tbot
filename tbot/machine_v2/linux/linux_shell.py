@@ -9,8 +9,6 @@ ArgTypes = typing.Union[str, Special[Self], path.Path[Self]]
 
 
 class LinuxShell(shell.Shell):
-    __slots__ = ("_workdir",)
-
     @abc.abstractmethod
     def exec(self: Self, *args: ArgTypes) -> typing.Tuple[int, str]:
         raise NotImplementedError("abstract method")

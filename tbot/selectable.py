@@ -15,10 +15,10 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import typing
-from tbot.machine import connector, linux
+from tbot.machine import connector, linux, board
 
 
-class LocalLabHost(connector.SubprocessConnector, linux.Bash):
+class LocalLabHost(connector.SubprocessConnector, linux.Bash, typing.ContextManager):
     name = "local"
 
 
@@ -83,121 +83,109 @@ class Board(typing.ContextManager):
     name = "dummy"
 
     def __init__(self, lh: linux.LabHost) -> None:  # noqa: D107
-        raise NotImplementedError("This is a dummy Board")
+        raise NotImplementedError("`Board` is no longer implemented.")
 
     def poweron(self) -> None:  # noqa: D102
-        raise NotImplementedError("This is a dummy Board")
+        raise NotImplementedError("`Board` is no longer implemented.")
 
     def poweroff(self) -> None:  # noqa: D102
-        raise NotImplementedError("This is a dummy Board")
+        raise NotImplementedError("`Board` is no longer implemented.")
 
 
 def acquire_board(lh: LabHost) -> typing.NoReturn:
+    """No longer implemented."""
+    raise NotImplementedError("acquire_board() is no longer implemented.")
+
+
+class UBootMachine(board.UBootShell, typing.ContextManager):
+    """Dummy type that will be replaced by the actual selected U-Boot machine at runtime."""
+
+    _unselected = True
+
+    def __init__(self, lab: LabHost, *args: typing.Any) -> None:
+        raise NotImplementedError("no u-boot selected")
+
+
+def acquire_uboot(lab: LabHost, *args: typing.Any) -> UBootMachine:
     """
-    No longer implemented.
+    Acquire the board's U-Boot shell.
+
+    As there can only be one instance of :class:`UBootMachine` at a time,
+    your testcases should optionally take the :class:`UBootMachine` as a
+    parameter. The recipe looks like this::
+
+        import contextlib
+        import typing
+        import tbot
+        from tbot.machine import board
+
+
+        @tbot.testcase
+        def my_testcase(
+            lab: typing.Optional[tbot.selectable.LabHost] = None,
+            uboot: typing.Optional[board.UBootMachine] = None,
+        ) -> None:
+            with contextlib.ExitStack() as cx:
+                lh = cx.enter_context(lab or tbot.acquire_lab())
+                if uboot is not None:
+                    ub = uboot
+                else:
+                    b = cx.enter_context(tbot.acquire_board(lh))
+                    ub = cx.enter_context(tbot.acquire_uboot(b))
+
+                ...
+
+    :rtype: tbot.machine.board.UBootMachine
     """
-    raise NotImplementedError("acquire_board() is no longer necessary")
+    if hasattr(UBootMachine, "_unselected"):
+        raise NotImplementedError("Maybe you haven't set a board?")
+    return UBootMachine(lab, *args)
 
 
-def acquire_uboot(*args: typing.Any) -> typing.NoReturn:
-    raise NotImplementedError
+class LinuxMachine(linux.LinuxShell, typing.ContextManager):
+    """Dummy type that will be replaced by the actual selected Linux machine at runtime."""
+
+    _unselected = True
+
+    def __init__(self, *args: typing.Any) -> None:  # noqa: D107
+        raise NotImplementedError("This is a dummy Linux")
 
 
-def acquire_linux(*args: typing.Any) -> typing.NoReturn:
-    raise NotImplementedError
+def acquire_linux(
+    b: typing.Union[LabHost, UBootMachine], *args: typing.Any
+) -> LinuxMachine:
+    """
+    Acquire the board's Linux shell.
+
+    Can either boot from a previously created U-Boot (if the implementation
+    supports this) or directly.
+
+    To write testcases that work both from the commandline and when called from other
+    testcases, use the following recipe::
+
+        import contextlib
+        import typing
+        import tbot
+        from tbot.machine import board
 
 
-# class UBootMachine(board.UBootMachine, typing.ContextManager):
-#     """Dummy type that will be replaced by the actual selected U-Boot machine at runtime."""
-#
-#     _unselected = True
-#
-#     def __init__(self, b: typing.Any) -> None:  # noqa: D107
-#         raise NotImplementedError("This is a dummy Linux")
-#
-#
-# def acquire_uboot(board: Board) -> UBootMachine:
-#     """
-#     Acquire the board's U-Boot shell.
-#
-#     As there can only be one instance of :class:`UBootMachine` at a time,
-#     your testcases should optionally take the :class:`UBootMachine` as a
-#     parameter. The recipe looks like this::
-#
-#         import contextlib
-#         import typing
-#         import tbot
-#         from tbot.machine import board
-#
-#
-#         @tbot.testcase
-#         def my_testcase(
-#             lab: typing.Optional[tbot.selectable.LabHost] = None,
-#             uboot: typing.Optional[board.UBootMachine] = None,
-#         ) -> None:
-#             with contextlib.ExitStack() as cx:
-#                 lh = cx.enter_context(lab or tbot.acquire_lab())
-#                 if uboot is not None:
-#                     ub = uboot
-#                 else:
-#                     b = cx.enter_context(tbot.acquire_board(lh))
-#                     ub = cx.enter_context(tbot.acquire_uboot(b))
-#
-#                 ...
-#
-#     :rtype: tbot.machine.board.UBootMachine
-#     """
-#     if hasattr(UBootMachine, "_unselected"):
-#         raise NotImplementedError("Maybe you haven't set a board?")
-#     return UBootMachine(board)
-#
-#
-# class LinuxMachine(board.LinuxStandaloneMachine[Board], typing.ContextManager):
-#     """Dummy type that will be replaced by the actual selected Linux machine at runtime."""
-#
-#     _unselected = True
-#
-#     def __init__(self, b: typing.Any) -> None:  # noqa: D107
-#         raise NotImplementedError("This is a dummy Linux")
-#
-#     username = "root"
-#     password = None
-#     shell = linux.shell.Shell
-#
-#
-# def acquire_linux(b: typing.Union[Board, UBootMachine]) -> LinuxMachine:
-#     """
-#     Acquire the board's Linux shell.
-#
-#     Can either boot from a previously created U-Boot (if the implementation
-#     supports this) or directly.
-#
-#     To write testcases that work both from the commandline and when called from other
-#     testcases, use the following recipe::
-#
-#         import contextlib
-#         import typing
-#         import tbot
-#         from tbot.machine import board
-#
-#
-#         @tbot.testcase
-#         def test_testcase(
-#             lab: typing.Optional[tbot.selectable.LabHost] = None,
-#             board_linux: typing.Optional[board.LinuxMachine] = None,
-#         ) -> None:
-#             with contextlib.ExitStack() as cx:
-#                 lh = cx.enter_context(lab or tbot.acquire_lab())
-#                 if board_linux is not None:
-#                     lnx = board_linux
-#                 else:
-#                     b = cx.enter_context(tbot.acquire_board(lh))
-#                     lnx = cx.enter_context(tbot.acquire_linux(b))
-#
-#                 ...
-#
-#     :rtype: tbot.machine.board.LinuxMachine
-#     """
-#     if hasattr(LinuxMachine, "_unselected"):
-#         raise NotImplementedError("Maybe you haven't set a board?")
-#     return LinuxMachine(b)
+        @tbot.testcase
+        def test_testcase(
+            lab: typing.Optional[tbot.selectable.LabHost] = None,
+            board_linux: typing.Optional[board.LinuxMachine] = None,
+        ) -> None:
+            with contextlib.ExitStack() as cx:
+                lh = cx.enter_context(lab or tbot.acquire_lab())
+                if board_linux is not None:
+                    lnx = board_linux
+                else:
+                    b = cx.enter_context(tbot.acquire_board(lh))
+                    lnx = cx.enter_context(tbot.acquire_linux(b))
+
+                ...
+
+    :rtype: tbot.machine.board.LinuxMachine
+    """
+    if hasattr(LinuxMachine, "_unselected"):
+        raise NotImplementedError("Maybe you haven't set a board?")
+    return LinuxMachine(b, *args)
