@@ -1,7 +1,7 @@
 import abc
 import typing
 from .. import shell
-from . import path
+from . import path, workdir
 from .special import Special
 
 Self = typing.TypeVar("Self", bound="LinuxShell")
@@ -47,9 +47,4 @@ class LinuxShell(shell.Shell):
 
     @property
     def workdir(self: Self) -> path.Path[Self]:
-        try:
-            return self._workdir
-        except AttributeError:
-            self._workdir: path.Path[Self] = path.Path(self, "/tmp/tbot-wd")
-            self.exec0("mkdir", "-p", self._workdir)
-            return self._workdir
+        return workdir.Workdir.static(self, "/tmp/tbot-wd")

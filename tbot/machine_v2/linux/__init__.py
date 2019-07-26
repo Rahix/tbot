@@ -13,6 +13,7 @@ from .special import (
     RedirStdout,
     Then,
 )
+from .workdir import Workdir
 
 __all__ = (
     "AndThen",
@@ -26,6 +27,7 @@ __all__ = (
     "RedirStderr",
     "RedirStdout",
     "Then",
+    "Workdir",
 )
 
 #        Compatibility aliases
@@ -60,3 +62,6 @@ class shell:
 
 class auth:
     Authenticator = NotImplementedError
+    PrivateKeyAuthenticator = NotImplementedError
+    PasswordAuthenticator = NotImplementedError
+    NoneAuthenticator = NotImplementedError
