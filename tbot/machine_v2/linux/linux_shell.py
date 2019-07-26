@@ -10,6 +10,10 @@ ArgTypes = typing.Union[str, Special[Self], path.Path[Self]]
 
 class LinuxShell(shell.Shell):
     @abc.abstractmethod
+    def escape(self: Self, *args: ArgTypes) -> str:
+        raise NotImplementedError("abstract method")
+
+    @abc.abstractmethod
     def exec(self: Self, *args: ArgTypes) -> typing.Tuple[int, str]:
         raise NotImplementedError("abstract method")
 
@@ -32,6 +36,10 @@ class LinuxShell(shell.Shell):
     @abc.abstractmethod
     def subshell(self: Self) -> typing.ContextManager[Self]:
         pass
+
+    @property
+    def username(self) -> str:
+        return self.env("USER")
 
     @property
     def fsroot(self: Self) -> path.Path[Self]:
