@@ -14,12 +14,16 @@ from .special import (
     Then,
 )
 from .workdir import Workdir
+from . import build
+from .build import Builder
 from .lab import Lab
 
 __all__ = (
+    "build",
     "AndThen",
     "Background",
     "Bash",
+    "Builder",
     "Lab",
     "LinuxShell",
     "OrElse",
@@ -40,17 +44,6 @@ LabHost = Lab
 SSHMachine = NotImplementedError
 
 ANY = typing.TypeVar("ANY")
-
-
-class build:
-    class BuildMachine:
-        def __init__(self) -> None:
-            raise NotImplementedError
-
-    Toolchain = NotImplementedError
-
-
-BuildMachine = build.BuildMachine
 
 
 class lab:

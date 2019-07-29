@@ -20,8 +20,8 @@ import tbot
 from tbot.machine import linux
 from tbot.tc import git
 
-H = typing.TypeVar("H", bound=linux.LinuxMachine)
-BH = typing.TypeVar("BH", bound=linux.BuildMachine)
+H = typing.TypeVar("H", bound=linux.LinuxShell)
+BH = typing.TypeVar("BH", bound=linux.Builder)
 
 
 class UBootBuilder(abc.ABC):

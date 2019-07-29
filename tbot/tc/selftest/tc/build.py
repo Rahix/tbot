@@ -1,11 +1,11 @@
 import typing
 import tbot
-from tbot.machine import linux
+from tbot.machine import linux, connector
 
 __all__ = ("selftest_tc_build_toolchain",)
 
 
-class LocalDummyBuildhost(linux.lab.LocalLabHost, linux.BuildMachine):
+class LocalDummyBuildhost(connector.SubprocessConnector, linux.Bash, linux.Builder):
     name = "dummy-build"
 
     @property
@@ -18,11 +18,11 @@ class LocalDummyBuildhost(linux.lab.LocalLabHost, linux.BuildMachine):
         }
 
     @staticmethod
-    def prepare(h: linux.lab.LocalLabHost) -> None:
+    def prepare(h: linux.LinuxShell) -> None:
         h.exec0(
             "echo",
             "export CC=dummy-none-gcc",
-            stdout=h.workdir / ".selftest-toolchain.sh",
+            linux.RedirStdout(h.workdir / ".selftest-toolchain.sh"),
         )
 
 

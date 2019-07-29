@@ -38,7 +38,7 @@ mrproper:
 .PHONY: all defconfig mrproper
 """
 
-    h.exec0("echo", makefile, stdout=repo / "Makefile")
+    h.exec0("echo", makefile, linux.RedirStdout(repo / "Makefile"))
 
     repo.add(repo / "Makefile")
     repo.commit("U-Boot Dummy", author="tbot selftest <tbot@tbot>")
@@ -69,7 +69,7 @@ index b5319d7..0f01838 100644
 """
 
     patchfile = h.workdir / "uboot-selftest.patch"
-    h.exec0("echo", patch, stdout=patchfile)
+    h.exec0("echo", patch, linux.RedirStdout(patchfile))
 
     class UBootBuilder(uboot.UBootBuilder):
         name = "tbot-selftest"
