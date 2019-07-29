@@ -18,7 +18,9 @@ import typing
 from tbot.machine import connector, linux, board
 
 
-class LocalLabHost(connector.SubprocessConnector, linux.Bash, typing.ContextManager):
+class LocalLabHost(
+    connector.SubprocessConnector, linux.Bash, linux.Lab, typing.ContextManager
+):
     name = "local"
 
 

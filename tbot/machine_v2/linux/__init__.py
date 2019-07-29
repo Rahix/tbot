@@ -14,11 +14,13 @@ from .special import (
     Then,
 )
 from .workdir import Workdir
+from .lab import Lab
 
 __all__ = (
     "AndThen",
     "Background",
     "Bash",
+    "Lab",
     "LinuxShell",
     "OrElse",
     "Path",
@@ -34,7 +36,7 @@ __all__ = (
 #        =====================
 
 LinuxMachine = LinuxShell
-LabHost = LinuxShell
+LabHost = Lab
 SSHMachine = NotImplementedError
 
 ANY = typing.TypeVar("ANY")
