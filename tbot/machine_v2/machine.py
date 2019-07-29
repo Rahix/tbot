@@ -10,6 +10,7 @@ class Machine(abc.ABC):
     __slots__ = ("_cx", "_rc", "ch")
 
     ch: channel.Channel
+    authenticator = None
 
     @property
     @abc.abstractmethod

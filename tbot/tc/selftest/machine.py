@@ -43,15 +43,12 @@ def selftest_machine_ssh_shell(lab: typing.Optional[linux.LabHost] = None,) -> N
     """Test an SSH shell."""
     from tbot.tc.selftest import minisshd
 
-    tbot.log.skip("ssh")
-    return
-
     with lab or tbot.acquire_lab() as lh:
         if minisshd.check_minisshd(lh):
             with minisshd.minisshd(lh) as ssh:
                 selftest_machine_shell(ssh)
 
-                selftest_machine_channel(ssh._obtain_channel(), True)
+                selftest_machine_channel(ssh.ch, True)
         else:
             tbot.log.skip("ssh tests")
 
@@ -60,9 +57,6 @@ def selftest_machine_ssh_shell(lab: typing.Optional[linux.LabHost] = None,) -> N
 def selftest_machine_sshlab_shell(lab: typing.Optional[linux.LabHost] = None,) -> None:
     """Test an SSH LabHost shell."""
     from tbot.tc.selftest import minisshd
-
-    tbot.log.skip("ssh")
-    return
 
     with lab or tbot.acquire_lab() as lh:
         if minisshd.check_minisshd(lh):

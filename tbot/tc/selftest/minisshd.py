@@ -2,10 +2,10 @@ import getpass
 import typing
 import contextlib
 import tbot
-from tbot.machine import linux
+from tbot.machine import linux, connector
 
 
-class MiniSSHMachine(linux.SSHMachine):
+class MiniSSHMachine(connector.SSHConnector, linux.Bash):
     """SSHMachine for test purposes."""
 
     hostname = "localhost"
@@ -16,12 +16,10 @@ class MiniSSHMachine(linux.SSHMachine):
 
     @property
     def username(self) -> str:
-        """Return local username."""
         return self._username
 
     @property
     def port(self) -> int:
-        """Return local ssh server port."""
         return self._port
 
     @property
@@ -32,26 +30,22 @@ class MiniSSHMachine(linux.SSHMachine):
     def __init__(self, labhost: linux.LabHost, port: int) -> None:
         """Create a new MiniSSHMachine."""
         self._port = port
-        self._username = labhost.username
+        self._username = labhost.env("USER")
 
         super().__init__(labhost)
 
 
-class MiniSSHLabHost(linux.lab.SSHLabHost):
-    """SSHLabHost for test purposes."""
-
+class MiniSSHLabHost(connector.ParamikoConnector, linux.Bash):
     hostname = "localhost"
     name = "minissh-lab"
     ignore_hostkey = True
 
     @property
     def username(self) -> str:
-        """Return local username."""
         return self._username
 
     @property
     def port(self) -> int:
-        """Return local ssh server port."""
         return self._port
 
     @property
@@ -111,8 +105,8 @@ def minisshd(h: linux.LabHost, port: int = 2022) -> typing.Generator:
         raise RuntimeError("dropbear did not create a pid-file!")
 
     try:
-        ssh_machine = MiniSSHMachine(h, port)
-        yield ssh_machine
+        with MiniSSHMachine(h, port) as ssh_machine:
+            yield ssh_machine
     finally:
         tbot.log.message("Stopping dropbear ...")
         h.exec0("kill", pid)
