@@ -16,7 +16,7 @@
 
 import typing
 import tbot
-from tbot.machine import linux
+from tbot.machine import linux, connector
 from tbot.machine.linux import auth
 
 __all__ = ("copy",)
@@ -105,7 +105,7 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
         p2_w1 = linux.Path(p1.host, p2)
         p1.host.exec0("cp", p1, p2_w1)
         return
-    elif isinstance(p1.host, linux.SSHMachine) and p1.host.labhost is p2.host:
+    elif isinstance(p1.host, connector.SSHConnector) and p1.host.host is p2.host:
         # Copy from an SSH machine
         _scp_copy(
             local_path=p2,
@@ -118,7 +118,7 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
             ssh_config=p1.host.ssh_config,
             authenticator=p1.host.authenticator,
         )
-    elif isinstance(p2.host, linux.SSHMachine) and p2.host.labhost is p1.host:
+    elif isinstance(p2.host, connector.SSHConnector) and p2.host.host is p1.host:
         # Copy to an SSH machine
         _scp_copy(
             local_path=p1,
@@ -131,8 +131,8 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
             ssh_config=p2.host.ssh_config,
             authenticator=p2.host.authenticator,
         )
-    elif isinstance(p1.host, linux.lab.LocalLabHost) and isinstance(
-        p2.host, linux.lab.SSHLabHost
+    elif isinstance(p1.host, connector.SubprocessConnector) and isinstance(
+        p2.host, connector.ParamikoConnector
     ):
         # Copy from local to ssh labhost
         _scp_copy(
@@ -146,8 +146,8 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
             ssh_config=[],
             authenticator=p2.host.authenticator,
         )
-    elif isinstance(p2.host, linux.lab.LocalLabHost) and isinstance(
-        p1.host, linux.lab.SSHLabHost
+    elif isinstance(p2.host, connector.SubprocessConnector) and isinstance(
+        p1.host, connector.ParamikoConnector
     ):
         # Copy to local from ssh labhost
         _scp_copy(
