@@ -20,7 +20,7 @@ H = typing.TypeVar("H", bound="Builder")
 class EnvScriptToolchain(Toolchain):
     """Toolchain that is initialized using an env script."""
 
-    def enable(self, host: H) -> None:  # noqa: D102
+    def enable(self, host: H) -> None:
         host.exec0("unset", "LD_LIBRARY_PATH")
         host.exec0("source", self.env_script)
 

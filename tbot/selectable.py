@@ -141,7 +141,7 @@ def acquire_uboot(lab: LabHost, *args: typing.Any) -> UBootMachine:
     """
     if hasattr(UBootMachine, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a board?")
-    return UBootMachine(lab, *args)
+    return UBootMachine(lab, *args)  # type: ignore
 
 
 class LinuxMachine(linux.LinuxShell, typing.ContextManager):
@@ -190,4 +190,4 @@ def acquire_linux(
     """
     if hasattr(LinuxMachine, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a board?")
-    return LinuxMachine(b, *args)
+    return LinuxMachine(b, *args)  # type: ignore

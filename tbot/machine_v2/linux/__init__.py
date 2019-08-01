@@ -1,7 +1,6 @@
 import typing
 
 from .linux_shell import LinuxShell
-from .bash import Bash
 from .path import Path
 from .special import (
     AndThen,
@@ -15,6 +14,7 @@ from .special import (
 )
 from .workdir import Workdir
 from . import build
+from .bash import Bash
 from .build import Builder
 from .lab import Lab
 
@@ -56,7 +56,9 @@ class shell:
 
 
 class auth:
-    Authenticator = NotImplementedError
+    class Authenticator:
+        pass
+
     PrivateKeyAuthenticator = NotImplementedError
     PasswordAuthenticator = NotImplementedError
     NoneAuthenticator = NotImplementedError
