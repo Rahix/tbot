@@ -1,6 +1,6 @@
 import abc
 import typing
-from .. import shell
+from .. import shell, channel
 from . import path, workdir
 from .special import Special
 
@@ -27,6 +27,10 @@ class LinuxShell(shell.Shell):
 
     @abc.abstractmethod
     def env(self: Self, var: str, value: typing.Optional[ArgTypes] = None) -> str:
+        raise NotImplementedError("abstract method")
+
+    @abc.abstractmethod
+    def open_channel(self: Self, *args: ArgTypes) -> channel.Channel:
         raise NotImplementedError("abstract method")
 
     @abc.abstractmethod

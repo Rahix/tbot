@@ -5,6 +5,7 @@ import shutil
 import typing
 
 import tbot
+from .. import channel
 from . import linux_shell, util, special, path
 
 TBOT_PROMPT = b"TBOT-VEJPVC1QUk9NUFQK$ "
@@ -85,6 +86,16 @@ class Bash(linux_shell.LinuxShell):
             )
 
         return self.exec0("echo", special.Raw(f'"${{{self.escape(var)}}}"'))[:-1]
+
+    def open_channel(self, *args: linux_shell.ArgTypes) -> channel.Channel:
+        cmd = self.escape(*args)
+
+        with tbot.log_event.command(self.name, cmd):
+            # Append `; exit` to ensure the channel won't live past the command
+            # exiting
+            self.ch.sendline(cmd + "; exit", read_back=True)
+
+        return self.ch.take()
 
     @contextlib.contextmanager
     def subshell(self) -> "typing.Iterator[Bash]":
