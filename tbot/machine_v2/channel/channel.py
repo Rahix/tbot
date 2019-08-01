@@ -530,10 +530,13 @@ class Channel(typing.ContextManager):
         prompt: typing.Optional[ConvenientSearchString] = None,
         timeout: typing.Optional[float] = None,
     ) -> str:
+        ctx: typing.ContextManager[typing.Any]
         if prompt is not None:
             ctx = self.with_prompt(prompt)
         else:
-            ctx = contextlib.nullcontext()  # type: ignore
+            # contextlib.nullcontext() would be a better fit here but sadly it
+            # is only available in 3.7+
+            ctx = contextlib.ExitStack()
 
         buf = bytearray()
 
