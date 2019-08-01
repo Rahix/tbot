@@ -235,7 +235,7 @@ class TestBoardLinuxUB(board.LinuxWithUBootMachine[TestBoard]):
     shell = linux.shell.Bash
 
     @property
-    def workdir(self) -> "linux.Path[TestBoardLinuxUB]":
+    def workdir(self) -> "linux.Path[TestBoardLinuxUB]":  # type: ignore
         """Return workdir."""
         raise NotImplementedError("workdir")
         # return linux.Workdir.static(self, "/tmp/tbot-wd")
@@ -294,7 +294,7 @@ def selftest_board_linux_nopw(
         shell = linux.shell.Bash
 
         @property
-        def workdir(self) -> "linux.Path[TestBoardLinuxUB_NOPW]":
+        def workdir(self) -> "linux.Path[TestBoardLinuxUB_NOPW]":  # type: ignore
             """Return workdir."""
             return linux.Workdir.athome(self, "tbot-wd")
 
