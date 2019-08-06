@@ -8,15 +8,33 @@ from .. import shell, machine
 from ..linux import special
 
 
-class UBootAutobootIntercept(machine.Initializer):
+class UbootStartup(machine.Machine):
+    _uboot_init_event: typing.Optional[tbot.log.EventIO] = None
+
+    def _uboot_startup_event(self) -> tbot.log.EventIO:
+        if self._uboot_init_event is None:
+            self._uboot_init_event = tbot.log.EventIO(
+                ["board", "uboot", self.name],
+                tbot.log.c("UBOOT").bold + f" ({self.name})",
+                verbosity=tbot.log.Verbosity.QUIET,
+            )
+
+            self._uboot_init_event.verbosity = tbot.log.Verbosity.STDOUT
+            self._uboot_init_event.prefix = "   <> "
+
+        return self._uboot_init_event
+
+
+class UBootAutobootIntercept(machine.Initializer, UbootStartup):
     autoboot_prompt = re.compile(b"autoboot:\\s{0,5}\\d{0,3}\\s{0,3}.{0,80}")
 
     autoboot_keys: typing.Union[str, bytes] = "\r"
 
     @contextlib.contextmanager
     def _init_machine(self) -> typing.Iterator:
-        self.ch.read_until_prompt(prompt=self.autoboot_prompt)
-        self.ch.send(self.autoboot_keys)
+        with self.ch.with_stream(self._uboot_startup_event()):
+            self.ch.read_until_prompt(prompt=self.autoboot_prompt)
+            self.ch.send(self.autoboot_keys)
 
         yield None
 
@@ -24,21 +42,24 @@ class UBootAutobootIntercept(machine.Initializer):
 ArgTypes = typing.Union[str, special.Special]
 
 
-class UBootShell(shell.Shell):
+class UBootShell(shell.Shell, UbootStartup):
     prompt: typing.Union[str, bytes] = "U-Boot> "
 
     @contextlib.contextmanager
     def _init_shell(self) -> typing.Iterator:
-        self.ch.prompt = (
-            self.prompt.encode("utf-8") if isinstance(self.prompt, str) else self.prompt
-        )
+        with self._uboot_startup_event() as ev, self.ch.with_stream(ev):
+            self.ch.prompt = (
+                self.prompt.encode("utf-8")
+                if isinstance(self.prompt, str)
+                else self.prompt
+            )
 
-        while True:
-            try:
-                self.ch.read_until_prompt(timeout=0.2)
-                break
-            except TimeoutError:
-                self.ch.sendintr()
+            while True:
+                try:
+                    self.ch.read_until_prompt(timeout=0.2)
+                    break
+                except TimeoutError:
+                    self.ch.sendintr()
 
         yield None
 
