@@ -88,7 +88,7 @@ class Board(board.Board):
         raise NotImplementedError("no board selected")
 
 
-def acquire_board(lh: LabHost) -> typing.NoReturn:
+def acquire_board(lh: LabHost) -> Board:
     if hasattr(Board, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a board?")
     return Board(lh)  # type: ignore

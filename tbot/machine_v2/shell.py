@@ -22,3 +22,6 @@ class RawShell(machine.Machine):
 
     def exec(self, *args: str) -> None:
         self.ch.sendline(" ".join(args), read_back=True)
+
+    def interactive(self) -> None:
+        self.ch.attach_interactive()

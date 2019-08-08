@@ -25,22 +25,20 @@ def interactive_board() -> None:
     """Start an interactive session on the selected boards serial console."""
     with tbot.acquire_lab() as lh:
         with tbot.acquire_board(lh) as b:
-            b.channel.attach_interactive()
+            b.interactive()
 
 
 @tbot.testcase
 def interactive_uboot() -> None:
     """Start an interactive U-Boot shell on the selected board."""
     with tbot.acquire_lab() as lh:
-        with tbot.acquire_board(lh) as b:
-            with tbot.acquire_uboot(b) as ub:
-                ub.interactive()
+        with tbot.acquire_board(lh) as b, tbot.acquire_uboot(b) as ub:
+            ub.interactive()
 
 
 @tbot.testcase
 def interactive_linux() -> None:
     """Start an interactive Linux shell on the selected board."""
     with tbot.acquire_lab() as lh:
-        with tbot.acquire_board(lh) as b:
-            with tbot.acquire_linux(b) as lnx:
-                lnx.interactive()
+        with tbot.acquire_board(lh) as b, tbot.acquire_linux(b) as lnx:
+            lnx.interactive()
