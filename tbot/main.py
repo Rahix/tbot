@@ -250,7 +250,7 @@ def main() -> None:  # noqa: C901
     if args.board is not None:
         board = loader.load_module(pathlib.Path(args.board).resolve())
         if hasattr(board, "BOARD"):
-            tbot.log.warning(f"{args.board} defines a `BOARD` which is no longer used!")
+            tbot.selectable.Board = board.BOARD  # type: ignore
         if hasattr(board, "UBOOT"):
             tbot.selectable.UBootMachine = board.UBOOT  # type: ignore
         if hasattr(board, "LINUX"):

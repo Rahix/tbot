@@ -2,7 +2,7 @@ import abc
 import contextlib
 import typing
 import tbot
-from .. import machine
+from .. import machine, shell, connector, channel
 
 
 class PowerControl(machine.Initializer):
@@ -31,3 +31,24 @@ class PowerControl(machine.Initializer):
                 verbosity=tbot.log.Verbosity.QUIET,
             )
             self.poweroff()
+
+
+class Board(shell.RawShell):
+    pass
+
+
+class Connector(connector.Connector):
+    def __init__(self, board: Board) -> None:
+        if not isinstance(board, Board):
+            raise TypeError(
+                f"{self.__class__!r} can only be instanciated from a `Board` (got {board!r})."
+            )
+        self._board = board
+
+    @contextlib.contextmanager
+    def _connect(self) -> typing.Iterator[channel.Channel]:
+        with self._board.ch.borrow() as ch:
+            yield ch
+
+    def clone(self) -> typing.NoReturn:
+        raise NotImplementedError("abstract method")

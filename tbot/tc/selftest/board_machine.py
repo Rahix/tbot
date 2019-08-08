@@ -69,21 +69,19 @@ PS1=Test-U-Boot'> ' #""",
         raise NotImplementedError("can't clone a serial connection")
 
 
-class TestBoard(board.Board):
+class TestBoard(DummyConnector, board.Board):
     """Dummy Board."""
 
+    name = "test"
 
-class TestUBoot(DummyConnector, board.UBootAutobootIntercept, board.UBootShell):
+
+class TestBoardUBoot(board.Connector, board.UBootAutobootIntercept, board.UBootShell):
     """Dummy Board UBoot."""
 
     name = "test-ub"
 
     autoboot_prompt = re.compile(b"Autoboot: ")
     prompt = "Test-U-Boot> "
-
-
-class TestBoardUBoot:
-    pass
 
 
 @tbot.testcase
@@ -93,9 +91,11 @@ def selftest_board_uboot(lab: typing.Optional[tbot.selectable.LabHost] = None) -
     with contextlib.ExitStack() as cx:
         lh = cx.enter_context(lab or tbot.acquire_lab())
         try:
-            ub: board.UBootShell = cx.enter_context(tbot.acquire_uboot(lh))
+            b: board.Board = cx.enter_context(tbot.acquire_board(lh))
+            ub: board.UBootShell = cx.enter_context(tbot.acquire_uboot(b))
         except NotImplementedError:
-            ub = cx.enter_context(TestUBoot(lh))
+            b = cx.enter_context(TestBoard(lh))
+            ub = cx.enter_context(TestBoardUBoot(b))
 
         ub.exec0("version")
         env = ub.exec0("printenv").strip().split("\n")

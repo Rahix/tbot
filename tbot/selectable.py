@@ -78,25 +78,20 @@ def acquire_local() -> LocalLabHost:
     return LocalLabHost()
 
 
-class Board(typing.ContextManager):
+class Board(board.Board):
     """Board class is no longer implemented."""
 
     _unselected = True
     name = "dummy"
 
     def __init__(self, lh: linux.LabHost) -> None:  # noqa: D107
-        raise NotImplementedError("`Board` is no longer implemented.")
-
-    def poweron(self) -> None:  # noqa: D102
-        raise NotImplementedError("`Board` is no longer implemented.")
-
-    def poweroff(self) -> None:  # noqa: D102
-        raise NotImplementedError("`Board` is no longer implemented.")
+        raise NotImplementedError("no board selected")
 
 
 def acquire_board(lh: LabHost) -> typing.NoReturn:
-    """No longer implemented."""
-    raise NotImplementedError("acquire_board() is no longer implemented.")
+    if hasattr(Board, "_unselected"):
+        raise NotImplementedError("Maybe you haven't set a board?")
+    return Board(lh)  # type: ignore
 
 
 class UBootMachine(board.UBootShell, typing.ContextManager):
