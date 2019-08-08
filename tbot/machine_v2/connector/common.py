@@ -1,3 +1,4 @@
+import abc
 import contextlib
 import typing
 
@@ -17,17 +18,22 @@ class SubprocessConnector(connector.Connector):
         return type(self)()
 
 
-SelfSerial = typing.TypeVar("SelfSerial", bound="SerialConsoleConnector")
+SelfConsole = typing.TypeVar("SelfConsole", bound="ConsoleConnector")
 
 
-class SerialConsoleConnector(connector.Connector):
+class ConsoleConnector(connector.Connector):
+    @abc.abstractmethod
+    def connect(self, mach: linux.LinuxShell) -> typing.ContextManager[channel.Channel]:
+        raise NotImplementedError("abstract method")
+
     def __init__(self, mach: linux.LinuxShell) -> None:
-        self.mach = mach
+        self.host = mach
 
     @contextlib.contextmanager
     def _connect(self) -> typing.Iterator[channel.Channel]:
-        with self.mach.clone() as cloned:
-            yield cloned.open_channel("picocom", "-b", str(115200), "/dev/ttyUSB0")
+        with self.host.clone() as cloned, self.connect(cloned) as ch:
+            yield ch
+            # yield cloned.open_channel("picocom", "-b", str(115200), "/dev/ttyUSB0")
 
-    def clone(self: SelfSerial) -> SelfSerial:
+    def clone(self: SelfConsole) -> SelfConsole:
         raise NotImplementedError("can't clone a serial connection")
