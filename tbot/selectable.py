@@ -103,7 +103,7 @@ class UBootMachine(board.UBootShell, typing.ContextManager):
         raise NotImplementedError("no u-boot selected")
 
 
-def acquire_uboot(lab: LabHost, *args: typing.Any) -> UBootMachine:
+def acquire_uboot(board: Board, *args: typing.Any) -> UBootMachine:
     """
     Acquire the board's U-Boot shell.
 
@@ -136,7 +136,7 @@ def acquire_uboot(lab: LabHost, *args: typing.Any) -> UBootMachine:
     """
     if hasattr(UBootMachine, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a board?")
-    return UBootMachine(lab, *args)  # type: ignore
+    return UBootMachine(board, *args)  # type: ignore
 
 
 class LinuxMachine(linux.LinuxShell, typing.ContextManager):
@@ -149,7 +149,7 @@ class LinuxMachine(linux.LinuxShell, typing.ContextManager):
 
 
 def acquire_linux(
-    b: typing.Union[LabHost, UBootMachine], *args: typing.Any
+    b: typing.Union[Board, UBootMachine], *args: typing.Any
 ) -> LinuxMachine:
     """
     Acquire the board's Linux shell.
