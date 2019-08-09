@@ -90,6 +90,10 @@ class Bash(linux_shell.LinuxShell):
     def open_channel(self, *args: linux_shell.ArgTypes) -> channel.Channel:
         cmd = self.escape(*args)
 
+        # Disable the interrupt key in the outer shell
+        self.ch.sendline("stty -isig", read_back=True)
+        self.ch.read_until_prompt()
+
         with tbot.log_event.command(self.name, cmd):
             # Append `; exit` to ensure the channel won't live past the command
             # exiting
