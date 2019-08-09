@@ -2,13 +2,14 @@ import typing
 
 from .uboot import UBootShell, UBootAutobootIntercept
 from .board import PowerControl, Board, Connector
-from .linux import LinuxBootLogin
+from .linux import LinuxUbootConnector, LinuxBootLogin
 from ..linux.special import Then, AndThen, OrElse, Raw
 
 __all__ = (
     "AndThen",
     "Board",
     "Connector",
+    "LinuxUbootConnector",
     "LinuxBootLogin",
     "OrElse",
     "PowerControl",

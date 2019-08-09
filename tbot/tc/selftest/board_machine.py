@@ -144,9 +144,6 @@ def selftest_board_uboot_noab(
 def selftest_board_linux(lab: typing.Optional[tbot.selectable.LabHost] = None) -> None:
     """Test board's linux."""
 
-    tbot.log.skip("board-linux")
-    return
-
     with contextlib.ExitStack() as cx:
         lh = cx.enter_context(lab or tbot.acquire_lab())
 

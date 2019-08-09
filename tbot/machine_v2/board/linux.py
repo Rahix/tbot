@@ -1,11 +1,29 @@
 import abc
 import contextlib
 import typing
+
 import tbot
-from .. import machine
+from .. import machine, board, channel, connector
 
 
-class LinuxBootLogin(machine.Initializer):
+class LinuxBoot(machine.Machine):
+    _linux_init_event: typing.Optional[tbot.log.EventIO] = None
+
+    def _linux_boot_event(self) -> tbot.log.EventIO:
+        if self._linux_init_event is None:
+            self._linux_init_event = tbot.log.EventIO(
+                ["board", "linux", self.name],
+                tbot.log.c("LINUX").bold + f" ({self.name})",
+                verbosity=tbot.log.Verbosity.QUIET,
+            )
+
+            self._linux_init_event.prefix = "   <> "
+            self._linux_init_event.verbosity = tbot.log.Verbosity.STDOUT
+
+        return self._linux_init_event
+
+
+class LinuxBootLogin(machine.Initializer, LinuxBoot):
 
     login_prompt = "login: "
     """Prompt that indicates tbot should send the username."""
@@ -25,14 +43,7 @@ class LinuxBootLogin(machine.Initializer):
 
     @contextlib.contextmanager
     def _init_machine(self) -> typing.Iterator:
-        with tbot.log.EventIO(
-            ["board", "linux", self.name],
-            tbot.log.c("LINUX").bold + f" ({self.name})",
-            verbosity=tbot.log.Verbosity.QUIET,
-        ) as ev, self.ch.with_stream(ev):
-            ev.prefix = "   <> "
-            ev.verbosity = tbot.log.Verbosity.STDOUT
-
+        with self._linux_boot_event() as ev, self.ch.with_stream(ev):
             self.ch.read_until_prompt(prompt=self.login_prompt)
 
             # On purpose do not login immediately as we may get some
@@ -52,3 +63,36 @@ class LinuxBootLogin(machine.Initializer):
                 self.ch.sendline(self.password)
 
         yield None
+
+
+Self = typing.TypeVar("Self", bound="LinuxUbootConnector")
+
+
+class LinuxUbootConnector(connector.Connector, LinuxBootLogin):
+    def do_boot(self, ub: board.UBootShell) -> channel.Channel:
+        return ub.boot("boot")
+
+    @property
+    @abc.abstractmethod
+    def uboot(self) -> typing.Type[board.UBootShell]:
+        raise NotImplementedError("abstract method")
+
+    def __init__(self, b: typing.Union[board.Board, board.UBootShell]) -> None:
+        self._b = b
+
+    @contextlib.contextmanager
+    def _connect(self) -> typing.Iterator[channel.Channel]:
+        with contextlib.ExitStack() as cx:
+            if isinstance(self._b, board.Board):
+                ub = cx.enter_context(self.uboot(self._b))  # type: ignore
+            elif isinstance(self._b, board.UBootShell):
+                ub = cx.enter_context(self._b)
+            else:
+                raise TypeError(f"Got {self._b!r} instead of Board/U-Boot machine")
+
+            self._linux_boot_event()
+
+            yield self.do_boot(ub).take()
+
+    def clone(self: Self) -> Self:
+        raise NotImplementedError("can't clone Linux_U-Boot Machine")
