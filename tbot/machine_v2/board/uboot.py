@@ -4,7 +4,7 @@ import shlex
 import typing
 
 import tbot
-from .. import shell, machine
+from .. import shell, machine, channel
 from ..linux import special
 
 
@@ -106,6 +106,14 @@ class UBootShell(shell.Shell, UbootStartup):
             )
 
         return self.exec0("echo", special.Raw(f'"${{{self.escape(var)}}}"'))[:-1]
+
+    def boot(self, *args: ArgTypes) -> channel.Channel:
+        cmd = self.escape(*args)
+
+        with tbot.log_event.command(self.name, cmd):
+            self.ch.sendline(cmd, read_back=True)
+
+        return self.ch.take()
 
     def interactive(self) -> None:
         tbot.log.message("Entering interactive shell (CTRL+D to exit) ...")
