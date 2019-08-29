@@ -44,6 +44,7 @@ class Connector(connector.Connector):
                 f"{self.__class__!r} can only be instanciated from a `Board` (got {board!r})."
             )
         self._board = board
+        self.host = getattr(board, "host", None)
 
     @contextlib.contextmanager
     def _connect(self) -> typing.Iterator[channel.Channel]:
