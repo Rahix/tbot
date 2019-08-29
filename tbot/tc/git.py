@@ -101,7 +101,13 @@ class GitRepository(linux.Path[H]):
                 self.git0("fetch")
 
             if clean and already_cloned:
-                self.reset("origin", ResetMode.HARD)
+                # Try resetting the branch to upstream, if the branch has an upstream
+                if rev and self.git("rev-parse", f"{rev}@{{u}}")[0] == 0:
+                    self.reset(f"{rev}@{{u}}", ResetMode.HARD)
+                elif self.git("rev-parse", "@{u}")[0] == 0:
+                    self.reset("@{u}", ResetMode.HARD)
+                else:
+                    self.reset("HEAD", ResetMode.HARD)
                 self.clean(untracked=True, noignore=True)
 
             if clean or not already_cloned:
