@@ -15,9 +15,9 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import sys
-import importlib
 import pathlib
 import typing
+import types
 from termcolor2 import c
 
 
@@ -113,7 +113,7 @@ def get_file_list(
             raise FileNotFoundError(str(f))
 
 
-def load_module(p: pathlib.Path) -> importlib.types.ModuleType:
+def load_module(p: pathlib.Path) -> types.ModuleType:
     """
     Load a python module from a path.
 
