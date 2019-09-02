@@ -26,15 +26,18 @@ class UbootStartup(machine.Machine):
 
 
 class UBootAutobootIntercept(machine.Initializer, UbootStartup):
-    autoboot_prompt = re.compile(b"autoboot:\\s{0,5}\\d{0,3}\\s{0,3}.{0,80}")
+    autoboot_prompt: typing.Optional[
+        channel.channel.ConvenientSearchString
+    ] = re.compile(b"autoboot:\\s{0,5}\\d{0,3}\\s{0,3}.{0,80}")
 
     autoboot_keys: typing.Union[str, bytes] = "\r"
 
     @contextlib.contextmanager
     def _init_machine(self) -> typing.Iterator:
-        with self.ch.with_stream(self._uboot_startup_event()):
-            self.ch.read_until_prompt(prompt=self.autoboot_prompt)
-            self.ch.send(self.autoboot_keys)
+        if self.autoboot_prompt is not None:
+            with self.ch.with_stream(self._uboot_startup_event()):
+                self.ch.read_until_prompt(prompt=self.autoboot_prompt)
+                self.ch.send(self.autoboot_keys)
 
         yield None
 
