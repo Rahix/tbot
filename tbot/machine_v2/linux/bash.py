@@ -10,6 +10,8 @@ from . import linux_shell, util, special, path
 
 TBOT_PROMPT = b"TBOT-VEJPVC1QUk9NUFQK$ "
 
+Self = typing.TypeVar("Self", bound="Bash")
+
 
 class Bash(linux_shell.LinuxShell):
     @contextlib.contextmanager
@@ -39,7 +41,9 @@ class Bash(linux_shell.LinuxShell):
         finally:
             pass
 
-    def escape(self, *args: linux_shell.ArgTypes) -> str:
+    def escape(
+        self: Self, *args: typing.Union[str, special.Special[Self], path.Path[Self]]
+    ) -> str:
         string_args = []
         for arg in args:
             if isinstance(arg, str):
@@ -55,7 +59,9 @@ class Bash(linux_shell.LinuxShell):
 
         return " ".join(string_args)
 
-    def exec(self, *args: linux_shell.ArgTypes) -> typing.Tuple[int, str]:
+    def exec(
+        self: Self, *args: typing.Union[str, special.Special[Self], path.Path[Self]]
+    ) -> typing.Tuple[int, str]:
         cmd = self.escape(*args)
 
         with tbot.log_event.command(self.name, cmd) as ev:
@@ -68,18 +74,24 @@ class Bash(linux_shell.LinuxShell):
 
         return (int(retcode), out)
 
-    def exec0(self, *args: linux_shell.ArgTypes) -> str:
+    def exec0(
+        self: Self, *args: typing.Union[str, special.Special[Self], path.Path[Self]]
+    ) -> str:
         retcode, out = self.exec(*args)
         if retcode != 0:
             cmd = self.escape(*args)
             raise Exception(f"command {cmd!r} failed")
         return out
 
-    def test(self, *args: linux_shell.ArgTypes) -> bool:
+    def test(
+        self: Self, *args: typing.Union[str, special.Special[Self], path.Path[Self]]
+    ) -> bool:
         retcode, _ = self.exec(*args)
         return retcode == 0
 
-    def env(self, var: str, value: typing.Optional[linux_shell.ArgTypes] = None) -> str:
+    def env(
+        self: Self, var: str, value: typing.Union[str, path.Path[Self], None] = None
+    ) -> str:
         if value is not None:
             self.exec0(
                 "export", special.Raw(f"{self.escape(var)}={self.escape(value)}")
@@ -87,7 +99,9 @@ class Bash(linux_shell.LinuxShell):
 
         return self.exec0("echo", special.Raw(f'"${{{self.escape(var)}}}"'))[:-1]
 
-    def open_channel(self, *args: linux_shell.ArgTypes) -> channel.Channel:
+    def open_channel(
+        self: Self, *args: typing.Union[str, special.Special[Self], path.Path[Self]]
+    ) -> channel.Channel:
         cmd = self.escape(*args)
 
         # Disable the interrupt key in the outer shell

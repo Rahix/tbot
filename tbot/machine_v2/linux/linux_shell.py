@@ -5,32 +5,43 @@ from . import path, workdir
 from .special import Special
 
 Self = typing.TypeVar("Self", bound="LinuxShell")
-ArgTypes = typing.Union[str, Special[Self], path.Path[Self]]
 
 
 class LinuxShell(shell.Shell):
     @abc.abstractmethod
-    def escape(self: Self, *args: ArgTypes) -> str:
+    def escape(
+        self: Self, *args: typing.Union[str, Special[Self], path.Path[Self]]
+    ) -> str:
         raise NotImplementedError("abstract method")
 
     @abc.abstractmethod
-    def exec(self: Self, *args: ArgTypes) -> typing.Tuple[int, str]:
+    def exec(
+        self: Self, *args: typing.Union[str, Special[Self], path.Path[Self]]
+    ) -> typing.Tuple[int, str]:
         raise NotImplementedError("abstract method")
 
     @abc.abstractmethod
-    def exec0(self: Self, *args: ArgTypes) -> str:
+    def exec0(
+        self: Self, *args: typing.Union[str, Special[Self], path.Path[Self]]
+    ) -> str:
         raise NotImplementedError("abstract method")
 
     @abc.abstractmethod
-    def test(self: Self, *args: ArgTypes) -> bool:
+    def test(
+        self: Self, *args: typing.Union[str, Special[Self], path.Path[Self]]
+    ) -> bool:
         raise NotImplementedError("abstract method")
 
     @abc.abstractmethod
-    def env(self: Self, var: str, value: typing.Optional[ArgTypes] = None) -> str:
+    def env(
+        self: Self, var: str, value: typing.Union[str, path.Path[Self], None] = None
+    ) -> str:
         raise NotImplementedError("abstract method")
 
     @abc.abstractmethod
-    def open_channel(self: Self, *args: ArgTypes) -> channel.Channel:
+    def open_channel(
+        self: Self, *args: typing.Union[str, Special[Self], path.Path[Self]]
+    ) -> channel.Channel:
         raise NotImplementedError("abstract method")
 
     @abc.abstractmethod

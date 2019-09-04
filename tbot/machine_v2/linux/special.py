@@ -15,7 +15,7 @@ class Special(typing.Generic[H]):
         raise NotImplementedError("abstract method")
 
 
-class Raw(Special):
+class Raw(Special[H]):
     __slots__ = ("string",)
 
     def __init__(self, string: str) -> None:
@@ -25,7 +25,7 @@ class Raw(Special):
         return self.string
 
 
-class _Stdio(Special):
+class _Stdio(Special[H]):
     __slots__ = ("file",)
 
     @property
@@ -42,11 +42,11 @@ class _Stdio(Special):
         return self._redir_token + shlex.quote(self.file._local_str())
 
 
-class RedirStdout(_Stdio):
+class RedirStdout(_Stdio[H]):
     _redir_token = ">"
 
 
-class RedirStderr(_Stdio):
+class RedirStderr(_Stdio[H]):
     _redir_token = "2>"
 
 
