@@ -104,9 +104,7 @@ class UBootShell(shell.Shell, UbootStartup):
 
     def env(self, var: str, value: typing.Optional[ArgTypes] = None) -> str:
         if value is not None:
-            self.exec0(
-                "export", special.Raw(f"{self.escape(var)}={self.escape(value)}")
-            )
+            self.exec0("setenv", var, value)
 
         return self.exec0("echo", special.Raw(f'"${{{self.escape(var)}}}"'))[:-1]
 
