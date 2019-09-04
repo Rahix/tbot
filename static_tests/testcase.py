@@ -19,7 +19,7 @@ def test_linux(mach: typing.Optional[linux.LinuxMachine] = None,) -> None:
         with tbot.acquire_lab() as lh:
             p2 = lh.workdir / "barfoo"
 
-            # SHould fail!
+            # Should fail!
             lnx.exec0("echo", p2)
             lh.exec0("echo", p)
 
