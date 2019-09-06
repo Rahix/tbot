@@ -468,7 +468,7 @@ Version **0.6.0** is basically a complete rewrite of TBot.  A rough summary of c
 - Fix KeyErrors not displaying the full path to the failing key
 
 
-## [0.2.0] - 2018-05-04
+## 0.2.0 - 2018-05-04
 ### Changed
 - Use custom bash completions instead of argcomplete
 - Make the HTMLLog generator use a template. Eases development
@@ -484,3 +484,29 @@ Version **0.6.0** is basically a complete rewrite of TBot.  A rough summary of c
   some testcases not working because exports they depend on
   were loaded later
 - Fix `call_then` not returning the function itself
+
+[Unreleased]: https://github.com/Rahix/tbot/compare/v0.7.1...development
+[0.7.1]: https://github.com/Rahix/tbot/compare/v0.7.0...v0.7.1
+[0.7.0]: https://github.com/Rahix/tbot/compare/v0.6.6...v0.7.0
+[0.6.6]: https://github.com/Rahix/tbot/compare/v0.6.5...v0.6.6
+[0.6.5]: https://github.com/Rahix/tbot/compare/v0.6.4...v0.6.5
+[0.6.4]: https://github.com/Rahix/tbot/compare/v0.6.3...v0.6.4
+[0.6.3]: https://github.com/Rahix/tbot/compare/v0.6.2...v0.6.3
+[0.6.2]: https://github.com/Rahix/tbot/compare/v0.6.1...v0.6.2
+[0.6.1]: https://github.com/Rahix/tbot/compare/v0.6.0...v0.6.1
+[0.6.0]: https://github.com/Rahix/tbot/compare/v0.6.0-pre08...v0.6.0
+[0.6.0-pre08]: https://github.com/Rahix/tbot/compare/v0.6.0-pre07...v0.6.0-pre08
+[0.6.0-pre07]: https://github.com/Rahix/tbot/compare/v0.6.0-pre06...v0.6.0-pre07
+[0.6.0-pre06]: https://github.com/Rahix/tbot/compare/v0.6.0-pre05...v0.6.0-pre06
+[0.6.0-pre05]: https://github.com/Rahix/tbot/compare/v0.6.0-pre04...v0.6.0-pre05
+[0.6.0-pre04]: https://github.com/Rahix/tbot/compare/v0.6.0-pre...v0.6.0-pre04
+[0.6.0-pre]: https://github.com/Rahix/tbot/compare/v0.3.4...v0.6.0-pre
+[0.3.4]: https://github.com/Rahix/tbot/compare/v0.3.3...v0.3.4
+[0.3.3]: https://github.com/Rahix/tbot/compare/v0.3.2...v0.3.3
+[0.3.2]: https://github.com/Rahix/tbot/compare/v0.3.1...v0.3.2
+[0.3.1]: https://github.com/Rahix/tbot/compare/v0.3.0...v0.3.1
+[0.3.0]: https://github.com/Rahix/tbot/compare/v0.2.4...v0.3.0
+[0.2.4]: https://github.com/Rahix/tbot/compare/v0.2.3...v0.2.4
+[0.2.3]: https://github.com/Rahix/tbot/compare/v0.2.2...v0.2.3
+[0.2.2]: https://github.com/Rahix/tbot/compare/v0.2.1...v0.2.2
+[0.2.1]: https://github.com/Rahix/tbot/compare/v0.2.0...v0.2.1
