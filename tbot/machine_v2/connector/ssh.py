@@ -8,6 +8,35 @@ from .. import linux, channel
 
 
 class SSHConnector(connector.Connector):
+    """
+    Connect to remote using ``ssh`` by starting off from an existing machine.
+
+    An :py:class:`SSHConnector` is different from a
+    :py:class:`ParamikoConnector` as it requires an existing machine to start
+    the connection from.  This allows jumping via one host to a second.
+
+    **Example**:
+
+    .. code-block:: python
+
+        import tbot
+        from tbot.machine import connector, linux
+
+        # Connect into a container running on the (possibly remote) lab-host
+        class MyRemote(
+            connector.SSHConnector,
+            linux.Bash,
+        ):
+            hostname = "localhost"
+            port = 20220
+            username = "root"
+
+        with tbot.acquire_lab() as lh:
+            # lh might be a ParamikoConnector machine.
+            with MyRemote(lh) as ssh_session:
+                ssh_session.exec0("uptime")
+    """
+
     @property
     def ignore_hostkey(self) -> bool:
         """
@@ -82,4 +111,9 @@ class SSHConnector(connector.Connector):
             yield h.ch.take()
 
     def clone(self) -> "SSHConnector":
+        """
+        .. todo::
+
+            Make this machine cloneable at some point.
+        """
         raise NotImplementedError("can't clone an ssh connection")

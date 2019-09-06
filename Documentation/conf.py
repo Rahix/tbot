@@ -102,6 +102,11 @@ latex_elements = {
 latex_documents = [("index", "tbot.tex", "tbot Documentation", "Rahix", "manual")]
 # }}}
 
+# -- Options for Autodoc ----------------------------------------------------- {{{
+autoclass_content = "both"
+autodoc_default_options = {"show-inheritance": None, "member-order": "bysource"}
+# }}}
+
 # -- Extension: html-console ------------------------------------------------- {{{
 
 

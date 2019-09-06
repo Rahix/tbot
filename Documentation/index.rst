@@ -27,8 +27,10 @@ tbot Documentation
    :caption: Modules
 
    modules/main
-   modules/selectable
    modules/log
+   modules/machine
+   modules/machine_connector
+   modules/selectable
 
 .. toctree::
    :maxdepth: 1

@@ -12,13 +12,38 @@ Self = typing.TypeVar("Self", bound="ParamikoConnector")
 
 
 class ParamikoConnector(connector.Connector):
+    """
+    Connect to an ssh server using `Paramiko`_.
+
+    .. _Paramiko: https://www.paramiko.org/
+
+    When inheriting from this connector, you should overwrite the attributes
+    documented below to make it connect to your remote.
+
+    **Example**:
+
+    .. code-block:: python
+
+        from tbot.machine import connector, linux
+
+        class MyMachine(
+            connector.ParamikoConnector,
+            linux.Bash,
+        ):
+            hostname = "78.79.32.85"
+            username = "tbot-user"
+
+        with MyMachine() as remotehost:
+            remotehost.exec0("uname", "-a")
+    """
+
     __slots__ = ("_client", "_config")
 
     @property
     @abc.abstractmethod
     def hostname(self) -> str:
         """
-        Return the hostname of this lab.
+        Hostname of this remote.
 
         You must always specify this parameter in your Lab config!
         """
@@ -27,7 +52,7 @@ class ParamikoConnector(connector.Connector):
     @property
     def username(self) -> str:
         """
-        Return the username to login as.
+        Username to log in as.
 
         Defaults to the username from ``~/.ssh/config`` or the local username.
         """
@@ -40,7 +65,7 @@ class ParamikoConnector(connector.Connector):
     @property
     def port(self) -> int:
         """
-        Return the port the remote SSH server is listening on.
+        Port the remote SSH server is listening on.
 
         Defaults to ``22`` or the value of ``Port`` in ``~/.ssh/config``.
         """
@@ -53,7 +78,7 @@ class ParamikoConnector(connector.Connector):
     @property
     def ignore_hostkey(self) -> bool:
         """
-        Ignore host key.
+        Ignore remote host key.
 
         Set this to true if the remote changes its host key often.
 
@@ -72,6 +97,10 @@ class ParamikoConnector(connector.Connector):
         )
 
     def __init__(self, other: "typing.Optional[ParamikoConnector]" = None) -> None:
+        """
+        :param ParamikoConnector other: Build this connection by opening a new
+            channel in an existing ssh-connection.
+        """
         self._client: typing.Optional[paramiko.SSHClient] = None
         self._config: typing.Dict[str, typing.Union[str, typing.List[str]]] = {}
 
@@ -119,4 +148,11 @@ class ParamikoConnector(connector.Connector):
         return channel.ParamikoChannel(self._client.get_transport().open_session())
 
     def clone(self: Self) -> Self:
+        """
+        Clone this machine.
+
+        Note that an ssh-session cannot hold an umlimited number of channels so
+        cloning too much might lead to issues.  The exact limit is dependent on
+        the server configuration.
+        """
         return type(self)(self)
