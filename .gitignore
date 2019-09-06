@@ -6,3 +6,4 @@ log/
 .mypy_cache/
 dist/
 .doctrees
+/Documentation/output/

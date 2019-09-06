@@ -23,7 +23,7 @@ repos:
       language: system
       entry: mypy --no-incremental
       files: ^.*\.py$
-      exclude: ^(setup\.py$|static_tests|doc|fastentrypoints.py|tbot/machine_v1)
+      exclude: ^(setup\.py$|static_tests|doc|fastentrypoints.py|tbot/machine_v1|Documentation/conf.py)
 -   repo: local
     hooks:
     - id: selftests

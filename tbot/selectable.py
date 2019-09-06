@@ -31,11 +31,13 @@ def acquire_lab() -> LabHost:
     """
     Acquire a new connection to the LabHost.
 
-    If your :class:`~tbot.machine.linux.LabHost` is a :class:`~tbot.machine.linux.lab.SSHLabHost`
+    If your lab-host is using a :class:`~tbot.machine.connector.ParamikoConnector`
     this will create a new ssh connection.
 
     You should call this function as little as possible, because it can be very slow.
-    If possible, try to reuse the labhost. A recipe for doing so is::
+    If possible, try to reuse the labhost. A recipe for doing so is
+
+    .. code-block:: python
 
         import typing
         import tbot
@@ -43,13 +45,13 @@ def acquire_lab() -> LabHost:
 
         @tbot.testcase
         def my_testcase(
-            lab: typing.Optional[linux.LabHost] = None,
+            lab: typing.Optional[linux.LinuxShell] = None,
         ) -> None:
             with lab or tbot.acquire_lab() as lh:
                 # Your code goes here
                 ...
 
-    :rtype: tbot.machine.linux.LabHost
+    :rtype: tbot.selectable.LabHost
     """
     if hasattr(LabHost, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a lab?")
@@ -64,7 +66,9 @@ def acquire_local() -> LocalLabHost:
     like the others and you can create as many as you want.  One usecase
     might be copying test-results to you local machine after the run.
 
-    Example::
+    **Example**:
+
+    .. code-block:: python
 
         import tbot
 
@@ -73,14 +77,12 @@ def acquire_local() -> LocalLabHost:
             with tbot.acquire_local() as lo:
                 lo.exec0("id", "-un")
                 # On local machines you can access tbot's working directory:
-                tbot.log.message(f"CWD: {lo.tbotdir}")
+                tbot.log.message(f"CWD: {lo.workdir}")
     """
     return LocalLabHost()
 
 
 class Board(board.Board):
-    """Board class is no longer implemented."""
-
     _unselected = True
     name = "dummy"
 
@@ -89,6 +91,24 @@ class Board(board.Board):
 
 
 def acquire_board(lh: LabHost) -> Board:
+    """
+    Acquire the selected board.
+
+    If configured properly, :py:func:`tbot.acquire_board` will power on the
+    hardware and open a serial-console for the selected board.  Just by itself,
+    this is not too useful, so you will usually follow it up immediately with a
+    call to either :py:func:`tbot.acquire_uboot` or
+    :py:func:`tbot.acquire_linux`.
+
+    **Example**:
+
+    .. code-block:: python
+
+        with tbot.acquire_lab() as lh:
+            lh.exec0("echo", "Foo")
+            with tbot.acquire_board(lh) as b, tbot.acquire_uboot(b) as ub:
+                ub.exec0("version")
+    """
     if hasattr(Board, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a board?")
     return Board(lh)  # type: ignore
@@ -105,11 +125,13 @@ class UBootMachine(board.UBootShell, typing.ContextManager):
 
 def acquire_uboot(board: Board, *args: typing.Any) -> UBootMachine:
     """
-    Acquire the board's U-Boot shell.
+    Acquire the selected board's U-Boot shell.
 
-    As there can only be one instance of :class:`UBootMachine` at a time,
-    your testcases should optionally take the :class:`UBootMachine` as a
-    parameter. The recipe looks like this::
+    As there can only be one instance of the selected board's :class:`UBootShell` at a time,
+    your testcases should optionally take the :class:`UBootShell` as a
+    parameter. The recipe looks like this:
+
+    .. code-block:: python
 
         import contextlib
         import typing
@@ -120,7 +142,7 @@ def acquire_uboot(board: Board, *args: typing.Any) -> UBootMachine:
         @tbot.testcase
         def my_testcase(
             lab: typing.Optional[tbot.selectable.LabHost] = None,
-            uboot: typing.Optional[board.UBootMachine] = None,
+            uboot: typing.Optional[board.UBootShell] = None,
         ) -> None:
             with contextlib.ExitStack() as cx:
                 lh = cx.enter_context(lab or tbot.acquire_lab())
@@ -132,7 +154,7 @@ def acquire_uboot(board: Board, *args: typing.Any) -> UBootMachine:
 
                 ...
 
-    :rtype: tbot.machine.board.UBootMachine
+    :rtype: tbot.selectable.UBootMachine
     """
     if hasattr(UBootMachine, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a board?")
