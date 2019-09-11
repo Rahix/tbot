@@ -30,9 +30,10 @@ tbot Documentation
    modules/main
    modules/log
    modules/machine
+   modules/machine_linux
+   modules/machine_board
    modules/machine_connector
    modules/machine_shell
-   modules/machine_linux
    modules/selectable
 
 .. toctree::

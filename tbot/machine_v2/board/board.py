@@ -6,12 +6,37 @@ from .. import machine, shell, connector, channel
 
 
 class PowerControl(machine.Initializer):
+    """
+    Machine-initializer for controlling power for a hardware.
+
+    When initializing, :py:meth:`~tbot.machine.board.PowerControl.poweron` is
+    called and when deinitializing,
+    :py:meth:`~tbot.machine.board.PowerControl.poweroff` is called.
+    """
+
     @abc.abstractmethod
     def poweron(self) -> None:
+        """
+        Power-on the hardware.
+
+        If the machine is using the
+        :py:class:`~tbot.machine.connector.ConsoleConnector`, you can use
+        ``self.host.exec0()`` to run commands on the lab-host.
+
+        **Example**:
+
+        .. code-block::
+
+            def poweron(self):
+                self.host.exec0("power-control.sh", "on")
+        """
         pass
 
     @abc.abstractmethod
     def poweroff(self) -> None:
+        """
+        Power-off the hardware.
+        """
         pass
 
     @contextlib.contextmanager
@@ -34,6 +59,13 @@ class PowerControl(machine.Initializer):
 
 
 class Board(shell.RawShell):
+    """
+    Base class for board-machines.
+
+    This class does nothing special except providing the ``.interactive()``
+    method for directly interacting with the serial-console.
+    """
+
     pass
 
 
