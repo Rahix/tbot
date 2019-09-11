@@ -50,8 +50,8 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
         """
         Create a new path instance.
 
-        :param linux.LinuxMachine host: Host this path should be associated with
-        :param args: pathlib.PurePosixPath constructor arguments
+        :param linux.LinuxShell host: Host this path should be associated with
+        :param args: :py:class:`pathlib.PurePosixPath` constructor arguments
         :rtype: Path
         :returns: A path associated with host
         """
@@ -61,8 +61,8 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
         """
         Create a new path.
 
-        :param linux.LinuxMachine host: Host this path should be associated with
-        :param args: pathlib.PurePosixPath constructor arguments
+        :param linux.LinuxShell host: Host this path should be associated with
+        :param args: :py:class:`pathlib.PurePosixPath` constructor arguments
         """
         self._host = host
 

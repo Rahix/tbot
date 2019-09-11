@@ -23,13 +23,15 @@ tbot Documentation
    installation
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Modules
 
    modules/main
    modules/log
    modules/machine
    modules/machine_connector
+   modules/machine_shell
+   modules/machine_linux
    modules/selectable
 
 .. toctree::

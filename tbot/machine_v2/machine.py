@@ -11,9 +11,30 @@ _all_cap_re = re.compile("([a-z0-9])([A-Z])")
 
 
 class Machine(abc.ABC):
+    """
+    Base class for all machines.
+
+    This class contains the necessary code to compose the different parts of a
+    machine into a usable class.  You won't need to use it directly in most
+    cases as :py:class:`~tbot.machine.connector.Connector` and
+    :py:class:`tbot.machine.shell.Shell` both inherit from it.
+    """
+
     __slots__ = ("_cx", "_rc", "ch")
 
     ch: channel.Channel
+    """
+    Channel to communicate with this machine.
+
+    .. warning::
+
+        Please refrain from interacting with the channel directly.  Instead,
+        write a :py:class:`Shell` that wraps around the channel interaction.
+        That way, the state of the channel is only managed in a single place
+        and you won't have to deal with nasty bugs when multiple parties make
+        assumptions about the state of the channel.
+    """
+
     authenticator = None
 
     @property

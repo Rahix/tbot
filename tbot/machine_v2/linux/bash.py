@@ -14,6 +14,8 @@ Self = typing.TypeVar("Self", bound="Bash")
 
 
 class Bash(linux_shell.LinuxShell):
+    """Bourne-again shell."""
+
     @contextlib.contextmanager
     def _init_shell(self) -> typing.Iterator:
         try:

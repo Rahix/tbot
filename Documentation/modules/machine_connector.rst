@@ -15,15 +15,23 @@ Provided Connectors
 For a lot of commonly used cases, tbot already has connectors at hand.  These
 are:
 
+Subprocess
+~~~~~~~~~~
 .. autoclass:: tbot.machine.connector.SubprocessConnector
    :members:
 
+Paramiko
+~~~~~~~~
 .. autoclass:: tbot.machine.connector.ParamikoConnector
    :members:
 
+Serial Console
+~~~~~~~~~~~~~~
 .. autoclass:: tbot.machine.connector.ConsoleConnector
    :members:
 
+Plain SSH
+~~~~~~~~~
 .. autoclass:: tbot.machine.connector.SSHConnector
    :members:
    :undoc-members:

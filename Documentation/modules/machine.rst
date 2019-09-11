@@ -2,3 +2,6 @@
 
 ``tbot.machine``
 ================
+
+.. autoclass:: tbot.machine.Machine
+   :members:
