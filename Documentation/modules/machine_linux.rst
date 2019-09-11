@@ -5,7 +5,7 @@
 This module contains utilities for interacting with linux hosts.  This includes:
 
 - :ref:`linux-shells`
-- Path Handling
+- tbot's own path type: :py:class:`tbot.machine.linux.Path`
 
 .. _linux-shells:
 

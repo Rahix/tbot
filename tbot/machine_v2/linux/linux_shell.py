@@ -127,6 +127,8 @@ class LinuxShell(shell.Shell):
         :param str var: Environment variable name.
         :param tbot.machine.linux.Path,\\ str value: Optional value to set the
             variable to.
+        :rtype: str
+        :returns: Current (new) value of the environment variable.
         """
         raise NotImplementedError("abstract method")
 
@@ -147,6 +149,8 @@ class LinuxShell(shell.Shell):
             ch = lnx.open_channel("picocom", "-b", "115200", "/dev/ttyUSB0")
 
             # You can now interact with the channel for the serial console directly
+
+        :rtype: tbot.machine.channel.Channel
         """
         raise NotImplementedError("abstract method")
 
