@@ -1,9 +1,13 @@
 import abc
 import contextlib
+import re
 import typing
 from . import channel
 
 Self = typing.TypeVar("Self", bound="Machine")
+
+_first_cap_re = re.compile("(.)([A-Z][a-z]+)")
+_all_cap_re = re.compile("([a-z0-9])([A-Z])")
 
 
 class Machine(abc.ABC):
@@ -13,9 +17,16 @@ class Machine(abc.ABC):
     authenticator = None
 
     @property
-    @abc.abstractmethod
     def name(self) -> str:
-        raise NotImplementedError("abstract method")
+        """
+        Name of this machine.
+
+        By default, the name is derived from the class-name but you might want
+        to customize it.
+        """
+        # by default, try to kebab-case the class name
+        s1 = _first_cap_re.sub(r"\1-\2", self.__class__.__name__)
+        return _all_cap_re.sub(r"\1-\2", s1).lower()
 
     # Abstract methods that will be implemented by connector and shell
     @abc.abstractmethod
