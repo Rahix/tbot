@@ -21,7 +21,13 @@ class Bash(linux_shell.LinuxShell):
             util.wait_for_shell(self.ch)
 
             # Set prompt to a known string
-            self.ch.sendline(b"PROMPT_COMMAND=''; PS1='" + TBOT_PROMPT + b"'")
+            #
+            # `read_back=True` is needed here so the following
+            # read_until_prompt() will not accidentally detect the prompt in
+            # the sent command if the connection is slow.
+            self.ch.sendline(
+                b"PROMPT_COMMAND=''; PS1='" + TBOT_PROMPT + b"'", read_back=True
+            )
             self.ch.prompt = TBOT_PROMPT
             self.ch.read_until_prompt()
 
