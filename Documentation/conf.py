@@ -95,11 +95,19 @@ latex_elements = {
     "preamble": r"""
 \usepackage{alltt}
 
+% This character is sometimes used in the docs
 \DeclareUnicodeCharacter{1F8A5}{$\Rightarrow$}
-""",
-}
 
-latex_documents = [("index", "tbot.tex", "tbot Documentation", "Rahix", "manual")]
+% Because we have multiple toctrees, we need to overwrite the title
+\addto\captionsenglish{\renewcommand{\contentsname}{Table Of Contents}}
+""",
+    "extraclassoptions": "oneside",
+    "babel": r"\usepackage[english]{babel}",
+}
+latex_show_pagerefs = True
+
+latex_documents = [("index", "tbot.tex", "tbot Documentation", "Rahix", "manual", True)]
+
 # }}}
 
 # -- Options for Autodoc ----------------------------------------------------- {{{
