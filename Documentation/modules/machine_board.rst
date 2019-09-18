@@ -131,6 +131,71 @@ In case your U-Boot is configured for autoboot, you'll want to use the optional
 
 Board Linux
 -----------
-.. todo::
+The board's Linux machine can be configured in different ways, depending on
+your setup and needs.
 
-   Board Linux Docs
+- If you do not need any bootloader interaction, you can define it in a way
+  that goes straight from power-on to waiting for Linux.  This is done very
+  similarly to the U-Boot machine above, by using the
+  :py:class:`board.Connector <tbot.machine.board.Connector>`.
+- If you do need bootloader interaction (because of manual commands to boot
+  Linux for example), you should instead use the much more powerful
+  :py:class:`board.LinuxUbootConnector <tbot.machine.board.LinuxUbootConnector>`.
+  This class allows to boot Linux from U-Boot, either by passing it an existing
+  U-Boot machine, or by automatically waiting for U-Boot first and then booting
+  Linux.
+
+In code, the two options look like this:
+
+**Example for a standalone Linux (no bootloader interaction)**:
+
+.. code-block:: python
+
+   from tbot.machine import board, linux
+
+   class StandaloneLinux(
+       board.Connector,
+       board.LinuxBootLogin,
+       linux.Bash,
+   ):
+       # No config for the connector needed
+
+       # LinuxBootLogin handles waiting for Linux to boot & logging in
+       username = "root"
+       password = "hunter2"
+
+**Example for a Linux booting from U-Boot**:
+
+.. code-block:: python
+
+   from tbot.machine import board, linux
+
+   class MyUBoot(board.Connector, board.UBootShell):
+       ...
+
+   class LinuxFromUBoot(
+       board.LinuxUbootConnector,
+       board.LinuxBootLogin,
+       linux.Bash,
+   ):
+       # Configuration for LinuxUbootConnector
+       uboot = MyUBoot  # <- Our UBoot machine
+
+       def do_boot(ub):  # <- Procedure to boot Linux
+          ub.env("autoload", "false")
+          ub.exec0("dhcp")
+          return ub.boot("run", "nfsboot")
+
+       # LinuxBootLogin handles waiting for Linux to boot & logging in
+       username = "root"
+       password = "hunter2"
+
+With both options, you'll use the
+:py:class:`~tbot.machine.board.LinuxBootLogin` initializer to handle the boot
+and login.
+
+.. autoclass:: tbot.machine.board.LinuxUbootConnector
+   :members:
+
+.. autoclass:: tbot.machine.board.LinuxBootLogin
+   :members:

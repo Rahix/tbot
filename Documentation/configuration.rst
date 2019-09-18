@@ -46,7 +46,7 @@ your config using:
 
 .. code-block:: shell-session
 
-   tbot -l lab-config.py selftest_machine_labhost_shell
+   $ tbot -l lab-config.py selftest_machine_labhost_shell
 
 For further information about the configurable options, look at the docs for
 the individual classes:
@@ -182,7 +182,9 @@ Linux (from U-Boot) Config
 
 .. todo::
 
-   This is a stub
+   This is a stub.  Look at the docs for :ref:`board-linux`,
+   :py:class:`tbot.machine.board.LinuxUbootConnector`, and
+   :py:class:`tbot.machine.board.LinuxBootLogin` for now ...
 
 
 .. code-block:: python
@@ -217,7 +219,8 @@ Linux (without U-Boot) Config
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. todo::
 
-   This is a stub
+   This is a stub.  Look at the docs for :ref:`board-linux` and
+   :py:class:`tbot.machine.board.LinuxBootLogin` for now ...
 
 .. code-block:: python
 
