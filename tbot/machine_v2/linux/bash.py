@@ -132,8 +132,10 @@ class Bash(linux_shell.LinuxShell):
 
     @contextlib.contextmanager
     def subshell(self) -> "typing.Iterator[Bash]":
-        tbot.log_event.command(self.name, "bash --norc")
-        self.ch.sendline("bash --norc")
+        bash_cmd = "bash --norc --noprofile"
+        tbot.log_event.command(self.name, bash_cmd)
+        self.ch.sendline(bash_cmd)
+
         try:
             with self._init_shell():
                 yield self
@@ -154,12 +156,12 @@ class Bash(linux_shell.LinuxShell):
         self.ch.sendline(self.escape("stty", "rows", str(termsize.lines)))
 
         # Outer shell which is used to detect the end of the interactive session
-        self.ch.sendline(f"bash --norc")
+        self.ch.sendline(f"bash --norc --noprofile")
         self.ch.sendline(f"PS1={endstr}")
         self.ch.read_until_prompt(prompt=endstr)
 
         # Inner shell which will be used by the user
-        self.ch.sendline("bash --norc")
+        self.ch.sendline("bash --norc --noprofile")
         self.ch.sendline("set -o emacs")
         prompt = self.escape(
             f"\\[\\033[36m\\]{self.name}: \\[\\033[32m\\]\\w\\[\\033[0m\\]> "

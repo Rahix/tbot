@@ -36,7 +36,7 @@ class SubprocessChannelIO(channel.ChannelIO):
         self.pty_master, pty_slave = pty.openpty()
 
         self.p = subprocess.Popen(
-            ["bash", "--norc", "-i"],
+            ["bash", "--norc", "--noprofile", "-i"],
             stdin=pty_slave,
             stdout=pty_slave,
             stderr=pty_slave,

@@ -20,7 +20,7 @@ class DummyConnector(connector.Connector):
             if self.autoboot:
                 ch.sendline(
                     """\
-bash --norc --noediting; exit
+bash --norc --noprofile --noediting; exit
 unset HISTFILE
 PS1='Test-U-Boot> '
 alias version="uname -a"
@@ -33,7 +33,7 @@ function printenv() {
 }
 function setenv() { local var="$1"; shift; eval "$var=\\"$*\\""
 }
-bash --norc --noediting""",
+bash --norc --noprofile --noediting""",
                     read_back=True,
                 )
                 ch.sendline(
@@ -47,7 +47,7 @@ read -p 'Autoboot: '; exit""",
             else:
                 ch.sendline(
                     """\
-bash --norc --noediting; exit
+bash --norc --noprofile --noediting; exit
 unset HISTFILE
 alias version="uname -a"
 function printenv() {
@@ -358,11 +358,11 @@ def selftest_board_linux_bad_console(
             return self.lh.new_channel(
                 linux.Raw(
                     """\
-bash --norc --noediting; exit
+bash --norc --noprofile --noediting; exit
 PS1="$"
 unset HISTFILE
 export UNAME="bad-board"
-bash --norc --noediting
+bash --norc --noprofile --noediting
 PS1=""
 unset HISTFILE
 set +o emacs
