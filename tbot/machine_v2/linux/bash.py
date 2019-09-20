@@ -25,8 +25,17 @@ class Bash(linux_shell.LinuxShell):
             # `read_back=True` is needed here so the following
             # read_until_prompt() will not accidentally detect the prompt in
             # the sent command if the connection is slow.
+            #
+            # To safeguard the process even further, the prompt is mangled in a
+            # way which will be unfolded by the shell.  This will ensure tbot
+            # won't accidentally read the prompt back early.
             self.ch.sendline(
-                b"PROMPT_COMMAND=''; PS1='" + TBOT_PROMPT + b"'", read_back=True
+                b"PROMPT_COMMAND=''; PS1='"
+                + TBOT_PROMPT[:6]
+                + b"''"
+                + TBOT_PROMPT[6:]
+                + b"'",
+                read_back=True,
             )
             self.ch.prompt = TBOT_PROMPT
             self.ch.read_until_prompt()
