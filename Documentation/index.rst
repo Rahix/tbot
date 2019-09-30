@@ -22,6 +22,7 @@ tbot Documentation
 
    installation
    configuration
+   logging
 
 .. toctree::
    :maxdepth: 1
