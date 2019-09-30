@@ -371,12 +371,35 @@ class Channel(typing.ContextManager):
                     stream.write(buf.decode("utf-8", errors="replace"))
             else:
                 self._streambuf += buf
-                # TODO: This code delays output which makes "live" updates of
-                # stdout look weird in some cases.
-                fragment = self._streambuf[: -len(self.prompt)]
-                for stream in self._streams:
-                    stream.write(fragment.decode("utf-8", errors="replace"))
-                self._streambuf = self._streambuf[-len(self.prompt) :]
+                if isinstance(self.prompt, bytes):
+                    # Peek ahead and check whether the end of the stream matches
+                    # the beginning of the prompt
+                    maxlen = min(len(self.prompt), len(self._streambuf))
+                    length = maxlen
+                    for i in reversed(range(1, maxlen + 1)):
+                        if self._streambuf[-i:] == self.prompt[:i]:
+                            break
+                        length = i - 1
+
+                    if length != 0:
+                        fragment = self._streambuf[:-length]
+                    else:
+                        fragment = self._streambuf
+
+                    for stream in self._streams:
+                        stream.write(fragment.decode("utf-8", errors="replace"))
+
+                    if length != 0:
+                        self._streambuf = self._streambuf[-length:]
+                    else:
+                        self._streambuf.clear()
+                else:
+                    # Naive approach when we can't guess whether the start of
+                    # the prompt might be included in the output
+                    fragment = self._streambuf[: -len(self.prompt)]
+                    for stream in self._streams:
+                        stream.write(fragment.decode("utf-8", errors="replace"))
+                    self._streambuf = self._streambuf[-len(self.prompt) :]
 
     # }}}
 
