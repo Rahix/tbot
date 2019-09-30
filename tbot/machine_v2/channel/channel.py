@@ -248,7 +248,7 @@ class Channel(typing.ContextManager):
         self.prompt: typing.Optional[SearchString] = None
         self.death_strings: typing.List[SearchString] = []
         self._ringbuf: typing.Deque[int] = collections.deque([], maxlen=2)
-        self._stream: typing.Optional[typing.TextIO] = None
+        self._streams: typing.List[typing.TextIO] = []
         self._streambuf = bytearray()
         self._log_prompt = True
 
@@ -345,26 +345,35 @@ class Channel(typing.ContextManager):
     def with_stream(
         self, stream: typing.TextIO, show_prompt: bool = True
     ) -> "typing.Iterator[Channel]":
-        previous_stream = self._stream
         previous_log_prompt = self._log_prompt
 
         try:
-            self._stream = stream
+            self._streams.append(stream)
             self._log_prompt = show_prompt
-            self._streambuf = bytearray()
             yield self
         finally:
-            self._stream = previous_stream
+            self._streams.remove(stream)
+
+            # If we don't want to log the prompt, advance the buffer to skip the
+            # prompt string.
+            if not self._log_prompt and self.prompt is not None:
+                try:
+                    self._streambuf = self._streambuf[len(self.prompt) :]
+                except IndexError:
+                    self._streambuf = bytearray()
+
             self._log_prompt = previous_log_prompt
 
     def _write_stream(self, buf: bytes) -> None:
-        if self._stream is not None:
+        if self._streams != []:
             if self._log_prompt or self.prompt is None:
-                self._stream.write(buf.decode("utf-8", errors="replace"))
+                for stream in self._streams:
+                    stream.write(buf.decode("utf-8", errors="replace"))
             else:
                 self._streambuf += buf
                 fragment = self._streambuf[: -len(self.prompt)]
-                self._stream.write(fragment.decode("utf-8", errors="replace"))
+                for stream in self._streams:
+                    stream.write(fragment.decode("utf-8", errors="replace"))
                 self._streambuf = self._streambuf[-len(self.prompt) :]
 
     # }}}
