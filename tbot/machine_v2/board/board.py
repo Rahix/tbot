@@ -70,8 +70,8 @@ class Board(shell.RawShell):
 
 
 class Connector(connector.Connector):
-    def __init__(self, board: Board) -> None:
-        if not isinstance(board, Board):
+    def __init__(self, board: typing.Union[Board, channel.Channel]) -> None:
+        if not (isinstance(board, Board) or isinstance(board, channel.Channel)):
             raise TypeError(
                 f"{self.__class__!r} can only be instanciated from a `Board` (got {board!r})."
             )
@@ -80,8 +80,11 @@ class Connector(connector.Connector):
 
     @contextlib.contextmanager
     def _connect(self) -> typing.Iterator[channel.Channel]:
-        with self._board.ch.borrow() as ch:
-            yield ch
+        if isinstance(self._board, channel.Channel):
+            yield self._board
+        else:
+            with self._board.ch.borrow() as ch:
+                yield ch
 
     def clone(self) -> typing.NoReturn:
         raise NotImplementedError("abstract method")
