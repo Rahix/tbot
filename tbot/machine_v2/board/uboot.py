@@ -161,6 +161,7 @@ class UBootShell(shell.Shell, UbootStartup):
             self.ch.sendline(cmd, read_back=True)
             with self.ch.with_stream(ev, show_prompt=False):
                 out = self.ch.read_until_prompt()
+            ev.data["stdout"] = out
 
             self.ch.sendline("echo $?", read_back=True)
             retcode = self.ch.read_until_prompt()
