@@ -371,6 +371,8 @@ class Channel(typing.ContextManager):
                     stream.write(buf.decode("utf-8", errors="replace"))
             else:
                 self._streambuf += buf
+                # TODO: This code delays output which makes "live" updates of
+                # stdout look weird in some cases.
                 fragment = self._streambuf[: -len(self.prompt)]
                 for stream in self._streams:
                     stream.write(fragment.decode("utf-8", errors="replace"))

@@ -19,6 +19,7 @@ import io
 import itertools
 import json
 import os
+import re
 import sys
 import time
 import typing
@@ -81,6 +82,8 @@ VERBOSITY = Verbosity.COMMAND
 LOGFILE: typing.Optional[typing.TextIO] = None
 START_TIME = time.monotonic()
 
+_SPLIT_PATTERN = re.compile("(\r|\n)")
+
 
 class EventIO(io.StringIO):
     """Stream for a log event."""
@@ -111,6 +114,7 @@ class EventIO(io.StringIO):
         self.verbosity = verbosity
         self.ty = ty
         self.data = kwargs
+        self._nextline = True
 
         if initial:
             self.writeln(str(initial))
@@ -124,22 +128,28 @@ class EventIO(io.StringIO):
             + prefix
         )
 
-    def _print_lines(self, last: bool = False) -> None:
+    def _print_stdout(self, last: bool = False) -> None:
         buf = self.getvalue()[self.cursor :]
 
         if self.verbosity > VERBOSITY:
             return
 
-        while "\n" in buf:
-            line = buf.split("\n", maxsplit=1)[0]
-            print(self._prefix() + c(line))
-            length = len(line) + 1
-            self.cursor += length
-            buf = buf[length:]
-            self.first = False
+        for fragment in (f for f in _SPLIT_PATTERN.split(buf) if f != ""):
+            if self._nextline:
+                sys.stdout.write(self._prefix() + c(""))
+                self._nextline = False
 
-        if last and buf != "":
-            print(self._prefix() + buf)
+            if fragment in ["\r", "\n"]:
+                self._nextline = True
+
+            sys.stdout.write(fragment)
+
+        if last and not self._nextline:
+            sys.stdout.write("\n")
+            self._nextline = True
+
+        self.cursor += len(buf)
+        sys.stdout.flush()
 
     def writeln(self, s: typing.Union[str, _TC]) -> int:
         """Add a line to this log event."""
@@ -159,15 +169,13 @@ class EventIO(io.StringIO):
             .replace("\x1B[K", "")
             .replace("\x1B[r", "")
             .replace("\x1B[u", "")
-            .replace("\x08", "")
             .replace("\r\n", "\n")
             .replace("\n\r", "\n")
-            .replace("\r", "\n")
         )
 
         res = super().write(s)
 
-        self._print_lines()
+        self._print_stdout()
 
         return res
 
@@ -181,7 +189,7 @@ class EventIO(io.StringIO):
         No more text can be added to this log event after
         closing it.
         """
-        self._print_lines(last=True)
+        self._print_stdout(last=True)
 
         if LOGFILE is not None:
             ev = {
