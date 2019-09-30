@@ -21,6 +21,7 @@ tbot Documentation
    :caption: Guides
 
    installation
+   quickstart
    configuration
    logging
 
