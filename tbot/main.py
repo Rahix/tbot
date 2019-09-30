@@ -37,9 +37,11 @@ def _import_hightlighter() -> typing.Callable[[str], str]:
         return lambda s: s
 
     try:
-        highlight = __import__("pygments").highlight
-        lexer = __import__("pygments.lexers").lexers.PythonLexer
-        formatter = __import__("pygments.formatters").formatters.TerminalFormatter
+        highlight = __import__("pygments").highlight  # type: ignore
+        lexer = __import__("pygments.lexers").lexers.PythonLexer  # type: ignore
+        formatter = __import__(  # type: ignore
+            "pygments.formatters"
+        ).formatters.TerminalFormatter
 
         return lambda s: typing.cast(str, highlight(s, lexer(), formatter()).strip())
     except ImportError:
