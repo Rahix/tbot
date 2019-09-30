@@ -210,7 +210,8 @@ class UBootBuilder(abc.ABC):
 
             repo = builder.do_checkout(path, clean)
             builder.do_patch(repo)
-            return repo
+
+        return repo
 
     @tbot.named_testcase("uboot_build")
     def _build(
@@ -310,7 +311,8 @@ class UBootBuilder(abc.ABC):
 
                 uboot_make(host)
 
-            return repo
+        assert repo is not None
+        return repo
 
     # We have to wrap the actual testcases so mypy does not complain
     # about invalid method signatures
