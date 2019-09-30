@@ -36,6 +36,7 @@ tbot Documentation
    modules/machine_connector
    modules/machine_shell
    modules/selectable
+   modules/tc
 
 .. toctree::
    :maxdepth: 1

@@ -38,7 +38,10 @@ class UBootBuilder(abc.ABC):
     To make tbot aware of this config, you need to tell it in your
     U-Boot config::
 
-        class MyUBootMachine(board.UBootMachine):
+        class MyUBootMachine(
+            board.Connector,
+            board.UBootShell,
+        ):
             # Create a builder instance
             build = MyUBootBuilder()
 
@@ -57,7 +60,7 @@ class UBootBuilder(abc.ABC):
         """Name of this builder."""
         pass
 
-    remote = "git://git.denx.de/u-boot.git"
+    remote = "https://git.denx.de/u-boot.git"
     """
     Where to fetch U-Boot from.
     """
