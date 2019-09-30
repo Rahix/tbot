@@ -14,6 +14,21 @@ class Workdir(path.Path[H]):
 
     @classmethod
     def static(cls, host: H, pathstr: str) -> "Workdir[H]":
+        """
+        Create a workdir in a static location, described by ``pathstr``.
+
+        **Example**:
+
+        .. code-block:: python
+
+            with tbot.acquire_lab() as lh:
+                workdir = linux.Workdir.static(lh, "/tmp/tbot-my-workdir")
+
+        :param LinuxShell host: Machine where the workdir should be created
+        :param str pathstr: Path for the workdir
+        :rtype: tbot.machine.linux.Path
+        :returns: A tbot path to the workdir which is now guaranteed to exist
+        """
         key = (host, pathstr)
         try:
             return Workdir._workdirs[key]
@@ -25,6 +40,25 @@ class Workdir(path.Path[H]):
 
     @classmethod
     def athome(cls, host: H, subdir: str) -> "Workdir[H]":
+        """
+        Create a workdir below the current users home directory.
+
+        **Example**:
+
+        .. code-block:: python
+
+            with tbot.acquire_lab() as lh:
+                # Use ~/.local/share/tbot-foo-dir
+                workdir = linux.Workdir.athome(lh, ".local/share/tbot-foo-dir")
+
+        tbot will query the ``$HOME`` environment variable for the location of
+        the current users home directory.
+
+        :param LinuxShell host: Machine where the workdir should be created
+        :param str subdir: Subdirectory of the user's home where the workdir should be created
+        :rtype: tbot.machine.linux.Path
+        :returns: A tbot path to the workdir which is now guaranteed to exist
+        """
         key = (host, subdir)
         try:
             return Workdir._workdirs[key]

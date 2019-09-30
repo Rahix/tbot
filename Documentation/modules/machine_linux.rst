@@ -146,3 +146,35 @@ Paths
 -----
 .. autoclass:: tbot.machine.linux.Path
    :members:
+
+Workdir
+~~~~~~~
+.. py:class:: Workdir
+
+   .. automethod:: tbot.machine.linux.Workdir.static
+   .. automethod:: tbot.machine.linux.Workdir.athome
+
+Lab-Host
+--------
+.. autoclass:: tbot.machine.linux.Lab
+   :members:
+
+Builder
+-------
+The :py:class:`~tbot.machine.linux.Builder` mixin allows marking a machine as a build-host.  This
+means generic testcases like ``uboot.build`` can use it to automatically build projects.  For this
+to work, a build-host needs to specify which toolchains it has installed and where tbot can find
+them.
+
+.. autoclass:: tbot.machine.linux.Builder
+   :members:
+
+.. py:module:: tbot.machine.linux.build
+
+Toolchains
+~~~~~~~~~~
+.. autoclass:: tbot.machine.linux.build.Toolchain
+   :members:
+
+.. autoclass:: tbot.machine.linux.build.EnvScriptToolchain
+   :members:
