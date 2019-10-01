@@ -1,5 +1,6 @@
 import abc
 import contextlib
+import io
 import typing
 
 import tbot
@@ -57,6 +58,9 @@ class LinuxBootLogin(machine.Initializer, LinuxBoot):
     log-messages during the first few seconds after boot.
     """
 
+    bootlog: str
+    """Log of kernel-messages which were output during boot."""
+
     @property
     @abc.abstractmethod
     def username(self) -> str:
@@ -71,7 +75,12 @@ class LinuxBootLogin(machine.Initializer, LinuxBoot):
 
     @contextlib.contextmanager
     def _init_machine(self) -> typing.Iterator:
-        with self._linux_boot_event() as ev, self.ch.with_stream(ev):
+        bootlog_stream = io.StringIO()
+        with contextlib.ExitStack() as cx:
+            ev = cx.enter_context(self._linux_boot_event())
+            cx.enter_context(self.ch.with_stream(ev))
+            cx.enter_context(self.ch.with_stream(bootlog_stream))
+
             self.ch.read_until_prompt(prompt=self.login_prompt)
 
             # On purpose do not login immediately as we may get some
@@ -90,6 +99,8 @@ class LinuxBootLogin(machine.Initializer, LinuxBoot):
                 self.ch.read_until_prompt(prompt="assword: ")
                 self.ch.sendline(self.password)
 
+        self.bootlog = bootlog_stream.getvalue()
+        bootlog_stream.close()
         yield None
 
 
