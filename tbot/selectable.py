@@ -161,7 +161,7 @@ def acquire_uboot(board: Board, *args: typing.Any) -> UBootMachine:
     return UBootMachine(board, *args)  # type: ignore
 
 
-class LinuxMachine(linux.LinuxShell, typing.ContextManager):
+class LinuxMachine(board.LinuxBootLogin, linux.LinuxShell, typing.ContextManager):
     """Dummy type that will be replaced by the actual selected Linux machine at runtime."""
 
     _unselected = True
