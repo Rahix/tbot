@@ -212,32 +212,30 @@ def selftest_board_power(lab: typing.Optional[tbot.selectable.LabHost] = None) -
         assert not power_path.exists()
 
 
-class TestBoardLinuxUB(board.LinuxWithUBootMachine[TestBoard]):
+class TestBoardLinuxUB(board.LinuxUbootConnector, board.LinuxBootLogin, linux.Bash):
     """Dummy board linux uboot."""
 
     uboot = TestBoardUBoot
-    boot_commands = [
-        ["echo", "Booting linux ..."],
-        ["echo", "[  0.000]", "boot: message"],
-        ["echo", "[  0.013]", "boot: info"],
-        ["echo", "[  0.157]", "boot: message"],
-        [
+
+    def do_boot(self, ub: board.UBootShell) -> channel.Channel:
+        ub.exec0("echo", "Booting linux ...")
+        ub.exec0("echo", "[  0.000]", "boot: message")
+        ub.exec0("echo", "[  0.013]", "boot: info")
+        ub.exec0("echo", "[  0.157]", "boot: message")
+        return ub.boot(
             board.Raw(
                 "printf 'tb-login: '; read username; printf 'Password: '; read password; [[ $username = 'root' && $password = 'rootpw' ]] || exit 1"
             )
-        ],
-    ]
+        )
 
     username = "root"
     password = "rootpw"
     login_prompt = "tb-login: "
-    shell = linux.shell.Bash
 
     @property
-    def workdir(self) -> "linux.Path[TestBoardLinuxUB]":  # type: ignore
+    def workdir(self) -> "linux.Path[TestBoardLinuxUB]":
         """Return workdir."""
-        raise NotImplementedError("workdir")
-        # return linux.Workdir.static(self, "/tmp/tbot-wd")
+        return linux.Workdir.static(self, "/tmp/tbot-wd")
 
 
 @tbot.testcase
@@ -245,9 +243,6 @@ def selftest_board_linux_uboot(
     lab: typing.Optional[tbot.selectable.LabHost] = None
 ) -> None:
     """Test linux booting from U-Boot."""
-
-    tbot.log.skip("board-linux & u-boot")
-    return
 
     with lab or tbot.acquire_lab() as lh:
         tbot.log.message("Testing without UB ...")
@@ -269,31 +264,29 @@ def selftest_board_linux_nopw(
 ) -> None:
     """Test linux without a password."""
 
-    tbot.log.skip("board-linux nopw")
-    return
-
-    class TestBoardLinuxUB_NOPW(board.LinuxWithUBootMachine[TestBoard]):
+    class TestBoardLinuxUB_NOPW(
+        board.LinuxUbootConnector, board.LinuxBootLogin, linux.Bash
+    ):
         uboot = TestBoardUBoot
-        boot_commands = [
-            ["echo", "Booting linux ..."],
-            ["echo", "[  0.000]", "boot: message"],
-            ["echo", "[  0.013]", "boot: info"],
-            ["echo", "[  0.157]", "boot: message"],
-            ["export", "HOME=/tmp"],
-            [
+
+        def do_boot(self, ub: board.UBootShell) -> channel.Channel:
+            ub.exec0("echo", "Booting linux ...")
+            ub.exec0("echo", "[  0.000]", "boot: message")
+            ub.exec0("echo", "[  0.013]", "boot: info")
+            ub.exec0("echo", "[  0.157]", "boot: message")
+            ub.exec0("export", "HOME=/tmp")
+            return ub.boot(
                 board.Raw(
                     "printf 'tb-login: '; read username; [[ $username = 'root' ]] || exit 1"
                 )
-            ],
-        ]
+            )
 
         username = "root"
         password = None
         login_prompt = "tb-login: "
-        shell = linux.shell.Bash
 
         @property
-        def workdir(self) -> "linux.Path[TestBoardLinuxUB_NOPW]":  # type: ignore
+        def workdir(self) -> "linux.Path[TestBoardLinuxUB_NOPW]":
             """Return workdir."""
             return linux.Workdir.athome(self, "tbot-wd")
 
@@ -317,14 +310,10 @@ def selftest_board_linux_standalone(
 ) -> None:
     """Test linux booting standalone."""
 
-    tbot.log.skip("board-linux standalone")
-    return
-
-    class TestBoardLinuxStandalone(board.LinuxStandaloneMachine[TestBoard]):
+    class TestBoardLinuxStandalone(board.Connector, board.LinuxBootLogin, linux.Bash):
         username = "root"
         password = None
         login_prompt = "Autoboot: "
-        shell = linux.shell.Bash
 
     with lab or tbot.acquire_lab() as lh:
         tbot.log.message("Testing without UB ...")
@@ -337,9 +326,9 @@ def selftest_board_linux_standalone(
             with TestBoardUBoot(b) as ub:
                 raised = False
                 try:
-                    with TestBoardLinuxStandalone(ub) as lnx:
+                    with TestBoardLinuxStandalone(ub) as lnx:  # type: ignore
                         lnx.exec0("uname", "-a")
-                except RuntimeError:
+                except Exception:
                     raised = True
                 assert raised
 
@@ -353,9 +342,9 @@ def selftest_board_linux_bad_console(
     tbot.log.skip("board-linux bad console")
     return
 
-    class BadBoard(TestBoard):
-        def connect(self) -> channel.Channel:  # noqa: D102
-            return self.lh.new_channel(
+    class BadBoard(connector.ConsoleConnector, board.Board):
+        def connect(self, mach: linux.LinuxShell) -> channel.Channel:  # noqa: D102
+            return mach.open_channel(
                 linux.Raw(
                     """\
 bash --norc --noprofile --noediting; exit
@@ -383,10 +372,10 @@ read -p ""\
                 )
             )
 
-    class BadBoardLinux(board.LinuxStandaloneMachine[BadBoard]):
+    class BadBoardLinux(board.Connector, board.LinuxBootLogin, linux.Bash):
         username = "root"
         password = "toor"
-        shell = linux.shell.Bash
+        login_delay = 1
 
     with lab or tbot.acquire_lab() as lh:
         with BadBoard(lh) as b:
