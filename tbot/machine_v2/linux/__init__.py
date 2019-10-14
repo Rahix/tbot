@@ -15,10 +15,12 @@ from .special import (
 from .workdir import Workdir
 from . import build
 from .bash import Bash
+from .ash import Ash
 from .build import Builder
 from .lab import Lab
 
 __all__ = (
+    "Ash",
     "build",
     "AndThen",
     "Background",
