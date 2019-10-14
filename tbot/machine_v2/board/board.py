@@ -39,8 +39,21 @@ class PowerControl(machine.Initializer):
         """
         pass
 
+    def power_check(self) -> bool:
+        """
+        Check if the board is already on and someone else might be using it.
+
+        Implementations of this function should raise an exception in case they
+        detect the board to be on or return ``False``.  If the board is off and
+        ready to be used, an implementation should return ``True``.
+        """
+        return True
+
     @contextlib.contextmanager
     def _init_machine(self) -> typing.Iterator:
+        if not self.power_check():
+            raise Exception("Board is already on, someone else might be using it!")
+
         try:
             tbot.log.EventIO(
                 ["board", "on", self.name],
