@@ -671,16 +671,13 @@ look like this (I showed the explicit version first so you can see what is going
 
 .. code-block:: python
 
-    import contextlib
     import tbot
 
     @tbot.testcase
     def test_board() -> None:
-        with contextlib.ExitStack() as cx:
-            lh  = cx.enter_context(tbot.acquire_lab())
-            b   = cx.enter_context(tbot.acquire_board(lh))
-            lnx = cx.enter_context(tbot.acquire_linux(b))
-
+        with  tbot.acquire_lab() as lh,
+              tbot.acquire_board(lh) as b,
+              tbot.acquire_linux(b) as lnx:
             lnx.exec0("uname", "-a")
 
 There is still one issue with this design:  Let's pretend this is a test to check some
@@ -691,43 +688,41 @@ at once.
 The issue we will run into is that each testcase will A) reconnect to the lab-host and
 B) powercycle the board.  This will be very very slow!  We can do better!
 
-.. todo::
-
-   There are changes in the pipeline which will make this even easier!  Not quite done
-   yet, unfortunately ...
-
 The idea is that testcases take the lab and board as optional parameters.  This allows
-reusing the old connection and won't powercycle the board for each test (if you need
-powercycling, you can of course do it like above):
+reusing the old connection and won't powercycle the board for each test (if you need powercycling,
+you can of course do it like above).  To make this as easy as possible, tbot provides the
+:py:func:`with_linux` decorator.  You can use it like this:
 
 .. code-block:: python
 
-    import contextlib
     import typing
     import tbot
     from tbot.machine import linux, board
 
     @tbot.testcase
+    @tbot.with_linux
     def test_board(
-        lab: typing.Optional[linux.LinuxShell] = None,
-        board_linux: typing.Optional[linux.LinuxShell] = None,
+        lnx: linux.LinuxShell,
+        param: str = "-a",
     ) -> None:
-        with contextlib.ExitStack() as cx:
-            if board_linux is None:
-                lh  = cx.enter_context(lab or tbot.acquire_lab())
-                b   = cx.enter_context(tbot.acquire_board(lh))
-                lnx = cx.enter_context(tbot.acquire_linux(b))
-            else:
-                lnx = board_linux
-
-            lnx.exec0("uname", "-a")
+        lnx.exec0("uname", param)
 
     @tbot.testcase
     def call_it() -> None:
         with tbot.acquire_lab() as lh:
-            test_board(lh)
+            test_board(lh, "-r")
 
-You can still call ``test_board`` from the commandline, but ``call_it`` works as well!
+    @tbot.testcase
+    def call_it_prepared() -> None:
+        with tbot.acquire_lab() as lh,
+             tbot.acquire_board(lh) as b,
+             tbot.acquire_linux(b) as lnx:
+            test_board(lnx, "-n")
+
+You can still call ``test_board`` from the commandline, but ``call_it`` and ``call_it_prepared``
+work as well!
+
+There is also :py:func:`with_lab` and :py:func:`with_uboot` for those two usecases.
 
 That's it for the quick-start guide.  If you want to dive deeper, you might want to follow these
 links:
