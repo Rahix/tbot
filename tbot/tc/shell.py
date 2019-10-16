@@ -138,7 +138,7 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
             hostname=p2.host.hostname,
             ignore_hostkey=p2.host.ignore_hostkey,
             port=p2.host.port,
-            ssh_config=[],
+            ssh_config=getattr(p2.host, "ssh_config", []),
             authenticator=p2.host.authenticator,
         )
     elif isinstance(p2.host, connector.SubprocessConnector) and (
@@ -154,7 +154,7 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
             hostname=p1.host.hostname,
             ignore_hostkey=p1.host.ignore_hostkey,
             port=p1.host.port,
-            ssh_config=[],
+            ssh_config=getattr(p2.host, "ssh_config", []),
             authenticator=p1.host.authenticator,
         )
     else:
