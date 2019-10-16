@@ -101,8 +101,13 @@ class SSHConnector(connector.Connector):
         with self.host.clone() as h:
             cmd = ["ssh", "-o", "BatchMode=yes"]
 
+            hk_disable = (
+                ["-o", "StrictHostKeyChecking=no"] if self.ignore_hostkey else []
+            )
+
             cmd_str = h.escape(
                 *cmd,
+                *hk_disable,
                 *["-p", str(self.port)],
                 *[arg for opt in self.ssh_config for arg in ["-o", opt]],
                 f"{self.username}@{self.hostname}",
