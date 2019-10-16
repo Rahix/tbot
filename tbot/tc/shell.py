@@ -80,7 +80,8 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
     * **lab-host** 🢥 **ssh-machine** (:py:class:`~tbot.machine.connector.SSHConnector`, using ``scp``)
     * **ssh-machine** 🢥 **lab-host** (Using ``scp``)
     * **local-host** 🢥 **paramiko-host** (:py:class:`~tbot.machine.connector.ParamikoConnector`, using ``scp``)
-    * **paramiko-host** 🢥 **local-host** (Using ``scp``)
+    * **local-host** 🢥 **ssh-machine** (:py:class:`~tbot.machine.connector.SSHConnector`, using ``scp``)
+    * **paramiko-host**/**ssh-machine** 🢥 **local-host** (Using ``scp``)
 
     The following transfers are **not** supported:
 
@@ -124,8 +125,9 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
             ssh_config=p2.host.ssh_config,
             authenticator=p2.host.authenticator,
         )
-    elif isinstance(p1.host, connector.SubprocessConnector) and isinstance(
-        p2.host, connector.ParamikoConnector
+    elif isinstance(p1.host, connector.SubprocessConnector) and (
+        isinstance(p2.host, connector.ParamikoConnector)
+        or isinstance(p2.host, connector.SSHConnector)
     ):
         # Copy from local to ssh labhost
         _scp_copy(
@@ -139,8 +141,9 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
             ssh_config=[],
             authenticator=p2.host.authenticator,
         )
-    elif isinstance(p2.host, connector.SubprocessConnector) and isinstance(
-        p1.host, connector.ParamikoConnector
+    elif isinstance(p2.host, connector.SubprocessConnector) and (
+        isinstance(p1.host, connector.ParamikoConnector)
+        or isinstance(p1.host, connector.SSHConnector)
     ):
         # Copy to local from ssh labhost
         _scp_copy(
