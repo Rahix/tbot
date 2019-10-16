@@ -23,6 +23,7 @@ tbot Documentation
    installation
    quickstart
    configuration
+   recipes
    logging
 
 .. toctree::
