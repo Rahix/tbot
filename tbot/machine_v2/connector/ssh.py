@@ -90,8 +90,11 @@ class SSHConnector(connector.Connector):
         """
         return []
 
-    def __init__(self, host: linux.LinuxShell) -> None:
-        self.host = host
+    def __init__(self, host: typing.Optional[linux.LinuxShell] = None) -> None:
+        if host is not None:
+            self.host = host
+        else:
+            self.host = tbot.acquire_local()  # type: ignore
 
     @contextlib.contextmanager
     def _connect(self) -> typing.Iterator[channel.Channel]:
