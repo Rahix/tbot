@@ -9,7 +9,7 @@ from .path import *  # noqa: F403, F401
 from .machine import *  # noqa: F403, F401
 from .board_machine import *  # noqa: F403, F401
 from .tc import *  # noqa: F403, F401
-from .testcase import *  # noqa: F403
+from .testcase import *  # noqa: F403, F401
 
 
 @tbot.testcase
