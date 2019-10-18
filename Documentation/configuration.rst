@@ -227,10 +227,29 @@ Linux (without U-Boot) Config
    class BeagleBoneLinux(
        board.Connector,
        board.LinuxBootLogin,
-       linux.Bash,
+       linux.Ash,
    ):
        username = "root"
        password = None
 
 
    LINUX = BeagleBoneLinux
+
+.. _config-init:
+
+Initializing a Machine
+----------------------
+After the basic setup sometimes you might need additional steps to bring the
+machine into the state you need it in.  Example might be network setup in
+U-Boot or disabling kernel console-logging in Linux.  You can do this by
+defining a :meth:`tbot.machine.Machine.init` function:
+
+.. code-block:: python
+
+    class MyBoardLinux(..., linux.Ash):
+        name = "myboard-lnx"
+
+        ...
+
+        def init(self):
+            self.exec0("sysctl", "kernel.printk=1 4 1 4")

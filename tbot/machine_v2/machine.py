@@ -62,6 +62,26 @@ class Machine(abc.ABC):
     def _init_shell(self) -> typing.ContextManager:
         raise NotImplementedError("abstract method")
 
+    def init(self) -> None:
+        """
+        An optional hook that allows running some code after the machine is initialized.
+
+        **Example**:
+
+        .. code-block:: python
+
+            class FooUBoot(board.Connector, board.UBootShell):
+                name = "foo-u-boot"
+                prompt = "=> "
+
+                def init(self):
+                    self.env("autoload", "no")
+                    self.exec0("dhcp")
+
+                    self.env("serverip", "192.168.1.2")
+        """
+        pass
+
     def __enter__(self: Self) -> Self:
         self._rc = getattr(self, "_rc", 0)
         self._rc += 1
@@ -86,6 +106,9 @@ class Machine(abc.ABC):
 
             # Initialize the shell
             self._cx.enter_context(self._init_shell())
+
+            # Run optional custom initialization code
+            self.init()
 
             # Nothing went wrong during init, we can pop `self` from the stack
             # now to keep the machine active when entering the actual context.
