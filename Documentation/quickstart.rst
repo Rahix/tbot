@@ -184,7 +184,9 @@ Hello tbot!
     Why ``tc.py``?  I prefer calling it ``my_most_amazing_testcases.py``!
 
     Fear not, you can do just that!  You just need to tell tbot about it.  Instead of the above
-    command, run::
+    command, run:
+
+    .. code-block:: shell-session
 
         $ tbot -t my_most_amazing_testcases.py hello_world
 

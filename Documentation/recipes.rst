@@ -111,7 +111,7 @@ If a testcase requires powercycling, you should write your testcase like this:
 .. _recipe-soft-reset:
 
 (Soft-)Resetting with ``bmode`` or ``reset``
--------------------------------------
+--------------------------------------------
 In some tests, you might need to use ``bmode`` or ``reset`` to trigger a soft-reset without turning
 off power.  For these, you'll want to use the following recipe:
 
