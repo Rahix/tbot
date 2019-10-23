@@ -14,6 +14,7 @@ Common
 Shell
 -----
 .. autofunction:: tbot.tc.shell.copy
+.. autofunction:: tbot.tc.shell.check_for_tool
 
 
 .. py:module:: tbot.tc.git

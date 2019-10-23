@@ -159,3 +159,55 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
         )
     else:
         raise NotImplementedError(f"Can't copy from {p1.host} to {p2.host}!")
+
+
+_TOOL_CACHE: typing.Dict[int, typing.Dict[str, bool]] = {}
+
+
+def check_for_tool(host: linux.LinuxShell, tool: str) -> bool:
+    """
+    Check whether a certain tool/program is installed on a host.
+
+    Results from previous invocations are cached.
+
+    **Example**:
+
+    .. code-block:: python
+
+        if shell.check_for_tool(lh, "wget"):
+            lh.exec0("wget", download_url, "-O", lh.workdir / "download.tgz")
+        elif shell.check_for_tool(lh, "curl"):
+            lh.exec0("curl", download_url, "-o", lh.workdir / "download.tgz")
+        else:
+            raise Exception("Need either 'wget' or 'curl'!")
+
+    :param linux.LinuxShell host: The host to ceck on.
+    :param str tool: Name of the binary to check for.
+    :rtype: bool
+    :returns: ``True`` if the tool was found and ``False`` otherwise.
+    """
+    classhash = hash(host.__class__)
+    if classhash not in _TOOL_CACHE:
+        _TOOL_CACHE[classhash] = {}
+
+    if tool not in _TOOL_CACHE[classhash]:
+
+        @tbot.named_testcase("check_for_tool")
+        def cft_inner() -> None:
+            has_tool = host.test("which", tool)
+            _TOOL_CACHE[classhash][tool] = has_tool
+
+            if has_tool:
+                tbot.log.message(
+                    f"Host '{tbot.log.c(host.name).yellow}' has "
+                    + f"'{tbot.log.c(tool).bold}' installed."
+                )
+            else:
+                tbot.log.message(
+                    f"Host '{tbot.log.c(host.name).yellow}' does "
+                    + f"{tbot.log.c('not').red} have '{tbot.log.c(tool).bold}' installed."
+                )
+
+        cft_inner()
+
+    return _TOOL_CACHE[classhash][tool]
