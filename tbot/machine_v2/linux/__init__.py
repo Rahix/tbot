@@ -19,9 +19,11 @@ from .bash import Bash
 from .ash import Ash
 from .build import Builder
 from .lab import Lab
+from . import auth
 
 __all__ = (
     "Ash",
+    "auth",
     "build",
     "AndThen",
     "Background",
@@ -39,22 +41,12 @@ __all__ = (
     "Workdir",
 )
 
+
 #        Compatibility aliases
 #        =====================
 #        Make migration easier by only warning on use of deprecated items where
 #        possible.  For items which cannot be 'emulated', show a comprehensive
 #        error message.
-
-
-class auth:
-    class Authenticator:
-        pass
-
-    PrivateKeyAuthenticator = NotImplementedError
-    PasswordAuthenticator = NotImplementedError
-    NoneAuthenticator = NotImplementedError
-
-
 def __getattr__(name: str) -> typing.Any:
 
     from .. import connector

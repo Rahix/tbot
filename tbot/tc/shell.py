@@ -48,12 +48,21 @@ def _scp_copy(
         *[arg for opt in ssh_config for arg in ["-o", opt]],
     ]
 
-    if isinstance(authenticator, auth.PrivateKeyAuthenticator):
-        scp_command += ["-o", "BatchMode=yes", "-i", authenticator.key_file]
-    elif isinstance(authenticator, auth.NoneAuthenticator):
+    if isinstance(authenticator, auth.NoneAuthenticator):
         scp_command += ["-o", "BatchMode=yes"]
+    elif isinstance(authenticator, auth.PrivateKeyAuthenticator):
+        scp_command += [
+            "-o",
+            "BatchMode=yes",
+            "-i",
+            authenticator.get_key_for_host(local_host),
+        ]
     elif isinstance(authenticator, auth.PasswordAuthenticator):
         scp_command = ["sshpass", "-p", authenticator.password] + scp_command
+    else:
+        if typing.TYPE_CHECKING:
+            authenticator._undefined_marker
+        raise ValueError("Unknown authenticator {authenticator!r}")
 
     if copy_to_remote:
         local_host.exec0(

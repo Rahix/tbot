@@ -6,6 +6,7 @@ import typing
 
 import tbot
 from .. import channel
+from ..linux import auth
 from . import connector
 
 Self = typing.TypeVar("Self", bound="ParamikoConnector")
@@ -61,6 +62,21 @@ class ParamikoConnector(connector.Connector):
             return self._config["user"]
         else:
             return getpass.getuser()
+
+    @property
+    def authenticator(self) -> auth.Authenticator:
+        """
+        Return an authenticator that allows logging in on this machine.
+
+        :rtype: tbot.machine.linux.auth.Authenticator
+        """
+        if "identityfile" in self._config:
+            assert isinstance(self._config["identityfile"], list)
+            return auth.PrivateKeyAuthenticator(
+                pathlib.Path(self._config["identityfile"][0])
+            )
+
+        return auth.NoneAuthenticator()
 
     @property
     def port(self) -> int:
@@ -131,6 +147,21 @@ class ParamikoConnector(connector.Connector):
             else:
                 self._client.load_system_host_keys()
 
+            password = None
+            key_file = None
+
+            authenticator = self.authenticator
+            if isinstance(authenticator, auth.NoneAuthenticator):
+                pass
+            elif isinstance(authenticator, auth.PrivateKeyAuthenticator):
+                key_file = authenticator.get_key_for_host(None)
+            elif isinstance(authenticator, auth.PasswordAuthenticator):
+                password = authenticator.password
+            else:
+                if typing.TYPE_CHECKING:
+                    authenticator._undefined_marker
+                raise ValueError(f"Unknown authenticator {authenticator!r}")
+
             tbot.log.message(
                 "Logging in on "
                 + tbot.log.c(f"{self.username}@{self.hostname}:{self.port}").yellow
@@ -143,7 +174,13 @@ class ParamikoConnector(connector.Connector):
             else:
                 hostname = self.hostname
 
-            self._client.connect(hostname, username=self.username, port=self.port)
+            self._client.connect(
+                hostname,
+                username=self.username,
+                port=self.port,
+                password=password,
+                key_filename=key_file,
+            )
 
         return channel.ParamikoChannel(self._client.get_transport().open_session())
 

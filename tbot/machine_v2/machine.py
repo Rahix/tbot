@@ -35,8 +35,6 @@ class Machine(abc.ABC):
         when multiple parties make assumptions about the state of the channel.
     """
 
-    authenticator = None
-
     @property
     def name(self) -> str:
         """

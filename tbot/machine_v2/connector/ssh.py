@@ -5,6 +5,7 @@ import typing
 import tbot
 from . import connector
 from .. import linux, channel
+from ..linux import auth
 
 
 class SSHConnector(connector.Connector):
@@ -66,6 +67,25 @@ class SSHConnector(connector.Connector):
         return self.host.username
 
     @property
+    def authenticator(self) -> auth.Authenticator:
+        """
+        Return an authenticator that allows logging in on this machine.
+
+        .. danger::
+            It is strongly advised to use key authentication.  If you use password
+            auth, **THE PASSWORD WILL BE LEAKED** and **MIGHT EASILY BE STOLEN**
+            by other users on your labhost.  It will also be visible in the log file.
+
+            If you decide to use this, you're doing this on your own risk.
+
+            The only case where I support using passwords is when connecting to
+            a test board with a default password.
+
+        :rtype: tbot.machine.linux.auth.Authenticator
+        """
+        return auth.NoneAuthenticator()
+
+    @property
     def port(self) -> int:
         """
         Return the port the SSH server is listening on.
@@ -99,7 +119,23 @@ class SSHConnector(connector.Connector):
     @contextlib.contextmanager
     def _connect(self) -> typing.Iterator[channel.Channel]:
         with self.host.clone() as h:
-            cmd = ["ssh", "-o", "BatchMode=yes"]
+            authenticator = self.authenticator
+            if isinstance(authenticator, auth.NoneAuthenticator):
+                cmd = ["ssh", "-o", "BatchMode=yes"]
+            elif isinstance(authenticator, auth.PrivateKeyAuthenticator):
+                cmd = [
+                    "ssh",
+                    "-o",
+                    "BatchMode=yes",
+                    "-i",
+                    authenticator.get_key_for_host(h),
+                ]
+            elif isinstance(authenticator, auth.PasswordAuthenticator):
+                cmd = ["sshpass", "-p", authenticator.password, "ssh"]
+            else:
+                if typing.TYPE_CHECKING:
+                    authenticator._undefined_marker
+                raise ValueError(f"Unknown authenticator {authenticator!r}")
 
             hk_disable = (
                 ["-o", "StrictHostKeyChecking=no"] if self.ignore_hostkey else []
