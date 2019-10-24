@@ -8,6 +8,23 @@ class AuthenticatorBase:
 
 
 class PasswordAuthenticator(AuthenticatorBase):
+    """
+    Authenticate using a password.
+
+    .. danger::
+
+        This method is very insecure and might lead to **PASSWORDS BEING STOLEN**.
+
+
+    **Example**:
+
+    .. code-block:: python
+
+        class MySSHHost(connector.SSHConnector, linux.Bash):
+            username = "root"
+            authenticator = linux.auth.PasswordAuthenticator("hunter2")
+    """
+
     __slots__ = ("password",)
 
     def __init__(self, password: str) -> None:
@@ -15,6 +32,18 @@ class PasswordAuthenticator(AuthenticatorBase):
 
 
 class PrivateKeyAuthenticator(AuthenticatorBase):
+    """
+    Authenticate using a private-key file.
+
+    **Example**:
+
+    .. code-block:: python
+
+        class MySSHHost(connector.SSHConnector, linux.Bash):
+            username = "foouser"
+            authenticator = linux.auth.PrivateKeyAuthenticator("/home/foo/.ssh/id_rsa_foo")
+    """
+
     __slots__ = ("key_file",)
 
     def __init__(
@@ -36,6 +65,13 @@ class PrivateKeyAuthenticator(AuthenticatorBase):
 
 
 class NoneAuthenticator(AuthenticatorBase):
+    """
+    Most primitive authenticator.
+
+    Tries not passing any specific credentials and hopes ssh-config already
+    contains all necessary infos.  This is the default.
+    """
+
     pass
 
 

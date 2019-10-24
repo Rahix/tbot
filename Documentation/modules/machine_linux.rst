@@ -178,3 +178,20 @@ Toolchains
 
 .. autoclass:: tbot.machine.linux.build.EnvScriptToolchain
    :members:
+
+
+.. py:module:: tbot.machine.linux.auth
+
+Authenticators
+--------------
+For logging in via SSH using :class:`~tbot.machine.connector.ParamikoConnector` or
+:class:`~tbot.machine.connector.SSHConnector`, tbot provides the following 'authenticators':
+
+.. autoclass:: tbot.machine.linux.auth.NoneAuthenticator
+   :members:
+
+.. autoclass:: tbot.machine.linux.auth.PrivateKeyAuthenticator
+   :members:
+
+.. autoclass:: tbot.machine.linux.auth.PasswordAuthenticator
+   :members:

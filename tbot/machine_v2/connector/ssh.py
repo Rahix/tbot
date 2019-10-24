@@ -71,6 +71,8 @@ class SSHConnector(connector.Connector):
         """
         Return an authenticator that allows logging in on this machine.
 
+        See :mod:`tbot.machine.linux.auth` for available authenticators.
+
         .. danger::
             It is strongly advised to use key authentication.  If you use password
             auth, **THE PASSWORD WILL BE LEAKED** and **MIGHT EASILY BE STOLEN**

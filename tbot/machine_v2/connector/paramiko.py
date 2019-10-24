@@ -68,6 +68,8 @@ class ParamikoConnector(connector.Connector):
         """
         Return an authenticator that allows logging in on this machine.
 
+        See :mod:`tbot.machine.linux.auth` for available authenticators.
+
         :rtype: tbot.machine.linux.auth.Authenticator
         """
         if "identityfile" in self._config:
