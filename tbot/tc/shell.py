@@ -21,8 +21,8 @@ from tbot.machine.linux import auth
 
 __all__ = ("copy",)
 
-H1 = typing.TypeVar("H1", bound=linux.LinuxMachine)
-H2 = typing.TypeVar("H2", bound=linux.LinuxMachine)
+H1 = typing.TypeVar("H1", bound=linux.LinuxShell)
+H2 = typing.TypeVar("H2", bound=linux.LinuxShell)
 
 
 def _scp_copy(

@@ -317,7 +317,7 @@ To learn more about the methods tbot provides for interacting with linux-machine
 docs for :py:class:`~tbot.machine.linux.LinuxShell`.
 
 One more feature I want to mention in this quick guide:  Most machines have an
-:meth:`~tbot.machine.linux.LinuxMachine.interactive` method.  This method will connect the
+:meth:`~tbot.machine.linux.LinuxShell.interactive` method.  This method will connect the
 channel to the terminal and allows you to directly enter commands.  You can use it to make tbot
 do some work, then do something manually.  Like a symbiotic development process.  It really makes
 you a lot more productive if you embrace this idea!  There is also a testcase to call it from the
@@ -661,7 +661,7 @@ forward:
             # it, the board will be powered on and as soon as
             # you exit it, it will be turned off again.
             with tbot.acquire_board(lh) as b:
-                # This is the context for the "LinuxMachine".
+                # This is the context for the "Linux machine".
                 # Entering it means tbot will listen to the
                 # board booting and give you a machine handle
                 # as soon as the shell is available.

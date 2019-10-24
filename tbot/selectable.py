@@ -203,7 +203,7 @@ def acquire_linux(
 
                 ...
 
-    :rtype: tbot.machine.board.LinuxMachine
+    :rtype: tbot.machine.linux.LinuxShell
     """
     if hasattr(LinuxMachine, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a board?")

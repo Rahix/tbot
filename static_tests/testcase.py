@@ -12,7 +12,7 @@ def test_lab(lab: typing.Optional[linux.Lab] = None,) -> None:
 
 
 @tbot.testcase
-def test_linux(mach: typing.Optional[linux.LinuxMachine] = None,) -> None:
+def test_linux(mach: typing.Optional[linux.LinuxShell] = None,) -> None:
     with mach or tbot.acquire_lab() as lnx:
         p = lnx.workdir / "foobar"
 

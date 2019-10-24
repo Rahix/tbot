@@ -20,7 +20,7 @@ import typing
 import pathlib
 from .. import linux  # noqa: F401
 
-H = typing.TypeVar("H", bound="linux.LinuxMachine")
+H = typing.TypeVar("H", bound="linux.LinuxShell")
 
 
 class Path(pathlib.PurePosixPath, typing.Generic[H]):

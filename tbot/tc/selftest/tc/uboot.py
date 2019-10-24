@@ -10,7 +10,7 @@ __all__ = (
 )
 
 
-def _uboot_prepare(h: linux.LinuxMachine) -> uboot.UBootBuilder:
+def _uboot_prepare(h: linux.LinuxShell) -> uboot.UBootBuilder:
     remote = h.workdir / "selftest-ub-remote"
 
     if remote.exists():

@@ -84,10 +84,10 @@ class UBootBuilder(abc.ABC):
         The default path is ``$workdir/uboot-$name``.  Overwrite this
         step to set a custom path::
 
-            def do_repo_path(self, bh: linux.LinuxMachine) -> linux.Path:
+            def do_repo_path(self, bh: linux.Builder) -> linux.Path:
                 return bh.workdir / "projects" / "foo" / "uboot"
 
-        :param linux.LinuxMachine bh: Selected build-host.  The returned
+        :param linux.Builder bh: Selected build-host.  The returned
             path **must** be associated with this machine.
         :rtype: linux.Path
         :returns: Path to the U-Boot build directory

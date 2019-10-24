@@ -70,9 +70,7 @@ def selftest_machine_sshlab_shell(lab: typing.Optional[linux.Lab] = None,) -> No
 
 
 @tbot.testcase
-def selftest_machine_shell(
-    m: typing.Union[linux.LinuxMachine, board.UBootShell]
-) -> None:
+def selftest_machine_shell(m: typing.Union[linux.LinuxShell, board.UBootShell]) -> None:
     # Capabilities
     cap = []
     if isinstance(m, linux.LinuxShell):
@@ -107,7 +105,7 @@ def selftest_machine_shell(
     assert m.test("true")
     assert not m.test("false")
 
-    if isinstance(m, linux.LinuxMachine):
+    if isinstance(m, linux.LinuxShell):
         tbot.log.message("Testing env vars ...")
         value = "12\nfoo !? # true; exit\n"
         m.env("TBOT_TEST_ENV_VAR", value)

@@ -322,7 +322,7 @@ def with_linux(tc: F_lnx) -> F_linux:
                 lh = cx.enter_context(arg)  # type: ignore
             elif not isinstance(arg, linux.LinuxShell):
                 raise TypeError(
-                    f"Argument to {tc!r} must either be a LabHost or a LinuxMachine (found {arg!r})"
+                    f"Argument to {tc!r} must either be a lab-host or a board linux (found {arg!r})"
                 )
 
             # Acquire Linux

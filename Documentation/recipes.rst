@@ -77,7 +77,7 @@ powercycling, etc.  Again, there is a decorator: :func:`tbot.with_linux`
 
    @tbot.testcase
    @tbot.with_linux
-   def testcase_with_linux(lnx: board.LinuxMachine) -> None:
+   def testcase_with_linux(lnx: linux.LinuxShell) -> None:
        lnx.exec0("uname", "-a")
 
 

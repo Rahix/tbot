@@ -19,7 +19,7 @@ import tbot
 import enum
 from tbot.machine import linux
 
-H = typing.TypeVar("H", bound=linux.LinuxMachine)
+H = typing.TypeVar("H", bound=linux.LinuxShell)
 
 
 class ResetMode(enum.Enum):
