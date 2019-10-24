@@ -25,6 +25,7 @@ tbot Documentation
    configuration
    recipes
    logging
+   migration
 
 .. toctree::
    :maxdepth: 1
