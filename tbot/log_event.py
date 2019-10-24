@@ -88,6 +88,7 @@ def command(mach: str, cmd: str) -> log.EventIO:
 
 def tbot_start() -> None:
     print(log.c("tbot").yellow.bold + " starting ...")
+    log.NESTING += 1
 
 
 def tbot_end(success: bool) -> None:

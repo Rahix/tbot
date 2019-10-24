@@ -76,7 +76,7 @@ class Verbosity(enum.IntEnum):
         return super(Verbosity, self).__str__().split(".")[-1]
 
 
-NESTING = 0
+NESTING = -1
 INTERACTIVE = False
 VERBOSITY = Verbosity.COMMAND
 LOGFILE: typing.Optional[typing.TextIO] = None
@@ -120,6 +120,9 @@ class EventIO(io.StringIO):
             self.writeln(str(initial))
 
     def _prefix(self) -> str:
+        if NESTING == -1:
+            return ""
+
         after = self.nest_first if self.first else u("│ ", "| ")
         self.first = False
         prefix: str = self.prefix or ""
