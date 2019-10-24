@@ -86,7 +86,7 @@ class Board(board.Board):
     _unselected = True
     name = "dummy"
 
-    def __init__(self, lh: linux.LabHost) -> None:  # noqa: D107
+    def __init__(self, lh: linux.Lab) -> None:  # noqa: D107
         raise NotImplementedError("no board selected")
 
 

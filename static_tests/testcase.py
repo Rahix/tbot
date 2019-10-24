@@ -4,7 +4,7 @@ from tbot.machine import linux
 
 
 @tbot.testcase
-def test_lab(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def test_lab(lab: typing.Optional[linux.Lab] = None,) -> None:
     with lab or tbot.acquire_lab() as lh:
         p = lh.workdir / "foobar"
 

@@ -7,7 +7,7 @@ __all__ = ("selftest_tc_kconfig",)
 
 
 @tbot.testcase
-def selftest_tc_kconfig(lab: typing.Optional[linux.LabHost] = None) -> None:
+def selftest_tc_kconfig(lab: typing.Optional[linux.Lab] = None) -> None:
     """Test kconig setting."""
     with lab or tbot.acquire_lab() as lh:
         conf = lh.workdir / "selftest-kconfig"

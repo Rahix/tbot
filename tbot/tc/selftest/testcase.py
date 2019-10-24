@@ -26,12 +26,12 @@ class SubstituteBoard(typing.ContextManager[None]):
 
 @tbot.testcase
 @tbot.with_lab
-def selftest_decorated_lab(lh: linux.LabHost) -> None:
+def selftest_decorated_lab(lh: linux.Lab) -> None:
     lh.exec0("uname", "-a")
 
 
 @tbot.testcase
-def selftest_with_lab(lab: typing.Optional[linux.LabHost] = None) -> None:
+def selftest_with_lab(lab: typing.Optional[linux.Lab] = None) -> None:
     """Test the tbot.with_lab decorator."""
     with lab or tbot.acquire_lab() as lh:
         # Call without parameter

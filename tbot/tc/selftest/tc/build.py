@@ -27,7 +27,7 @@ class LocalDummyBuildhost(connector.SubprocessConnector, linux.Bash, linux.Build
 
 
 @tbot.testcase
-def selftest_tc_build_toolchain(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def selftest_tc_build_toolchain(lab: typing.Optional[linux.Lab] = None,) -> None:
     """Test connecting to a buildhost and enabling a toolchain on there."""
     with LocalDummyBuildhost() as bh:
         tbot.log.message("Creating dummy toolchain ...")

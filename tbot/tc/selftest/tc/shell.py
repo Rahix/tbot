@@ -8,7 +8,7 @@ __all__ = ("selftest_tc_shell_copy",)
 
 
 @tbot.testcase
-def selftest_tc_shell_copy(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def selftest_tc_shell_copy(lab: typing.Optional[linux.Lab] = None,) -> None:
     """Test ``shell.copy``."""
 
     def do_test(a: linux.Path, b: linux.Path, msg: str) -> None:

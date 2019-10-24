@@ -225,7 +225,7 @@ class UBootBuilder(abc.ABC):
         unpatched_repo: typing.Optional[git.GitRepository[BH]] = None,
         path: typing.Optional[linux.Path[BH]] = None,
         host: typing.Optional[BH] = None,
-        lab: typing.Optional[linux.LabHost] = None,
+        lab: typing.Optional[linux.Lab] = None,
     ) -> git.GitRepository[BH]:
         """
         Build U-Boot.
@@ -262,7 +262,7 @@ class UBootBuilder(abc.ABC):
             but also apply patches.
         :param linux.Path path:  Checkout U-Boot to ``path``.
         :param linux.BuildMachine host:  Build U-Boot on this host.
-        :param linux.LabHost lab:  Build U-Boot on the default build-host of this lab.
+        :param linux.Lab lab:  Build U-Boot on the default build-host of this lab.
         :rtype: git.GitRepository
         :returns:  Location of the U-Boot tree containing build artifacts
         """
@@ -341,7 +341,7 @@ class UBootBuilder(abc.ABC):
         unpatched_repo: typing.Optional[git.GitRepository[BH]] = None,
         path: typing.Optional[linux.Path[BH]] = None,
         host: typing.Optional[BH] = None,
-        lab: typing.Optional[linux.LabHost] = None,
+        lab: typing.Optional[linux.Lab] = None,
     ) -> git.GitRepository[BH]:
         """
         Build U-Boot.

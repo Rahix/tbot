@@ -27,7 +27,7 @@ class MiniSSHMachine(connector.SSHConnector, linux.Bash):
         """Return a workdir."""
         return linux.Workdir.static(self, "/tmp/tbot-wd/minisshd-remote")
 
-    def __init__(self, labhost: linux.LabHost, port: int) -> None:
+    def __init__(self, labhost: linux.Lab, port: int) -> None:
         """Create a new MiniSSHMachine."""
         self._port = port
         self._username = labhost.env("USER")
@@ -62,14 +62,14 @@ class MiniSSHLabHost(connector.ParamikoConnector, linux.Bash):
 
 
 @tbot.testcase
-def check_minisshd(h: linux.LabHost) -> bool:
+def check_minisshd(h: linux.Lab) -> bool:
     """Check if this host can run a minisshd."""
     return h.test("which", "dropbear")
 
 
 @tbot.testcase
 @contextlib.contextmanager
-def minisshd(h: linux.LabHost, port: int = 2022) -> typing.Generator:
+def minisshd(h: linux.Lab, port: int = 2022) -> typing.Generator:
     """
     Create a new minisshd server and machine.
 
@@ -79,7 +79,7 @@ def minisshd(h: linux.LabHost, port: int = 2022) -> typing.Generator:
             with minisshd(lh) as ssh:
                 ssh.exec0("uname", "-a")
 
-    :param linux.LabHost h: lab-host
+    :param linux.Lab h: lab-host
     :param int port: Port for the ssh server, defaults to ``2022``.
     :rtype: MiniSSHMachine
     """

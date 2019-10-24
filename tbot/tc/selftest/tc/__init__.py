@@ -11,7 +11,7 @@ from .kconfig import *  # noqa: F403
 
 
 @tbot.testcase
-def selftest_tc(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def selftest_tc(lab: typing.Optional[linux.Lab] = None,) -> None:
     """Run selftests for builtin testcases."""
     with lab or tbot.acquire_lab() as lh:
         tc.testsuite(

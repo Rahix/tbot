@@ -13,14 +13,14 @@ from .testcase import *  # noqa: F403, F401
 
 
 @tbot.testcase
-def selftest_uname(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def selftest_uname(lab: typing.Optional[linux.Lab] = None,) -> None:
     """Test lab-host shell basics."""
     with lab or tbot.acquire_lab() as lh:
         lh.exec0("uname", "-a")
 
 
 @tbot.testcase
-def selftest_user(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def selftest_user(lab: typing.Optional[linux.Lab] = None,) -> None:
     """Test lab-host variable expansion."""
     with lab or tbot.acquire_lab() as lh:
         lh.exec0("echo", lh.env("USER"))
@@ -30,7 +30,7 @@ def selftest_user(lab: typing.Optional[linux.LabHost] = None,) -> None:
 
 
 @tbot.testcase
-def selftest_failing(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def selftest_failing(lab: typing.Optional[linux.Lab] = None,) -> None:
     """Test if a testcase failure is properly detected."""
 
     class CustomException(Exception):
@@ -49,7 +49,7 @@ def selftest_failing(lab: typing.Optional[linux.LabHost] = None,) -> None:
 
 
 @tbot.testcase
-def selftest(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def selftest(lab: typing.Optional[linux.Lab] = None,) -> None:
     """Run all selftests."""
     with lab or tbot.acquire_lab() as lh:
         tc.testsuite(

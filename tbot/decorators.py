@@ -110,7 +110,7 @@ def named_testcase(name: str) -> typing.Callable[[F_tc], F_tc]:
 F_lh = typing.TypeVar("F_lh", bound=typing.Callable[..., typing.Any])
 F_lab = typing.Callable[
     [
-        mypy.DefaultArg(typing.Optional[linux.LabHost], "lab"),
+        mypy.DefaultArg(typing.Optional[linux.Lab], "lab"),
         mypy.VarArg(typing.Any),
         mypy.KwArg(typing.Any),
     ],

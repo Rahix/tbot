@@ -85,7 +85,7 @@ index b5319d7..0f01838 100644
 
 
 @tbot.testcase
-def selftest_tc_uboot_checkout(lab: typing.Optional[linux.LabHost] = None) -> None:
+def selftest_tc_uboot_checkout(lab: typing.Optional[linux.Lab] = None) -> None:
     with lab or tbot.acquire_lab() as lh:
         builder = _uboot_prepare(lh)
 
@@ -115,7 +115,7 @@ def selftest_tc_uboot_checkout(lab: typing.Optional[linux.LabHost] = None) -> No
 
 
 @tbot.testcase
-def selftest_tc_uboot_build(lab: typing.Optional[linux.LabHost] = None) -> None:
+def selftest_tc_uboot_build(lab: typing.Optional[linux.Lab] = None) -> None:
     from tbot.tc.selftest.tc import build
 
     with tbot.acquire_local() as lh:
@@ -163,9 +163,7 @@ def selftest_tc_uboot_build(lab: typing.Optional[linux.LabHost] = None) -> None:
 
 
 @tbot.testcase
-def selftest_tc_uboot_patched_bisect(
-    lab: typing.Optional[linux.LabHost] = None
-) -> None:
+def selftest_tc_uboot_patched_bisect(lab: typing.Optional[linux.Lab] = None) -> None:
     from tbot.tc.selftest.tc import build, git as git_tc
 
     with build.LocalDummyBuildhost() as bh:

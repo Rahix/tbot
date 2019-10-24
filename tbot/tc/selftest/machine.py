@@ -15,7 +15,7 @@ __all__ = (
 
 
 @tbot.testcase
-def selftest_machine_reentrant(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def selftest_machine_reentrant(lab: typing.Optional[linux.Lab] = None,) -> None:
     """Test if a machine can be entered multiple times."""
     with lab or tbot.acquire_lab() as lh:
         with lh as h1:
@@ -26,7 +26,7 @@ def selftest_machine_reentrant(lab: typing.Optional[linux.LabHost] = None,) -> N
 
 
 @tbot.testcase
-def selftest_machine_labhost_shell(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def selftest_machine_labhost_shell(lab: typing.Optional[linux.Lab] = None,) -> None:
     """Test the LabHost's shell."""
     with lab or tbot.acquire_lab() as lh:
         selftest_machine_shell(lh)
@@ -39,7 +39,7 @@ def selftest_machine_labhost_shell(lab: typing.Optional[linux.LabHost] = None,) 
 
 
 @tbot.testcase
-def selftest_machine_ssh_shell(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def selftest_machine_ssh_shell(lab: typing.Optional[linux.Lab] = None,) -> None:
     """Test an SSH shell."""
     from tbot.tc.selftest import minisshd
 
@@ -54,7 +54,7 @@ def selftest_machine_ssh_shell(lab: typing.Optional[linux.LabHost] = None,) -> N
 
 
 @tbot.testcase
-def selftest_machine_sshlab_shell(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def selftest_machine_sshlab_shell(lab: typing.Optional[linux.Lab] = None,) -> None:
     """Test an SSH LabHost shell."""
     from tbot.tc.selftest import minisshd
 

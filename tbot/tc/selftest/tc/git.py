@@ -14,7 +14,7 @@ _GIT: typing.Optional[str] = None
 
 
 @tbot.testcase
-def git_prepare(lab: linux.LabHost) -> str:
+def git_prepare(lab: linux.Lab) -> str:
     """Prepare a test git repo."""
     global _GIT
 
@@ -68,7 +68,7 @@ A second file that will have been added by patching.""",
 
 
 @tbot.testcase
-def selftest_tc_git_checkout(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def selftest_tc_git_checkout(lab: typing.Optional[linux.Lab] = None,) -> None:
     """Test checking out a repository."""
     with lab or tbot.acquire_lab() as lh:
         remote = git_prepare(lh)
@@ -107,7 +107,7 @@ def selftest_tc_git_checkout(lab: typing.Optional[linux.LabHost] = None,) -> Non
 
 
 @tbot.testcase
-def selftest_tc_git_apply(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def selftest_tc_git_apply(lab: typing.Optional[linux.Lab] = None,) -> None:
     """Test applying patches."""
     with lab or tbot.acquire_lab() as lh:
         remote = git_prepare(lh)
@@ -161,7 +161,7 @@ This section was added by a second patch""",
 
 
 @tbot.testcase
-def selftest_tc_git_am(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def selftest_tc_git_am(lab: typing.Optional[linux.Lab] = None,) -> None:
     """Test applying patches as commits."""
     with lab or tbot.acquire_lab() as lh:
         remote = git_prepare(lh)
@@ -230,7 +230,7 @@ def git_increment_commits(repo: git.GitRepository) -> str:
 
 
 @tbot.testcase
-def selftest_tc_git_bisect(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def selftest_tc_git_bisect(lab: typing.Optional[linux.Lab] = None,) -> None:
     """Test the git-bisect testcase."""
     with lab or tbot.acquire_lab() as lh:
         remote = git_prepare(lh)
