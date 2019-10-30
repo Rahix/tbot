@@ -53,7 +53,7 @@ class ShellStep:
 
 
 def parse_log(
-    log: typing.Iterable[logparser.LogEvent]
+    log: typing.Iterable[logparser.LogEvent],
 ) -> typing.List[TestcaseExecution]:
     """Parse log."""
     toplevels = []

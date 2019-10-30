@@ -114,7 +114,7 @@ def selftest_board_uboot(lab: typing.Optional[tbot.selectable.LabHost] = None) -
 
 @tbot.testcase
 def selftest_board_uboot_noab(
-    lab: typing.Optional[tbot.selectable.LabHost] = None
+    lab: typing.Optional[tbot.selectable.LabHost] = None,
 ) -> None:
     """Test if tbot intercepts U-Boot correctly without autoboot."""
 
@@ -240,7 +240,7 @@ class TestBoardLinuxUB(board.LinuxUbootConnector, board.LinuxBootLogin, linux.Ba
 
 @tbot.testcase
 def selftest_board_linux_uboot(
-    lab: typing.Optional[tbot.selectable.LabHost] = None
+    lab: typing.Optional[tbot.selectable.LabHost] = None,
 ) -> None:
     """Test linux booting from U-Boot."""
 
@@ -260,7 +260,7 @@ def selftest_board_linux_uboot(
 
 @tbot.testcase
 def selftest_board_linux_nopw(
-    lab: typing.Optional[tbot.selectable.LabHost] = None
+    lab: typing.Optional[tbot.selectable.LabHost] = None,
 ) -> None:
     """Test linux without a password."""
 
@@ -306,7 +306,7 @@ def selftest_board_linux_nopw(
 
 @tbot.testcase
 def selftest_board_linux_standalone(
-    lab: typing.Optional[tbot.selectable.LabHost] = None
+    lab: typing.Optional[tbot.selectable.LabHost] = None,
 ) -> None:
     """Test linux booting standalone."""
 
@@ -335,7 +335,7 @@ def selftest_board_linux_standalone(
 
 @tbot.testcase
 def selftest_board_linux_bad_console(
-    lab: typing.Optional[tbot.selectable.LabHost] = None
+    lab: typing.Optional[tbot.selectable.LabHost] = None,
 ) -> None:
     """Test linux booting standalone."""
 
