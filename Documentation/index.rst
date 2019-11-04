@@ -38,6 +38,7 @@ tbot Documentation
    modules/machine_board
    modules/machine_connector
    modules/machine_shell
+   modules/machine_channel
    modules/selectable
    modules/tc
 

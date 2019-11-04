@@ -269,8 +269,8 @@ class Channel(typing.ContextManager):
             bytes_written = self._c.write(buf[cursor:])
             cursor += bytes_written
 
+    # Size of individual read calls.
     READ_CHUNK_SIZE = 4096
-    """Size of individual read calls."""
 
     def read(self, n: int = -1, timeout: typing.Optional[float] = None) -> bytes:
         """
@@ -317,6 +317,17 @@ class Channel(typing.ContextManager):
     def read_iter(
         self, max: int = sys.maxsize, timeout: typing.Optional[float] = None
     ) -> typing.Iterator[bytes]:
+        """
+        Iterate over chunks of bytes read from the channel.
+
+        ``read_iter`` reads at most ``max`` bytes from the channel before the
+        iterator is exhausted.  If ``timeout`` is not ``None`` and expires
+        before ``max`` bytes could be read, the next iteration attempt will
+        raise an exception.
+
+        :param int max: Maximum number of bytes to read.
+        :param float timeout: Optional timeout.
+        """
         start_time = time.clock()
 
         bytes_read = 0
@@ -345,6 +356,25 @@ class Channel(typing.ContextManager):
     def with_stream(
         self, stream: typing.TextIO, show_prompt: bool = True
     ) -> "typing.Iterator[Channel]":
+        """
+        Attatch a stream to this channel.
+
+        All data read from the channel will also be sent to the stream.  This
+        can be used, for example, to capture the entire boot-log of a board.
+        ``with_stream`` should be used as a context-manager:
+
+        .. code-block:: python
+
+            import tbot
+
+            with tbot.log.message("Output: ") as ev, chan.with_stream(ev):
+                # During this context block, output is captured into `ev`
+                ...
+
+        :param io.TextIOBase stream: The stream to attach.
+        :param bool show_prompt: Whether the currently configured prompt should
+                                 also be sent to the stream if detected.
+        """
         previous_log_prompt = self._log_prompt
 
         try:
@@ -418,6 +448,8 @@ class Channel(typing.ContextManager):
 
         The following is always true:
 
+        .. code-block:: python
+
             channel.close()
             assert channel.closed
         """
@@ -429,6 +461,7 @@ class Channel(typing.ContextManager):
         Whether this channel was already closed.
 
         .. warning::
+
             A ``channel.write()`` immediately after checking ``channel.closed`` might
             still fail in the unlucky case where the remote end closed the channel just
             in between the two calls.
@@ -502,6 +535,16 @@ class Channel(typing.ContextManager):
         read_back: bool = False,
         timeout: typing.Optional[float] = None,
     ) -> None:
+        """
+        Send data to this channel.
+
+        Send ``s`` to this channel and optionally read it back (to not clobber
+        the next read).
+
+        :param str,bytes s: Data to send.  A ``str`` will be encoded as UTF-8.
+        :param bool read_back: Whether to read back the sent data.
+        :param float timeout: Optional timeout for reading back data.
+        """
         s = s.encode("utf-8") if isinstance(s, str) else s
         self.write(s)
 
@@ -518,11 +561,31 @@ class Channel(typing.ContextManager):
         read_back: bool = False,
         timeout: typing.Optional[float] = None,
     ) -> None:
+        """
+        Send data to this channel and terminate with a newline.
+
+        Send ``s`` and a newline (``\\r``) to this channel and optionally read
+        it back (to not clobber the next read).
+
+        :param str,bytes s: Data to send.  A ``str`` will be encoded as UTF-8.
+        :param bool read_back: Whether to read back the sent data.
+        :param float timeout: Optional timeout for reading back data.
+        """
         s = s.encode("utf-8") if isinstance(s, str) else s
         # The "Enter" key sends '\r'
         self.send(s + b"\r", read_back, timeout)
 
     def sendcontrol(self, c: str) -> None:
+        """
+        Send a control-character to this terminal.
+
+        ``c`` is the keyboard key which would need to be pressed (for example
+        ``C`` for ``CTRL-C``).  See `C0 and C1 control codes`_ for more info.
+
+        .. _C0 and C1 control codes: https://en.wikipedia.org/wiki/C0_and_C1_control_codes
+
+        :param str c: Control character to send.
+        """
         assert len(c) == 1
         assert c.isalpha() or c == "@"
 
@@ -532,6 +595,7 @@ class Channel(typing.ContextManager):
         raise NotImplementedError()
 
     def sendintr(self) -> None:
+        """Send ``CTRL-C`` to this channel."""
         self.sendcontrol("C")
 
     # TODO: Reading
@@ -542,6 +606,22 @@ class Channel(typing.ContextManager):
     def with_prompt(
         self, prompt_in: ConvenientSearchString
     ) -> "typing.Iterator[Channel]":
+        """
+        Set the prompt for this channel during a context.
+
+        ``with_prompt`` is a context-manager that sets the prompt for this
+        channel for the duration of a context:
+
+        .. code-block:: python
+
+            with chan.with_prompt("=> "):
+                chan.sendline("echo Foo", read_back=True)
+                # Waits for `=> `
+                chan.read_until_prompt()
+
+        :param ConvenientSearchString prompt: The new prompt pattern/string.
+            See :ref:`channel_search_string` for more info.
+        """
         prompt = _convert_search_string(prompt_in)
 
         # If the prompt is a pattern, we need to recompile it with an additional $ in the
@@ -564,6 +644,24 @@ class Channel(typing.ContextManager):
         prompt: typing.Optional[ConvenientSearchString] = None,
         timeout: typing.Optional[float] = None,
     ) -> str:
+        """
+        Read until prompt is detected.
+
+        Read from the channel until the configured prompt string is detected.
+        All data captured up until the prompt is returned, decoded as UTF-8.
+        If ``prompt`` is ``None``, the prompt which was set using
+        :py:meth:`tbot.machine.channel.Channel.with_prompt` is used.
+
+        :param ConvenientSearchString prompt: The prompt to read up to.  It
+            must appear as the very last readable data in the channel's data
+            stream.  See :ref:`channel_search_string` for more info about which
+            types can be passed for this parameter.
+        :param float timeout: Optional timeout.  If ``timeout`` is set and
+            expires before the prompt was detected, ``read_until_prompt``
+            raises an execption.
+        :rtype: str
+        :returns: UTF-8 decoded string of all bytes read up to the prompt.
+        """
         ctx: typing.ContextManager[typing.Any]
         if prompt is not None:
             ctx = self.with_prompt(prompt)
@@ -603,6 +701,20 @@ class Channel(typing.ContextManager):
     # borrowing & taking {{{
     @contextlib.contextmanager
     def borrow(self) -> "typing.Iterator[Channel]":
+        """
+        Temporarily borrow this channel for the duration of a context.
+
+        **Example**:
+
+        .. code-block:: python
+
+            with chan.borrow() as chan2:
+                # `chan` cannot be accessed inside this context
+                chan2.sendline("Hello World")
+
+            # `chan` can be accessed again here
+            chan.sendintr()
+        """
         chan_io = self._c
         try:
             self._c = ChannelBorrowed()
@@ -613,8 +725,17 @@ class Channel(typing.ContextManager):
             # TODO: Maybe don't allow exceptions here?
         finally:
             self._c = chan_io
+            # Todo mark the `new` channel as no longer accessible
 
     def take(self) -> "Channel":
+        """
+        Move ownership of this channel.
+
+        All existing references to this channel will no longer be accessible
+        after callin ``take()``.  Use this to mark transitions of a channel
+        into a new (irreversible) context.  For example, when a board boots
+        from U-Boot to Linux, U-Boot is no longer accessible.
+        """
         chan_io = self._c
         self._c = ChannelTaken()
         new = copy.deepcopy(self)
@@ -634,7 +755,8 @@ class Channel(typing.ContextManager):
         connected to.
 
         :param str, bytes end_magic: String that, when detected, should end the
-            interactive session.
+            interactive session.  If no ``end_magic`` is given, pressing
+            ``CTRL-D`` will terminate the session.
         """
         end_magic_bytes = (
             end_magic.encode("utf-8") if isinstance(end_magic, str) else end_magic
