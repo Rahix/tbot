@@ -64,6 +64,14 @@ base classes at once.  The old classes map to the new ones like this:
 |                                               | | :class:`tbot.machine.linux.Bash` [#shell-type]_            |
 | (Remote ssh-connected lab-host)               | | :class:`tbot.machine.linux.Lab`                            |
 +-----------------------------------------------+--------------------------------------------------------------+
+| ``tbot.machine.linux.SSHMachine``             | | :class:`tbot.machine.connector.SSHConnector`               |
+|                                               | | :class:`tbot.machine.linux.Bash` [#shell-type]_            |
+| (Remote ssh-connected machine)                | |                                                            |
++-----------------------------------------------+--------------------------------------------------------------+
+| ``tbot.machine.linux.BuildMachine``           | | :class:`tbot.machine.linux.Builder`                        |
+|                                               | | (Used as a mixin with other machine classes)               |
+| Build-Host                                    |                                                              |
++-----------------------------------------------+--------------------------------------------------------------+
 | ``tbot.machine.board.Board``                  | | :class:`tbot.machine.connector.ConsoleConnector`           |
 |                                               | | :class:`tbot.machine.board.PowerControl` [#power]_         |
 | (Hardware description of the board)           | | :class:`tbot.machine.board.Board`                          |
