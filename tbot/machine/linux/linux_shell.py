@@ -16,6 +16,7 @@
 
 import abc
 import typing
+import tbot
 from .. import shell, channel
 from . import path, workdir
 from .special import Special
@@ -52,6 +53,14 @@ class LinuxShell(shell.Shell):
         :returns: A string with quoted/escaped versions of the input arguments.
         """
         raise NotImplementedError("abstract method")
+
+    def build_command(
+        self: Self, *args: typing.Union[str, Special[Self], path.Path[Self]]
+    ) -> str:
+        tbot.log.warning(
+            "The `build_command()` method is deprecated.  Please use `escape()` instead."
+        )
+        return self.escape(*args)
 
     @abc.abstractmethod
     def exec(
