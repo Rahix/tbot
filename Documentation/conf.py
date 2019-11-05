@@ -47,6 +47,8 @@ extensions = [
 source_parsers = {".md": recommonmark.parser.CommonMarkParser}
 source_suffix = [".rst", ".md"]
 
+templates_path = ["sphinx-templates"]
+
 todo_include_todos = True
 
 language = None
