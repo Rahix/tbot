@@ -16,6 +16,9 @@ from sphinx import addnodes
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath("./"))
 
+# Also add the repository root so the tbot module can be found
+sys.path.insert(0, os.path.abspath("../"))
+
 logger = sphinx.util.logging.getLogger("tbot/conf.py")
 
 # -- Project information -----------------------------------------------------
