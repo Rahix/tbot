@@ -1,8 +1,37 @@
 # Changelog
 
 ## [Unreleased]
+The machine interface was completely overhauled.  Please read the migration
+guide for more info.
+
 ### Added
+- `@tbot.with_lab`, `@tbot.with_uboot`, and `@tbot.with_linux` decorators to
+  make writing testcase much simpler
+- `linux.RedirStdout(f)` & `linux.RedirStderr(f)`: Redirect stdout and stderr symbols
+- `Machine.init()` hook to call custom code after the machine was initialized.
+  This can be used, for example, to init network manually in U-Boot.
+- `tc.shell.check_for_tool()` testcase
 - `tbot.log.skip()`: A testcase skip message
+- `Machine.clone()`: Attempt creating a copy of a machine.  The two copies
+  allow paralell interaction with the same host.
+
+### Changed
+- `linux.BuildMachine` is now a mixin called `linux.Builder`
+- `linux.LabHost` is now a mixin called `linux.Lab`
+- `linux.LinuxMachine` should be replaced by `linux.LinuxShell`
+- `LabHost.new_channel()` was removed in favor of `LinuxShell.open_channel()`.
+  `open_channel()` consumes the machine it is called on which means the
+  equivalent to `new_channel()` now is:
+
+  ```python
+  with mach.clone() as cl:
+      chan = cl.open_channel("telnet", "192.0.2.1")
+  ```
+
+### Removed
+- `exec0(stdout=f)`: Redirection should be done using `RedirStdout`.
+- `linux.Env(var)`: Environment-Variable substitution is hard to control.  It
+  is much easier to just use `mach.env(var)`.
 
 ### Fixed
 - `Path.__fspath__()` erroneously returning a result, even though the contract
