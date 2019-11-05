@@ -63,8 +63,13 @@ def selftest_machine_sshlab_shell(lab: typing.Optional[linux.Lab] = None,) -> No
             with minisshd.minisshd(lh) as ssh:
                 ssh.exec0("true")
 
-                with minisshd.MiniSSHLabHost(ssh.port) as sl:
-                    selftest_machine_shell(sl)
+                tbot.log.message(tbot.log.c("Testing with paramiko ...").bold)
+                with minisshd.MiniSSHLabHostParamiko(ssh.port) as slp:
+                    selftest_machine_shell(slp)
+
+                tbot.log.message(tbot.log.c("Testing with plain ssh ...").bold)
+                with minisshd.MiniSSHLabHostSSH(ssh.port) as sls:
+                    selftest_machine_shell(sls)
         else:
             tbot.log.skip("ssh tests")
 

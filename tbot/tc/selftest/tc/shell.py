@@ -45,18 +45,37 @@ def selftest_tc_shell_copy(lab: typing.Optional[linux.Lab] = None,) -> None:
                     "Upload via SCP",
                 )
 
-                with minisshd.MiniSSHLabHost(ssh.port) as sl:
-                    tbot.log.message("Test downloading a file from an ssh lab ...")
+                with minisshd.MiniSSHLabHostParamiko(ssh.port) as slp:
+                    tbot.log.message(
+                        "Test downloading a file from a paramiko ssh host ..."
+                    )
                     do_test(
-                        sl.workdir / ".selftest-copy-ssh4",
+                        slp.workdir / ".selftest-copy-ssh4",
                         lh.workdir / ".selftest-copy-ssh3",
                         "Download via SCP Lab",
                     )
 
-                    tbot.log.message("Test uploading a file to an ssh lab ...")
+                    tbot.log.message("Test uploading a file to a paramiko ssh host ...")
                     do_test(
                         lh.workdir / ".selftest-copy-ssh3",
-                        sl.workdir / ".selftest-copy-ssh4",
+                        slp.workdir / ".selftest-copy-ssh4",
+                        "Upload via SCP Lab",
+                    )
+
+                with minisshd.MiniSSHLabHostSSH(ssh.port) as sls:
+                    tbot.log.message(
+                        "Test downloading a file from a plain ssh host ..."
+                    )
+                    do_test(
+                        sls.workdir / ".selftest-copy-ssh6",
+                        lh.workdir / ".selftest-copy-ssh5",
+                        "Download via SCP Lab",
+                    )
+
+                    tbot.log.message("Test uploading a file to a plain ssh host ...")
+                    do_test(
+                        lh.workdir / ".selftest-copy-ssh5",
+                        sls.workdir / ".selftest-copy-ssh6",
                         "Upload via SCP Lab",
                     )
         else:

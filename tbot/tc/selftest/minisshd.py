@@ -35,10 +35,16 @@ class MiniSSHMachine(connector.SSHConnector, linux.Bash):
         super().__init__(labhost)
 
 
-class MiniSSHLabHost(connector.ParamikoConnector, linux.Bash):
-    hostname = "localhost"
+class MiniSSHLabHostBase(linux.Bash):
     name = "minissh-lab"
-    ignore_hostkey = True
+
+    @property
+    def hostname(self) -> str:
+        return "localhost"
+
+    @property
+    def ignore_hostkey(self) -> bool:
+        return True
 
     @property
     def username(self) -> str:
@@ -49,7 +55,7 @@ class MiniSSHLabHost(connector.ParamikoConnector, linux.Bash):
         return self._port
 
     @property
-    def workdir(self) -> "linux.Path[MiniSSHLabHost]":
+    def workdir(self) -> linux.Path:
         """Return a workdir."""
         return linux.Workdir.static(self, "/tmp/tbot-wd/minisshd-remote")
 
@@ -59,6 +65,14 @@ class MiniSSHLabHost(connector.ParamikoConnector, linux.Bash):
         self._username = getpass.getuser()
 
         super().__init__()
+
+
+class MiniSSHLabHostParamiko(MiniSSHLabHostBase, connector.ParamikoConnector):
+    name = "minissh-lab-paramiko"
+
+
+class MiniSSHLabHostSSH(MiniSSHLabHostBase, connector.SSHConnector):
+    name = "minissh-lab-ssh"
 
 
 @tbot.testcase
