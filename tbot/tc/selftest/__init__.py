@@ -49,11 +49,24 @@ def selftest_failing(lab: typing.Optional[linux.Lab] = None,) -> None:
 
 
 @tbot.testcase
+def selftest_skipping(lab: typing.Optional[linux.Lab] = None,) -> None:
+    """Test skipping a testcase."""
+
+    @tbot.testcase
+    def inner() -> typing.Optional[int]:
+        tbot.skip("This test is skipped on purpose")
+        return 123
+
+    assert inner() is None, "Testcase was not skipped!"
+
+
+@tbot.testcase
 def selftest(lab: typing.Optional[linux.Lab] = None,) -> None:
     """Run all selftests."""
     with lab or tbot.acquire_lab() as lh:
         tc.testsuite(
             selftest_failing,
+            selftest_skipping,
             selftest_uname,
             selftest_user,
             machine.selftest_machine_reentrant,
