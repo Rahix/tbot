@@ -136,6 +136,31 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
         """Parent of this path."""
         return Path(self._host, super().parent)
 
+    def glob(self, pattern: str) -> "typing.Iterator[Path[H]]":
+        """
+        Iterate over this subtree and yield all existing files (of any
+        kind, including directories) matching the given relative pattern.
+
+        **Example**:
+
+        .. code-block:: python
+
+            ubootdir = lh.workdir / "u-boot"
+
+            for f in ubootdir.glob("common/*.c"):
+                tbot.log.message(f"Found {f}.")
+
+        .. warning::
+
+            The glob pattern **must not contain spaces or other special characters**!
+        """
+        fullpath = self.host.escape(self._local_str()) + "/" + pattern
+
+        output = self.host.exec0("printf", "%s\\n", linux.Raw(fullpath))
+
+        for line in output[:-1].split("\n"):
+            yield Path(self._host, line)
+
     def __truediv__(self, key: typing.Any) -> "Path[H]":
         return Path(self._host, super().__truediv__(key))
 
