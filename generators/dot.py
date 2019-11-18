@@ -50,7 +50,13 @@ def main() -> None:
             connection(stack[-1], n, "black")
             stack.append(n)
         elif ev.type == ["tc", "end"]:
-            connection(stack.pop(), stack[-1], "green" if ev.data["success"] else "red")
+            if ev.data.get("skipped", False):
+                color = "orange"
+            elif ev.data["success"]:
+                color = "green"
+            else:
+                color = "red"
+            connection(stack.pop(), stack[-1], color)
 
     print("}")
 

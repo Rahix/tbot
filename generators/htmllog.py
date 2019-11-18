@@ -46,6 +46,14 @@ def main() -> None:
                          <div class="section-content block-content">
                            """
         elif ev.type == ["tc", "end"]:
+            if ev.data.get("skipped", False):
+                return f"""\
+                           <div class="status-skipped">
+                             <pre>Skipped ({ev.data['skip_reason']}),
+    Time: {ev.data['duration']:.3f}s</pre>
+                           </div>
+                         </div>
+                       </div>"""
             if ev.data["success"]:
                 return f"""\
                            <div class="status-pass">
