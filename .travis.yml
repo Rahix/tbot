@@ -13,6 +13,7 @@ before_deploy:
   - ./Documentation/build-docs.sh
   - rm -r Documentation/output/.doctrees
   - touch Documentation/output/.nojekyll
+  - echo -n "tbot.tools" > Documentation/output/CNAME
 deploy:
   provider: pages
   skip_cleanup: true
