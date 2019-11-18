@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="doc/_static/tbot-logo-header.png" alt="tbot" /><br />
+  <img src="Documentation/static/tbot-logo-header.png" alt="tbot" /><br />
   <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.6-blue.svg" alt="Python 3.6" /></a>
   <a href="http://mypy-lang.org/"><img src="http://www.mypy-lang.org/static/mypy_badge.svg" alt="Checked with mypy" /></a>
   <a href="https://github.com/ambv/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black" /></a>
