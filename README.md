@@ -11,7 +11,7 @@
 
 *tbot* aims to be a support for the developer while working on a project and without much modification also allow running tests in an automated setting (CI).
 
-Most info about *tbot* can be found in its [documentation](https://rahix.de/tbot).  You can also join our mailing list at [lists.denx.de](https://lists.denx.de/listinfo/tbot).
+Most info about *tbot* can be found in its documentation at <https://tbot.tools>.  You can also join our mailing list at [lists.denx.de](https://lists.denx.de/listinfo/tbot).
 
 ![tbot Architecture](doc/_static/tbot.png)
 
