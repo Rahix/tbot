@@ -65,6 +65,14 @@ Three decorators of this style are currently available:
 .. autofunction:: tbot.with_uboot
 .. autofunction:: tbot.with_linux
 
+Testcase Skipping
+-----------------
+Sometimes a test can only run with certain prerequisites met.  You can write a
+testcase to automatically skip when they aren't, using :func:`tbot.skip`:
+
+.. autofunction:: tbot.skip
+.. autoclass:: tbot.SkipException
+
 Default Machine Access
 ----------------------
 There are a few machines which can be configured in the *Configuration* and

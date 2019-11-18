@@ -19,6 +19,7 @@ import functools
 import time
 import typing
 
+import tbot
 from tbot import log_event, selectable
 from tbot.machine import linux, board
 
@@ -62,6 +63,11 @@ def testcase(tc: F_tc) -> F_tc:
         start = time.monotonic()
         try:
             result = tc(*args, **kwargs)
+        except tbot.SkipException as e:
+            log_event.testcase_end(
+                tc.__name__, time.monotonic() - start, skipped=str(e)
+            )
+            return None
         except:  # noqa: E722
             log_event.testcase_end(tc.__name__, time.monotonic() - start, False)
             raise
@@ -95,6 +101,9 @@ def named_testcase(name: str) -> typing.Callable[[F_tc], F_tc]:
             start = time.monotonic()
             try:
                 result = tc(*args, **kwargs)
+            except tbot.SkipException as e:
+                log_event.testcase_end(name, time.monotonic() - start, skipped=str(e))
+                return None
             except:  # noqa: E722
                 log_event.testcase_end(name, time.monotonic() - start, False)
                 raise

@@ -44,3 +44,41 @@ __all__ = (
 )
 
 flags: typing.Set[str] = set()
+
+
+class SkipException(Exception):
+    """
+    Exception to be used when a testcase is skipped.
+
+    Raising a :py:class:`SkipException` will be caught in the
+    :py:func:`tbot.testcase` decorator and the testcase will return ``None``.
+    This might violate the type-annotations so it should only be used if
+    calling code can deal with a testcase returning ``None``.
+    """
+
+    pass
+
+
+def skip(reason: str) -> typing.NoReturn:
+    """
+    Skip this testcase.
+
+    A skipped testcase will return ``None`` instead of whatever type it would
+    return normally.  This might not make sense for certain testcases and might
+    violate the type-annotation.  *Only use it, if it really makes sense!*
+
+    **Example**:
+
+    .. code-block:: python
+
+        @tbot.testcase
+        @tbot.with_lab
+        def test_something(lh) -> None:
+            p = lh.fsroot / "dev" / "somedevice"
+
+            if not p.is_char_device():
+                tbot.skip("somedevice not present on this host")
+
+            ...
+    """
+    raise SkipException(reason)
