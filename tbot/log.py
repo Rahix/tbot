@@ -241,6 +241,9 @@ def skip(what: typing.Union[str, _TC]) -> EventIO:
 
     :param str what: What test is being skipped
 
-    .. versionadded:: IN-DEV
+    .. deprecated:: 0.8
+
+        Use :py:func:`tbot.skip` instead.
     """
+    warning("tbot.log.skip() is deprecated.  Use tbot.skip() instead.")
     return message(c("Skip").yellow.bold + " " + what, Verbosity.INFO)

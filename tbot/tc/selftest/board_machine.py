@@ -168,10 +168,7 @@ def selftest_board_linux(lab: typing.Optional[tbot.selectable.LabHost] = None) -
         try:
             b = cx.enter_context(tbot.acquire_board(lh))
         except NotImplementedError:
-            tbot.log.message(
-                tbot.log.c("Skipped").yellow.bold + " because no board available."
-            )
-            return
+            tbot.skip("No board available")
 
         lnx = cx.enter_context(tbot.acquire_linux(b))
 
@@ -355,8 +352,7 @@ def selftest_board_linux_bad_console(
 ) -> None:
     """Test linux booting standalone."""
 
-    tbot.log.skip("board-linux bad console")
-    return
+    tbot.skip("board-linux bad console test is not implemented")
 
     class BadBoard(connector.ConsoleConnector, board.Board):
         def connect(self, mach: linux.LinuxShell) -> channel.Channel:  # noqa: D102

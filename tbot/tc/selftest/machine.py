@@ -60,13 +60,13 @@ def selftest_machine_ssh_shell(lab: typing.Optional[linux.Lab] = None,) -> None:
     from tbot.tc.selftest import minisshd
 
     with lab or tbot.acquire_lab() as lh:
-        if minisshd.check_minisshd(lh):
-            with minisshd.minisshd(lh) as ssh:
-                selftest_machine_shell(ssh)
+        if not minisshd.check_minisshd(lh):
+            tbot.skip("dropbear is not installed so ssh can't be tested")
 
-                selftest_machine_channel(ssh.ch, True)
-        else:
-            tbot.log.skip("ssh tests")
+        with minisshd.minisshd(lh) as ssh:
+            selftest_machine_shell(ssh)
+
+            selftest_machine_channel(ssh.ch, True)
 
 
 @tbot.testcase
@@ -75,19 +75,19 @@ def selftest_machine_sshlab_shell(lab: typing.Optional[linux.Lab] = None,) -> No
     from tbot.tc.selftest import minisshd
 
     with lab or tbot.acquire_lab() as lh:
-        if minisshd.check_minisshd(lh):
-            with minisshd.minisshd(lh) as ssh:
-                ssh.exec0("true")
+        if not minisshd.check_minisshd(lh):
+            tbot.skip("dropbear is not installed so ssh can't be tested")
 
-                tbot.log.message(tbot.log.c("Testing with paramiko ...").bold)
-                with minisshd.MiniSSHLabHostParamiko(ssh.port) as slp:
-                    selftest_machine_shell(slp)
+        with minisshd.minisshd(lh) as ssh:
+            ssh.exec0("true")
 
-                tbot.log.message(tbot.log.c("Testing with plain ssh ...").bold)
-                with minisshd.MiniSSHLabHostSSH(ssh.port) as sls:
-                    selftest_machine_shell(sls)
-        else:
-            tbot.log.skip("ssh tests")
+            tbot.log.message(tbot.log.c("Testing with paramiko ...").bold)
+            with minisshd.MiniSSHLabHostParamiko(ssh.port) as slp:
+                selftest_machine_shell(slp)
+
+            tbot.log.message(tbot.log.c("Testing with plain ssh ...").bold)
+            with minisshd.MiniSSHLabHostSSH(ssh.port) as sls:
+                selftest_machine_shell(sls)
 
 
 @tbot.testcase
@@ -154,7 +154,6 @@ def selftest_machine_shell(m: typing.Union[linux.LinuxShell, board.UBootShell]) 
         # out = m.exec0("echo", linux.F("{}:{}:{}", tmp, linux.Pipe, "foo"))
         # assert out == "/tmp/f o/bar:|:foo\n", repr(out)
 
-        tbot.log.skip("formatter")
         # TODO: Hm?
         # m.exec0("export", linux.F("NEWPATH={}:{}", tmp, linux.Env("PATH"), quote=False))
         # out = m.env("NEWPATH")
@@ -211,8 +210,7 @@ def selftest_machine_shell(m: typing.Union[linux.LinuxShell, board.UBootShell]) 
 
 @tbot.testcase
 def selftest_machine_channel(ch: channel.Channel, remote_close: bool) -> None:
-    tbot.log.skip("channel tests")
-    return
+    tbot.skip("Channel tests need to be reimplemented for machine-v2")
 
     out = ch.raw_command("echo Hello World", timeout=1)
     assert out == "Hello World\n", repr(out)
