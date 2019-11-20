@@ -1,4 +1,5 @@
 import typing
+import tbot
 
 from .uboot import UBootShell, UBootAutobootIntercept
 from .board import PowerControl, Board, Connector
@@ -20,23 +21,41 @@ __all__ = (
     "UBootShell",
 )
 
+
 #        Compatibility aliases
 #        =====================
+#        Make migration easier by only warning on use of deprecated items where
+#        possible.  For items which cannot be 'emulated', show a comprehensive
+#        error message.
+def __getattr__(name: str) -> typing.Any:
 
-ANY = typing.TypeVar("ANY")
+    from .. import linux
 
+    class UBootMachine(Connector, UBootShell):
+        pass
 
-class UBootMachine(typing.Generic[ANY], UBootShell):
-    # Old UBootMachine had a generic parameter.  This wrapper is necessary to
-    # "emulate" that fake generic.
-    pass
+    class LinuxWithUBootMachine(LinuxUbootConnector, LinuxBootLogin, linux.Ash):
+        pass
 
+    class LinuxStandaloneMachine(Connector, LinuxBootLogin, linux.Ash):
+        pass
 
-class LinuxWithUBootMachine(typing.Generic[ANY]):
-    def __init__(*args) -> None:
-        raise NotImplementedError
+    deprecated = {
+        "UBootMachine": UBootMachine,
+        "LinuxWithUBootMachine": LinuxWithUBootMachine,
+        "LinuxStandaloneMachine": LinuxStandaloneMachine,
+    }
 
+    if name in deprecated:
+        tbot.log.warning(
+            f"You seem to be using a deprecated item '{__name__}.{name}'.\n"
+            + "    Please read the migration guide to learn how to replace it!"
+        )
+        item = deprecated[name]
+        if item is None:
+            raise AttributeError(
+                f"deprecated item '{__name__}.{name}' is no longer available!"
+            )
+        return item
 
-class LinuxStandaloneMachine(typing.Generic[ANY]):
-    def __init__(*args) -> None:
-        raise NotImplementedError
+    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
