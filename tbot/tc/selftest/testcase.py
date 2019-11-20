@@ -59,7 +59,7 @@ def selftest_with_lab(lab: typing.Optional[linux.Lab] = None) -> None:
 
 @tbot.testcase
 @tbot.with_uboot
-def selftest_decorated_uboot(ub: board.UBootMachine) -> None:
+def selftest_decorated_uboot(ub: board.UBootShell) -> None:
     ub.exec0("version")
 
 

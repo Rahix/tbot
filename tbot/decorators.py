@@ -244,7 +244,7 @@ def with_uboot(tc: F_ub) -> F_uboot:
 
     @functools.wraps(tc)
     def wrapped(
-        arg: typing.Union[selectable.LabHost, board.UBootMachine, None] = None,
+        arg: typing.Union[selectable.LabHost, board.UBootShell, None] = None,
         *args: typing.Any,
         **kwargs: typing.Any,
     ) -> typing.Any:
@@ -274,7 +274,7 @@ def with_uboot(tc: F_ub) -> F_uboot:
     # Adjust annotation
     argname = tc.__code__.co_varnames[0]
     wrapped.__annotations__[argname] = typing.Union[
-        selectable.LabHost, board.UBootMachine, None
+        selectable.LabHost, board.UBootShell, None
     ]
 
     return typing.cast(F_uboot, wrapped)
