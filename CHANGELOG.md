@@ -1,8 +1,8 @@
 # Changelog
 
 ## [Unreleased]
-The machine interface was completely overhauled.  Please read the migration
-guide for more info.
+The machine interface was completely overhauled.  Please read the [migration
+guide](https://tbot.tools/migration.html) for more info.
 
 ### Added
 - `@tbot.with_lab`, `@tbot.with_uboot`, and `@tbot.with_linux` decorators to
@@ -11,9 +11,9 @@ guide for more info.
 - `Machine.init()` hook to call custom code after the machine was initialized.
   This can be used, for example, to init network manually in U-Boot.
 - `tc.shell.check_for_tool()` testcase
-- `tbot.log.skip()`: A testcase skip message
+- `tbot.skip()`: Skip a testcase
 - `Machine.clone()`: Attempt creating a copy of a machine.  The two copies
-  allow paralell interaction with the same host.
+  allow parallel interaction with the same host.
 
 ### Changed
 - `linux.BuildMachine` is now a mixin called `linux.Builder`
