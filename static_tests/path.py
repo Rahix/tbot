@@ -10,7 +10,7 @@ def annotated(p: path.Path[machine.DummyLinuxMach2]) -> str:
 def invalid_path() -> None:
     mach = machine.DummyMach()
     # should fail!
-    p = path.Path(mach, "/tmp")
+    path.Path(mach, "/tmp")
 
     mach_lnx = machine.DummyLinuxMach()
     p2 = path.Path(mach_lnx, "/tmp")
@@ -27,7 +27,7 @@ def invalid_path() -> None:
     mach_lnx.exec0("cat", p3)
 
     # should fail!
-    mach_lnx.exec0("echo", stdout=p3 / "file")
+    mach_lnx.exec0("echo", linux.RedirStdout(p3 / "file"))
 
     # should fail!
-    mach_lnx.exec0("echo", linux.F("{}", p3))
+    mach2.exec0("echo", linux.RedirStderr(p2 / "file2"))

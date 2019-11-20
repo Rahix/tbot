@@ -1,5 +1,5 @@
 # tbot, Embedded Automation Tool
-# Copyright (C) 2018  Harald Seiler
+# Copyright (C) 2019  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,214 +14,285 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import typing
+import contextlib
+import re
 import shlex
+import typing
+
 import tbot
-from tbot import machine
-from tbot.machine import board, channel, linux
-from . import special
-
-B = typing.TypeVar("B", bound=board.Board)
+from .. import shell, machine, channel
+from ..linux import special
 
 
-class UBootMachine(board.BoardMachine[B], machine.InteractiveMachine):
-    r"""
-    Generic U-Boot board machine.
+class UbootStartup(machine.Machine):
+    _uboot_init_event: typing.Optional[tbot.log.EventIO] = None
 
-    **Example implementation**::
-
-        from tbot.machine import board
-
-        class MyBoard(board.Board):
-            ...
-
-        class MyBoardUBoot(board.UBootMachine[MyBoard]):
-            prompt = "=> "
-
-        BOARD = MyBoard
-        UBOOT = MyBoardUBoot
-
-    :ivar str bootlog:
-        Messages that were printed out during startup.  You can access this
-        attribute inside your testcases to get info about what was going on
-        during boot.
-
-        .. versionadded:: 0.6.2
-    """
-
-    autoboot_prompt: typing.Optional[str] = r"Hit any key to stop autoboot:\s+\d+\s+"
-    """
-    Regular expression of the autoboot prompt.
-    Set this to ``None`` if autoboot is disabled for this board.
-    """
-
-    autoboot_keys = "\n"
-    """
-    Keys that should be sent to intercept autoboot
-    """
-
-    prompt = "U-Boot> "
-    """
-    U-Prompt that was configured when building U-Boot
-    """
-
-    @property
-    def name(self) -> str:
-        """Name of this U-Boot machine."""
-        return self.board.name + "-uboot"
-
-    def __init__(self, board: B) -> None:  # noqa: D107
-        super().__init__(board)
-
-        self.channel: channel.Channel
-        if board.channel is not None:
-            self.channel = board.channel
-        else:
-            raise RuntimeError("{board!r} does not support a serial connection!")
-
-        with tbot.log.EventIO(
-            ["board", "uboot", board.name],
-            tbot.log.c("UBOOT").bold + f" ({self.name})",
-            verbosity=tbot.log.Verbosity.QUIET,
-        ) as boot_ev:
-            boot_ev.verbosity = tbot.log.Verbosity.STDOUT
-            boot_ev.prefix = "   <> "
-            if self.autoboot_prompt is not None:
-                self.bootlog = self.channel.read_until_prompt(
-                    self.autoboot_prompt, regex=True, stream=boot_ev
-                )
-
-                self.channel.send(self.autoboot_keys)
-                self.channel.read_until_prompt(self.prompt)
-            else:
-                self.bootlog = self.channel.read_until_prompt(
-                    self.prompt, stream=boot_ev
-                )
-
-            boot_ev.data["output"] = self.bootlog
-
-    def destroy(self) -> None:
-        """Destroy this U-Boot machine."""
-        self.channel.close()
-
-    def build_command(
-        self, *args: typing.Union[str, special.Special, linux.Path[linux.LabHost]]
-    ) -> str:
-        """
-        Return the string representation of a command.
-
-        :param args: Each argument can either be a :class:`str` or a special token
-            like :class:`~tbot.machine.board.Env`.
-        :rtype: str
-        """
-        command = ""
-        for arg in args:
-            if isinstance(arg, linux.Path):
-                arg = arg.relative_to("/tftpboot")._local_str()
-
-            if isinstance(arg, special.Special):
-                command += arg.resolve_string() + " "
-            else:
-                command += f"{shlex.quote(arg)} "
-
-        return command[:-1]
-
-    def exec(
-        self, *args: typing.Union[str, special.Special, linux.Path[linux.LabHost]]
-    ) -> typing.Tuple[int, str]:
-        """
-        Run a command in U-Boot and check its return value.
-
-        :param args: Each argument can either be a :class:`str` or a special token
-            like :class:`~tbot.machine.board.Env`.
-        :rtype: tuple[int, str]
-        :returns: A tuple with the return code and output of the command
-        """
-        command = self.build_command(*args)
-
-        with tbot.log_event.command(self.name, command) as ev:
-            ev.prefix = "   >> "
-            ret, out = self.channel.raw_command_with_retval(
-                command, prompt=self.prompt, stream=ev
+    def _uboot_startup_event(self) -> tbot.log.EventIO:
+        if self._uboot_init_event is None:
+            self._uboot_init_event = tbot.log.EventIO(
+                ["board", "uboot", self.name],
+                tbot.log.c("UBOOT").bold + f" ({self.name})",
+                verbosity=tbot.log.Verbosity.QUIET,
             )
+
+            self._uboot_init_event.verbosity = tbot.log.Verbosity.STDOUT
+            self._uboot_init_event.prefix = "   <> "
+
+        return self._uboot_init_event
+
+
+class UBootAutobootIntercept(machine.Initializer, UbootStartup):
+    """
+    Machine-initializer to intercept U-Boot autobooting.
+
+    The default settings for this class should work for most cases, but if a
+    custom autoboot prompt was configured, or a special key sequence is
+    necessary, you will have to adjust this here.
+
+    **Example**:
+
+    .. code-block:: python
+
+        class MyUBoot(
+            board.Connector,
+            board.UBootAutobootIntercept,
+            board.UBootShell,
+        ):
+            autoboot_prompt = re.compile(b"Press DEL 4 times.{0,100}", re.DOTALL)
+            autoboot_keys = "\\x7f\\x7f\\x7f\\x7f"
+    """
+
+    autoboot_prompt: typing.Optional[
+        channel.channel.ConvenientSearchString
+    ] = re.compile(b"autoboot:\\s{0,5}\\d{0,3}\\s{0,3}.{0,80}")
+    """
+    Autoboot prompt to wait for.
+    """
+
+    autoboot_keys: typing.Union[str, bytes] = "\r"
+    """
+    Keys to press as soon as autoboot prompt is detected.
+    """
+
+    @contextlib.contextmanager
+    def _init_machine(self) -> typing.Iterator:
+        if self.autoboot_prompt is not None:
+            with self.ch.with_stream(self._uboot_startup_event()):
+                self.ch.read_until_prompt(prompt=self.autoboot_prompt)
+                self.ch.send(self.autoboot_keys)
+
+        yield None
+
+
+ArgTypes = typing.Union[str, special.Special]
+
+
+class UBootShell(shell.Shell, UbootStartup):
+    """
+    U-Boot shell.
+
+    The interface of this shell was designed to be close to the
+    :ref:`Linux shell <linux-shells>` design.  This means that U-Boot shells
+    also provide
+
+    - :py:meth:`ub.escape() <tbot.machine.board.UBootShell.escape>` - Escape
+      args for the U-Boot shell.
+    - :py:meth:`ub.exec0() <tbot.machine.board.UBootShell.exec0>` - Run command
+      and ensure it succeeded.
+    - :py:meth:`ub.exec() <tbot.machine.board.UBootShell.exec>` - Run command
+      and return output and return code.
+    - :py:meth:`ub.test() <tbot.machine.board.UBootShell.test>` - Run command
+      and return boolean whether it succeeded.
+    - :py:meth:`ub.env() <tbot.machine.board.UBootShell.env>` - Get/Set
+      environment variables.
+    - :py:meth:`ub.interactive() <tbot.machine.board.UBootShell.interactive>` -
+      Start an interactive session for this machine.
+
+    There is also the special :py:meth:`ub.boot() <tbot.machine.board.UBootShell.boot>`
+    which will boot a payload and return the machine's channel, for use in a
+    machine for the booted payload.
+    """
+
+    prompt: typing.Union[str, bytes] = "U-Boot> "
+    """
+    Prompt which was configured for U-Boot.
+
+    Commonly ``"U-Boot> "``, ``"=> "``, or ``"U-Boot# "``.
+
+    .. warning::
+
+        **Don't forget the trailing space, if your prompt has one!**
+    """
+
+    @contextlib.contextmanager
+    def _init_shell(self) -> typing.Iterator:
+        with self._uboot_startup_event() as ev, self.ch.with_stream(ev):
+            self.ch.prompt = (
+                self.prompt.encode("utf-8")
+                if isinstance(self.prompt, str)
+                else self.prompt
+            )
+
+            while True:
+                try:
+                    self.ch.read_until_prompt(timeout=0.2)
+                    break
+                except TimeoutError:
+                    self.ch.sendintr()
+
+        yield None
+
+    def escape(self, *args: ArgTypes) -> str:
+        """Escape a string so it can be used safely on the U-Boot command-line."""
+        string_args = []
+        for arg in args:
+            if isinstance(arg, str):
+                string_args.append(shlex.quote(arg))
+            elif isinstance(arg, special.Special):
+                string_args.append(arg._to_string(self))
+            else:
+                raise TypeError(f"{type(arg)!r} is not a supported argument type!")
+
+        return " ".join(string_args)
+
+    def exec(self, *args: ArgTypes) -> typing.Tuple[int, str]:
+        """
+        Run a command in U-Boot.
+
+        **Example**:
+
+        .. code-block:: python
+
+            retcode, output = ub.exec("version")
+            assert retcode == 0
+
+        :rtype: tuple(int, str)
+        :returns: A tuple with the return code of the command and its console
+            output.  The output will also contain a trailing newline in most
+            cases.
+        """
+        cmd = self.escape(*args)
+
+        with tbot.log_event.command(self.name, cmd) as ev:
+            self.ch.sendline(cmd, read_back=True)
+            with self.ch.with_stream(ev, show_prompt=False):
+                out = self.ch.read_until_prompt()
             ev.data["stdout"] = out
 
-        return ret, out
+            self.ch.sendline("echo $?", read_back=True)
+            retcode = self.ch.read_until_prompt()
 
-    def exec0(
-        self, *args: typing.Union[str, special.Special, linux.Path[linux.LabHost]]
-    ) -> str:
+        return (int(retcode), out)
+
+    def exec0(self, *args: ArgTypes) -> str:
         """
-        Run a command in U-Boot and ensure its return value is zero.
+        Run a command and assert its return code to be 0.
 
-        :param args: Each argument can either be a :class:`str` or a special token
-            like :class:`~tbot.machine.board.Env`.
+        **Example**:
+
+        .. code-block:: python
+
+            output = ub.exec0("version")
+
+            # This will raise an exception!
+            ub.exec0("false")
+
         :rtype: str
-        :returns: The output of the command
+        :returns: The command's console output.  It will also contain a trailing
+            newline in most cases.
         """
-        ret, out = self.exec(*args)
-
-        if ret != 0:
-            raise tbot.machine.CommandFailedException(
-                self, self.build_command(*args), out
-            )
-
+        retcode, out = self.exec(*args)
+        if retcode != 0:
+            cmd = self.escape(*args)
+            raise Exception(f"command {cmd!r} failed")
         return out
 
-    def test(
-        self, *args: typing.Union[str, special.Special, linux.Path[linux.LabHost]]
-    ) -> bool:
+    def test(self, *args: ArgTypes) -> bool:
         """
-        Run a command and test if it succeeds.
+        Run a command and return a boolean value whether it succeeded.
 
-        :param args: Each argument can either be a :class:`str` or a special token
-            like :class:`~tbot.machine.board.Env`.
+        **Example**:
+
+        .. code-block:: python
+
+            if ub.test("true"):
+                tbot.log.message("Is correct")
+
         :rtype: bool
-        :returns: ``True`` if the return code is 0, else ``False``.
+        :returns: Boolean representation of commands success.  ``True`` if
+            return code was ``0``, ``False`` otherwise.
         """
-        ret, _ = self.exec(*args)
-        return ret == 0
+        retcode, _ = self.exec(*args)
+        return retcode == 0
 
-    def env(
-        self, var: str, value: typing.Union[str, special.Special, None] = None
-    ) -> str:
+    def env(self, var: str, value: typing.Optional[ArgTypes] = None) -> str:
         """
-        Get or set the value of an environment variable.
+        Get or set an environment variable.
 
-        :param str var: The variable's name
-        :param str value: The value the var should be set to.  If this parameter
-            is given, ``env`` will set, else it will just read a variable
+        **Example**:
+
+        .. code-block:: python
+
+            # Get the value of a var
+            value = ub.env("bootcmd")
+
+            # Set the value of a var
+            lnx.env("bootargs", "loglevel=7")
+
+        :param str var: Environment variable name.
+        :param str value: Optional value to set the variable to.
         :rtype: str
-        :returns: Value of the environment variable
-
-        .. versionadded:: 0.6.2
-        .. versionchanged:: 0.6.5
-            You can use ``env()`` to set environment variables as well.
-        .. versionchanged:: 0.6.6
-            The value can now be any :mod:`tbot.machine.board.special`
+        :returns: Current (new) value of the environment variable.
         """
         if value is not None:
             self.exec0("setenv", var, value)
-            return self.build_command(value)
-        else:
-            return self.exec0("echo", special.Raw(f"${{{var}}}"))[:-1]
+
+        return self.exec0("echo", special.Raw(f'"${{{self.escape(var)}}}"'))[:-1]
+
+    def boot(self, *args: ArgTypes) -> channel.Channel:
+        """
+        Boot a payload from U-Boot.
+
+        This method will run the given command and expects it to start booting
+        a payload.  ``ub.boot()`` will then return the channel so a new machine
+        can be built ontop of it for the booted payload.
+
+        **Example**:
+
+        .. code-block:: python
+
+            ub.env("bootargs", "loglevel=7")
+            ch = ub.boot("bootm", "0x10000000")
+
+        :rtype: tbot.machine.channel.Channel
+        """
+        cmd = self.escape(*args)
+
+        with tbot.log_event.command(self.name, cmd):
+            self.ch.sendline(cmd, read_back=True)
+
+        return self.ch.take()
 
     def interactive(self) -> None:
         """
-        Drop into an interactive U-Boot session.
+        Start an interactive session on this machine.
 
-        :raises RuntimeError: If tbot was not able to reacquire the shell
-            after the session is over.
+        This method will connect tbot's stdio to the machine's channel so you
+        can interactively run commands.  This method is used by the
+        ``interactive_uboot`` testcase.
         """
         tbot.log.message("Entering interactive shell (CTRL+D to exit) ...")
 
-        self.channel.send(" \n")
-        self.channel.attach_interactive()
+        # It is important to send a space before the newline.  Otherwise U-Boot
+        # will reexecute the last command which we definitely do not want here.
+        self.ch.sendline(" ")
+        self.ch.attach_interactive()
+        print("")
+        self.ch.sendline(" ")
 
-        self.channel.send(" \n")
         try:
-            self.channel.read_until_prompt(self.prompt, timeout=0.5)
+            self.ch.read_until_prompt(timeout=0.5)
         except TimeoutError:
-            raise RuntimeError("Failed to reacquire U-Boot after interactive session!")
+            raise Exception("Failed to reacquire U-Boot after interactive session!")
 
         tbot.log.message("Exiting interactive shell ...")

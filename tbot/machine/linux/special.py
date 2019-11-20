@@ -1,5 +1,5 @@
 # tbot, Embedded Automation Tool
-# Copyright (C) 2018  Harald Seiler
+# Copyright (C) 2019  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,122 +14,56 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import typing
 import abc
 import shlex
-from tbot import machine
-from tbot.machine import linux  # noqa: F401
+import typing
 
-H = typing.TypeVar("H", bound="linux.LinuxMachine")
+from . import linux_shell, path  # noqa: F401
+
+H = typing.TypeVar("H", bound="linux_shell.LinuxShell")
 
 
-class Special(abc.ABC, typing.Generic[H]):
-    """Base class for special characters."""
+class Special(typing.Generic[H]):
+    __slots__ = ()
 
     @abc.abstractmethod
-    def resolve_string(self, host: H) -> str:
-        """Return the string representation of this special character."""
-        pass
+    def _to_string(self, host: H) -> str:
+        raise NotImplementedError("abstract method")
 
 
-class Raw(Special):
-    """Raw unescaped string."""
+class Raw(Special[H]):
+    __slots__ = ("string",)
 
-    __slots__ = ("text",)
+    def __init__(self, string: str) -> None:
+        self.string = string
 
-    def __init__(self, text: str) -> None:
-        """
-        Create a new unescaped string.
-
-        **Example**::
-
-            m.exec0(linux.Raw('FOOBAR="${USER}@$(hostname):${PWD}"'))
-
-        :param str text: The raw string
-        """
-        self.text = text
-
-    def resolve_string(self, _: H) -> str:
-        """Return the string representation of this special character."""
-        return self.text
+    def _to_string(self, _: H) -> str:
+        return self.string
 
 
-class F(Special[H]):
-    """Format string."""
+class _Stdio(Special[H]):
+    __slots__ = ("file",)
 
-    __slots__ = ("fmt", "args", "quote")
+    @property
+    @abc.abstractmethod
+    def _redir_token(self) -> str:
+        raise NotImplementedError("abstract method")
 
-    def __init__(
-        self,
-        fmt: str,
-        *args: "typing.Union[str, linux.Path[H], Special[H]]",
-        quote: bool = True,
-    ) -> None:
-        """
-        Create a format string.
+    def __init__(self, file: path.Path[H]) -> None:
+        self.file = file
 
-        **Example**::
-
-            m.exec0("export", linux.F("PATH={}:{}", p1, linux.Env("PATH"), quote=False))
-
-        All normal python formatters are supported.
-
-        :param str fmt: Format string
-        :param args: Format arguments.  Can be tbot paths as well.
-        :param bool quote: Whether to escape the resulting string.
-        """
-        self.fmt = fmt
-        self.args = args
-        self.quote = quote
-
-    def resolve_string(self, host: H) -> str:
-        """Return the string representation of this special character."""
-
-        def validate(arg: typing.Union[str, linux.Path[H], Special[H]]) -> str:
-            if isinstance(arg, str):
-                return arg
-            elif isinstance(arg, Special):
-                return arg.resolve_string(host)
-            elif isinstance(arg, linux.Path):
-                if arg.host is not host:
-                    raise machine.WrongHostException(host, arg)
-                string = arg._local_str()
-                # If quoting is off, we should still quote paths
-                if not self.quote:
-                    return shlex.quote(string)
-                else:
-                    return string
-            else:
-                raise TypeError(f"{arg!r} is not a supported argument type!")
-
-        args = list(map(validate, self.args))
-        string = self.fmt.format(*args)
-        if self.quote:
-            return shlex.quote(string)
-        else:
-            return string
+    def _to_string(self, h: H) -> str:
+        if self.file.host is not h:
+            raise Exception("wrong host")
+        return self._redir_token + shlex.quote(self.file._local_str())
 
 
-class Env(Special):
-    """Expand an environment variable or shell variable."""
+class RedirStdout(_Stdio[H]):
+    _redir_token = ">"
 
-    __slots__ = ("name",)
 
-    def __init__(self, name: str) -> None:
-        """
-        Create a new environment variable accessor.
-
-        **Example**::
-
-            m.exec0(linux.Env("CC"), "-c", m.workdir / "main.c")
-
-        :param str name: Name of the env var.
-        """
-        self.name = name
-
-    def resolve_string(self, _: H) -> str:
-        """Return the string representation of this special character."""
-        return f"${{{self.name}}}"
+class RedirStderr(_Stdio[H]):
+    _redir_token = "2>"
 
 
 class _Static(Special):
@@ -138,8 +72,7 @@ class _Static(Special):
     def __init__(self, string: str) -> None:
         self.string = string
 
-    def resolve_string(self, _: H) -> str:
-        """Return the string representation of this special character."""
+    def _to_string(self, _: H) -> str:
         return self.string
 
 

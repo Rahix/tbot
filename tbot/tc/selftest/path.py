@@ -1,15 +1,31 @@
+# tbot, Embedded Automation Tool
+# Copyright (C) 2019  Harald Seiler
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import typing
 import stat
 import tbot
-from tbot import machine
 from tbot.machine import linux
 
 __all__ = ["selftest_path_integrity", "selftest_path_stat"]
 
 
 @tbot.testcase
-def selftest_path_integrity(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def selftest_path_integrity(lab: typing.Optional[linux.Lab] = None,) -> None:
     """Test if using a path on the wrong host fails."""
+
     with lab or tbot.acquire_lab() as lh:
         p = lh.workdir / "folder" / "file.txt"
 
@@ -18,13 +34,14 @@ def selftest_path_integrity(lab: typing.Optional[linux.LabHost] = None,) -> None
             try:
                 # mypy detects that this is wrong
                 lh2.exec0("echo", p)  # type: ignore
-            except machine.WrongHostException:
+            # TODO: Proper exception type
+            except:  # noqa: E722
                 raised = True
             assert raised
 
         lh.exec0("mkdir", "-p", p.parent)
         assert p.parent.is_dir()
-        lh.exec0("uname", "-a", stdout=p)
+        lh.exec0("uname", "-a", linux.RedirStdout(p))
         assert p.is_file()
         lh.exec0("rm", "-r", p.parent)
         assert not p.exists()
@@ -32,8 +49,9 @@ def selftest_path_integrity(lab: typing.Optional[linux.LabHost] = None,) -> None
 
 
 @tbot.testcase
-def selftest_path_stat(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def selftest_path_stat(lab: typing.Optional[linux.Lab] = None,) -> None:
     """Test path stat utilities."""
+
     with lab or tbot.acquire_lab() as lh:
         tbot.log.message("Setting up test files ...")
         symlink = lh.workdir / "symlink"

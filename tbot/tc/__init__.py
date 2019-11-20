@@ -6,7 +6,7 @@ import traceback
 @tbot.testcase
 def testsuite(*args: typing.Callable, **kwargs: typing.Any) -> None:
     """
-    Run a number of tests and report, how many of them succeeded.
+    Run a number of tests and report how many of them succeeded.
 
     :param args: Testcases
     :param kwargs: Named-Arguments that should be given to each testcase.
@@ -19,11 +19,11 @@ def testsuite(*args: typing.Callable, **kwargs: typing.Any) -> None:
         from tbot import tc, machine
 
         @tbot.testcase
-        def test_a(lab: machine.linux.LabHost) -> None:
+        def test_a(lab: machine.linux.LinuxShell) -> None:
             lab.exec0("echo", "Test", "A")
 
         @tbot.testcase
-        def test_b(lab: machine.linux.LabHost) -> None:
+        def test_b(lab: machine.linux.LinuxShell) -> None:
             lab.exec0("uname", "-a")
 
         @tbot.testcase

@@ -1,5 +1,5 @@
 # tbot, Embedded Automation Tool
-# Copyright (C) 2018  Harald Seiler
+# Copyright (C) 2019  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,6 +15,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import time
+import typing
+
 from tbot import log
 from tbot.log import u, c
 
@@ -36,26 +38,42 @@ def testcase_begin(name: str) -> None:
     log.NESTING += 1
 
 
-def testcase_end(name: str, duration: float, success: bool = True) -> None:
+def testcase_end(
+    name: str,
+    duration: float,
+    success: bool = True,
+    skipped: typing.Optional[str] = None,
+) -> None:
     """
     Log a testcase's end.
 
     :param float duration: Time passed while this testcase ran
     :param bool success: Whether the testcase succeeded
+    :param str skipped: ``None`` if the testcase ran normally or a string (the
+        reason) if it was skipped.  If a testcase was skipped, ``success`` is
+        ignored.
     """
-    if success:
-        success_string = c("Done").green.bold
+    if skipped is not None:
+        message = c("Skipped").yellow.bold + f": {skipped}"
+        skip_info = {"skip_reason": skipped}
     else:
-        success_string = c("Fail").red.bold
+        # Testcase ran normally
+        skip_info = {}
+        if success:
+            message = c("Done").green.bold + f". ({duration:.3f}s)"
+        else:
+            message = c("Fail").red.bold + f". ({duration:.3f}s)"
 
     log.EventIO(
         ["tc", "end"],
-        success_string + f". ({duration:.3f}s)",
+        message,
         nest_first=u("└─", "\\-"),
         verbosity=log.Verbosity.QUIET,
         name=name,
         duration=duration,
         success=success,
+        skipped=skipped is not None,
+        **skip_info,
     )
     log.NESTING -= 1
 
@@ -88,6 +106,7 @@ def command(mach: str, cmd: str) -> log.EventIO:
 
 def tbot_start() -> None:
     print(log.c("tbot").yellow.bold + " starting ...")
+    log.NESTING += 1
 
 
 def tbot_end(success: bool) -> None:

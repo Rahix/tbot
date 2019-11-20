@@ -1,12 +1,12 @@
 repos:
 -   repo: https://github.com/ambv/black
-    rev: stable
+    rev: 19.10b0
     hooks:
     - id: black
       args: [--line-length=88, --safe]
       exclude: ^(setup\.py$|doc)
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v1.2.1-1
+    rev: v2.4.0
     hooks:
     - id: check-added-large-files
     - id: trailing-whitespace
@@ -23,7 +23,7 @@ repos:
       language: system
       entry: mypy --no-incremental
       files: ^.*\.py$
-      exclude: ^(setup\.py$|static_tests|doc|fastentrypoints.py)
+      exclude: ^(setup\.py$|static_tests|doc|fastentrypoints.py|tbot/machine_v1|Documentation/conf.py)
 -   repo: local
     hooks:
     - id: selftests

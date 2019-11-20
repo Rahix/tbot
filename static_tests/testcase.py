@@ -4,7 +4,7 @@ from tbot.machine import linux
 
 
 @tbot.testcase
-def test_lab(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def test_lab(lab: typing.Optional[linux.Lab] = None,) -> None:
     with lab or tbot.acquire_lab() as lh:
         p = lh.workdir / "foobar"
 
@@ -12,14 +12,14 @@ def test_lab(lab: typing.Optional[linux.LabHost] = None,) -> None:
 
 
 @tbot.testcase
-def test_linux(mach: typing.Optional[linux.LinuxMachine] = None,) -> None:
+def test_linux(mach: typing.Optional[linux.LinuxShell] = None,) -> None:
     with mach or tbot.acquire_lab() as lnx:
         p = lnx.workdir / "foobar"
 
         with tbot.acquire_lab() as lh:
             p2 = lh.workdir / "barfoo"
 
-            # SHould fail!
+            # Should fail!
             lnx.exec0("echo", p2)
             lh.exec0("echo", p)
 

@@ -29,7 +29,7 @@ test_path() {
     run_check "Line 30"; echo "$output" | grep "static_tests/path.py:30:" >/dev/null || check_fail; check_ok
     run_check "Line 33"; echo "$output" | grep "static_tests/path.py:33:" >/dev/null || check_fail; check_ok
 
-    run_check "Ensure there were no other errors"; [[ $(echo "$output" | wc -l) = "5" ]] || check_fail; check_ok
+    run_check "Ensure there were no other errors"; [[ $(echo "$output" | grep -cE '^static_tests.*:[0-9]+:') = "5" ]] || check_fail; check_ok
 }
 
 test_testcase() {
@@ -45,7 +45,7 @@ test_testcase() {
     run_check "Line 33"; echo "$output" | grep "static_tests/testcase.py:33:" >/dev/null || check_fail; check_ok
     run_check "Line 34"; echo "$output" | grep "static_tests/testcase.py:34:" >/dev/null || check_fail; check_ok
 
-    run_check "Ensure there were no other errors"; [[ $(echo "$output" | wc -l) = "6" ]] || check_fail; check_ok
+    run_check "Ensure there were no other errors"; [[ $(echo "$output" | grep -cE '^static_tests.*:[0-9]+:') = "6" ]] || check_fail; check_ok
 }
 
 echo "test_path ..."

@@ -1,8 +1,24 @@
+git:
+  depth: 200
 language: python
 python:
   - "3.6"
-install:
-  - pip install pre-commit mypy junit-xml termcolor2 paramiko
+cache: pip
+before_install:
+  - pip install junit-xml mypy paramiko pre-commit recommonmark sphinx sphinx_rtd_theme termcolor2
 script:
   - env CLICOLOR_FORCE=1 pre-commit run --all-files --verbose
   - python3 -c "__import__('tbot.main').main.main()" --log /dev/null -vv selftest_tc
+before_deploy:
+  - ./Documentation/build-docs.sh
+  - rm -r Documentation/output/.doctrees
+  - touch Documentation/output/.nojekyll
+  - echo -n "tbot.tools" > Documentation/output/CNAME
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  keep_history: false
+  local_dir: Documentation/output
+  on:
+    branch: development

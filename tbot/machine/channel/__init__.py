@@ -1,12 +1,24 @@
-from .channel import Channel, ChannelClosedException, SkipStream, TBOT_PROMPT
-from .paramiko import ParamikoChannel
+from .channel import (
+    BoundedPattern,
+    Channel,
+    ChannelBorrowedException,
+    ChannelClosedException,
+    ChannelIO,
+    ChannelTakenException,
+    DeathStringException,
+)
+
 from .subprocess import SubprocessChannel
+from .paramiko import ParamikoChannel
 
 __all__ = (
+    "BoundedPattern",
     "Channel",
+    "ChannelBorrowedException",
     "ChannelClosedException",
-    "SkipStream",
+    "ChannelIO",
+    "ChannelTakenException",
+    "DeathStringException",
     "ParamikoChannel",
     "SubprocessChannel",
-    "TBOT_PROMPT",
 )

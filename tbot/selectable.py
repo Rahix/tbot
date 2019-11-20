@@ -1,5 +1,5 @@
 # tbot, Embedded Automation Tool
-# Copyright (C) 2018  Harald Seiler
+# Copyright (C) 2019  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,37 +15,29 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import typing
-from tbot.machine import linux
-from tbot.machine.linux import lab
-from tbot.machine import board
+from tbot.machine import connector, linux, board
 
 
-class LabHost(lab.LocalLabHost, typing.ContextManager):
-    """
-    Default LabHost type.
+class LocalLabHost(
+    connector.SubprocessConnector, linux.Bash, linux.Lab, typing.ContextManager
+):
+    name = "local"
 
-    Might be replaced by another LabHost if one was selected on
-    the commandline using ``-l <lab.py>``
-    """
 
-    def __enter__(self) -> "LabHost":
-        return super().__enter__()  # type: ignore
-
-    @property
-    def workdir(self) -> "linux.Path[LabHost]":  # noqa: D102
-        wd = super().workdir
-        return linux.Path(self, wd)
+LabHost = LocalLabHost
 
 
 def acquire_lab() -> LabHost:
     """
     Acquire a new connection to the LabHost.
 
-    If your :class:`~tbot.machine.linux.LabHost` is a :class:`~tbot.machine.linux.lab.SSHLabHost`
+    If your lab-host is using a :class:`~tbot.machine.connector.ParamikoConnector`
     this will create a new ssh connection.
 
     You should call this function as little as possible, because it can be very slow.
-    If possible, try to reuse the labhost. A recipe for doing so is::
+    If possible, try to reuse the labhost. A recipe for doing so is
+
+    .. code-block:: python
 
         import typing
         import tbot
@@ -53,20 +45,20 @@ def acquire_lab() -> LabHost:
 
         @tbot.testcase
         def my_testcase(
-            lab: typing.Optional[linux.LabHost] = None,
+            lab: typing.Optional[linux.LinuxShell] = None,
         ) -> None:
             with lab or tbot.acquire_lab() as lh:
                 # Your code goes here
                 ...
 
-    :rtype: tbot.machine.linux.LabHost
+    :rtype: tbot.selectable.LabHost
     """
     if hasattr(LabHost, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a lab?")
     return LabHost()
 
 
-def acquire_local() -> linux.lab.LocalLabHost:
+def acquire_local() -> LocalLabHost:
     """
     Acquire a machine for the local host.
 
@@ -74,7 +66,9 @@ def acquire_local() -> linux.lab.LocalLabHost:
     like the others and you can create as many as you want.  One usecase
     might be copying test-results to you local machine after the run.
 
-    Example::
+    **Example**:
+
+    .. code-block:: python
 
         import tbot
 
@@ -83,57 +77,61 @@ def acquire_local() -> linux.lab.LocalLabHost:
             with tbot.acquire_local() as lo:
                 lo.exec0("id", "-un")
                 # On local machines you can access tbot's working directory:
-                tbot.log.message(f"CWD: {lo.tbotdir}")
+                tbot.log.message(f"CWD: {lo.workdir}")
     """
-    return linux.lab.LocalLabHost()
+    return LocalLabHost()
 
 
-class Board(board.Board, typing.ContextManager):
-    """Dummy type that will be replaced by the actual selected board at runtime."""
-
+class Board(board.Board):
     _unselected = True
-
     name = "dummy"
 
-    def __init__(self, lh: linux.LabHost) -> None:  # noqa: D107
-        raise NotImplementedError("This is a dummy Board")
-
-    def poweron(self) -> None:  # noqa: D102
-        raise NotImplementedError("This is a dummy Board")
-
-    def poweroff(self) -> None:  # noqa: D102
-        raise NotImplementedError("This is a dummy Board")
+    def __init__(self, lh: linux.Lab) -> None:  # noqa: D107
+        raise NotImplementedError("no board selected")
 
 
 def acquire_board(lh: LabHost) -> Board:
     """
-    Acquire a handle to the selected board.
+    Acquire the selected board.
 
-    The returned board must be used in a with statement to be powered on.
+    If configured properly, :py:func:`tbot.acquire_board` will power on the
+    hardware and open a serial-console for the selected board.  Just by itself,
+    this is not too useful, so you will usually follow it up immediately with a
+    call to either :py:func:`tbot.acquire_uboot` or
+    :py:func:`tbot.acquire_linux`.
 
-    :rtype: tbot.machine.board.Board
+    **Example**:
+
+    .. code-block:: python
+
+        with tbot.acquire_lab() as lh:
+            lh.exec0("echo", "Foo")
+            with tbot.acquire_board(lh) as b, tbot.acquire_uboot(b) as ub:
+                ub.exec0("version")
     """
     if hasattr(Board, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a board?")
-    return Board(lh)
+    return Board(lh)  # type: ignore
 
 
-class UBootMachine(board.UBootMachine[Board], typing.ContextManager):
+class UBootMachine(board.UBootShell, typing.ContextManager):
     """Dummy type that will be replaced by the actual selected U-Boot machine at runtime."""
 
     _unselected = True
 
-    def __init__(self, b: typing.Any) -> None:  # noqa: D107
-        raise NotImplementedError("This is a dummy Linux")
+    def __init__(self, lab: LabHost, *args: typing.Any) -> None:
+        raise NotImplementedError("no u-boot selected")
 
 
-def acquire_uboot(board: Board) -> UBootMachine:
+def acquire_uboot(board: Board, *args: typing.Any) -> UBootMachine:
     """
-    Acquire the board's U-Boot shell.
+    Acquire the selected board's U-Boot shell.
 
-    As there can only be one instance of :class:`UBootMachine` at a time,
-    your testcases should optionally take the :class:`UBootMachine` as a
-    parameter. The recipe looks like this::
+    As there can only be one instance of the selected board's :class:`UBootShell` at a time,
+    your testcases should optionally take the :class:`UBootShell` as a
+    parameter. The recipe looks like this:
+
+    .. code-block:: python
 
         import contextlib
         import typing
@@ -144,7 +142,7 @@ def acquire_uboot(board: Board) -> UBootMachine:
         @tbot.testcase
         def my_testcase(
             lab: typing.Optional[tbot.selectable.LabHost] = None,
-            uboot: typing.Optional[board.UBootMachine] = None,
+            uboot: typing.Optional[board.UBootShell] = None,
         ) -> None:
             with contextlib.ExitStack() as cx:
                 lh = cx.enter_context(lab or tbot.acquire_lab())
@@ -156,27 +154,25 @@ def acquire_uboot(board: Board) -> UBootMachine:
 
                 ...
 
-    :rtype: tbot.machine.board.UBootMachine
+    :rtype: tbot.selectable.UBootMachine
     """
     if hasattr(UBootMachine, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a board?")
-    return UBootMachine(board)
+    return UBootMachine(board, *args)  # type: ignore
 
 
-class LinuxMachine(board.LinuxStandaloneMachine[Board], typing.ContextManager):
+class LinuxMachine(board.LinuxBootLogin, linux.LinuxShell, typing.ContextManager):
     """Dummy type that will be replaced by the actual selected Linux machine at runtime."""
 
     _unselected = True
 
-    def __init__(self, b: typing.Any) -> None:  # noqa: D107
+    def __init__(self, *args: typing.Any) -> None:  # noqa: D107
         raise NotImplementedError("This is a dummy Linux")
 
-    username = "root"
-    password = None
-    shell = linux.shell.Shell
 
-
-def acquire_linux(b: typing.Union[Board, UBootMachine]) -> LinuxMachine:
+def acquire_linux(
+    b: typing.Union[Board, UBootMachine], *args: typing.Any
+) -> LinuxMachine:
     """
     Acquire the board's Linux shell.
 
@@ -207,8 +203,8 @@ def acquire_linux(b: typing.Union[Board, UBootMachine]) -> LinuxMachine:
 
                 ...
 
-    :rtype: tbot.machine.board.LinuxMachine
+    :rtype: tbot.machine.linux.LinuxShell
     """
     if hasattr(LinuxMachine, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a board?")
-    return LinuxMachine(b)
+    return LinuxMachine(b, *args)  # type: ignore

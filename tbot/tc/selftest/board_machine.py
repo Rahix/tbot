@@ -1,29 +1,42 @@
+# tbot, Embedded Automation Tool
+# Copyright (C) 2019  Harald Seiler
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import contextlib
+import re
 import typing
+
 import tbot
-from tbot.machine import channel
-from tbot.machine import linux
-from tbot.machine import board
+from tbot.machine import channel, linux, board, connector
 from . import machine as mach
 
 
-class TestBoard(board.Board):
-    """Dummy Board."""
+class DummyConnector(connector.Connector):
+    def __init__(self, mach: linux.LinuxShell, autoboot: bool = True) -> None:
+        self.mach = mach
+        self.autoboot = autoboot
 
-    name = "test"
-
-    def poweron(self) -> None:  # noqa: D102
-        self.lh.exec0("touch", self.lh.workdir / "selftest_power")
-
-    def poweroff(self) -> None:  # noqa: D102
-        self.lh.exec0("rm", self.lh.workdir / "selftest_power")
-
-    def connect(self) -> channel.Channel:  # noqa: D102
-        if self.has_autoboot:
-            return self.lh.new_channel(
-                linux.Raw(
+    @contextlib.contextmanager
+    def _connect(self) -> typing.Iterator[channel.Channel]:
+        with self.mach.clone() as cloned:
+            ch = cloned.ch.take()
+            tbot.log_event.command(self.mach.name, "dummy-connect")
+            if self.autoboot:
+                ch.sendline(
                     """\
-bash --norc --noediting; exit
+bash --norc --noprofile --noediting; exit
 unset HISTFILE
 PS1='Test-U-Boot> '
 alias version="uname -a"
@@ -36,18 +49,21 @@ function printenv() {
 }
 function setenv() { local var="$1"; shift; eval "$var=\\"$*\\""
 }
-bash --norc --noediting
+bash --norc --noprofile --noediting""",
+                    read_back=True,
+                )
+                ch.sendline(
+                    """\
 unset HISTFILE
 set +o emacs
 set +o vi
-read -p 'Autoboot: '"""
+read -p 'Autoboot: '; exit""",
+                    read_back=True,
                 )
-            )
-        else:
-            return self.lh.new_channel(
-                linux.Raw(
+            else:
+                ch.sendline(
                     """\
-bash --norc --noediting; exit
+bash --norc --noprofile --noediting; exit
 unset HISTFILE
 alias version="uname -a"
 function printenv() {
@@ -59,32 +75,42 @@ function printenv() {
 }
 function setenv() { local var="$1"; shift; eval "$var=\\"$*\\""
 }
-PS1=Test-U-Boot'> ' #"""
+PS1=Test-U-Boot'> ' #""",
+                    read_back=True,
                 )
-            )
 
-    def __init__(
-        self, lh: linux.LabHost, has_autoboot: bool = True
-    ) -> None:  # noqa: D107
-        self.has_autoboot = has_autoboot
-        super().__init__(lh)
+            yield ch
+
+    def clone(self) -> typing.NoReturn:
+        raise NotImplementedError("can't clone a serial connection")
 
 
-class TestBoardUBoot(board.UBootMachine[TestBoard]):
+class TestBoard(DummyConnector, board.Board):
+    """Dummy Board."""
+
+    name = "test"
+
+
+class TestBoardUBoot(board.Connector, board.UBootAutobootIntercept, board.UBootShell):
     """Dummy Board UBoot."""
 
-    autoboot_prompt = "Autoboot: "
+    name = "test-ub"
+
+    autoboot_prompt = re.compile(b"Autoboot: ")
     prompt = "Test-U-Boot> "
 
 
 @tbot.testcase
 def selftest_board_uboot(lab: typing.Optional[tbot.selectable.LabHost] = None) -> None:
     """Test if tbot intercepts U-Boot correctly."""
+
     with contextlib.ExitStack() as cx:
         lh = cx.enter_context(lab or tbot.acquire_lab())
         try:
-            b = cx.enter_context(tbot.acquire_board(lh))
-            ub = cx.enter_context(tbot.acquire_uboot(b))
+            b: board.Board = cx.enter_context(tbot.acquire_board(lh))
+            ub: board.UBootShell = cx.enter_context(
+                tbot.acquire_uboot(b)  # type: ignore
+            )
         except NotImplementedError:
             b = cx.enter_context(TestBoard(lh))
             ub = cx.enter_context(TestBoardUBoot(b))
@@ -96,7 +122,7 @@ def selftest_board_uboot(lab: typing.Optional[tbot.selectable.LabHost] = None) -
             if line != "" and line[0].isalnum():
                 assert "=" in line, repr(line)
 
-        out = ub.exec0("echo", board.F("0x{}", str(1234))).strip()
+        out = ub.exec0("echo", hex(0x1234)).strip()
         assert out == "0x1234", repr(out)
 
         mach.selftest_machine_shell(ub)
@@ -104,20 +130,20 @@ def selftest_board_uboot(lab: typing.Optional[tbot.selectable.LabHost] = None) -
 
 @tbot.testcase
 def selftest_board_uboot_noab(
-    lab: typing.Optional[tbot.selectable.LabHost] = None
+    lab: typing.Optional[tbot.selectable.LabHost] = None,
 ) -> None:
     """Test if tbot intercepts U-Boot correctly without autoboot."""
 
-    class TestBoardUBootNoAB(board.UBootMachine[TestBoard]):
+    class TestUBootNoAB(DummyConnector, board.UBootShell):
         """Dummy Board UBoot."""
 
-        autoboot_prompt = None
+        name = "test-ub-noab"
+
         prompt = "Test-U-Boot> "
 
     with contextlib.ExitStack() as cx:
         lh = cx.enter_context(lab or tbot.acquire_lab())
-        b = cx.enter_context(TestBoard(lh, has_autoboot=False))
-        ub = cx.enter_context(TestBoardUBootNoAB(b))
+        ub = cx.enter_context(TestUBootNoAB(lh, autoboot=False))
 
         ub.exec0("version")
         env = ub.exec0("printenv").strip().split("\n")
@@ -126,7 +152,7 @@ def selftest_board_uboot_noab(
             if line != "" and line[0].isalnum():
                 assert "=" in line, repr(line)
 
-        out = ub.exec0("echo", board.F("0x{}", str(1234))).strip()
+        out = ub.exec0("echo", hex(0x1234)).strip()
         assert out == "0x1234", repr(out)
 
         mach.selftest_machine_shell(ub)
@@ -135,16 +161,14 @@ def selftest_board_uboot_noab(
 @tbot.testcase
 def selftest_board_linux(lab: typing.Optional[tbot.selectable.LabHost] = None) -> None:
     """Test board's linux."""
+
     with contextlib.ExitStack() as cx:
         lh = cx.enter_context(lab or tbot.acquire_lab())
 
         try:
             b = cx.enter_context(tbot.acquire_board(lh))
         except NotImplementedError:
-            tbot.log.message(
-                tbot.log.c("Skipped").yellow.bold + " because no board available."
-            )
-            return
+            tbot.skip("No board available")
 
         lnx = cx.enter_context(tbot.acquire_linux(b))
 
@@ -154,6 +178,26 @@ def selftest_board_linux(lab: typing.Optional[tbot.selectable.LabHost] = None) -
 @tbot.testcase
 def selftest_board_power(lab: typing.Optional[tbot.selectable.LabHost] = None) -> None:
     """Test if the board is powered on and off correctly."""
+
+    class TestPowerUBoot(
+        DummyConnector,
+        board.PowerControl,
+        board.UBootAutobootIntercept,
+        board.UBootShell,
+    ):
+        """Dummy Board UBoot."""
+
+        name = "test-ub-power"
+
+        autoboot_prompt = re.compile(b"Autoboot: ")
+        prompt = "Test-U-Boot> "
+
+        def poweron(self) -> None:
+            self.mach.exec0("touch", self.mach.workdir / "selftest_power")
+
+        def poweroff(self) -> None:
+            self.mach.exec0("rm", self.mach.workdir / "selftest_power")
+
     with lab or tbot.acquire_lab() as lh:
         power_path = lh.workdir / "selftest_power"
         if power_path.exists():
@@ -161,7 +205,7 @@ def selftest_board_power(lab: typing.Optional[tbot.selectable.LabHost] = None) -
 
         tbot.log.message("Emulating a normal run ...")
         assert not power_path.exists()
-        with TestBoard(lh):
+        with TestPowerUBoot(lh):
             assert power_path.exists()
 
         assert not power_path.exists()
@@ -171,7 +215,7 @@ def selftest_board_power(lab: typing.Optional[tbot.selectable.LabHost] = None) -
 
         tbot.log.message("Emulating a failing run ...")
         try:
-            with TestBoard(lh):
+            with TestPowerUBoot(lh):
                 assert power_path.exists()
                 tbot.log.message("raise TestException()")
                 raise TestException()
@@ -181,26 +225,25 @@ def selftest_board_power(lab: typing.Optional[tbot.selectable.LabHost] = None) -
         assert not power_path.exists()
 
 
-class TestBoardLinuxUB(board.LinuxWithUBootMachine[TestBoard]):
+class TestBoardLinuxUB(board.LinuxUbootConnector, board.LinuxBootLogin, linux.Bash):
     """Dummy board linux uboot."""
 
     uboot = TestBoardUBoot
-    boot_commands = [
-        ["echo", "Booting linux ..."],
-        ["echo", "[  0.000]", "boot: message"],
-        ["echo", "[  0.013]", "boot: info"],
-        ["echo", "[  0.157]", "boot: message"],
-        [
+
+    def do_boot(self, ub: board.UBootShell) -> channel.Channel:
+        ub.exec0("echo", "Booting linux ...")
+        ub.exec0("echo", "[  0.000]", "boot: message")
+        ub.exec0("echo", "[  0.013]", "boot: info")
+        ub.exec0("echo", "[  0.157]", "boot: message")
+        return ub.boot(
             board.Raw(
                 "printf 'tb-login: '; read username; printf 'Password: '; read password; [[ $username = 'root' && $password = 'rootpw' ]] || exit 1"
             )
-        ],
-    ]
+        )
 
     username = "root"
     password = "rootpw"
     login_prompt = "tb-login: "
-    shell = linux.shell.Bash
 
     @property
     def workdir(self) -> "linux.Path[TestBoardLinuxUB]":
@@ -210,9 +253,10 @@ class TestBoardLinuxUB(board.LinuxWithUBootMachine[TestBoard]):
 
 @tbot.testcase
 def selftest_board_linux_uboot(
-    lab: typing.Optional[tbot.selectable.LabHost] = None
+    lab: typing.Optional[tbot.selectable.LabHost] = None,
 ) -> None:
     """Test linux booting from U-Boot."""
+
     with lab or tbot.acquire_lab() as lh:
         tbot.log.message("Testing without UB ...")
         with TestBoard(lh) as b:
@@ -229,29 +273,30 @@ def selftest_board_linux_uboot(
 
 @tbot.testcase
 def selftest_board_linux_nopw(
-    lab: typing.Optional[tbot.selectable.LabHost] = None
+    lab: typing.Optional[tbot.selectable.LabHost] = None,
 ) -> None:
     """Test linux without a password."""
 
-    class TestBoardLinuxUB_NOPW(board.LinuxWithUBootMachine[TestBoard]):
+    class TestBoardLinuxUB_NOPW(
+        board.LinuxUbootConnector, board.LinuxBootLogin, linux.Bash
+    ):
         uboot = TestBoardUBoot
-        boot_commands = [
-            ["echo", "Booting linux ..."],
-            ["echo", "[  0.000]", "boot: message"],
-            ["echo", "[  0.013]", "boot: info"],
-            ["echo", "[  0.157]", "boot: message"],
-            ["export", "HOME=/tmp"],
-            [
+
+        def do_boot(self, ub: board.UBootShell) -> channel.Channel:
+            ub.exec0("echo", "Booting linux ...")
+            ub.exec0("echo", "[  0.000]", "boot: message")
+            ub.exec0("echo", "[  0.013]", "boot: info")
+            ub.exec0("echo", "[  0.157]", "boot: message")
+            ub.exec0("export", "HOME=/tmp")
+            return ub.boot(
                 board.Raw(
                     "printf 'tb-login: '; read username; [[ $username = 'root' ]] || exit 1"
                 )
-            ],
-        ]
+            )
 
         username = "root"
         password = None
         login_prompt = "tb-login: "
-        shell = linux.shell.Bash
 
         @property
         def workdir(self) -> "linux.Path[TestBoardLinuxUB_NOPW]":
@@ -274,15 +319,14 @@ def selftest_board_linux_nopw(
 
 @tbot.testcase
 def selftest_board_linux_standalone(
-    lab: typing.Optional[tbot.selectable.LabHost] = None
+    lab: typing.Optional[tbot.selectable.LabHost] = None,
 ) -> None:
     """Test linux booting standalone."""
 
-    class TestBoardLinuxStandalone(board.LinuxStandaloneMachine[TestBoard]):
+    class TestBoardLinuxStandalone(board.Connector, board.LinuxBootLogin, linux.Bash):
         username = "root"
         password = None
         login_prompt = "Autoboot: "
-        shell = linux.shell.Bash
 
     with lab or tbot.acquire_lab() as lh:
         tbot.log.message("Testing without UB ...")
@@ -295,29 +339,31 @@ def selftest_board_linux_standalone(
             with TestBoardUBoot(b) as ub:
                 raised = False
                 try:
-                    with TestBoardLinuxStandalone(ub) as lnx:
+                    with TestBoardLinuxStandalone(ub) as lnx:  # type: ignore
                         lnx.exec0("uname", "-a")
-                except RuntimeError:
+                except Exception:
                     raised = True
                 assert raised
 
 
 @tbot.testcase
 def selftest_board_linux_bad_console(
-    lab: typing.Optional[tbot.selectable.LabHost] = None
+    lab: typing.Optional[tbot.selectable.LabHost] = None,
 ) -> None:
     """Test linux booting standalone."""
 
-    class BadBoard(TestBoard):
-        def connect(self) -> channel.Channel:  # noqa: D102
-            return self.lh.new_channel(
+    tbot.skip("board-linux bad console test is not implemented")
+
+    class BadBoard(connector.ConsoleConnector, board.Board):
+        def connect(self, mach: linux.LinuxShell) -> channel.Channel:  # noqa: D102
+            return mach.open_channel(
                 linux.Raw(
                     """\
-bash --norc --noediting; exit
+bash --norc --noprofile --noediting; exit
 PS1="$"
 unset HISTFILE
 export UNAME="bad-board"
-bash --norc --noediting
+bash --norc --noprofile --noediting
 PS1=""
 unset HISTFILE
 set +o emacs
@@ -338,10 +384,10 @@ read -p ""\
                 )
             )
 
-    class BadBoardLinux(board.LinuxStandaloneMachine[BadBoard]):
+    class BadBoardLinux(board.Connector, board.LinuxBootLogin, linux.Bash):
         username = "root"
         password = "toor"
-        shell = linux.shell.Bash
+        login_delay = 1
 
     with lab or tbot.acquire_lab() as lh:
         with BadBoard(lh) as b:

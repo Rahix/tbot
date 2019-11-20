@@ -1,3 +1,19 @@
+# tbot, Embedded Automation Tool
+# Copyright (C) 2019  Harald Seiler
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import typing
 import tbot
 from tbot.machine import linux
@@ -10,7 +26,7 @@ __all__ = (
 )
 
 
-def _uboot_prepare(h: linux.LinuxMachine) -> uboot.UBootBuilder:
+def _uboot_prepare(h: linux.LinuxShell) -> uboot.UBootBuilder:
     remote = h.workdir / "selftest-ub-remote"
 
     if remote.exists():
@@ -38,7 +54,7 @@ mrproper:
 .PHONY: all defconfig mrproper
 """
 
-    h.exec0("echo", makefile, stdout=repo / "Makefile")
+    h.exec0("echo", makefile, linux.RedirStdout(repo / "Makefile"))
 
     repo.add(repo / "Makefile")
     repo.commit("U-Boot Dummy", author="tbot selftest <tbot@tbot>")
@@ -69,7 +85,7 @@ index b5319d7..0f01838 100644
 """
 
     patchfile = h.workdir / "uboot-selftest.patch"
-    h.exec0("echo", patch, stdout=patchfile)
+    h.exec0("echo", patch, linux.RedirStdout(patchfile))
 
     class UBootBuilder(uboot.UBootBuilder):
         name = "tbot-selftest"
@@ -85,7 +101,7 @@ index b5319d7..0f01838 100644
 
 
 @tbot.testcase
-def selftest_tc_uboot_checkout(lab: typing.Optional[linux.LabHost] = None) -> None:
+def selftest_tc_uboot_checkout(lab: typing.Optional[linux.Lab] = None) -> None:
     with lab or tbot.acquire_lab() as lh:
         builder = _uboot_prepare(lh)
 
@@ -115,7 +131,7 @@ def selftest_tc_uboot_checkout(lab: typing.Optional[linux.LabHost] = None) -> No
 
 
 @tbot.testcase
-def selftest_tc_uboot_build(lab: typing.Optional[linux.LabHost] = None) -> None:
+def selftest_tc_uboot_build(lab: typing.Optional[linux.Lab] = None) -> None:
     from tbot.tc.selftest.tc import build
 
     with tbot.acquire_local() as lh:
@@ -163,9 +179,7 @@ def selftest_tc_uboot_build(lab: typing.Optional[linux.LabHost] = None) -> None:
 
 
 @tbot.testcase
-def selftest_tc_uboot_patched_bisect(
-    lab: typing.Optional[linux.LabHost] = None
-) -> None:
+def selftest_tc_uboot_patched_bisect(lab: typing.Optional[linux.Lab] = None) -> None:
     from tbot.tc.selftest.tc import build, git as git_tc
 
     with build.LocalDummyBuildhost() as bh:

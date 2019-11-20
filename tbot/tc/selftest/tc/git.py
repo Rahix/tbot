@@ -1,3 +1,19 @@
+# tbot, Embedded Automation Tool
+# Copyright (C) 2019  Harald Seiler
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import typing
 import tbot
 from tbot.machine import linux
@@ -14,7 +30,7 @@ _GIT: typing.Optional[str] = None
 
 
 @tbot.testcase
-def git_prepare(lab: linux.LabHost) -> str:
+def git_prepare(lab: linux.Lab) -> str:
     """Prepare a test git repo."""
     global _GIT
 
@@ -38,7 +54,7 @@ This repo exists to test tbot's git testcase.
 
 You can safely remove it, but please **do not** modify it as that might
 break the tests.""",
-            stdout=repo / "README.md",
+            linux.RedirStdout(repo / "README.md"),
         )
 
         repo.add(repo / "README.md")
@@ -50,7 +66,7 @@ break the tests.""",
             """\
 # File 2
 A second file that will have been added by patching.""",
-            stdout=repo / "file2.md",
+            linux.RedirStdout(repo / "file2.md"),
         )
 
         repo.add(repo / "file2.md")
@@ -68,7 +84,7 @@ A second file that will have been added by patching.""",
 
 
 @tbot.testcase
-def selftest_tc_git_checkout(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def selftest_tc_git_checkout(lab: typing.Optional[linux.Lab] = None,) -> None:
     """Test checking out a repository."""
     with lab or tbot.acquire_lab() as lh:
         remote = git_prepare(lh)
@@ -84,7 +100,7 @@ def selftest_tc_git_checkout(lab: typing.Optional[linux.LabHost] = None,) -> Non
         assert not (repo / "file2.md").is_file()
 
         tbot.log.message("Make repo dirty ...")
-        lh.exec0("echo", "Test 123", stdout=repo / "file.txt")
+        lh.exec0("echo", "Test 123", linux.RedirStdout(repo / "file.txt"))
 
         repo = git.GitRepository(target, remote, clean=False)
         assert (repo / "file.txt").is_file()
@@ -93,7 +109,7 @@ def selftest_tc_git_checkout(lab: typing.Optional[linux.LabHost] = None,) -> Non
         assert not (repo / "file.txt").is_file()
 
         tbot.log.message("Add dirty commit ...")
-        lh.exec0("echo", "Test 123", stdout=repo / "file.txt")
+        lh.exec0("echo", "Test 123", linux.RedirStdout(repo / "file.txt"))
         repo.add(repo / "file.txt")
         repo.commit("Add file.txt", author="tbot Selftest <none@none>")
 
@@ -107,7 +123,7 @@ def selftest_tc_git_checkout(lab: typing.Optional[linux.LabHost] = None,) -> Non
 
 
 @tbot.testcase
-def selftest_tc_git_apply(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def selftest_tc_git_apply(lab: typing.Optional[linux.Lab] = None,) -> None:
     """Test applying patches."""
     with lab or tbot.acquire_lab() as lh:
         remote = git_prepare(lh)
@@ -138,7 +154,7 @@ A second file that will have been added by patching.
 
 ## 2.2
 This section was added by a second patch""",
-            stdout=repo / "file2.md",
+            linux.RedirStdout(repo / "file2.md"),
         )
 
         repo.add(repo / "file2.md")
@@ -161,7 +177,7 @@ This section was added by a second patch""",
 
 
 @tbot.testcase
-def selftest_tc_git_am(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def selftest_tc_git_am(lab: typing.Optional[linux.Lab] = None,) -> None:
     """Test applying patches as commits."""
     with lab or tbot.acquire_lab() as lh:
         remote = git_prepare(lh)
@@ -189,7 +205,7 @@ A second file that will have been added by patching.
 
 ## 2.2
 This section was added by a second patch""",
-            stdout=repo / "file2.md",
+            linux.RedirStdout(repo / "file2.md"),
         )
 
         repo.add(repo / "file2.md")
@@ -218,7 +234,7 @@ def git_increment_commits(repo: git.GitRepository) -> str:
     for i in range(0, 24):
         tbot.log.message(f"Create commit ({i+1:2}/24) ...")
 
-        repo.host.exec0("echo", str(i), stdout=counter)
+        repo.host.exec0("echo", str(i), linux.RedirStdout(counter))
         repo.add(counter)
         repo.commit(f"Set counter to {i}", author="tbot Selftest <none@none>")
 
@@ -230,7 +246,7 @@ def git_increment_commits(repo: git.GitRepository) -> str:
 
 
 @tbot.testcase
-def selftest_tc_git_bisect(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def selftest_tc_git_bisect(lab: typing.Optional[linux.Lab] = None,) -> None:
     """Test the git-bisect testcase."""
     with lab or tbot.acquire_lab() as lh:
         remote = git_prepare(lh)

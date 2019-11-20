@@ -1,5 +1,5 @@
 # tbot, Embedded Automation Tool
-# Copyright (C) 2018  Harald Seiler
+# Copyright (C) 2019  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ import tbot
 import enum
 from tbot.machine import linux
 
-H = typing.TypeVar("H", bound=linux.LinuxMachine)
+H = typing.TypeVar("H", bound=linux.LinuxShell)
 
 
 class ResetMode(enum.Enum):
@@ -101,7 +101,13 @@ class GitRepository(linux.Path[H]):
                 self.git0("fetch")
 
             if clean and already_cloned:
-                self.reset("origin", ResetMode.HARD)
+                # Try resetting the branch to upstream, if the branch has an upstream
+                if rev and self.git("rev-parse", f"{rev}@{{u}}")[0] == 0:
+                    self.reset(f"{rev}@{{u}}", ResetMode.HARD)
+                elif self.git("rev-parse", "@{u}")[0] == 0:
+                    self.reset("@{u}", ResetMode.HARD)
+                else:
+                    self.reset("HEAD", ResetMode.HARD)
                 self.clean(untracked=True, noignore=True)
 
             if clean or not already_cloned:
@@ -296,7 +302,9 @@ class GitRepository(linux.Path[H]):
         """
         Run a git bisect to find the commit that introduced an error.
 
-        **Example**: :ref:`recipes:bisect`
+        .. todo::
+
+            Add back the bisect example.
 
         :param str good: A known good commit, the current head will be assumed as bad.
         :param test: A function to check the state of the current commit.  Should return

@@ -1,11 +1,27 @@
+# tbot, Embedded Automation Tool
+# Copyright (C) 2019  Harald Seiler
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import typing
 import tbot
-from tbot.machine import linux
+from tbot.machine import linux, connector
 
 __all__ = ("selftest_tc_build_toolchain",)
 
 
-class LocalDummyBuildhost(linux.lab.LocalLabHost, linux.BuildMachine):
+class LocalDummyBuildhost(connector.SubprocessConnector, linux.Bash, linux.Builder):
     name = "dummy-build"
 
     @property
@@ -18,16 +34,16 @@ class LocalDummyBuildhost(linux.lab.LocalLabHost, linux.BuildMachine):
         }
 
     @staticmethod
-    def prepare(h: linux.lab.LocalLabHost) -> None:
+    def prepare(h: linux.LinuxShell) -> None:
         h.exec0(
             "echo",
             "export CC=dummy-none-gcc",
-            stdout=h.workdir / ".selftest-toolchain.sh",
+            linux.RedirStdout(h.workdir / ".selftest-toolchain.sh"),
         )
 
 
 @tbot.testcase
-def selftest_tc_build_toolchain(lab: typing.Optional[linux.LabHost] = None,) -> None:
+def selftest_tc_build_toolchain(lab: typing.Optional[linux.Lab] = None,) -> None:
     """Test connecting to a buildhost and enabling a toolchain on there."""
     with LocalDummyBuildhost() as bh:
         tbot.log.message("Creating dummy toolchain ...")

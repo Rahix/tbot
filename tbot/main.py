@@ -1,5 +1,5 @@
 # tbot, Embedded Automation Tool
-# Copyright (C) 2018  Harald Seiler
+# Copyright (C) 2019  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -37,9 +37,11 @@ def _import_hightlighter() -> typing.Callable[[str], str]:
         return lambda s: s
 
     try:
-        highlight = __import__("pygments").highlight
-        lexer = __import__("pygments.lexers").lexers.PythonLexer
-        formatter = __import__("pygments.formatters").formatters.TerminalFormatter
+        highlight = __import__("pygments").highlight  # type: ignore
+        lexer = __import__("pygments.lexers").lexers.PythonLexer  # type: ignore
+        formatter = __import__(  # type: ignore
+            "pygments.formatters"
+        ).formatters.TerminalFormatter
 
         return lambda s: typing.cast(str, highlight(s, lexer(), formatter()).strip())
     except ImportError:
@@ -249,7 +251,8 @@ def main() -> None:  # noqa: C901
     board = None
     if args.board is not None:
         board = loader.load_module(pathlib.Path(args.board).resolve())
-        tbot.selectable.Board = board.BOARD  # type: ignore
+        if hasattr(board, "BOARD"):
+            tbot.selectable.Board = board.BOARD  # type: ignore
         if hasattr(board, "UBOOT"):
             tbot.selectable.UBootMachine = board.UBOOT  # type: ignore
         if hasattr(board, "LINUX"):

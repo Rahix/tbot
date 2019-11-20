@@ -1,5 +1,5 @@
 # tbot, Embedded Automation Tool
-# Copyright (C) 2018  Harald Seiler
+# Copyright (C) 2019  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,50 +14,101 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import abc
+import typing
 import pathlib
+from .. import linux
 
 
-class Authenticator(abc.ABC):
-    """Authenticate a connection to a linux host."""
-
+class AuthenticatorBase:
     pass
 
 
-class PasswordAuthenticator(Authenticator):
-    """Authenticate using a password."""
+class PasswordAuthenticator(AuthenticatorBase):
+    """
+    Authenticate using a password.
+
+    .. danger::
+
+        This method is very insecure and might lead to **PASSWORDS BEING STOLEN**.
+
+
+    **Example**:
+
+    .. code-block:: python
+
+        class MySSHHost(connector.SSHConnector, linux.Bash):
+            username = "root"
+            authenticator = linux.auth.PasswordAuthenticator("hunter2")
+    """
 
     __slots__ = ("password",)
 
     def __init__(self, password: str) -> None:
-        """
-        Initialize this authenticator with a given password.
-
-        :param str password: The password that will be used
-                             with this authenticator.
-        """
         self.password = password
 
 
-class PrivateKeyAuthenticator(Authenticator):
-    """Authenticate using a private key."""
+class PrivateKeyAuthenticator(AuthenticatorBase):
+    """
+    Authenticate using a private-key file.
+
+    **Example**:
+
+    .. code-block:: python
+
+        class MySSHHost(connector.SSHConnector, linux.Bash):
+            username = "foouser"
+            authenticator = linux.auth.PrivateKeyAuthenticator("/home/foo/.ssh/id_rsa_foo")
+    """
 
     __slots__ = ("key_file",)
 
-    def __init__(self, key_file: pathlib.PurePath) -> None:
-        """
-        Initialize this authenticator with a path to a private key.
+    def __init__(
+        self, key_file: typing.Union[str, linux.Path, pathlib.PurePath]
+    ) -> None:
+        self.key_file = key_file
 
-        :param pathlib.Path key_file: Path to the private key file
-        """
-        self.key_file = pathlib.PurePath.__str__(key_file)
+    def get_key_for_host(self, host: typing.Optional[linux.LinuxShell]) -> str:
+        if isinstance(self.key_file, str):
+            return self.key_file
+        elif isinstance(self.key_file, pathlib.PurePath):
+            return str(self.key_file)
+        elif isinstance(self.key_file, linux.Path):
+            if host is not None:
+                assert (
+                    self.key_file.host is host
+                ), f"Private key is associated with wrong host"
+            return self.key_file._local_str()
 
 
-class NoneAuthenticator(Authenticator):
+class NoneAuthenticator(AuthenticatorBase):
     """
-    Authenticates without key or password.
+    Most primitive authenticator.
 
-    Useful if an ssh-agent is running in the background on lab-hosts.
-
-    .. versionadded:: 0.6.4
+    Tries not passing any specific credentials and hopes ssh-config already
+    contains all necessary infos.  This is the default.
     """
+
+    pass
+
+
+class UndefinedAuthenticator(AuthenticatorBase):
+    # Python has no real union types which could be used to ensure all variants
+    # are checked in code.  As a workaround, the else-branch should access this
+    # _undefined_marker property like this:
+    #
+    #     else:
+    #         if typing.TYPE_CHECKING:
+    #             authenticator._undefined_marker
+    #         raise ValueError(f"Unknown authenticator {authenticator!r}")
+    #
+    # mypy will then raise an error if any variants were not checked in
+    # elif-blocks beforehand.
+    _undefined_marker = None
+
+
+Authenticator = typing.Union[
+    PasswordAuthenticator,
+    PrivateKeyAuthenticator,
+    NoneAuthenticator,
+    UndefinedAuthenticator,
+]

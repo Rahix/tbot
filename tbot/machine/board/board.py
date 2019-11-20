@@ -1,5 +1,5 @@
 # tbot, Embedded Automation Tool
-# Copyright (C) 2018  Harald Seiler
+# Copyright (C) 2019  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,149 +16,104 @@
 
 import abc
 import contextlib
-import time
 import typing
 import tbot
-from tbot.machine import linux, channel
-
-Self = typing.TypeVar("Self", bound="Board")
+from .. import machine, shell, connector, channel
 
 
-class Board(contextlib.AbstractContextManager):
+class PowerControl(machine.Initializer):
     """
-    Abstract base class for boards.
+    Machine-initializer for controlling power for a hardware.
 
-    **Implementation example**::
-
-        from tbot.machine import board
-        from tbot.machine import channel
-        from tbot.machine import linux
-
-        class MyBoard(board.Board):
-            name = "my-board"
-
-            def poweron(self) -> None:
-                # Command to power on the board
-                self.lh.exec0("poweron", self.name)
-
-            def poweroff(self) -> None:
-                # Command to power off the board
-                self.lh.exec0("poweroff", self.name)
-
-            def connect(self) -> channel.Channel:
-                return self.lh.new_channel(
-                    "picocom",
-                    "-b",
-                    "115200",
-                    linux.Path(self.lh, "/dev") / f"tty-{self.name}",
-                )
+    When initializing, :py:meth:`~tbot.machine.board.PowerControl.poweron` is
+    called and when deinitializing,
+    :py:meth:`~tbot.machine.board.PowerControl.poweroff` is called.
     """
-
-    @property
-    def connect_wait(self) -> typing.Optional[float]:
-        """
-        Time to wait after connecting before powering on (:class:`float`).
-
-        This is supposed to allow telnet/rlogin/whatever to take some time
-        to establish the connection.
-        """
-        pass
-
-    @property
-    @abc.abstractmethod
-    def name(self) -> str:
-        """Name of this board."""
-        pass
-
-    def console_check(self) -> None:
-        """
-        Run this check before actually interacting with the board.
-
-        This hook allows you to ensure the console is unoccupied so you
-        don't accidentally interfere with other developers.
-
-        Return if the console if ok, raise an Exception if it is not.
-
-        .. note::
-            If the connect command fails in less than ``connect_wait``
-            seconds, this check is not needed.  It is, however, definitely
-            the safer way.
-        """
-        pass
 
     @abc.abstractmethod
     def poweron(self) -> None:
-        """Power on this board."""
+        """
+        Power-on the hardware.
+
+        If the machine is using the
+        :py:class:`~tbot.machine.connector.ConsoleConnector`, you can use
+        ``self.host.exec0()`` to run commands on the lab-host.
+
+        **Example**:
+
+        .. code-block::
+
+            def poweron(self):
+                self.host.exec0("power-control.sh", "on")
+        """
         pass
 
     @abc.abstractmethod
     def poweroff(self) -> None:
-        """Power off this board."""
-        pass
-
-    def connect(self) -> typing.Optional[channel.Channel]:
-        """Connect to the serial port of this board."""
-        return None
-
-    def cleanup(self) -> None:
         """
-        Cleanup the connection.
-
-        Might be necessary if the tbot's default behaviour
-        of just killing the shell leaves lock files behind.
+        Power-off the hardware.
         """
         pass
 
-    def __init__(self, lh: linux.LabHost) -> None:
+    def power_check(self) -> bool:
         """
-        Initialize an instance of this board.
+        Check if the board is already on and someone else might be using it.
 
-        This will not yet power on the board. For that you need to use a ``with``
-        block::
-
-            with MyBoard(lh) as b:
-                ...
-
-        :param tbot.machine.linux.LabHost lh: LabHost from where to connect to the Board.
+        Implementations of this function should raise an exception in case they
+        detect the board to be on or return ``False``.  If the board is off and
+        ready to be used, an implementation should return ``True``.
         """
-        self.lh = lh
-        self.channel = self.connect()
-        if self.connect_wait is not None:
-            time.sleep(self.connect_wait)
-        if self.channel is not None and not self.channel.isopen():
-            raise RuntimeError("Could not connect to board!")
-        self._rc = 0
+        return True
 
-        if self.channel is not None:
+    @contextlib.contextmanager
+    def _init_machine(self) -> typing.Iterator:
+        if not self.power_check():
+            raise Exception("Board is already on, someone else might be using it!")
 
-            def cleaner(_: channel.Channel) -> None:
-                self.cleanup()
-
-            self.channel.register_cleanup(cleaner)
-
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.lh!r})"
-
-    def __enter__(self: Self) -> Self:
-        self._rc += 1
-        if self._rc > 1:
-            return self
-        self.console_check()
-        tbot.log.EventIO(
-            ["board", "on", self.name],
-            tbot.log.c("POWERON").bold + f" ({self.name})",
-            verbosity=tbot.log.Verbosity.QUIET,
-        )
-        self.poweron()
-        self.on = True
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback) -> None:  # type: ignore
-        self._rc -= 1
-        if self._rc == 0:
+        try:
+            tbot.log.EventIO(
+                ["board", "on", self.name],
+                tbot.log.c("POWERON").bold + f" ({self.name})",
+                verbosity=tbot.log.Verbosity.QUIET,
+            )
+            self.poweron()
+            yield None
+        finally:
             tbot.log.EventIO(
                 ["board", "off", self.name],
                 tbot.log.c("POWEROFF").bold + f" ({self.name})",
                 verbosity=tbot.log.Verbosity.QUIET,
             )
             self.poweroff()
+
+
+class Board(shell.RawShell):
+    """
+    Base class for board-machines.
+
+    This class does nothing special except providing the ``.interactive()``
+    method for directly interacting with the serial-console.
+    """
+
+    pass
+
+
+class Connector(connector.Connector):
+    def __init__(self, board: typing.Union[Board, channel.Channel]) -> None:
+        if not (isinstance(board, Board) or isinstance(board, channel.Channel)):
+            raise TypeError(
+                f"{self.__class__!r} can only be instanciated from a `Board` (got {board!r})."
+            )
+        self._board = board
+        self.host = getattr(board, "host", None)
+
+    @contextlib.contextmanager
+    def _connect(self) -> typing.Iterator[channel.Channel]:
+        if isinstance(self._board, channel.Channel):
+            yield self._board
+        else:
+            with self._board.ch.borrow() as ch:
+                yield ch
+
+    def clone(self) -> typing.NoReturn:
+        raise NotImplementedError("abstract method")

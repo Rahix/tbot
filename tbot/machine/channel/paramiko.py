@@ -1,5 +1,5 @@
 # tbot, Embedded Automation Tool
-# Copyright (C) 2018  Harald Seiler
+# Copyright (C) 2019  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,89 +14,62 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import shutil
+import paramiko
 import socket
 import typing
-import paramiko
+
 from . import channel
 
+READ_CHUNK_SIZE = 4096
 
-class ParamikoChannel(channel.Channel):
-    """Paramiko based channel."""
+
+class ParamikoChannelIO(channel.ChannelIO):
+    __slots__ = ("ch",)
 
     def __init__(self, ch: paramiko.Channel) -> None:
-        """
-        Create a new tbot channel based on a Paramiko channel.
-
-        :param paramiko.Channel ch: Paramiko Channel
-        """
         self.ch = ch
 
         self.ch.get_pty("xterm-256color", 80, 25, 1024, 1024)
         self.ch.invoke_shell()
+        self.ch.settimeout(0.0)
 
-        super().__init__()
-
-    def send(self, data: typing.Union[bytes, str]) -> None:  # noqa: D102
-        if self.ch.exit_status_ready():
+    def write(self, buf: bytes) -> int:
+        if self.closed:
             raise channel.ChannelClosedException()
 
-        data = data if isinstance(data, bytes) else data.encode("utf-8")
-        self._debug_log(data, True)
+        channel._debug_log(buf, True)
+        bytes_written = self.ch.send(buf)
+        if bytes_written == 0:
+            raise channel.ChannelClosedException()
+        return bytes_written
 
-        length = len(data)
-        c = 0
-        while c < length:
-            b = self.ch.send(data[c:])
-            if b == 0:
-                raise channel.ChannelClosedException()
-            c += b
-
-    def recv(
-        self, timeout: typing.Optional[float] = None, max: typing.Optional[int] = None
-    ) -> bytes:  # noqa: D102
-        if timeout is not None:
-            self.ch.settimeout(timeout)
+    def read(self, n: int, timeout: typing.Optional[float] = None) -> bytes:
+        self.ch.settimeout(timeout)
 
         try:
-            maxread = min(1024, max) if max else 1024
-            buf = self.ch.recv(maxread)
-            self._debug_log(buf)
-
-            while self.ch.recv_ready():
-                maxread = min(1024, max - len(buf)) if max else 1024
-                if maxread == 0:
-                    break
-
-                new = self.ch.recv(maxread)
-                buf += new
-                self._debug_log(new)
+            return channel._debug_log(self.ch.recv(n))
         except socket.timeout:
             raise TimeoutError()
         finally:
-            if timeout is not None:
-                self.ch.settimeout(None)
+            self.ch.settimeout(0.0)
 
-        if buf == b"":
+    def close(self) -> None:
+        if self.closed:
             raise channel.ChannelClosedException()
 
-        return buf
-
-    def close(self) -> None:  # noqa: D102
-        if self.isopen():
-            self.cleanup()
         self.ch.close()
 
-    def fileno(self) -> int:  # noqa: D102
+    def fileno(self) -> int:
         return self.ch.fileno()
 
-    def isopen(self) -> bool:  # noqa: D102
-        return not self.ch.exit_status_ready()
+    @property
+    def closed(self) -> bool:
+        return self.ch.exit_status_ready()
 
-    def _interactive_setup(self) -> None:  # noqa: D102
-        size = shutil.get_terminal_size()
-        self.ch.resize_pty(size.columns, size.lines, 1024, 1024)
-        self.ch.settimeout(0.0)
+    def update_pty(self, columns: int, lines: int) -> None:
+        self.ch.resize_pty(columns, lines, 1024, 1024)
 
-    def _interactive_teardown(self) -> None:  # noqa: D102
-        self.ch.settimeout(None)
+
+class ParamikoChannel(channel.Channel):
+    def __init__(self, ch: paramiko.Channel) -> None:
+        super().__init__(ParamikoChannelIO(ch))

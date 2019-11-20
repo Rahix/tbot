@@ -1,5 +1,5 @@
 # tbot, Embedded Automation Tool
-# Copyright (C) 2018  Harald Seiler
+# Copyright (C) 2019  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@ import io
 import itertools
 import json
 import os
+import re
 import sys
 import time
 import typing
@@ -75,11 +76,13 @@ class Verbosity(enum.IntEnum):
         return super(Verbosity, self).__str__().split(".")[-1]
 
 
-NESTING = 0
+NESTING = -1
 INTERACTIVE = False
 VERBOSITY = Verbosity.COMMAND
 LOGFILE: typing.Optional[typing.TextIO] = None
 START_TIME = time.monotonic()
+
+_SPLIT_PATTERN = re.compile("(\r|\n)")
 
 
 class EventIO(io.StringIO):
@@ -111,11 +114,15 @@ class EventIO(io.StringIO):
         self.verbosity = verbosity
         self.ty = ty
         self.data = kwargs
+        self._nextline = True
 
         if initial:
             self.writeln(str(initial))
 
     def _prefix(self) -> str:
+        if NESTING == -1:
+            return ""
+
         after = self.nest_first if self.first else u("│ ", "| ")
         self.first = False
         prefix: str = self.prefix or ""
@@ -124,22 +131,28 @@ class EventIO(io.StringIO):
             + prefix
         )
 
-    def _print_lines(self, last: bool = False) -> None:
+    def _print_stdout(self, last: bool = False) -> None:
         buf = self.getvalue()[self.cursor :]
 
         if self.verbosity > VERBOSITY:
             return
 
-        while "\n" in buf:
-            line = buf.split("\n", maxsplit=1)[0]
-            print(self._prefix() + c(line))
-            length = len(line) + 1
-            self.cursor += length
-            buf = buf[length:]
-            self.first = False
+        for fragment in (f for f in _SPLIT_PATTERN.split(buf) if f != ""):
+            if self._nextline:
+                sys.stdout.write(self._prefix() + c(""))
+                self._nextline = False
 
-        if last and buf != "":
-            print(self._prefix() + buf)
+            if fragment in ["\r", "\n"]:
+                self._nextline = True
+
+            sys.stdout.write(fragment)
+
+        if last and not self._nextline:
+            sys.stdout.write("\n")
+            self._nextline = True
+
+        self.cursor += len(buf)
+        sys.stdout.flush()
 
     def writeln(self, s: typing.Union[str, _TC]) -> int:
         """Add a line to this log event."""
@@ -159,12 +172,13 @@ class EventIO(io.StringIO):
             .replace("\x1B[K", "")
             .replace("\x1B[r", "")
             .replace("\x1B[u", "")
-            .replace("\x08", "")
+            .replace("\r\n", "\n")
+            .replace("\n\r", "\n")
         )
 
         res = super().write(s)
 
-        self._print_lines()
+        self._print_stdout()
 
         return res
 
@@ -178,7 +192,7 @@ class EventIO(io.StringIO):
         No more text can be added to this log event after
         closing it.
         """
-        self._print_lines(last=True)
+        self._print_stdout(last=True)
 
         if LOGFILE is not None:
             ev = {
@@ -219,3 +233,17 @@ def warning(msg: typing.Union[str, _TC]) -> EventIO:
     .. versionadded:: 0.6.3
     """
     return message(c("Warning").yellow.bold + ": " + msg, Verbosity.QUIET)
+
+
+def skip(what: typing.Union[str, _TC]) -> EventIO:
+    """
+    Emit a testcase skip message.
+
+    :param str what: What test is being skipped
+
+    .. deprecated:: 0.8
+
+        Use :py:func:`tbot.skip` instead.
+    """
+    warning("tbot.log.skip() is deprecated.  Use tbot.skip() instead.")
+    return message(c("Skip").yellow.bold + " " + what, Verbosity.INFO)

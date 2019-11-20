@@ -3,6 +3,44 @@
 ## [Unreleased]
 
 
+## [0.8.0] - 2019-11-20
+The machine interface was completely overhauled.  Please read the [migration
+guide](https://tbot.tools/migration.html) for more info.
+
+### Added
+- `@tbot.with_lab`, `@tbot.with_uboot`, and `@tbot.with_linux` decorators to
+  make writing testcase much simpler
+- `linux.RedirStdout(f)` & `linux.RedirStderr(f)`: Redirect stdout and stderr symbols
+- `Machine.init()` hook to call custom code after the machine was initialized.
+  This can be used, for example, to init network manually in U-Boot.
+- `tc.shell.check_for_tool()` testcase
+- `tbot.skip()`: Skip a testcase
+- `Machine.clone()`: Attempt creating a copy of a machine.  The two copies
+  allow parallel interaction with the same host.
+
+### Changed
+- `linux.BuildMachine` is now a mixin called `linux.Builder`
+- `linux.LabHost` is now a mixin called `linux.Lab`
+- `linux.LinuxMachine` should be replaced by `linux.LinuxShell`
+- `LabHost.new_channel()` was removed in favor of `LinuxShell.open_channel()`.
+  `open_channel()` consumes the machine it is called on which means the
+  equivalent to `new_channel()` now is:
+
+  ```python
+  with mach.clone() as cl:
+      chan = cl.open_channel("telnet", "192.0.2.1")
+  ```
+
+### Removed
+- `exec0(stdout=f)`: Redirection should be done using `RedirStdout`.
+- `linux.Env(var)`: Environment-Variable substitution is hard to control.  It
+  is much easier to just use `mach.env(var)`.
+
+### Fixed
+- `Path.__fspath__()` erroneously returning a result, even though the contract
+  that is assumed with this method cannot be upheld by tbot.
+
+
 ## [0.7.1] - 2019-03-14
 ### Added
 - `tbot.acquire_local()`: Quick access to a localhost machine
@@ -462,7 +500,7 @@ Version **0.6.0** is basically a complete rewrite of TBot.  A rough summary of c
 - Fix KeyErrors not displaying the full path to the failing key
 
 
-## [0.2.0] - 2018-05-04
+## 0.2.0 - 2018-05-04
 ### Changed
 - Use custom bash completions instead of argcomplete
 - Make the HTMLLog generator use a template. Eases development
@@ -478,3 +516,30 @@ Version **0.6.0** is basically a complete rewrite of TBot.  A rough summary of c
   some testcases not working because exports they depend on
   were loaded later
 - Fix `call_then` not returning the function itself
+
+[Unreleased]: https://github.com/Rahix/tbot/compare/v0.8.0...development
+[0.8.0]: https://github.com/Rahix/tbot/compare/v0.7.1...v0.8.0
+[0.7.1]: https://github.com/Rahix/tbot/compare/v0.7.0...v0.7.1
+[0.7.0]: https://github.com/Rahix/tbot/compare/v0.6.6...v0.7.0
+[0.6.6]: https://github.com/Rahix/tbot/compare/v0.6.5...v0.6.6
+[0.6.5]: https://github.com/Rahix/tbot/compare/v0.6.4...v0.6.5
+[0.6.4]: https://github.com/Rahix/tbot/compare/v0.6.3...v0.6.4
+[0.6.3]: https://github.com/Rahix/tbot/compare/v0.6.2...v0.6.3
+[0.6.2]: https://github.com/Rahix/tbot/compare/v0.6.1...v0.6.2
+[0.6.1]: https://github.com/Rahix/tbot/compare/v0.6.0...v0.6.1
+[0.6.0]: https://github.com/Rahix/tbot/compare/v0.6.0-pre08...v0.6.0
+[0.6.0-pre08]: https://github.com/Rahix/tbot/compare/v0.6.0-pre07...v0.6.0-pre08
+[0.6.0-pre07]: https://github.com/Rahix/tbot/compare/v0.6.0-pre06...v0.6.0-pre07
+[0.6.0-pre06]: https://github.com/Rahix/tbot/compare/v0.6.0-pre05...v0.6.0-pre06
+[0.6.0-pre05]: https://github.com/Rahix/tbot/compare/v0.6.0-pre04...v0.6.0-pre05
+[0.6.0-pre04]: https://github.com/Rahix/tbot/compare/v0.6.0-pre...v0.6.0-pre04
+[0.6.0-pre]: https://github.com/Rahix/tbot/compare/v0.3.4...v0.6.0-pre
+[0.3.4]: https://github.com/Rahix/tbot/compare/v0.3.3...v0.3.4
+[0.3.3]: https://github.com/Rahix/tbot/compare/v0.3.2...v0.3.3
+[0.3.2]: https://github.com/Rahix/tbot/compare/v0.3.1...v0.3.2
+[0.3.1]: https://github.com/Rahix/tbot/compare/v0.3.0...v0.3.1
+[0.3.0]: https://github.com/Rahix/tbot/compare/v0.2.4...v0.3.0
+[0.2.4]: https://github.com/Rahix/tbot/compare/v0.2.3...v0.2.4
+[0.2.3]: https://github.com/Rahix/tbot/compare/v0.2.2...v0.2.3
+[0.2.2]: https://github.com/Rahix/tbot/compare/v0.2.1...v0.2.2
+[0.2.1]: https://github.com/Rahix/tbot/compare/v0.2.0...v0.2.1

@@ -1,3 +1,19 @@
+# tbot, Embedded Automation Tool
+# Copyright (C) 2019  Harald Seiler
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import typing
 import tbot
 from tbot.machine import linux
@@ -7,7 +23,7 @@ __all__ = ("selftest_tc_kconfig",)
 
 
 @tbot.testcase
-def selftest_tc_kconfig(lab: typing.Optional[linux.LabHost] = None) -> None:
+def selftest_tc_kconfig(lab: typing.Optional[linux.Lab] = None) -> None:
     """Test kconig setting."""
     with lab or tbot.acquire_lab() as lh:
         conf = lh.workdir / "selftest-kconfig"
@@ -24,7 +40,7 @@ CONFIG_BAR=m
 # CONFIG_BAZ is not set
 CONFIG_STRING="a happy string"
 CONFIG_HEX=0xC0FFEE""",
-                stdout=conf,
+                linux.RedirStdout(conf),
             )
 
             if i == 0:

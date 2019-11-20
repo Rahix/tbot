@@ -22,6 +22,6 @@ setup(
         "console_scripts": ["tbot = tbot.main:main"]
     },
     data_files=[
-        ("man/man1", ["doc/tbot.1"]),
+        ("man/man1", ["Documentation/tbot.1"]),
     ],
 )

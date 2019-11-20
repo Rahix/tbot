@@ -1,20 +1,11 @@
-from tbot import machine
-from tbot.machine import linux
-from tbot.machine import channel
+from tbot.machine import connector, linux, shell
 
 
-class DummyMach(machine.Machine):
+class DummyMach(connector.SubprocessConnector, shell.RawShell):
     name = "dummy"
 
-    @property
-    def lh(self) -> linux.LabHost:
-        raise NotImplementedError()
 
-    def destroy(self) -> None:
-        pass
-
-
-class DummyLinuxMach(linux.LinuxMachine):
+class DummyLinuxMach(connector.SubprocessConnector, linux.Bash):
     name = "dummy-linux"
     username = "root"
 
@@ -22,18 +13,8 @@ class DummyLinuxMach(linux.LinuxMachine):
     def workdir(self) -> "linux.Path[DummyLinuxMach]":
         return linux.Path(self, "/tmp/foo")
 
-    def destroy(self) -> None:
-        pass
 
-    @property
-    def lh(self) -> linux.LabHost:
-        raise NotImplementedError()
-
-    def _obtain_channel(self) -> channel.Channel:
-        raise NotImplementedError()
-
-
-class DummyLinuxMach2(linux.LinuxMachine):
+class DummyLinuxMach2(connector.SubprocessConnector, linux.Bash):
     name = "dummy-linux"
     username = "root"
 
@@ -41,16 +22,6 @@ class DummyLinuxMach2(linux.LinuxMachine):
     def workdir(self) -> "linux.Path[DummyLinuxMach2]":
         return linux.Path(self, "/tmp/foo")
 
-    def destroy(self) -> None:
-        pass
-
-    @property
-    def lh(self) -> linux.LabHost:
-        raise NotImplementedError()
-
-    def _obtain_channel(self) -> channel.Channel:
-        raise NotImplementedError()
-
 
 def test_dummy() -> None:
-    mach = DummyMach()
+    DummyMach()

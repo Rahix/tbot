@@ -1,5 +1,5 @@
 # tbot, Embedded Automation Tool
-# Copyright (C) 2018  Harald Seiler
+# Copyright (C) 2019  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,8 +20,8 @@ import tbot
 from tbot.machine import linux
 from tbot.tc import git
 
-H = typing.TypeVar("H", bound=linux.LinuxMachine)
-BH = typing.TypeVar("BH", bound=linux.BuildMachine)
+H = typing.TypeVar("H", bound=linux.LinuxShell)
+BH = typing.TypeVar("BH", bound=linux.Builder)
 
 
 class UBootBuilder(abc.ABC):
@@ -38,7 +38,10 @@ class UBootBuilder(abc.ABC):
     To make tbot aware of this config, you need to tell it in your
     U-Boot config::
 
-        class MyUBootMachine(board.UBootMachine):
+        class MyUBootMachine(
+            board.Connector,
+            board.UBootShell,
+        ):
             # Create a builder instance
             build = MyUBootBuilder()
 
@@ -57,7 +60,7 @@ class UBootBuilder(abc.ABC):
         """Name of this builder."""
         pass
 
-    remote = "git://git.denx.de/u-boot.git"
+    remote = "https://git.denx.de/u-boot.git"
     """
     Where to fetch U-Boot from.
     """
@@ -81,10 +84,10 @@ class UBootBuilder(abc.ABC):
         The default path is ``$workdir/uboot-$name``.  Overwrite this
         step to set a custom path::
 
-            def do_repo_path(self, bh: linux.LinuxMachine) -> linux.Path:
+            def do_repo_path(self, bh: linux.Builder) -> linux.Path:
                 return bh.workdir / "projects" / "foo" / "uboot"
 
-        :param linux.LinuxMachine bh: Selected build-host.  The returned
+        :param linux.Builder bh: Selected build-host.  The returned
             path **must** be associated with this machine.
         :rtype: linux.Path
         :returns: Path to the U-Boot build directory
@@ -210,7 +213,8 @@ class UBootBuilder(abc.ABC):
 
             repo = builder.do_checkout(path, clean)
             builder.do_patch(repo)
-            return repo
+
+        return repo
 
     @tbot.named_testcase("uboot_build")
     def _build(
@@ -221,7 +225,7 @@ class UBootBuilder(abc.ABC):
         unpatched_repo: typing.Optional[git.GitRepository[BH]] = None,
         path: typing.Optional[linux.Path[BH]] = None,
         host: typing.Optional[BH] = None,
-        lab: typing.Optional[linux.LabHost] = None,
+        lab: typing.Optional[linux.Lab] = None,
     ) -> git.GitRepository[BH]:
         """
         Build U-Boot.
@@ -258,7 +262,7 @@ class UBootBuilder(abc.ABC):
             but also apply patches.
         :param linux.Path path:  Checkout U-Boot to ``path``.
         :param linux.BuildMachine host:  Build U-Boot on this host.
-        :param linux.LabHost lab:  Build U-Boot on the default build-host of this lab.
+        :param linux.Lab lab:  Build U-Boot on the default build-host of this lab.
         :rtype: git.GitRepository
         :returns:  Location of the U-Boot tree containing build artifacts
         """
@@ -310,7 +314,8 @@ class UBootBuilder(abc.ABC):
 
                 uboot_make(host)
 
-            return repo
+        assert repo is not None
+        return repo
 
     # We have to wrap the actual testcases so mypy does not complain
     # about invalid method signatures
@@ -336,7 +341,7 @@ class UBootBuilder(abc.ABC):
         unpatched_repo: typing.Optional[git.GitRepository[BH]] = None,
         path: typing.Optional[linux.Path[BH]] = None,
         host: typing.Optional[BH] = None,
-        lab: typing.Optional[linux.LabHost] = None,
+        lab: typing.Optional[linux.Lab] = None,
     ) -> git.GitRepository[BH]:
         """
         Build U-Boot.

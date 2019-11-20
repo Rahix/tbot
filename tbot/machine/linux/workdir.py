@@ -1,5 +1,5 @@
 # tbot, Embedded Automation Tool
-# Copyright (C) 2018  Harald Seiler
+# Copyright (C) 2019  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,13 +15,13 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import typing
-from tbot.machine import linux
 
-H = typing.TypeVar("H", bound=linux.LinuxMachine)
+from . import path, linux_shell
+from .path import H
 
 
-class Workdir:
-    """Helper for defining a machines workdir."""
+class Workdir(path.Path[H]):
+    _workdirs: "typing.Dict[typing.Tuple[linux_shell.LinuxShell, str], Workdir]" = {}
 
     def __init__(self) -> None:  # noqa: D107
         raise NotImplementedError(
@@ -29,65 +29,58 @@ class Workdir:
         )
 
     @classmethod
-    def static(cls, host: H, path: str) -> linux.Path[H]:
+    def static(cls, host: H, pathstr: str) -> "Workdir[H]":
         """
-        Create a new static workdir.
+        Create a workdir in a static location, described by ``pathstr``.
 
-        Should be used inside the :meth:`~tbot.machine.linux.LinuxMachine.workdir`
-        method, like this::
+        **Example**:
 
-            class MyMachine(...):
-                ...
+        .. code-block:: python
 
-                @property
-                def workdir(self) -> "linux.Path[MyMachine]":
-                    return linux.Workdir.static(self, "/tmp/tbot-workdir")
+            with tbot.acquire_lab() as lh:
+                workdir = linux.Workdir.static(lh, "/tmp/tbot-my-workdir")
 
-        :param linux.LinuxMachine host: Host for which this workdir should be
-            defined.
-        :param str path: Fixed workdir path
-        :rtype: linux.Path
-        :returns: A tbot-path to the workdir
+        :param LinuxShell host: Machine where the workdir should be created
+        :param str pathstr: Path for the workdir
+        :rtype: tbot.machine.linux.Path
+        :returns: A tbot path to the workdir which is now guaranteed to exist
         """
-        p = linux.Path(host, path)
-
-        if not hasattr(host, "_wd_path"):
-            if not p.is_dir():
-                host.exec0("mkdir", "-p", p)
-
-            setattr(host, "_wd_path", p)
-
-        return typing.cast(linux.Path[H], getattr(host, "_wd_path"))
+        key = (host, pathstr)
+        try:
+            return Workdir._workdirs[key]
+        except KeyError:
+            p = typing.cast(Workdir, path.Path(host, pathstr))
+            host.exec0("mkdir", "-p", p)
+            Workdir._workdirs[key] = p
+            return p
 
     @classmethod
-    def athome(cls, host: H, subdir: str) -> linux.Path[H]:
+    def athome(cls, host: H, subdir: str) -> "Workdir[H]":
         """
-        Create a new workdir below the users home.
+        Create a workdir below the current users home directory.
 
-        Should be used inside the :meth:`~tbot.machine.linux.LinuxMachine.workdir`
-        method, like this::
+        **Example**:
 
-            class MyMachine(...):
-                ...
+        .. code-block:: python
 
-                @property
-                def workdir(self) -> "linux.Path[MyMachine]":
-                    return linux.Workdir.athome(self, "tbot-work")
+            with tbot.acquire_lab() as lh:
+                # Use ~/.local/share/tbot-foo-dir
+                workdir = linux.Workdir.athome(lh, ".local/share/tbot-foo-dir")
 
-        :param linux.LinuxMachine host: Host for which this workdir should be
-            defined.
-        :param str subdir: Name of the subdirectory in $HOME which should be
-            used as a workdir.
-        :rtype: linux.Path
-        :returns: A tbot-path to the workdir
+        tbot will query the ``$HOME`` environment variable for the location of
+        the current users home directory.
+
+        :param LinuxShell host: Machine where the workdir should be created
+        :param str subdir: Subdirectory of the user's home where the workdir should be created
+        :rtype: tbot.machine.linux.Path
+        :returns: A tbot path to the workdir which is now guaranteed to exist
         """
-        home = host.exec0("echo", linux.Env("HOME")).strip("\n")
-        p = linux.Path(host, home) / subdir
-
-        if not hasattr(host, "_wd_path"):
-            if not p.is_dir():
-                host.exec0("mkdir", "-p", p)
-
-            setattr(host, "_wd_path", p)
-
-        return typing.cast(linux.Path[H], getattr(host, "_wd_path"))
+        key = (host, subdir)
+        try:
+            return Workdir._workdirs[key]
+        except KeyError:
+            home = host.env("HOME")
+            p = typing.cast(Workdir, path.Path(host, home) / subdir)
+            host.exec0("mkdir", "-p", p)
+            Workdir._workdirs[key] = p
+            return p

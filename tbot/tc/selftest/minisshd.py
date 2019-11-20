@@ -1,11 +1,27 @@
+# tbot, Embedded Automation Tool
+# Copyright (C) 2019  Harald Seiler
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import getpass
 import typing
 import contextlib
 import tbot
-from tbot.machine import linux
+from tbot.machine import linux, connector
 
 
-class MiniSSHMachine(linux.SSHMachine):
+class MiniSSHMachine(connector.SSHConnector, linux.Bash):
     """SSHMachine for test purposes."""
 
     hostname = "localhost"
@@ -16,12 +32,10 @@ class MiniSSHMachine(linux.SSHMachine):
 
     @property
     def username(self) -> str:
-        """Return local username."""
         return self._username
 
     @property
     def port(self) -> int:
-        """Return local ssh server port."""
         return self._port
 
     @property
@@ -29,33 +43,35 @@ class MiniSSHMachine(linux.SSHMachine):
         """Return a workdir."""
         return linux.Workdir.static(self, "/tmp/tbot-wd/minisshd-remote")
 
-    def __init__(self, labhost: linux.LabHost, port: int) -> None:
+    def __init__(self, labhost: linux.Lab, port: int) -> None:
         """Create a new MiniSSHMachine."""
         self._port = port
-        self._username = labhost.username
+        self._username = labhost.env("USER")
 
         super().__init__(labhost)
 
 
-class MiniSSHLabHost(linux.lab.SSHLabHost):
-    """SSHLabHost for test purposes."""
-
-    hostname = "localhost"
+class MiniSSHLabHostBase(linux.Bash):
     name = "minissh-lab"
-    ignore_hostkey = True
+
+    @property
+    def hostname(self) -> str:
+        return "localhost"
+
+    @property
+    def ignore_hostkey(self) -> bool:
+        return True
 
     @property
     def username(self) -> str:
-        """Return local username."""
         return self._username
 
     @property
     def port(self) -> int:
-        """Return local ssh server port."""
         return self._port
 
     @property
-    def workdir(self) -> "linux.Path[MiniSSHLabHost]":
+    def workdir(self) -> linux.Path:
         """Return a workdir."""
         return linux.Workdir.static(self, "/tmp/tbot-wd/minisshd-remote")
 
@@ -67,15 +83,23 @@ class MiniSSHLabHost(linux.lab.SSHLabHost):
         super().__init__()
 
 
+class MiniSSHLabHostParamiko(MiniSSHLabHostBase, connector.ParamikoConnector):
+    name = "minissh-lab-paramiko"
+
+
+class MiniSSHLabHostSSH(MiniSSHLabHostBase, connector.SSHConnector):
+    name = "minissh-lab-ssh"
+
+
 @tbot.testcase
-def check_minisshd(h: linux.LabHost) -> bool:
+def check_minisshd(h: linux.Lab) -> bool:
     """Check if this host can run a minisshd."""
     return h.test("which", "dropbear")
 
 
 @tbot.testcase
 @contextlib.contextmanager
-def minisshd(h: linux.LabHost, port: int = 2022) -> typing.Generator:
+def minisshd(h: linux.Lab, port: int = 2022) -> typing.Generator:
     """
     Create a new minisshd server and machine.
 
@@ -85,7 +109,7 @@ def minisshd(h: linux.LabHost, port: int = 2022) -> typing.Generator:
             with minisshd(lh) as ssh:
                 ssh.exec0("uname", "-a")
 
-    :param linux.LabHost h: lab-host
+    :param linux.Lab h: lab-host
     :param int port: Port for the ssh server, defaults to ``2022``.
     :rtype: MiniSSHMachine
     """
@@ -111,8 +135,8 @@ def minisshd(h: linux.LabHost, port: int = 2022) -> typing.Generator:
         raise RuntimeError("dropbear did not create a pid-file!")
 
     try:
-        ssh_machine = MiniSSHMachine(h, port)
-        yield ssh_machine
+        with MiniSSHMachine(h, port) as ssh_machine:
+            yield ssh_machine
     finally:
         tbot.log.message("Stopping dropbear ...")
         h.exec0("kill", pid)

@@ -1,9 +1,7 @@
-from .machine import Machine, InteractiveMachine
-from .error import CommandFailedException, WrongHostException
+from . import board
+from . import connector
+from . import shell
+from . import linux
+from .machine import Machine, Initializer
 
-__all__ = (
-    "Machine",
-    "InteractiveMachine",
-    "CommandFailedException",
-    "WrongHostException",
-)
+__all__ = ("Machine", "board", "connector", "linux", "shell", "Initializer")

@@ -1,5 +1,5 @@
 # tbot, Embedded Automation Tool
-# Copyright (C) 2018  Harald Seiler
+# Copyright (C) 2019  Harald Seiler
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,9 +18,9 @@ import os
 import errno
 import typing
 import pathlib
-from tbot.machine import linux  # noqa: F401
+from .. import linux  # noqa: F401
 
-H = typing.TypeVar("H", bound="linux.LinuxMachine")
+H = typing.TypeVar("H", bound="linux.LinuxShell")
 
 
 class Path(pathlib.PurePosixPath, typing.Generic[H]):
@@ -50,8 +50,8 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
         """
         Create a new path instance.
 
-        :param linux.LinuxMachine host: Host this path should be associated with
-        :param args: pathlib.PurePosixPath constructor arguments
+        :param linux.LinuxShell host: Host this path should be associated with
+        :param args: :py:class:`pathlib.PurePosixPath` constructor arguments
         :rtype: Path
         :returns: A path associated with host
         """
@@ -61,8 +61,8 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
         """
         Create a new path.
 
-        :param linux.LinuxMachine host: Host this path should be associated with
-        :param args: pathlib.PurePosixPath constructor arguments
+        :param linux.LinuxShell host: Host this path should be associated with
+        :param args: :py:class:`pathlib.PurePosixPath` constructor arguments
         """
         self._host = host
 
@@ -147,3 +147,6 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self._host!r}, {super().__str__()!r})"
+
+    def __fspath__(self) -> str:
+        raise NotImplementedError("__fspath__ does not exist for tbot paths!")
