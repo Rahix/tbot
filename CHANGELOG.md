@@ -1,6 +1,12 @@
 # Changelog
 
 ## [Unreleased]
+### Fixed
+- Fixed U-Boot and board-Linux not saving the bootlog to the log-event.
+- Fixed tbot happily printing special characters as part of a command which was
+  sent (in the log).
+- Fixed selftests failing in some rare circumstances because a subprocess
+  is not properly terminated.
 
 
 ## [0.8.0] - 2019-11-20
