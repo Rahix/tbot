@@ -78,6 +78,11 @@ def testcase_end(
     log.NESTING -= 1
 
 
+# Table which maps each control character to its unicode symbol from the
+# "Control Picture" block.
+_CONTROL_MAPPING = {c: 0x2400 + c for c in range(32)}
+
+
 def command(mach: str, cmd: str) -> log.EventIO:
     """
     Log a command's execution.
@@ -88,6 +93,11 @@ def command(mach: str, cmd: str) -> log.EventIO:
     :returns: A stream that the output of the command should
         be written to.
     """
+
+    # Replace all newlines and other special characters in the command string
+    if log.IS_UNICODE:
+        cmd = cmd.translate(_CONTROL_MAPPING)
+
     ev = log.EventIO(
         ["cmd", mach],
         "[" + c(mach).yellow + "] " + c(cmd).dark,
