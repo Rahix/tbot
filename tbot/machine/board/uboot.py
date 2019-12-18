@@ -24,19 +24,30 @@ from .. import shell, machine, channel
 from ..linux import special
 
 
+class UBootStartupEvent(tbot.log.EventIO):
+    def __init__(self, ub: machine.Machine) -> None:
+        self.ub = ub
+        super().__init__(
+            ["board", "uboot", ub.name],
+            tbot.log.c("UBOOT").bold + f" ({ub.name})",
+            verbosity=tbot.log.Verbosity.QUIET,
+        )
+
+        self.verbosity = tbot.log.Verbosity.STDOUT
+        self.prefix = "   <> "
+
+    def close(self) -> None:
+        setattr(self.ub, "bootlog", self.getvalue())
+        self.data["output"] = self.getvalue()
+        super().close()
+
+
 class UbootStartup(machine.Machine):
     _uboot_init_event: typing.Optional[tbot.log.EventIO] = None
 
     def _uboot_startup_event(self) -> tbot.log.EventIO:
         if self._uboot_init_event is None:
-            self._uboot_init_event = tbot.log.EventIO(
-                ["board", "uboot", self.name],
-                tbot.log.c("UBOOT").bold + f" ({self.name})",
-                verbosity=tbot.log.Verbosity.QUIET,
-            )
-
-            self._uboot_init_event.verbosity = tbot.log.Verbosity.STDOUT
-            self._uboot_init_event.prefix = "   <> "
+            self._uboot_init_event = UBootStartupEvent(self)
 
         return self._uboot_init_event
 
@@ -123,6 +134,9 @@ class UBootShell(shell.Shell, UbootStartup):
 
         **Don't forget the trailing space, if your prompt has one!**
     """
+
+    bootlog: str
+    """Transcript of console output during boot."""
 
     @contextlib.contextmanager
     def _init_shell(self) -> typing.Iterator:
