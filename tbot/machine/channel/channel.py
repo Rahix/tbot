@@ -328,13 +328,13 @@ class Channel(typing.ContextManager):
         :param int max: Maximum number of bytes to read.
         :param float timeout: Optional timeout.
         """
-        start_time = time.clock()
+        start_time = time.monotonic()
 
         bytes_read = 0
         while True:
             timeout_remaining = None
             if timeout is not None:
-                timeout_remaining = timeout - (time.clock() - start_time)
+                timeout_remaining = timeout - (time.monotonic() - start_time)
                 if timeout <= 0:
                     raise TimeoutError()
 
