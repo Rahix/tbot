@@ -26,7 +26,7 @@ import typing
 import termcolor2
 
 
-IS_UNICODE = sys.stdout.encoding == "UTF-8"
+IS_UNICODE = sys.stdout.encoding.upper() == "UTF-8"
 IS_COLOR = False
 
 # Taken from https://bixense.com/clicolors/
