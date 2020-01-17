@@ -36,6 +36,7 @@ from .bash import Bash
 from .ash import Ash
 from .build import Builder
 from .lab import Lab
+from .util import RunCommandProxy, CommandEndedException
 from . import auth
 
 __all__ = (
@@ -57,6 +58,8 @@ __all__ = (
     "RedirBoth",
     "Then",
     "Workdir",
+    "RunCommandProxy",
+    "CommandEndedException",
 )
 
 

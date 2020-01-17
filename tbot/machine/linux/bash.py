@@ -152,6 +152,75 @@ class Bash(linux_shell.LinuxShell):
         # space is then cut away again so calling tests don't notice this trick.
         return self.exec0("echo", special.Raw(f'" ${{{self.escape(var)}}}"'))[1:-1]
 
+    @contextlib.contextmanager
+    def run(
+        self: Self, *args: typing.Union[str, special.Special[Self], path.Path[Self]]
+    ) -> typing.Iterator[util.RunCommandProxy]:
+        def cmd_context(
+            proxy_ch: util.RunCommandProxy,
+        ) -> typing.Generator[str, None, typing.Tuple[int, str]]:
+            cmd = self.escape(*args)
+
+            with contextlib.ExitStack() as cx:
+                ev = cx.enter_context(tbot.log_event.command(self.name, cmd))
+                proxy_ch.sendline(cmd, read_back=True)
+                cx.enter_context(proxy_ch.with_stream(ev, show_prompt=False))
+
+                # Set a blacklist of control characters.  These characters are
+                # known to mess up the state of the remote terminal.  They are:
+                proxy_ch._write_blacklist = [
+                    0x03,  # ETX  | End of Text / Interrupt
+                    0x04,  # EOT  | End of Transmission
+                    0x11,  # DC1  | Device Control One (XON)
+                    0x12,  # DC2  | Device Control Two
+                    0x13,  # DC3  | Device Control Three (XOFF)
+                    0x14,  # DC4  | Device Control Four
+                    0x15,  # NAK  | Negative Acknowledge
+                    0x16,  # SYN  | Synchronous Idle
+                    0x17,  # ETB  | End of Transmission Block
+                    0x1A,  # SUB  | Substitute / Suspend Process
+                    0x1C,  # FS   | File Separator
+                    0x7F,  # DEL  | Delete
+                ]
+
+                assert proxy_ch.prompt is not None, "prompt is missing!"
+
+                # During the context (before calling terminate), the prompt
+                # string may never appear in the command output.  If it does
+                # anyway, raise an Exception.
+                #
+                # The exception type is dynamically created here to capture
+                # some variables from the context.  This way, the context knows
+                # of an early exit happening and can behave differently because
+                # of it.
+
+                early_exit = False
+
+                class CommandEndedException(util.CommandEndedException):
+                    def __init__(self, string: bytes):
+                        nonlocal early_exit
+                        early_exit = True
+                        proxy_ch._pre_terminate()
+                        super().__init__(string)
+
+                    def __str__(self) -> str:
+                        return f"The interactive command {cmd!r} exited prematurely."
+
+                with proxy_ch.with_death_string(proxy_ch.prompt, CommandEndedException):
+                    yield cmd
+
+                output = ""
+                if not early_exit:
+                    output = proxy_ch.read_until_prompt()
+                ev.data["stdout"] = ev.getvalue()
+
+            proxy_ch.sendline("echo $?", read_back=True)
+            retcode = int(proxy_ch.read_until_prompt())
+
+            return (retcode, output)
+
+        yield from util.RunCommandProxy._ctx(self.ch, cmd_context)
+
     def open_channel(
         self: Self, *args: typing.Union[str, special.Special[Self], path.Path[Self]]
     ) -> channel.Channel:

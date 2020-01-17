@@ -18,7 +18,7 @@ import abc
 import typing
 import tbot
 from .. import shell, channel
-from . import path, workdir
+from . import path, workdir, util
 from .special import Special
 
 Self = typing.TypeVar("Self", bound="LinuxShell")
@@ -156,6 +156,58 @@ class LinuxShell(shell.Shell):
         :returns: Current (new) value of the environment variable.
         """
         raise NotImplementedError("abstract method")
+
+    def run(
+        self: Self, *args: typing.Union[str, Special[Self], path.Path[Self]]
+    ) -> typing.ContextManager[util.RunCommandProxy]:
+        """
+        Start an interactive command.
+
+        Interactive commands are started in a context-manager.  Inside, direct
+        interaction with the commands stdio is possible using a
+        :py:class:`~tbot.machine.linux.RunCommandProxy`.  **You must call one
+        of the** ``terminate*()`` **methods before leaving the context!**  The
+        proxy object provides an interface similar to pexpect for inteaction
+        (see the methods of the :py:class:`~tbot.machine.channel.Channel` class).
+
+        **Example**:
+
+        .. code-block:: python
+
+            with lh.run("gdb", "-n", exe) as gdb:
+                # Interact with gdb in this context
+                # Wait for gdb to start up
+                gdb.read_until_prompt("(gdb) ")
+
+                # Better for automated interaction
+                gdb.sendline("set confirm off")
+                gdb.read_until_prompt("(gdb) ")
+
+                # Necessary so output is not clobbered with escape sequences
+                gdb.sendline("set style enabled off")
+                gdb.read_until_prompt("(gdb) ")
+
+                gdb.sendline("break main")
+                gdb.read_until_prompt("(gdb) ")
+
+                gdb.sendline("run")
+                # We have hit the breakpoint
+                gdb.read_until_prompt("(gdb) ")
+
+                gdb.sendline("info locals", read_back=True)
+                local_info = gdb.read_until_prompt("(gdb) ").strip()
+
+                for line in local_info.split("\\n"):
+                    var, val = line.split(" = ", 1)
+                    tbot.log.message(f"Local variable `{var}` has value `{val}`!")
+
+                gdb.sendline("quit")
+                gdb.terminate0()
+        """
+        raise NotImplementedError(
+            f"This shell {self.__class__.__name__} does not"
+            + " support running interactive commands!"
+        )
 
     @abc.abstractmethod
     def open_channel(

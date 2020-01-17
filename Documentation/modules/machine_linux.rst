@@ -21,6 +21,8 @@ following methods:
   and ensure it succeeded.
 - :py:meth:`lnx.exec() <tbot.machine.linux.LinuxShell.exec>` - Run command and
   return output and return code.
+- :py:meth:`lnx.run() <tbot.machine.linux.LinuxShell.run>` - Start a command
+  and allow a testcase to interact with its stdio.
 - :py:meth:`lnx.test() <tbot.machine.linux.LinuxShell.test>` - Run command and
   return boolean whether it succeeded.
 - :py:meth:`lnx.env() <tbot.machine.linux.LinuxShell.env>` - Get/Set
@@ -144,6 +146,14 @@ can be used to chain multiple commands or to redirect output.
 
       Only use this if nothing else works!  :py:class:`linux.Raw
       <tbot.machine.linux.Raw>` can quickly lead to hard-to-find bugs.
+
+
+RunCommandProxy
+---------------
+.. autoclass:: tbot.machine.linux.RunCommandProxy
+   :members:
+
+.. autoclass:: tbot.machine.linux.CommandEndedException
 
 
 Paths
