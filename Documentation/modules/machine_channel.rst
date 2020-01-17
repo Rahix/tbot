@@ -34,10 +34,7 @@ are:
   - :py:meth:`~tbot.machine.channel.Channel.send`
   - :py:meth:`~tbot.machine.channel.Channel.sendline`
   - :py:meth:`~tbot.machine.channel.Channel.sendintr`
-
-  .. todo::
-
-     Provide pexpect like reading API as well.
+  - :py:meth:`~tbot.machine.channel.Channel.readline`
 
 - **Prompt handling**: The :py:meth:`~tbot.machine.channel.Channel.read_until_prompt`
   method allows waiting for a prompt string to appear.  A global prompt-string

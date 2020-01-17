@@ -623,6 +623,42 @@ class Channel(typing.ContextManager):
         """Send ``CTRL-C`` to this channel."""
         self.sendcontrol("C")
 
+    def readline(self, timeout: typing.Optional[float] = None) -> str:
+        """
+        Read until the next line ending.
+
+        **Example**:
+
+        .. code-block:: python
+
+            ch.sendline("echo Hello; echo World", read_back=True)
+            assert ch.readline() == "Hello\\n"
+            assert ch.readline() == "World\\n"
+        """
+
+        # This implementation is quite naive but any
+        # other way would possibly read too much :/
+
+        start_time = time.monotonic()
+        line = bytearray()
+
+        while True:
+            timeout_remaining = None
+            if timeout is not None:
+                timeout_remaining = timeout - (time.monotonic() - start_time)
+
+            c = self.read(1, timeout=timeout_remaining)
+            line.extend(c)
+
+            if line.endswith(b"\r\n") or line.endswith(b"\n\r"):
+                break
+
+        return (
+            line.decode("utf-8", errors="replace")
+            .replace("\r\n", "\n")
+            .replace("\n\r", "\n")
+        )
+
     # TODO: Reading
     # pexpect-like }}}
 
