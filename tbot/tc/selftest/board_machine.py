@@ -15,7 +15,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import contextlib
-import re
 import typing
 
 import tbot
@@ -98,7 +97,7 @@ class TestBoardUBoot(board.Connector, board.UBootAutobootIntercept, board.UBootS
 
     name = "test-ub"
 
-    autoboot_prompt = re.compile(b"Autoboot: ")
+    autoboot_prompt = tbot.Re("Autoboot: ")
     prompt = "Test-U-Boot> "
 
 
@@ -191,7 +190,7 @@ def selftest_board_power(lab: typing.Optional[tbot.selectable.LabHost] = None) -
 
         name = "test-ub-power"
 
-        autoboot_prompt = re.compile(b"Autoboot: ")
+        autoboot_prompt = tbot.Re("Autoboot: ")
         prompt = "Test-U-Boot> "
 
         def poweron(self) -> None:

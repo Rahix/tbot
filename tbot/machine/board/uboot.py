@@ -79,7 +79,7 @@ class UBootAutobootIntercept(machine.Initializer, UbootStartup):
             board.UBootAutobootIntercept,
             board.UBootShell,
         ):
-            autoboot_prompt = re.compile(b"Press DEL 4 times.{0,100}", re.DOTALL)
+            autoboot_prompt = tbot.Re("Press DEL 4 times.{0,100}", re.DOTALL)
             autoboot_keys = "\\x7f\\x7f\\x7f\\x7f"
     """
 
@@ -379,8 +379,6 @@ class UBootShell(shell.Shell, UbootStartup):
             ub.exec0("tftp", hex(ub.ram_base), f"{serverip}:{filepath}")
             ub.exec0("iminfo", hex(ub.ram_base))
         """
-        import re
-
         try:
             return self._ram_base
         except AttributeError:

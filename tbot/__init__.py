@@ -149,3 +149,14 @@ def skip(reason: str) -> typing.NoReturn:
             ...
     """
     raise SkipException(reason)
+
+
+def Re(pat: typing.Union[str, bytes], flags: int = 0) -> typing.Pattern[bytes]:
+    """
+    A bounded regex pattern for use with tbot.
+
+    When using various channel-methods you sometimes need a regex pattern.
+    ``tbot.Re`` is a convenience tool to create such patterns.
+    """
+    pat_bytes = pat if isinstance(pat, bytes) else pat.encode("utf-8")
+    return __import__("re").compile(pat_bytes, flags)  # type: ignore
