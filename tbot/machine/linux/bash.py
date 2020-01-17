@@ -157,10 +157,15 @@ class Bash(linux_shell.LinuxShell):
         return self.ch.take()
 
     @contextlib.contextmanager
-    def subshell(self) -> "typing.Iterator[Bash]":
-        bash_cmd = "bash --norc --noprofile"
-        tbot.log_event.command(self.name, bash_cmd)
-        self.ch.sendline(bash_cmd)
+    def subshell(
+        self: Self, *args: typing.Union[str, special.Special[Self], path.Path[Self]]
+    ) -> "typing.Iterator[Bash]":
+        if args == ():
+            cmd = "bash --norc --noprofile"
+        else:
+            cmd = self.escape(*args)
+        tbot.log_event.command(self.name, cmd)
+        self.ch.sendline(cmd)
 
         try:
             with self._init_shell():

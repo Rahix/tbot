@@ -191,7 +191,9 @@ class LinuxShell(shell.Shell):
         raise NotImplementedError("abstract method")
 
     @abc.abstractmethod
-    def subshell(self: Self) -> typing.ContextManager[Self]:
+    def subshell(
+        self: Self, *args: typing.Union[str, Special[Self], path.Path[Self]]
+    ) -> typing.ContextManager[Self]:
         """
         Start a subshell environment.
 
@@ -206,6 +208,29 @@ class LinuxShell(shell.Shell):
                 lnx.env("FOO", "baz")
 
             assert lnx.env("FOO") == "bar"
+
+        You can also spawn a subshell with a custom command.  This can be used,
+        for example, to elevate privileges or switch user:
+
+        .. code-block:: python
+
+            # Not root right now
+            assert int(lnx.env("EUID")) != 0
+
+            with lnx.subshell("sudo", "-ni", "bash", "--norc", "--noprofile"):
+                # Root now!
+                assert int(lnx.env("EUID")) == 0
+
+        .. warning::
+
+            *tbot* expects the shell inside the subshell environment to be the
+            **same** shell as outside.  This means, spawning a sudo environment
+            which uses ``zsh`` instead of ``bash`` might lead to failures.
+
+            For *bash*, please spawn a ``bash --norc --noprofile`` for best
+            compatibility.
+
+            For *ash*, an ``ash`` is good enough.
         """
         pass
 
