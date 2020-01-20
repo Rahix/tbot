@@ -28,6 +28,7 @@ __all__ = (
     "selftest_machine_labhost_shell",
     "selftest_machine_ssh_shell",
     "selftest_machine_sshlab_shell",
+    "selftest_machine_channel",
 )
 
 
@@ -52,11 +53,11 @@ def selftest_machine_labhost_shell(
     with lab or selftest.SelftestHost() as lh:
         selftest_machine_shell(lh)
 
-        with lh.clone() as l2:
-            selftest_machine_channel(l2.ch, False)
+        # with lh.clone() as l2:
+        #     selftest_machine_channel(l2.ch, False)
 
-        with lh.clone() as l2:
-            selftest_machine_channel(l2.ch, True)
+        # with lh.clone() as l2:
+        #     selftest_machine_channel(l2.ch, True)
 
 
 @tbot.testcase
@@ -73,7 +74,7 @@ def selftest_machine_ssh_shell(
         with minisshd.minisshd(lh) as ssh:
             selftest_machine_shell(ssh)
 
-            selftest_machine_channel(ssh.ch, True)
+            # selftest_machine_channel(ssh.ch, True)
 
 
 @tbot.testcase
@@ -314,57 +315,96 @@ def selftest_machine_shell(m: typing.Union[linux.LinuxShell, board.UBootShell]) 
 
 
 @tbot.testcase
-def selftest_machine_channel(ch: channel.Channel, remote_close: bool) -> None:
-    tbot.skip("Channel tests need to be reimplemented for machine-v2")
+def selftest_machine_channel(lab: typing.Optional[linux.Lab] = None,) -> None:
+    with channel.SubprocessChannel() as ch:
+        ch.read()
+        # Test a simple command
+        ch.sendline("echo Hello World", read_back=True)
+        out = ch.read()
+        assert out.startswith(b"Hello World"), repr(out)
 
-    out = ch.raw_command("echo Hello World", timeout=1)
-    assert out == "Hello World\n", repr(out)
+    with channel.SubprocessChannel() as ch:
+        ch.read()
+        # Test reading
+        ch.write(b"1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+        out = ch.read(10)
+        assert out == b"1234567890", repr(out)
 
-    # Check recv_n
-    ch.send("echo Foo Bar\n")
-    out2 = ch.recv_n(8, timeout=1.0)
-    assert out2 == b"echo Foo", repr(out)
-    ch.read_until_prompt(channel.TBOT_PROMPT)
+        out = ch.read()
+        assert out == b"ABCDEFGHIJKLMNOPQRSTUVWXYZ", repr(out)
 
-    # Check timeout
-    raised = False
-    try:
-        ch.send("echo Foo Bar")
-        ch.read_until_prompt(channel.TBOT_PROMPT, timeout=0)
-    except TimeoutError:
-        raised = True
-    assert raised
-    ch.send("\n")
-    ch.read_until_prompt(channel.TBOT_PROMPT)
+    with channel.SubprocessChannel() as ch:
+        ch.read()
+        # Test read iter
+        ch.write(b"12345678901234567890")
+        final = bytearray()
+        for new in ch.read_iter(10):
+            final.extend(new)
+        assert final == b"1234567890", repr(final)
+        for i in range(1, 10):
+            c = ch.read(1)
+            assert c == str(i).encode("utf-8"), repr(c)
 
-    assert ch.isopen()
+    with channel.SubprocessChannel() as ch:
+        ch.read()
+        # Test readline
+        ch.sendline("echo Hello; echo World", read_back=True)
+        out_s = ch.readline()
+        assert out_s == "Hello\n", repr(out)
+        out_s = ch.readline()
+        assert out_s == "World\n", repr(out)
 
-    if remote_close:
-        ch.send("exit\n")
-        time.sleep(0.1)
-        ch.recv(timeout=1)
+    # Test expect
+    with channel.SubprocessChannel() as ch:
+        ch.read()
+        ch.sendline("echo Lorem Ipsum")
+        res = ch.expect(["Lol", "Ip"])
+        assert res.i == 1, repr(res)
+        assert res.match == "Ip", repr(res)
+
+    with channel.SubprocessChannel() as ch:
+        ch.read()
+        ch.sendline("echo Lorem Ipsum Dolor Sit")
+        res = ch.expect(["Lol", "Dolor", "Dol"])
+        assert res.i == 1, repr(res)
+        assert res.match == "Dolor", repr(res)
+
+    with channel.SubprocessChannel() as ch:
+        ch.read()
+        ch.sendline("echo Lo1337rem")
+        res = ch.expect(["Dolor", "roloD", tbot.Re(r"Lo(\d{1,20})"), "rem"])
+        assert res.i == 2, repr(res)
+        assert isinstance(res.match, typing.Match), "Not a match object"
+        assert res.match.group(1) == b"1337", repr(res)
+
+    with channel.SubprocessChannel() as ch:
+        # Test Borrow
+        ch.sendline("echo Hello")
+
+        with ch.borrow() as ch2:
+            ch2.sendline("echo World")
+
+            raised = False
+            try:
+                ch.sendline("echo Illegal")
+            except channel.ChannelBorrowedException:
+                raised = True
+
+            assert raised, "Borrow was unsuccessful"
+
+        ch.sendline("echo back again")
+
+    with channel.SubprocessChannel() as ch:
+        # Test Move
+        ch.sendline("echo Hello")
+
+        ch2 = ch.take()
+        ch2.sendline("echo World")
 
         raised = False
         try:
-            ch.recv(timeout=1)
-        except channel.ChannelClosedException:
+            ch.sendline("echo Illegal")
+        except channel.ChannelTakenException:
             raised = True
-        assert raised
-    else:
-        ch.close()
 
-    assert not ch.isopen()
-
-    raised = False
-    try:
-        ch.send("\n")
-    except channel.ChannelClosedException:
-        raised = True
-    assert raised
-
-    raised = False
-    try:
-        ch.recv(timeout=1)
-    except channel.ChannelClosedException:
-        raised = True
-    assert raised
+        assert raised, "Take was unsuccessful"
