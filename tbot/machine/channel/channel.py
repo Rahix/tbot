@@ -232,6 +232,30 @@ class DeathStringException(Exception):
         return f"DeathStringException({self.match!r})"
 
 
+class ExpectResult(typing.NamedTuple):
+    """
+    Result from a call to :py:meth:`~tbot.machine.channel.Channel.expect`.
+    """
+
+    i: int
+    """
+    Index into the pattern list of the matched pattern (if a list was passed to
+    :py:meth:`~tbot.machine.channel.Channel.expect`).
+    """
+
+    match: typing.Union[str, typing.Match[bytes]]
+    """
+    Match object if the pattern was a regex-pattern or the literal if the
+    pattern was a ``str`` or ``bytes``.
+    """
+
+    before: str
+    """Everything from the input stream before the match, up to the matched pattern."""
+
+    after: str
+    """Any potential bytes which were read following the matched pattern."""
+
+
 class Channel(typing.ContextManager):
     __slots__ = (
         "_c",
@@ -659,7 +683,82 @@ class Channel(typing.ContextManager):
             .replace("\n\r", "\n")
         )
 
-    # TODO: Reading
+    def expect(
+        self,
+        patterns: typing.Union[
+            ConvenientSearchString, typing.List[ConvenientSearchString]
+        ],
+        timeout: typing.Optional[float] = None,
+    ) -> ExpectResult:
+        """
+        Wait for a pattern to appear in the incoming data.
+
+        This method is similar to `pexpect`_'s ``expect()`` although there are
+        a few important differences.
+
+        ``expect()`` will read ahead in the input stream until one of the
+        patterns in ``patterns`` matches or, if not ``None``, the ``timeout``
+        expires.  It might read further than the given pattern, if the input
+        contains follow-up bytes in the same chunk of data.
+
+        Different to `pexpect`_, the results are availble as an
+        :ref:`channel_expect_result` (:py:class:`~tbot.machine.channel.channel.ExpectResult`)
+        which is returned on match.
+
+        :param patterns: Pattern(s) to wait for.  Can be either a single
+            pattern or a list of patterns.  See :ref:`channel_search_string`
+            for more info about which types can be passed as patterns.
+        :param None,\\ float timeout: Optional timeout.
+
+        .. _pexpect: https://pexpect.readthedocs.io/en/stable/overview.html
+        """
+        if not isinstance(patterns, list):
+            pattern_list = [_convert_search_string(patterns)]
+        else:
+            pattern_list = [_convert_search_string(pat) for pat in patterns]
+
+        buf = bytearray()
+        for chunk in self.read_iter(timeout=timeout):
+            buf.extend(chunk)
+
+            for pattern_index, pat in enumerate(pattern_list):
+                if isinstance(pat, bytes):
+                    index = buf.find(pat)
+                    if index != -1:
+                        return ExpectResult(
+                            pattern_index,
+                            pat.decode("utf-8", errors="replace"),
+                            buf[:index]
+                            .decode("utf-8", errors="replace")
+                            .replace("\r\n", "\n")
+                            .replace("\n\r", "\n"),
+                            buf[index + len(pat) :]
+                            .decode("utf-8", errors="replace")
+                            .replace("\r\n", "\n")
+                            .replace("\n\r", "\n"),
+                        )
+                elif isinstance(pat, BoundedPattern):
+                    match = pat.pattern.search(buf)
+                    if match is not None:
+                        return ExpectResult(
+                            pattern_index,
+                            match,
+                            buf[: match.span(0)[0]]
+                            .decode("utf-8", errors="replace")
+                            .replace("\r\n", "\n")
+                            .replace("\n\r", "\n"),
+                            buf[match.span(0)[1] :]
+                            .decode("utf-8", errors="replace")
+                            .replace("\r\n", "\n")
+                            .replace("\n\r", "\n"),
+                        )
+                else:
+                    raise AssertionError(
+                        f"expect pattern has unknown type: {pat.__class__!r}"
+                    )
+
+        raise Exception("reached end of stream without pattern appearing")
+
     # pexpect-like }}}
 
     # prompt handling {{{

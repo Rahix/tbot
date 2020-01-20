@@ -35,6 +35,7 @@ are:
   - :py:meth:`~tbot.machine.channel.Channel.sendline`
   - :py:meth:`~tbot.machine.channel.Channel.sendintr`
   - :py:meth:`~tbot.machine.channel.Channel.readline`
+  - :py:meth:`~tbot.machine.channel.Channel.expect`
 
 - **Prompt handling**: The :py:meth:`~tbot.machine.channel.Channel.read_until_prompt`
   method allows waiting for a prompt string to appear.  A global prompt-string
@@ -83,6 +84,13 @@ passed in here:
    # A regexp pattern (byte-pattern!)
    pat = re.compile(b"[a-zA-Z0-9-]{1,80} login: ")
    chan.read_until_prompt(pat)
+
+.. _channel_expect_result:
+
+Expect Result
+-------------
+.. autoclass:: tbot.machine.channel.channel.ExpectResult
+   :members:
 
 .. _chanio_impls:
 
