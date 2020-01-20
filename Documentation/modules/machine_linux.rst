@@ -132,6 +132,10 @@ can be used to chain multiple commands or to redirect output.
 
    Redirect ``stderr`` (``2>...``) to a file.
 
+.. py:class:: RedirBoth(file)
+
+   Redirect both ``stdout`` and ``stderr`` (``2>&1 >...``) to a file.
+
 .. py:class:: Raw(str)
 
    Emits a raw string, bypassing shell quoting/escaping.
