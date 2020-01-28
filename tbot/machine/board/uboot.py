@@ -310,3 +310,37 @@ class UBootShell(shell.Shell, UbootStartup):
             raise Exception("Failed to reacquire U-Boot after interactive session!")
 
         tbot.log.message("Exiting interactive shell ...")
+
+    # Utilities ----- {{{
+    _ram_base: int
+
+    @property
+    def ram_base(self) -> int:
+        """
+        Return the base address of RAM for this U-Boot instance.
+
+        This address can be used as a safe bet when your testcase needs to
+        store something in RAM.
+
+        **Example**:
+
+        .. code-block:: python
+
+            serverip =  # ...
+            filepath =  # ...
+            ub.exec0("tftp", hex(ub.ram_base), f"{serverip}:{filepath}")
+            ub.exec0("iminfo", hex(ub.ram_base))
+        """
+        import re
+
+        try:
+            return self._ram_base
+        except AttributeError:
+            out = self.exec0("bdinfo")
+            match = re.search(r"^-> start\s+= (0x[\dA-Fa-f]+)$", out, re.MULTILINE)
+            if match is None:
+                raise Exception("RAM base not found in bdinfo output!")
+            self._ram_base = int(match.group(1), 16)
+            return self._ram_base
+
+    # }}}
