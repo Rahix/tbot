@@ -1,12 +1,25 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Added `LinuxShell.glob()` method for easily using shell globs.
+- Added parameters to `LinuxShell.subshell()` which can be used to spawn
+  custom subshells.
+- Added `linux.RedirBoth` to redirect both stdout and stderr to the same
+  file.
+- Added `UBootShell.ram_base` property to learn the RAM base address in
+  testcases.
+
 ### Fixed
 - Fixed U-Boot and board-Linux not saving the bootlog to the log-event.
 - Fixed tbot happily printing special characters as part of a command which was
   sent (in the log).
 - Fixed selftests failing in some rare circumstances because a subprocess
   is not properly terminated.
+- Removed use of the deprecated `time.clock()` function.
+- Properly check stdout encoding.
+- Fixed `read_iter` sometimes passing negative timeout values to the
+  underlying channel IO.
 
 
 ## [0.8.0] - 2019-11-20
