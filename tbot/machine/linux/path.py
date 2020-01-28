@@ -147,8 +147,12 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
 
             ubootdir = lh.workdir / "u-boot"
 
+            # .glob() returns a list which can be iterated.
             for f in ubootdir.glob("common/*.c"):
                 tbot.log.message(f"Found {f}.")
+
+            # To use the globs in another commandline (note the `*`!):
+            lh.exec0("ls", "-l", *ubootdir.glob("common/*.c"))
 
         .. warning::
 
