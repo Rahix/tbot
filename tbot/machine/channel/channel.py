@@ -335,7 +335,7 @@ class Channel(typing.ContextManager):
             timeout_remaining = None
             if timeout is not None:
                 timeout_remaining = timeout - (time.monotonic() - start_time)
-                if timeout <= 0:
+                if timeout_remaining <= 0:
                     raise TimeoutError()
 
             max_read = min(self.READ_CHUNK_SIZE, max - bytes_read)
