@@ -251,9 +251,10 @@ class Channel(typing.ContextManager):
         self._streams: typing.List[typing.TextIO] = []
         self._streambuf = bytearray()
         self._log_prompt = True
+        self._write_blacklist: typing.List[int] = []
 
     # raw byte-level IO {{{
-    def write(self, buf: bytes) -> None:
+    def write(self, buf: bytes, _ignore_blacklist: bool = False) -> None:
         """
         Write some bytes to this channel.
 
@@ -264,6 +265,13 @@ class Channel(typing.ContextManager):
         :raises ChannelClosedException:  If the channel was closed previous to, or
             during writing.
         """
+        if not _ignore_blacklist:
+            for blacklisted in self._write_blacklist:
+                if blacklisted in buf:
+                    raise Exception(
+                        f"Attempting to write a forbidden byte ({chr(blacklisted)!r})!"
+                    )
+
         cursor = 0
         while cursor < len(buf):
             bytes_written = self._c.write(buf[cursor:])
@@ -593,7 +601,7 @@ class Channel(typing.ContextManager):
         assert len(c) == 1
         assert c.isalpha() or c == "@"
 
-        self.write(bytes([ord(c) - 64]))
+        self.write(bytes([ord(c) - 64]), _ignore_blacklist=True)
 
     def sendeof(self) -> None:
         raise NotImplementedError()
