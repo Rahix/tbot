@@ -165,6 +165,85 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
         for line in output[:-1].split("\n"):
             yield Path(self._host, line)
 
+    def write_text(
+        self,
+        data: str,
+        encoding: typing.Optional[str] = None,
+        errors: typing.Optional[str] = None,
+    ) -> int:
+        """
+        Write ``data`` into the file this path points to.
+
+        **Example**:
+
+        .. code-block:: python
+
+            f = lnx.workdir / "foo.sh"
+
+            f.write_text('''\\
+            #!/bin/sh
+            set -e
+
+            echo "Hello tbot!"
+            ps ax
+            ''')
+
+            f.exec0("chmod", "+x", f)
+
+        .. warning::
+
+            This string must contain 'text' in the sense that some control
+            characters are not allowed.  Consult the documentation of
+            :py:meth:`LinuxShell.run() <tbot.machine.linux.LinuxShell.run>` for
+            details.
+
+            Additionally, line-endings might be transformed according to the
+            tty's settings.  This function is not meant for byte-by-byte
+            transfers, but for configuration files or small scripts.  If you
+            want to transfer a blob or a larger file, consider using
+            :py:func:`tbot.tc.shell.copy` or (for small files)
+            :py:meth:`Path.write_bytes() <tbot.machine.linux.Path.write_bytes>`.
+        """
+        if not isinstance(data, str):
+            raise TypeError(f"data must be str, not {data.__class__.__name__}")
+        byte_data = data.encode(encoding or "utf-8", errors or "strict")
+
+        with self.host.run(
+            "tee", self, linux.RedirStdout(self.host.fsroot / "/dev/null")
+        ) as ch:
+            with ch.with_death_string("tee: "):
+                ch.send(byte_data, read_back=True)
+
+                # Send ^D twice if the file does not end with a line ending.  This
+                # is necessary to make `tee` notice the EOF correctly.
+                if not (byte_data == b"" or byte_data[-1:] in [b"\n", b"\r"]):
+                    ch.sendcontrol("D")
+
+                ch.sendcontrol("D")
+                ch.terminate0()
+
+        return len(byte_data)
+
+    def read_text(
+        self, encoding: typing.Optional[str] = None, errors: typing.Optional[str] = None
+    ) -> str:
+        """
+        Read the contents of a *text* file, pointed to by this path.
+
+        .. warning::
+
+            This method is for 'text' content only as line-endings might not be
+            transferred as contained in the file (Will always use a single
+            ``\\n``).  If you want to transfer a file byte-by-byte, consider
+            using :py:func:`tbot.tc.shell.copy` instead.  For small files,
+            :py:meth:`Path.write_bytes() <tbot.machine.linux.Path.read_bytes>`
+            might also be an option.
+        """
+        if encoding is not None or errors is not None:
+            raise NotImplementedError("Encoding is not implemented for `read_text`")
+
+        return self.host.exec0("cat", self)
+
     def __truediv__(self, key: typing.Any) -> "Path[H]":
         return Path(self._host, super().__truediv__(key))
 
