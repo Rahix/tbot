@@ -75,6 +75,7 @@ def selftest(lab: typing.Optional[linux.Lab] = None,) -> None:
             machine.selftest_machine_sshlab_shell,
             path.selftest_path_stat,
             path.selftest_path_integrity,
+            path.selftest_path_files,
             board_machine.selftest_board_power,
             board_machine.selftest_board_uboot,
             board_machine.selftest_board_uboot_noab,

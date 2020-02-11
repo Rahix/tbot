@@ -19,7 +19,7 @@ import stat
 import tbot
 from tbot.machine import linux
 
-__all__ = ["selftest_path_integrity", "selftest_path_stat"]
+__all__ = ["selftest_path_integrity", "selftest_path_stat", "selftest_path_files"]
 
 
 @tbot.testcase
@@ -122,3 +122,29 @@ def selftest_path_stat(lab: typing.Optional[linux.Lab] = None,) -> None:
         tbot.log.message("Checking stat results ...")
         for p, check in stat_list:
             assert check(p.stat().st_mode)
+
+
+@tbot.testcase
+def selftest_path_files(lab: typing.Optional[linux.Lab] = None,) -> None:
+    """Test accessing file via the Path class"""
+
+    with lab or tbot.acquire_lab() as lh:
+        f = lh.workdir / "test-file.dat"
+
+        tbot.log.message("Testing text file access ...")
+        content = "This is a test file\nwith multiple lines.\n"
+
+        f.write_text(content)
+        output = f.read_text()
+
+        assert output == content, f"Sending {content!r} resulted in {output!r}"
+
+        tbot.log.message("Testing binary file access ...")
+        content_bin = b"\x00\x1b[m\x04\x01\x10"
+
+        assert f.write_bytes(content_bin) == len(content_bin), "Length mismatch"
+        output_bin = f.read_bytes()
+
+        assert (
+            output_bin == content_bin
+        ), f"Sending {content_bin!r} resulted in {output_bin!r}"
