@@ -96,7 +96,7 @@ def selftest_machine_shell(m: typing.Union[linux.LinuxShell, board.UBootShell]) 
     cap = []
     if isinstance(m, linux.LinuxShell):
         if isinstance(m, linux.Bash):
-            cap.extend(["printf", "jobs", "control"])
+            cap.extend(["printf", "jobs", "control", "run"])
         # TODO: Re-add when Ash is implemented
         # if m.shell == linux.Ash:
         #     cap.extend(["printf", "control"])
@@ -203,6 +203,95 @@ def selftest_machine_shell(m: typing.Union[linux.LinuxShell, board.UBootShell]) 
 
         out = m.env("SUBSHELL_TEST_VAR")
         assert out == "", repr(out)
+
+        if "run" in cap:
+            tbot.log.message("Testing mach.run() ...")
+
+            # Test simple uses where everything works as expected
+            f = m.workdir / "test_run.txt"
+            with m.run("cat", linux.RedirStdout(f)) as cat:
+                cat.sendline("Hello World")
+                cat.sendline("Lorem ipsum")
+
+                cat.sendcontrol("D")
+                cat.terminate0()
+
+            with m.run("cat", f) as cat:
+                content = cat.terminate0()
+
+            assert content == "Hello World\nLorem ipsum\n", repr(content)
+
+            with m.run("bash", "--norc", "--noprofile") as bs:
+                bs.sendline("exit")
+                bs.terminate0()
+
+            # Test failing cases
+
+            # Use after terminate
+            with m.run("cat") as cat:
+                cat.sendcontrol("D")
+                cat.terminate0()
+
+                raised = False
+                try:
+                    cat.sendline("Hello World")
+                except linux.CommandEndedException:
+                    raised = True
+                assert raised, "Channel was not sealed after command exit."
+
+                raised = False
+                try:
+                    cat.terminate0()
+                except Exception:
+                    raised = True
+                assert raised, "Proxy did not complain about multiple terminations."
+
+            # Unexpected abort
+            with m.run("echo", "Hello World", linux.Then, "false") as echo:
+                raised = False
+                try:
+                    echo.read_until_prompt("Lorem Ipsum")
+                except linux.CommandEndedException:
+                    raised = True
+                assert raised, "Early abort of interactive command was not detected!"
+
+                raised = False
+                try:
+                    echo.sendline("Hello World")
+                except linux.CommandEndedException:
+                    raised = True
+                assert raised, "Channel was not sealed after command exit."
+
+                retcode, _ = echo.terminate()
+                assert retcode == 1, "Did not capture retcode of early exiting command"
+
+            # Bad return code
+            raised = False
+            try:
+                with m.run("false") as false:
+                    false.terminate0()
+            except Exception:
+                raised = True
+
+            assert raised, "Failing command was not detected properly!"
+
+            with m.run("sh", "-c", "exit 123") as sh:
+                rc = sh.terminate()[0]
+                assert rc == 123, f"Expected return code 123, got {rc!r}"
+
+            # Missing terminate
+            raised = False
+            try:
+                with m.run("echo", "Hello World"):
+                    pass
+            except RuntimeError:
+                raised = True
+                # Necessary to bring machine back into good state
+                m.ch.read_until_prompt()
+
+            assert raised, "Missing terminate did not lead to error"
+
+            m.exec0("true")
 
     if isinstance(m, board.UBootShell):
         tbot.log.message("Testing env vars ...")
