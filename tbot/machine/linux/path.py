@@ -14,10 +14,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import base64
 import os
 import errno
 import typing
 import pathlib
+import itertools
 from .. import linux  # noqa: F401
 
 H = typing.TypeVar("H", bound="linux.LinuxShell")
@@ -243,6 +245,60 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
             raise NotImplementedError("Encoding is not implemented for `read_text`")
 
         return self.host.exec0("cat", self)
+
+    def write_bytes(self, data: bytes) -> int:
+        """
+        Write binary ``data`` into the file this path points to.
+
+        .. note::
+
+            This method ensures exact byte-by-byte transfer.  To do so, it
+            encodes the data using base64 which makes console output less
+            readable.  If you intend to transfer text data, please use
+            :py:meth:`Path.write_text() <tbot.machine.linux.Path.write_text>`.
+        """
+        if not isinstance(data, bytes):
+            raise TypeError(f"data must be bytes, not {data.__class__.__name__}")
+
+        with self.host.run(
+            *["base64", "-d", "-"],
+            linux.Pipe,
+            "tee",
+            self,
+            linux.RedirStdout(self.host.fsroot / "/dev/null"),
+        ) as ch:
+            with ch.with_death_string("tee: "):
+                # Encode as base64 and split into 76 character lines.  This makes
+                # output more readable and does not affect parsing on the remote
+                # end.
+                encoded = iter(base64.b64encode(data))
+                while True:
+                    chunk = bytes(itertools.islice(encoded, 76))
+
+                    if chunk == b"":
+                        break
+
+                    ch.sendline(chunk, read_back=True)
+
+                ch.sendcontrol("D")
+                ch.terminate0()
+
+        return len(data)
+
+    def read_bytes(self) -> bytes:
+        """
+        Read the contents of a file, pointed to by this path.
+
+        .. note::
+
+            This method ensures exact byte-by-byte transfer.  To do so, it
+            encodes the data using base64 which makes console output less
+            readable.  If you intend to transfer text data, please use
+            :py:meth:`Path.read_text() <tbot.machine.linux.Path.read_text>`.
+        """
+        encoded = self.host.exec0("base64", self)
+
+        return base64.b64decode(encoded)
 
     def __truediv__(self, key: typing.Any) -> "Path[H]":
         return Path(self._host, super().__truediv__(key))
