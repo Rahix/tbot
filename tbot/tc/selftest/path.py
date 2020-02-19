@@ -148,3 +148,41 @@ def selftest_path_files(lab: typing.Optional[linux.Lab] = None,) -> None:
         assert (
             output_bin == content_bin
         ), f"Sending {content_bin!r} resulted in {output_bin!r}"
+
+        tbot.log.message("Test reading/writing invalid file ...")
+        f = lh.workdir / "path-test.50278c53-3cfc-4983-9770-d571b29b3955"
+
+        # Writing/reading a directory should always fail
+        lh.exec0("mkdir", "-p", f)
+
+        raised = False
+        try:
+            f.write_text("Hello World\n")
+        except Exception:
+            raised = True
+
+        assert raised, "Writing invalid file supposedly succeeded (text mode)"
+
+        raised = False
+        try:
+            f.read_text()
+        except Exception:
+            raised = True
+
+        assert raised, "Reading invalid file supposedly succeeded (text mode)"
+
+        raised = False
+        try:
+            f.write_bytes(b"Hello World\n")
+        except Exception:
+            raised = True
+
+        assert raised, "Writing invalid file supposedly succeeded (binary mode)"
+
+        raised = False
+        try:
+            f.read_bytes()
+        except Exception:
+            raised = True
+
+        assert raised, "Reading invalid file supposedly succeeded (binary mode)"
