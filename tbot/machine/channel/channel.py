@@ -545,6 +545,10 @@ class Channel(typing.ContextManager):
         :param bool read_back: Whether to read back the sent data.
         :param float timeout: Optional timeout for reading back data.
         """
+        # Do nothing for empty strings
+        if s == "" or s == b"":
+            return
+
         s = s.encode("utf-8") if isinstance(s, str) else s
         self.write(s)
 
