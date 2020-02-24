@@ -154,6 +154,15 @@ class UBootBuilder(abc.ABC):
 
         bh.exec0("make", self.defconfig)
 
+    def do_build(self, bh: BH, repo: git.GitRepository[BH]) -> None:
+        """
+        Build-Step to actually build U-Boot.
+
+        By default, this steps runs ``make -j $(nproc)``.
+        """
+        nproc = int(bh.exec0("nproc", "--all"))
+        bh.exec0("make", "-j", str(nproc), "all")
+
     # --------------------------------------------------------------------------- #
     @staticmethod
     def _get_selected_builder() -> "UBootBuilder":
@@ -308,11 +317,12 @@ class UBootBuilder(abc.ABC):
                     builder.do_configure(host, repo)
 
                 @tbot.testcase
-                def uboot_make(h: BH) -> None:
-                    nproc = h.exec0("nproc", "--all").strip()
-                    h.exec0("make", "-j", nproc, "all")
+                def uboot_make(
+                    builder: "UBootBuilder", repo: git.GitRepository[BH]
+                ) -> None:
+                    builder.do_build(repo.host, repo)
 
-                uboot_make(host)
+                uboot_make(builder, repo)
 
         assert repo is not None
         return repo
