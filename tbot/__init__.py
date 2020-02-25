@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import contextlib
+import time
 import typing
 from tbot import log, log_event
 
@@ -25,7 +27,13 @@ from .selectable import (
     acquire_linux,
     acquire_local,
 )
-from .decorators import testcase, named_testcase, with_lab, with_uboot, with_linux
+from .decorators import (
+    testcase as _testcase_decorator,
+    named_testcase,
+    with_lab,
+    with_uboot,
+    with_linux,
+)
 
 __all__ = (
     "selectable",
@@ -44,6 +52,65 @@ __all__ = (
 )
 
 flags: typing.Set[str] = set()
+
+F_tc = typing.TypeVar("F_tc", bound=typing.Callable[..., typing.Any])
+
+
+@typing.overload
+def testcase(arg: str) -> typing.ContextManager[None]:
+    pass
+
+
+@typing.overload
+def testcase(arg: F_tc) -> F_tc:
+    pass
+
+
+def testcase(arg: typing.Union[str, F_tc]) -> typing.Union[typing.ContextManager, F_tc]:
+    """
+    Mark a testcase.
+
+    This function can be used in two ways; either as a decorator for a function
+    or as a context-manager.  The first form is probably what is most commonly
+    used because testcases defined using this decorator will be callable from
+    the commandline.
+
+    **Decorator**:
+
+    .. code-block:: python
+
+        @tbot.testcase
+        def foobar_testcase(x: str) -> int:
+            return int(x, 16)
+
+    **Context-Manager**:
+
+    .. code-block:: python
+
+        with tbot.testcase("test_foo_bar"):
+            ...
+    """
+    if isinstance(arg, str):
+        return _testcase_block(arg)
+    else:
+        return _testcase_decorator(arg)
+
+
+@contextlib.contextmanager
+def _testcase_block(name: str) -> typing.Iterator[None]:
+    """Testcase context-manager."""
+    log_event.testcase_begin(name)
+    start = time.monotonic()
+    try:
+        yield None
+    except SkipException as e:
+        log_event.testcase_end(name, time.monotonic() - start, skipped=str(e))
+        return None
+    except:  # noqa: E722
+        log_event.testcase_end(name, time.monotonic() - start, False)
+        raise
+    else:
+        log_event.testcase_end(name, time.monotonic() - start, True)
 
 
 class SkipException(Exception):
