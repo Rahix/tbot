@@ -75,9 +75,10 @@ function printenv() {
 }
 function setenv() { local var="$1"; shift; eval "$var=\\"$*\\""
 }
-PS1=Test-U-Boot'> ' #""",
+PS1=Test-U-Boot'> '""",
                     read_back=True,
                 )
+                ch.read_until_prompt("Test-U-Boot> ")
 
             yield ch
 
