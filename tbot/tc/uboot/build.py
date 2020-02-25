@@ -316,13 +316,8 @@ class UBootBuilder(abc.ABC):
                     tbot.log.message("Configuring build ...")
                     builder.do_configure(host, repo)
 
-                @tbot.testcase
-                def uboot_make(
-                    builder: "UBootBuilder", repo: git.GitRepository[BH]
-                ) -> None:
+                with tbot.testcase("uboot_make"):
                     builder.do_build(repo.host, repo)
-
-                uboot_make(builder, repo)
 
         assert repo is not None
         return repo
