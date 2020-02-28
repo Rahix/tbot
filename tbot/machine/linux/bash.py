@@ -138,7 +138,10 @@ class Bash(linux_shell.LinuxShell):
                 "export", special.Raw(f"{self.escape(var)}={self.escape(value)}")
             )
 
-        return self.exec0("echo", special.Raw(f'"${{{self.escape(var)}}}"'))[:-1]
+        # Add a space in front of the expanded environment variable to ensure
+        # values like `-E` will not get picked up as parameters by echo.  This
+        # space is then cut away again so calling tests don't notice this trick.
+        return self.exec0("echo", special.Raw(f'" ${{{self.escape(var)}}}"'))[1:-1]
 
     def open_channel(
         self: Self, *args: typing.Union[str, special.Special[Self], path.Path[Self]]
