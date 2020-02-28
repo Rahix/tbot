@@ -16,7 +16,6 @@
 
 import contextlib
 import re
-import shlex
 import typing
 
 import tbot
@@ -95,6 +94,23 @@ class UBootAutobootIntercept(machine.Initializer, UbootStartup):
         yield None
 
 
+_hush_find_unsafe = re.compile(r"[^\w@%+=:,./-]", re.ASCII).search
+
+
+def _hush_quote(s: str) -> str:
+    if not s:
+        return '""'
+    if _hush_find_unsafe(s) is None:
+        return s
+
+    # - Quote \ (inside quotes) as \\
+    # - Quote single quotes using a \ (outside the original quotes).
+    #
+    # Example: $'\b is quoted as '$'\''\\b'
+    s = s.replace("\\", "\\\\").replace("'", "'\\''")
+    return "'" + s + "'"
+
+
 ArgTypes = typing.Union[str, special.Special]
 
 
@@ -161,7 +177,9 @@ class UBootShell(shell.Shell, UbootStartup):
         string_args = []
         for arg in args:
             if isinstance(arg, str):
-                string_args.append(shlex.quote(arg))
+                # We can't use shlex.quote() here because U-Boot's shell of
+                # course has its own rules for quoting ...
+                string_args.append(_hush_quote(arg))
             elif isinstance(arg, special.Special):
                 string_args.append(arg._to_string(self))
             else:
