@@ -70,6 +70,15 @@ class Bash(linux_shell.LinuxShell):
             self.ch.sendline("PS2=''")
             self.ch.read_until_prompt()
 
+            # Disable history expansion because it is not always affected by
+            # quoting rules and thus can mess with parameter values.  For
+            # example, m.exec0("echo", "\n^") triggers the 'quick substitution'
+            # feature and will return "\n!!:s^\n" instead of the expected
+            # "\n^\n".  As it is not really useful for tbot tests anyway,
+            # disable all history expansion 'magic characters' entirely.
+            self.ch.sendline("histchars=''")
+            self.ch.read_until_prompt()
+
             # Set terminal size
             termsize = shutil.get_terminal_size()
             self.ch.sendline(f"stty cols {max(40, termsize.columns - 48)}")
