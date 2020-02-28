@@ -279,7 +279,13 @@ class UBootShell(shell.Shell, UbootStartup):
         if value is not None:
             self.exec0("setenv", var, value)
 
-        return self.exec0("echo", special.Raw(f'"${{{self.escape(var)}}}"'))[:-1]
+        # Use `printenv var` instead of `echo "$var"` because some values would
+        # otherwise result in broken expansion.
+        output = self.exec0("printenv", var)
+
+        # `output` contains "<varname>=<value>\n" so slice off the variable
+        # name and trailing newline.
+        return output[len(var) + 1 : -1]
 
     def boot(self, *args: ArgTypes) -> channel.Channel:
         """
