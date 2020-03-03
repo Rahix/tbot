@@ -170,7 +170,7 @@ class LinuxUbootConnector(connector.Connector, LinuxBootLogin):
             ):
                 uboot = MyUBoot  # <- Our UBoot machine
 
-                def do_boot(ub):  # <- Procedure to boot Linux
+                def do_boot(self, ub):  # <- Procedure to boot Linux
                    # Any logic necessary to prepare for boot
                    ub.env("autoload", "false")
                    ub.exec0("dhcp")
