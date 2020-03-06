@@ -17,7 +17,7 @@ started with our :ref:`quickstart` guide!
 
 .. toctree::
    :maxdepth: 1
-   :caption: Modules
+   :caption: Core Modules
 
    modules/main
    modules/log
@@ -28,7 +28,13 @@ started with our :ref:`quickstart` guide!
    modules/machine_shell
    modules/machine_channel
    modules/selectable
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Testcase Modules
+
    modules/tc
+   contrib/connector
 
 .. toctree::
    :maxdepth: 1
