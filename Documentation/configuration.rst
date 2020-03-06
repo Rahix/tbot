@@ -11,15 +11,57 @@ board-software.
 
 Lab Config
 ----------
+The lab config describes your "lab" setup which consists mostly of your
+lab-host, the machine from which you open the (serial-)connection to your
+board.  This is often directly your local computer in which case the
+config does not need to contain much or could be not necessary at all.
+But tbot also supports a lab-host which you connect to via SSH, for
+example.
+
 The lab can be selected using ``-l lab-config.py`` on the command-line and the
 selected lab will then be available to testcases by using the
-:py:func:`tbot.acquire_lab` function.  The lab-config can be any python file
+:py:func:`tbot.acquire_lab` function.  The lab-config can be any Python file
 defining a lab-host machine.  To allow tbot to detect the machine, the python
 module should have a global ``LAB`` which points to the machine's class.  For
 best compatibility, the lab-host machine should inherit from
 :py:class:`tbot.machine.linux.Lab`.
 
-**Example**: ``lab-config.py``
+If your board is connected directly to your computer, you lab-host is your
+localhost.  The config (for simple cases you need none at all) might look
+like this:
+
+**Example (local)**: ``local-lab.py``
+
+.. code-block:: python
+
+   from tbot.machine import connector, linux, board
+
+   class MyLabHost(
+       connector.SubprocessConnector,
+       linux.Bash,
+       linux.Lab,
+   ):
+       name = "my-lab"
+
+       @property
+       def workdir(self):
+           return linux.Workdir.static(self, f"/work/{self.username}/tbot-workdir")
+
+   # Tell tbot about the class by defining a global `LAB`
+   LAB = MyLabHost
+
+
+In this instance, tbot will use localhost as the lab-host and store files
+in ``/work/<user>/tbot-workdir``.  You could try out your config using:
+
+.. code-block:: shell-session
+
+   $ tbot -l local-lab.py selftest_machine_labhost_shell
+
+Alternatively, your lab might be remote and you have to connect to it
+using SSH.  In that case, an example config might look like this:
+
+**Example (remote, ssh)**: ``ssh-lab.py``
 
 .. code-block:: python
 
@@ -30,8 +72,10 @@ best compatibility, the lab-host machine should inherit from
        linux.Bash,
        linux.Lab,
    ):
-       hostname = "my-lab.local"
        name = "my-lab"
+
+       hostname = "vlab.my-host.com"
+       username = "ken"
 
        @property
        def workdir(self):
@@ -40,14 +84,6 @@ best compatibility, the lab-host machine should inherit from
    # Tell tbot about the class by defining a global `LAB`
    LAB = MyLabHost
 
-In this instance, tbot will connect to the lab via SSH and use
-``/work/<user>/tbot-workdir`` for storing data during tests.  You could try out
-your config using:
-
-.. code-block:: shell-session
-
-   $ tbot -l lab-config.py selftest_machine_labhost_shell
-
 For further information about the configurable options, look at the docs for
 the individual classes:
 
@@ -55,9 +91,6 @@ the individual classes:
 - :py:class:`tbot.machine.linux.Bash` (which is just a
   :py:class:`tbot.machine.linux.LinuxShell`)
 - :py:class:`tbot.machine.linux.Lab`
-
-If you instead want to use your localhost as the lab-host, you should use a
-:py:class:`tbot.machine.connector.SubprocessConnector` instead.
 
 
 .. _config-board:

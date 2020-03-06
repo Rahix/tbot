@@ -26,7 +26,7 @@ import typing
 import termcolor2
 
 
-IS_UNICODE = sys.stdout.encoding == "UTF-8"
+IS_UNICODE = sys.stdout.encoding.upper() == "UTF-8"
 IS_COLOR = False
 
 # Taken from https://bixense.com/clicolors/
@@ -91,7 +91,7 @@ class EventIO(io.StringIO):
     def __init__(
         self,
         ty: typing.List[str],
-        initial: typing.Union[str, _TC, None] = None,
+        message: typing.Union[str, _TC],
         *,
         verbosity: Verbosity = Verbosity.INFO,
         nest_first: typing.Optional[str] = None,
@@ -103,28 +103,30 @@ class EventIO(io.StringIO):
         A log event is a :class:`io.StringIO` and everything written to
         the stram will be added to the log event.
 
-        :param str initial: Optional first line of the log event
+        :param str message: First line of the log event (the log message).  If
+            the message contains newlines, only the first line will be printed as
+            the message and the rest will be added to the log-event.
         """
         super().__init__("")
 
         self.cursor = 0
-        self.first = True
         self.prefix: typing.Optional[str] = None
-        self.nest_first = nest_first or u("├─", "+-")
         self.verbosity = verbosity
         self.ty = ty
         self.data = kwargs
         self._nextline = True
 
-        if initial:
-            self.writeln(str(initial))
+        msg = str(message).split("\n", 1)
+        if self.verbosity <= VERBOSITY:
+            print(self._prefix(nest_first or u("├─", "+-")) + msg[0])
+        if len(msg) > 1:
+            self.writeln(msg[1])
 
-    def _prefix(self) -> str:
+    def _prefix(self, nest_first: typing.Optional[str] = None) -> str:
         if NESTING == -1:
             return ""
 
-        after = self.nest_first if self.first else u("│ ", "| ")
-        self.first = False
+        after = nest_first if nest_first is not None else u("│ ", "| ")
         prefix: str = self.prefix or ""
         return (
             str(c("".join(itertools.repeat(u("│   ", "|   "), NESTING)) + after).dark)

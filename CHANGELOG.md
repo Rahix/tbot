@@ -3,6 +3,51 @@
 ## [Unreleased]
 
 
+## [0.8.1] - 2020-03-06
+### Added
+- Added `LinuxShell.glob()` method for easily using shell globs.
+- Added parameters to `LinuxShell.subshell()` which can be used to spawn
+  custom subshells.
+- Added `linux.RedirBoth` to redirect both stdout and stderr to the same
+  file.
+- Added `UBootShell.ram_base` property to learn the RAM base address in
+  testcases.
+- Added a write blacklist to channels.  This feature can be used to
+  disallow tests sending certain control characters.
+- Added a `do_build()` step to `UBootBuilder` which can be used to
+  customize the command used for building U-Boot.
+- Empty `tbot_contrib` module for the future :)
+
+### Changed
+- Made `SSHConnector` based machine cloneable (if the underlying host is
+  cloneable).
+- Made `tbot.testcase` also work as a context-manager.  This can be used
+  to define 'sub-tests' in a function.  Example:
+
+  ```python
+  with tbot.testcase("my_sub_testcase"):
+      ...
+  ```
+
+### Fixed
+- Fixed U-Boot and board-Linux not saving the bootlog to the log-event.
+- Fixed tbot happily printing special characters as part of a command which was
+  sent (in the log).
+- Fixed selftests failing in some rare circumstances because a subprocess
+  is not properly terminated or when bash is slow.
+- Removed use of the deprecated `time.clock()` function.
+- Properly check stdout encoding.
+- Fixed `read_iter` sometimes passing negative timeout values to the
+  underlying channel IO.
+- Fixed tbot hanging on zero-byte `Channel.send()` call.
+- Fixed `lnx.env()` behaving incorrectly when an environment variable has
+  a value which looks like an `echo`-option.
+- Fixed a bug caused by passing `"\n^"` as a parameter (bash interprets this as
+  a kind of history expansion).
+- Fixed `UBootShell` not properly escaping `\` and `'`.
+- Fixed `ub.env()` failing on environment variables with weird values.
+
+
 ## [0.8.0] - 2019-11-20
 The machine interface was completely overhauled.  Please read the [migration
 guide](https://tbot.tools/migration.html) for more info.
@@ -517,7 +562,8 @@ Version **0.6.0** is basically a complete rewrite of TBot.  A rough summary of c
   were loaded later
 - Fix `call_then` not returning the function itself
 
-[Unreleased]: https://github.com/Rahix/tbot/compare/v0.8.0...development
+[Unreleased]: https://github.com/Rahix/tbot/compare/v0.8.1...development
+[0.8.1]: https://github.com/Rahix/tbot/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/Rahix/tbot/compare/v0.7.1...v0.8.0
 [0.7.1]: https://github.com/Rahix/tbot/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/Rahix/tbot/compare/v0.6.6...v0.7.0

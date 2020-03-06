@@ -66,6 +66,21 @@ class RedirStderr(_Stdio[H]):
     _redir_token = "2>"
 
 
+class RedirBoth(Special[H]):
+    def __init__(self, file: path.Path[H]) -> None:
+        self.file = file
+
+    def _to_string(self, h: H) -> str:
+        if self.file.host is not h:
+            raise Exception("wrong host")
+
+        # The order of the redirects is important!  First, redirect stdout to a
+        # file and then redirect stderr to stdout.  If this is switched around,
+        # stderr will go to old stdout, before it was redirected (that is, the
+        # terminal).
+        return ">" + shlex.quote(self.file._local_str()) + " 2>&1"
+
+
 class _Static(Special):
     __slots__ = ("string",)
 

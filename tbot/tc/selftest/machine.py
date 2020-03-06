@@ -173,6 +173,13 @@ def selftest_machine_shell(m: typing.Union[linux.LinuxShell, board.UBootShell]) 
                 f"Command took {t2 - t1}s (max 9s). Sleep was not sent to background"
             )
 
+            # Kill the sleep process.  In some circumstances, tbot does not
+            # seem to be able to kill all child processes of a subprocess
+            # channel.  To prevent this from leading to issues, kill the sleep
+            # right here instead of relying on tbot to do so correctly at the
+            # very end.      Tracking-Issue: Rahix/tbot#13
+            m.exec("kill", linux.Raw("%%"), linux.Then, "wait", linux.Raw("%%"))
+
         if "control" in cap:
             out = m.exec0(
                 "false", linux.AndThen, "echo", "FOO", linux.OrElse, "echo", "BAR"

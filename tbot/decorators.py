@@ -16,11 +16,10 @@
 
 import contextlib
 import functools
-import time
 import typing
 
 import tbot
-from tbot import log_event, selectable
+from tbot import selectable
 from tbot.machine import linux, board
 
 if typing.TYPE_CHECKING:
@@ -59,20 +58,12 @@ def testcase(tc: F_tc) -> F_tc:
 
     @functools.wraps(tc)
     def wrapped(*args: typing.Any, **kwargs: typing.Any) -> typing.Any:
-        log_event.testcase_begin(tc.__name__)
-        start = time.monotonic()
-        try:
-            result = tc(*args, **kwargs)
-        except tbot.SkipException as e:
-            log_event.testcase_end(
-                tc.__name__, time.monotonic() - start, skipped=str(e)
-            )
-            return None
-        except:  # noqa: E722
-            log_event.testcase_end(tc.__name__, time.monotonic() - start, False)
-            raise
-        log_event.testcase_end(tc.__name__, time.monotonic() - start, True)
-        return result
+        with tbot.testcase(tc.__name__):
+            return tc(*args, **kwargs)
+
+        # This line will only be reached when a testcase was skipped.
+        # Return `None` as the placeholder return value.
+        return None
 
     setattr(wrapped, "_tbot_testcase", tc.__name__)
     return typing.cast(F_tc, wrapped)
@@ -97,18 +88,12 @@ def named_testcase(name: str) -> typing.Callable[[F_tc], F_tc]:
     def _named_testcase(tc: F_tc) -> F_tc:
         @functools.wraps(tc)
         def wrapped(*args: typing.Any, **kwargs: typing.Any) -> typing.Any:
-            log_event.testcase_begin(name)
-            start = time.monotonic()
-            try:
-                result = tc(*args, **kwargs)
-            except tbot.SkipException as e:
-                log_event.testcase_end(name, time.monotonic() - start, skipped=str(e))
-                return None
-            except:  # noqa: E722
-                log_event.testcase_end(name, time.monotonic() - start, False)
-                raise
-            log_event.testcase_end(name, time.monotonic() - start, True)
-            return result
+            with tbot.testcase(name):
+                return tc(*args, **kwargs)
+
+            # This line will only be reached when a testcase was skipped.
+            # Return `None` as the placeholder return value.
+            return None
 
         setattr(wrapped, "_tbot_testcase", name)
         return typing.cast(F_tc, wrapped)

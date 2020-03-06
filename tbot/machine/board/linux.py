@@ -16,11 +16,28 @@
 
 import abc
 import contextlib
-import io
 import typing
 
 import tbot
 from .. import machine, board, channel, connector
+
+
+class LinuxStartupEvent(tbot.log.EventIO):
+    def __init__(self, lnx: machine.Machine) -> None:
+        self.lnx = lnx
+        super().__init__(
+            ["board", "linux", lnx.name],
+            tbot.log.c("LINUX").bold + f" ({lnx.name})",
+            verbosity=tbot.log.Verbosity.QUIET,
+        )
+
+        self.prefix = "   <> "
+        self.verbosity = tbot.log.Verbosity.STDOUT
+
+    def close(self) -> None:
+        setattr(self.lnx, "bootlog", self.getvalue())
+        self.data["output"] = self.getvalue()
+        super().close()
 
 
 class LinuxBoot(machine.Machine):
@@ -28,14 +45,7 @@ class LinuxBoot(machine.Machine):
 
     def _linux_boot_event(self) -> tbot.log.EventIO:
         if self._linux_init_event is None:
-            self._linux_init_event = tbot.log.EventIO(
-                ["board", "linux", self.name],
-                tbot.log.c("LINUX").bold + f" ({self.name})",
-                verbosity=tbot.log.Verbosity.QUIET,
-            )
-
-            self._linux_init_event.prefix = "   <> "
-            self._linux_init_event.verbosity = tbot.log.Verbosity.STDOUT
+            self._linux_init_event = LinuxStartupEvent(self)
 
         return self._linux_init_event
 
@@ -91,11 +101,9 @@ class LinuxBootLogin(machine.Initializer, LinuxBoot):
 
     @contextlib.contextmanager
     def _init_machine(self) -> typing.Iterator:
-        bootlog_stream = io.StringIO()
         with contextlib.ExitStack() as cx:
             ev = cx.enter_context(self._linux_boot_event())
             cx.enter_context(self.ch.with_stream(ev))
-            cx.enter_context(self.ch.with_stream(bootlog_stream))
 
             self.ch.read_until_prompt(prompt=self.login_prompt)
 
@@ -115,8 +123,6 @@ class LinuxBootLogin(machine.Initializer, LinuxBoot):
                 self.ch.read_until_prompt(prompt="assword: ")
                 self.ch.sendline(self.password)
 
-        self.bootlog = bootlog_stream.getvalue()
-        bootlog_stream.close()
         yield None
 
 
@@ -164,7 +170,7 @@ class LinuxUbootConnector(connector.Connector, LinuxBootLogin):
             ):
                 uboot = MyUBoot  # <- Our UBoot machine
 
-                def do_boot(ub):  # <- Procedure to boot Linux
+                def do_boot(self, ub):  # <- Procedure to boot Linux
                    # Any logic necessary to prepare for boot
                    ub.env("autoload", "false")
                    ub.exec0("dhcp")

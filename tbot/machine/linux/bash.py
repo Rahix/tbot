@@ -70,6 +70,15 @@ class Bash(linux_shell.LinuxShell):
             self.ch.sendline("PS2=''")
             self.ch.read_until_prompt()
 
+            # Disable history expansion because it is not always affected by
+            # quoting rules and thus can mess with parameter values.  For
+            # example, m.exec0("echo", "\n^") triggers the 'quick substitution'
+            # feature and will return "\n!!:s^\n" instead of the expected
+            # "\n^\n".  As it is not really useful for tbot tests anyway,
+            # disable all history expansion 'magic characters' entirely.
+            self.ch.sendline("histchars=''")
+            self.ch.read_until_prompt()
+
             # Set terminal size
             termsize = shutil.get_terminal_size()
             self.ch.sendline(f"stty cols {max(40, termsize.columns - 48)}")
@@ -138,7 +147,10 @@ class Bash(linux_shell.LinuxShell):
                 "export", special.Raw(f"{self.escape(var)}={self.escape(value)}")
             )
 
-        return self.exec0("echo", special.Raw(f'"${{{self.escape(var)}}}"'))[:-1]
+        # Add a space in front of the expanded environment variable to ensure
+        # values like `-E` will not get picked up as parameters by echo.  This
+        # space is then cut away again so calling tests don't notice this trick.
+        return self.exec0("echo", special.Raw(f'" ${{{self.escape(var)}}}"'))[1:-1]
 
     def open_channel(
         self: Self, *args: typing.Union[str, special.Special[Self], path.Path[Self]]
@@ -157,10 +169,15 @@ class Bash(linux_shell.LinuxShell):
         return self.ch.take()
 
     @contextlib.contextmanager
-    def subshell(self) -> "typing.Iterator[Bash]":
-        bash_cmd = "bash --norc --noprofile"
-        tbot.log_event.command(self.name, bash_cmd)
-        self.ch.sendline(bash_cmd)
+    def subshell(
+        self: Self, *args: typing.Union[str, special.Special[Self], path.Path[Self]]
+    ) -> "typing.Iterator[Bash]":
+        if args == ():
+            cmd = "bash --norc --noprofile"
+        else:
+            cmd = self.escape(*args)
+        tbot.log_event.command(self.name, cmd)
+        self.ch.sendline(cmd)
 
         try:
             with self._init_shell():

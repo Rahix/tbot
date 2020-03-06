@@ -153,10 +153,15 @@ class Ash(linux_shell.LinuxShell):
         return self.ch.take()
 
     @contextlib.contextmanager
-    def subshell(self) -> "typing.Iterator[Ash]":
-        ash_cmd = "ash"
-        tbot.log_event.command(self.name, ash_cmd)
-        self.ch.sendline(ash_cmd)
+    def subshell(
+        self: Self, *args: typing.Union[str, special.Special[Self], path.Path[Self]]
+    ) -> "typing.Iterator[Ash]":
+        if args == ():
+            cmd = "ash"
+        else:
+            cmd = self.escape(*args)
+        tbot.log_event.command(self.name, cmd)
+        self.ch.sendline(cmd)
 
         try:
             with self._init_shell():

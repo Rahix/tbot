@@ -27,6 +27,7 @@ from .special import (
     Raw,
     RedirStderr,
     RedirStdout,
+    RedirBoth,
     Then,
 )
 from .workdir import Workdir
@@ -53,6 +54,7 @@ __all__ = (
     "Raw",
     "RedirStderr",
     "RedirStdout",
+    "RedirBoth",
     "Then",
     "Workdir",
 )

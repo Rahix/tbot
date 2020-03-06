@@ -173,9 +173,5 @@ class SSHConnector(connector.Connector):
             yield h.ch.take()
 
     def clone(self) -> "SSHConnector":
-        """
-        .. todo::
-
-            Make this machine cloneable at some point.
-        """
-        raise NotImplementedError("can't clone an ssh connection")
+        """Clone this machine."""
+        return type(self)(self.host)

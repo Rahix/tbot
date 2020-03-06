@@ -16,7 +16,6 @@
 
 import contextlib
 import re
-import shlex
 import typing
 
 import tbot
@@ -24,19 +23,30 @@ from .. import shell, machine, channel
 from ..linux import special
 
 
+class UBootStartupEvent(tbot.log.EventIO):
+    def __init__(self, ub: machine.Machine) -> None:
+        self.ub = ub
+        super().__init__(
+            ["board", "uboot", ub.name],
+            tbot.log.c("UBOOT").bold + f" ({ub.name})",
+            verbosity=tbot.log.Verbosity.QUIET,
+        )
+
+        self.verbosity = tbot.log.Verbosity.STDOUT
+        self.prefix = "   <> "
+
+    def close(self) -> None:
+        setattr(self.ub, "bootlog", self.getvalue())
+        self.data["output"] = self.getvalue()
+        super().close()
+
+
 class UbootStartup(machine.Machine):
     _uboot_init_event: typing.Optional[tbot.log.EventIO] = None
 
     def _uboot_startup_event(self) -> tbot.log.EventIO:
         if self._uboot_init_event is None:
-            self._uboot_init_event = tbot.log.EventIO(
-                ["board", "uboot", self.name],
-                tbot.log.c("UBOOT").bold + f" ({self.name})",
-                verbosity=tbot.log.Verbosity.QUIET,
-            )
-
-            self._uboot_init_event.verbosity = tbot.log.Verbosity.STDOUT
-            self._uboot_init_event.prefix = "   <> "
+            self._uboot_init_event = UBootStartupEvent(self)
 
         return self._uboot_init_event
 
@@ -84,6 +94,23 @@ class UBootAutobootIntercept(machine.Initializer, UbootStartup):
         yield None
 
 
+_hush_find_unsafe = re.compile(r"[^\w@%+=:,./-]", re.ASCII).search
+
+
+def _hush_quote(s: str) -> str:
+    if not s:
+        return '""'
+    if _hush_find_unsafe(s) is None:
+        return s
+
+    # - Quote \ (inside quotes) as \\
+    # - Quote single quotes using a \ (outside the original quotes).
+    #
+    # Example: $'\b is quoted as '$'\''\\b'
+    s = s.replace("\\", "\\\\").replace("'", "'\\''")
+    return "'" + s + "'"
+
+
 ArgTypes = typing.Union[str, special.Special]
 
 
@@ -124,6 +151,9 @@ class UBootShell(shell.Shell, UbootStartup):
         **Don't forget the trailing space, if your prompt has one!**
     """
 
+    bootlog: str
+    """Transcript of console output during boot."""
+
     @contextlib.contextmanager
     def _init_shell(self) -> typing.Iterator:
         with self._uboot_startup_event() as ev, self.ch.with_stream(ev):
@@ -147,7 +177,9 @@ class UBootShell(shell.Shell, UbootStartup):
         string_args = []
         for arg in args:
             if isinstance(arg, str):
-                string_args.append(shlex.quote(arg))
+                # We can't use shlex.quote() here because U-Boot's shell of
+                # course has its own rules for quoting ...
+                string_args.append(_hush_quote(arg))
             elif isinstance(arg, special.Special):
                 string_args.append(arg._to_string(self))
             else:
@@ -247,7 +279,13 @@ class UBootShell(shell.Shell, UbootStartup):
         if value is not None:
             self.exec0("setenv", var, value)
 
-        return self.exec0("echo", special.Raw(f'"${{{self.escape(var)}}}"'))[:-1]
+        # Use `printenv var` instead of `echo "$var"` because some values would
+        # otherwise result in broken expansion.
+        output = self.exec0("printenv", var)
+
+        # `output` contains "<varname>=<value>\n" so slice off the variable
+        # name and trailing newline.
+        return output[len(var) + 1 : -1]
 
     def boot(self, *args: ArgTypes) -> channel.Channel:
         """
@@ -296,3 +334,37 @@ class UBootShell(shell.Shell, UbootStartup):
             raise Exception("Failed to reacquire U-Boot after interactive session!")
 
         tbot.log.message("Exiting interactive shell ...")
+
+    # Utilities ----- {{{
+    _ram_base: int
+
+    @property
+    def ram_base(self) -> int:
+        """
+        Return the base address of RAM for this U-Boot instance.
+
+        This address can be used as a safe bet when your testcase needs to
+        store something in RAM.
+
+        **Example**:
+
+        .. code-block:: python
+
+            serverip =  # ...
+            filepath =  # ...
+            ub.exec0("tftp", hex(ub.ram_base), f"{serverip}:{filepath}")
+            ub.exec0("iminfo", hex(ub.ram_base))
+        """
+        import re
+
+        try:
+            return self._ram_base
+        except AttributeError:
+            out = self.exec0("bdinfo")
+            match = re.search(r"^-> start\s+= (0x[\dA-Fa-f]+)$", out, re.MULTILINE)
+            if match is None:
+                raise Exception("RAM base not found in bdinfo output!")
+            self._ram_base = int(match.group(1), 16)
+            return self._ram_base
+
+    # }}}

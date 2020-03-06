@@ -181,7 +181,7 @@ In code, the two options look like this:
        # Configuration for LinuxUbootConnector
        uboot = MyUBoot  # <- Our UBoot machine
 
-       def do_boot(ub):  # <- Procedure to boot Linux
+       def do_boot(self, ub):  # <- Procedure to boot Linux
           ub.env("autoload", "false")
           ub.exec0("dhcp")
           return ub.boot("run", "nfsboot")
