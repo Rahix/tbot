@@ -16,7 +16,9 @@ setup(
     description=about["__summary__"],
     author=about["__author__"],
     author_email=about["__email__"],
-    packages=find_packages(include=("tbot", "tbot.*")),
+    packages=find_packages(
+        include=("tbot", "tbot.*", "tbot_contrib", "tbot_contrib.*")
+    ),
     install_requires=["paramiko", "termcolor2"],
     entry_points={
         "console_scripts": ["tbot = tbot.main:main"]
