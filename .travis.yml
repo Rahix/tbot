@@ -21,4 +21,4 @@ deploy:
   keep_history: false
   local_dir: Documentation/output
   on:
-    branch: development
+    branch: master
