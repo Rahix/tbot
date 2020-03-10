@@ -246,7 +246,9 @@ class Channel(typing.ContextManager):
     def __init__(self, channel_io: ChannelIO) -> None:
         self._c = channel_io
         self.prompt: typing.Optional[SearchString] = None
-        self.death_strings: typing.List[SearchString] = []
+        self.death_strings: typing.List[
+            typing.Tuple[SearchString, typing.Type[DeathStringException]]
+        ] = []
         self._ringbuf: typing.Deque[int] = collections.deque([], maxlen=2)
         self._streams: typing.List[typing.TextIO] = []
         self._streambuf = bytearray()
@@ -495,12 +497,17 @@ class Channel(typing.ContextManager):
 
     @contextlib.contextmanager
     def with_death_string(
-        self, string_in: ConvenientSearchString
+        self,
+        string_in: ConvenientSearchString,
+        exception_type: typing.Optional[typing.Type[DeathStringException]] = None,
     ) -> "typing.Iterator[Channel]":
         string = _convert_search_string(string_in)
 
+        if exception_type is None:
+            exception_type = DeathStringException
+
         previous_length = typing.cast(int, self._ringbuf.maxlen)
-        self.death_strings.insert(0, string)
+        self.death_strings.insert(0, (string, exception_type))
         new_length = len(string) * 2
         if new_length > previous_length:
             self._ringbuf = collections.deque(self._ringbuf, maxlen=new_length)
@@ -508,7 +515,7 @@ class Channel(typing.ContextManager):
         try:
             yield self
         finally:
-            self.death_strings.remove(string)
+            self.death_strings.remove((string, exception_type))
             if new_length > previous_length:
                 self._ringbuf = collections.deque(self._ringbuf, maxlen=previous_length)
 
@@ -525,14 +532,18 @@ class Channel(typing.ContextManager):
             self._ringbuf.extend(chunk)
             ringbuf_bytes = bytes(self._ringbuf)
 
-            for string in self.death_strings:
+            for string, exception_type in self.death_strings:
                 if isinstance(string, bytes):
                     if string in ringbuf_bytes:
-                        raise DeathStringException(string)
+                        raise exception_type(string)
                 elif isinstance(string, BoundedPattern):
                     match = string.pattern.search(ringbuf_bytes)
                     if match is not None:
-                        raise DeathStringException(match[0])
+                        raise exception_type(match[0])
+                else:
+                    raise AssertionError(
+                        f"death string has unknown type: {string.__class__!r}"
+                    )
 
     # }}}
 
