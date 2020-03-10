@@ -175,7 +175,7 @@ class ChannelBorrowed(ChannelIO):
 
 
 class ChannelTaken(ChannelBorrowed):
-    exception = ChannelTakenException
+    exception: typing.Type[Exception] = ChannelTakenException
 
     def close(self) -> None:
         pass
@@ -225,7 +225,7 @@ def _convert_search_string(string: ConvenientSearchString) -> SearchString:
 class DeathStringException(Exception):
     __slots__ = "string"
 
-    def __init__(self, string: bytes):
+    def __init__(self, string: bytes = b""):
         self.string = string
 
     def __repr__(self) -> str:
