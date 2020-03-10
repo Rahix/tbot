@@ -47,6 +47,18 @@ adding the following line to your ``.bashrc`` or equivalent:
 
    export PATH=~/.local/bin:$PATH
 
+Installation successful, running ``tbot`` always throws an exception
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+If running ``tbot`` always throws an exception when run (even without any
+arguments), try forcing a clean reinstallation:
+
+.. code-block:: shell-session
+
+   $ pip3 uninstall tbot
+   $ # In the tbot source directory
+   $ rm -rf build/ dist/ tbot.egg-info/
+   $ python3 setup.py install --user
+
 Paramiko
 ^^^^^^^^
 If the installation does not work, most likely it is an error when
