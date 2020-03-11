@@ -18,6 +18,7 @@ import abc
 import contextlib
 import typing
 
+import tbot
 from . import machine
 
 
@@ -106,4 +107,7 @@ class RawShell(machine.Machine):
         Connect tbot's stdio to this machine's channel.  This will allow
         interactive access to the machine.
         """
+        tbot.log.message(
+            f"Entering interactive shell ({tbot.log.c('CTRL+D to exit').bold}) ..."
+        )
         self.ch.attach_interactive()
