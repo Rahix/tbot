@@ -223,13 +223,13 @@ def _convert_search_string(string: ConvenientSearchString) -> SearchString:
 
 
 class DeathStringException(Exception):
-    __slots__ = "string"
+    __slots__ = "match"
 
-    def __init__(self, string: bytes = b""):
-        self.string = string
+    def __init__(self, match: typing.Union[bytes, typing.Match[bytes]] = b""):
+        self.match = match
 
     def __repr__(self) -> str:
-        return f"DeathStringException({self.string!r})"
+        return f"DeathStringException({self.match!r})"
 
 
 class Channel(typing.ContextManager):
