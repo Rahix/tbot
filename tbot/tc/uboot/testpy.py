@@ -34,8 +34,10 @@ stty raw -echo
 exec 10<&0
 exec 11>&1
 
-while true; do cat <&10 >{fifo_console_recv}; done &
-while true; do cat <{fifo_console_send} >&11; done &
+# Open fifos for reading AND writing to make sure that we can
+# never receive EOF (which would happen when no reader fds are open)
+cat <&10 1<>{fifo_console_recv} &
+cat 0<>{fifo_console_send} >&11 &
 
 sleep infinity
 """,
@@ -54,7 +56,10 @@ echo "RESET" >{fifo_commands}
     "tbot-commands": """\
 #!/usr/bin/env bash
 
-while true; do cat {fifo_commands}; done
+# Open for reading and writing so the fifo can never receive EOF
+cat <>{fifo_commands}
+# If something goes wrong, send an invalid command to abort
+echo "FAIL"
 """,
 }
 
