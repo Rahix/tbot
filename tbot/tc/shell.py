@@ -170,7 +170,7 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
         raise NotImplementedError(f"Can't copy from {p1.host} to {p2.host}!")
 
 
-_TOOL_CACHE: typing.Dict[int, typing.Dict[str, bool]] = {}
+_TOOL_CACHE: typing.Dict[linux.LinuxShell, typing.Dict[str, bool]] = {}
 
 
 def check_for_tool(host: linux.LinuxShell, tool: str) -> bool:
@@ -195,16 +195,13 @@ def check_for_tool(host: linux.LinuxShell, tool: str) -> bool:
     :rtype: bool
     :returns: ``True`` if the tool was found and ``False`` otherwise.
     """
-    classhash = hash(host.__class__)
-    if classhash not in _TOOL_CACHE:
-        _TOOL_CACHE[classhash] = {}
+    if host not in _TOOL_CACHE:
+        _TOOL_CACHE[host] = {}
 
-    if tool not in _TOOL_CACHE[classhash]:
-
-        @tbot.named_testcase("check_for_tool")
-        def cft_inner() -> None:
+    if tool not in _TOOL_CACHE[host]:
+        with tbot.testcase("check_for_tool"):
             has_tool = host.test("which", tool)
-            _TOOL_CACHE[classhash][tool] = has_tool
+            _TOOL_CACHE[host][tool] = has_tool
 
             if has_tool:
                 tbot.log.message(
@@ -217,6 +214,4 @@ def check_for_tool(host: linux.LinuxShell, tool: str) -> bool:
                     + f"{tbot.log.c('not').red} have '{tbot.log.c(tool).bold}' installed."
                 )
 
-        cft_inner()
-
-    return _TOOL_CACHE[classhash][tool]
+    return _TOOL_CACHE[host][tool]
