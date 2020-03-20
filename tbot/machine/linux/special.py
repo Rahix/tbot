@@ -53,7 +53,7 @@ class _Stdio(Special[H]):
         self.file = file
 
     def _to_string(self, h: H) -> str:
-        if self.file.host is not h:
+        if self.file.host != h:
             raise Exception("wrong host")
         return self._redir_token + shlex.quote(self.file._local_str())
 

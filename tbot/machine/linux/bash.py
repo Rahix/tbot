@@ -100,8 +100,8 @@ class Bash(linux_shell.LinuxShell):
             elif isinstance(arg, linux_shell.Special):
                 string_args.append(arg._to_string(self))
             elif isinstance(arg, path.Path):
-                if arg.host is not self:
-                    raise Exception("{arg!r} is for another host!")
+                if arg.host != self:
+                    raise Exception(f"{arg!r} is for another host!")
                 string_args.append(shlex.quote(arg._local_str()))
             else:
                 raise TypeError(f"{type(arg)!r} is not a supported argument type!")

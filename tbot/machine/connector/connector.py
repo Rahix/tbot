@@ -71,5 +71,23 @@ class Connector(machine.Machine):
         On the other hand, a serial connection to a board is unique and can't
         be cloned.  Such connectors should raise an exception is ``.clone()``
         is called.
+
+        .. note::
+
+            **Important**: You should **always** set the new machines ``_orig``
+            attribute to the original machine (either ``self._orig`` or, if
+            that is ``None``, ``self``) so tbot knows these machines belong
+            together!  The common pattern is:
+
+            .. code-block:: python
+
+                def clone(self):
+                    new = ...
+                    new._orig = self._orig or self
+                    return new
+
+            Not setting ``_orig`` means that tbot will treat the new and old
+            instances as separate machines which (theoretically) can't interact
+            with each other.
         """
         raise NotImplementedError("abstract method")

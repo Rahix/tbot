@@ -96,6 +96,37 @@ class Machine(abc.ABC):
         """
         pass
 
+    _orig: "typing.Optional[Machine]" = None
+    """
+    The "original" machine if this is a clone.  If ``_orig`` is ``None``, it is
+    assumed that ``self`` is the original and ``_orig`` may be set to ``self``.
+    It is also ok for your code to set ``_orig`` to ``self`` explicitly.
+    """
+
+    def __eq__(self, other: object) -> bool:
+        """
+        Two machines are 'equal' if they are clones.
+        """
+        if not isinstance(other, Machine):
+            return NotImplemented
+
+        if self._orig is None:
+            self._orig = self
+
+        if other._orig is None:
+            other._orig = other
+
+        return self._orig is other._orig
+
+    def __hash__(self) -> int:
+        """
+        Cloned machines should get the same hash value.
+        """
+        if self._orig is None:
+            self._orig = self
+
+        return hash(id(self._orig))
+
     def __enter__(self: Self) -> Self:
         self._rc = getattr(self, "_rc", 0)
         self._rc += 1

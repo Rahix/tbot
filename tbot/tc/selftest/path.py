@@ -39,6 +39,10 @@ def selftest_path_integrity(lab: typing.Optional[linux.Lab] = None,) -> None:
                 raised = True
             assert raised
 
+        # It is ok to clone a machine and reuse the path
+        with lh.clone() as lh3:
+            lh3.exec0("echo", p)
+
         lh.exec0("mkdir", "-p", p.parent)
         assert p.parent.is_dir()
         lh.exec0("uname", "-a", linux.RedirStdout(p))

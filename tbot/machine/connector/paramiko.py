@@ -210,4 +210,6 @@ class ParamikoConnector(connector.Connector):
         cloning too much might lead to issues.  The exact limit is dependent on
         the server configuration.
         """
-        return type(self)(self)
+        new = type(self)(self)
+        new._orig = self._orig or self
+        return new

@@ -174,4 +174,6 @@ class SSHConnector(connector.Connector):
 
     def clone(self) -> "SSHConnector":
         """Clone this machine."""
-        return type(self)(self.host)
+        new = type(self)(self.host)
+        new._orig = self._orig or self
+        return new

@@ -54,7 +54,9 @@ class SubprocessConnector(connector.Connector):
 
     def clone(self: SelfSubprocess) -> SelfSubprocess:
         """Clone this machine."""
-        return type(self)()
+        new = type(self)()
+        new._orig = self._orig or self
+        return new
 
 
 SelfConsole = typing.TypeVar("SelfConsole", bound="ConsoleConnector")
