@@ -140,5 +140,5 @@ class Builder(linux_shell.LinuxShell):
         tc = self.toolchains[arch]
 
         with self.subshell():
-            tc.enable(self)
+            tc.enable(tc, self)
             yield None
