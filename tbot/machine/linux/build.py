@@ -139,6 +139,10 @@ class Builder(linux_shell.LinuxShell):
         """
         tc = self.toolchains[arch]
 
+        assert isinstance(
+            tc, Toolchain
+        ), f"Toolchain {arch!r} is not an instance of `Toolchain` (is {tc!r})."
+
         with self.subshell():
             tc.enable(self)
             yield None
