@@ -94,7 +94,8 @@ class UBootBuilder(abc.ABC):
         """
         return bh.workdir / f"uboot-{self.name}"
 
-    def do_checkout(self, target: linux.Path[H], clean: bool) -> git.GitRepository[H]:
+    def do_checkout(self, target: linux.Path[H], clean: bool,
+                    rev: str) -> git.GitRepository[H]:
         """
         Build-Step that defines how to checkout U-Boot.
 
@@ -112,10 +113,13 @@ class UBootBuilder(abc.ABC):
             must be able to deal with an already checked out U-Boot source.
         :param bool clean: Whether this build-step should clean the source-dir
             (like ``git clean -fdx``).
+        :param str rev: Revision to check out, or None to use the current
+            revision.
         :rtype: tbot.tc.git.GitRepository
         :returns: A git repo of the checked out U-Boot sources
         """
-        return git.GitRepository(target=target, url=self.remote, clean=clean)
+        return git.GitRepository(target=target, url=self.remote, clean=clean,
+                                 rev=rev)
 
     def do_patch(self, repo: git.GitRepository[H]) -> None:
         """
@@ -186,6 +190,7 @@ class UBootBuilder(abc.ABC):
         builder: "typing.Optional[UBootBuilder]" = None,
         *,
         clean: bool = True,
+        rev: str = None,
         path: typing.Optional[linux.Path[H]] = None,
         host: typing.Optional[H] = None,
     ) -> git.GitRepository[H]:
@@ -220,7 +225,7 @@ class UBootBuilder(abc.ABC):
 
                 path = builder.do_repo_path(host)
 
-            repo = builder.do_checkout(path, clean)
+            repo = builder.do_checkout(path, clean=clean, rev=rev)
             builder.do_patch(repo)
 
         return repo
