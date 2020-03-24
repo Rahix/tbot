@@ -60,7 +60,7 @@ class UBootBuilder(abc.ABC):
         """Name of this builder."""
         pass
 
-    remote = "https://git.denx.de/u-boot.git"
+    remote = "https://gitlab.denx.de/u-boot/u-boot.git"
     """
     Where to fetch U-Boot from.
     """
