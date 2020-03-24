@@ -18,7 +18,7 @@ import abc
 import contextlib
 import typing
 import tbot
-from .. import machine, shell, connector, channel
+from .. import linux, machine, shell, connector, channel
 
 
 class PowerControl(machine.Initializer):
@@ -94,6 +94,13 @@ class Board(shell.RawShell):
     This class does nothing special except providing the ``.interactive()``
     method for directly interacting with the serial-console.
     """
+    def add_blobs(self, path: linux.Path) -> None:
+        """
+        Copy binary blobs needed to build to the given parth
+
+        :param linux.Path path: Path to the build directory.
+        """
+        pass
 
     pass
 

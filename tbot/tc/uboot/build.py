@@ -17,7 +17,7 @@ import abc
 import contextlib
 import typing
 import tbot
-from tbot.machine import linux
+from tbot.machine import board, linux
 from tbot.tc import git
 
 H = typing.TypeVar("H", bound=linux.LinuxShell)
@@ -229,6 +229,7 @@ class UBootBuilder(abc.ABC):
     def _build(
         builder: "typing.Optional[UBootBuilder]" = None,
         *,
+        board: board.Board,
         clean: bool = True,
         repo: typing.Optional[git.GitRepository[BH]] = None,
         unpatched_repo: typing.Optional[git.GitRepository[BH]] = None,
@@ -263,6 +264,12 @@ class UBootBuilder(abc.ABC):
 
         You can only specify one of ``repo``, ``unpatched_repo``, ``path``, ``host``
         or ``lab``!
+
+        If your build needs binary blobs to work you can define the
+        ``add_blobs`` method in your board to handle this. It is passed the
+        path to the build directory (which is also the repo directory). It can
+        use shell.copy() to copy the files. Use path._local_str() to obtain the
+        raw pathname to use if needed.
 
         :param bool clean:  Whether the U-Boot tree should be cleand of all leftovers
             from previous builds.
@@ -316,6 +323,9 @@ class UBootBuilder(abc.ABC):
                     tbot.log.message("Configuring build ...")
                     builder.do_configure(host, repo)
 
+                # Allow the board to copy in any required binary blobs
+                board.add_blobs(repo)
+
                 with tbot.testcase("uboot_make"):
                     builder.do_build(repo.host, repo)
 
@@ -341,6 +351,7 @@ class UBootBuilder(abc.ABC):
     def build(
         self,
         *,
+        board: board.Board,
         clean: bool = True,
         repo: typing.Optional[git.GitRepository[BH]] = None,
         unpatched_repo: typing.Optional[git.GitRepository[BH]] = None,
@@ -355,6 +366,7 @@ class UBootBuilder(abc.ABC):
         """
         return UBootBuilder._build(
             self,
+            board=board,
             clean=clean,
             repo=repo,
             unpatched_repo=unpatched_repo,
