@@ -53,6 +53,14 @@ def interactive_uboot() -> None:
 
 
 @tbot.testcase
+def uboot_boots() -> None:
+    """Verify that U-Boot boots to a prompt on the selected board."""
+    with tbot.acquire_lab() as lh:
+        with tbot.acquire_board(lh) as b, tbot.acquire_uboot(b) as ub:
+            pass
+
+
+@tbot.testcase
 def interactive_linux() -> None:
     """Start an interactive Linux shell on the selected board."""
     with tbot.acquire_lab() as lh:
