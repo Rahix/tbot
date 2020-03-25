@@ -18,6 +18,7 @@ import tbot
 from selftest import *  # noqa
 from tbot.tc.uboot import build as uboot_build  # noqa
 from tbot.tc.uboot import checkout as uboot_checkout  # noqa
+from tbot.tc.uboot import smoke_test as uboot_smoke_test  # noqa
 
 
 @tbot.testcase
