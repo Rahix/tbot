@@ -70,6 +70,14 @@ def setup_testhooks(
 ) -> typing.Tuple[channel.Channel, channel.Channel]:
     """
     Setup u-boot-test-* hook scripts for tbot interaction.
+
+    The scripts use 3 FIFOs for sending/receiving the console data to/from tbot
+    which in turn communicates with the board.  The third FIFO is used for
+    commands (currently only RESET).
+
+    This testcase tries to be smart and only rewrite the hooks when something
+    changed.  For this purpose a hash-value is stored on the build-host and
+    checked agains the locally computed one.
     """
 
     hookdir = bh.workdir / "uboot-testpy-tbot"
@@ -137,6 +145,61 @@ def testpy(
     boardenv: typing.Optional[str] = None,
     testpy_args: typing.List[str] = [],
 ) -> None:
+    """
+    Run U-Boot's test/py test-framework against the selected board.
+
+    This testcase can be called from the command-line as ``uboot_testpy``.
+
+    :param tbot.machine.linux.Builder build_host: Optional build-host where
+        U-Boot should be built (and in this case, where test/py will run).  By
+        default, ``tbot.acquire_lab().build()`` is used.
+    :param tbot.tc.uboot.UBootBuilder uboot_builder: Optional configuration for
+        U-Boot checkout.  By default, ``tbot.acquire_uboot().build`` is used
+        (exactly like ``uboot_build`` does).
+    :param str boardenv: Optional contents for the ``boardenv.py`` file.  If
+        this option is not given, ``UBootBuilder.testpy_boardenv`` is used (or
+        nothing).
+    :param list(str) testpy_args: Additional arguments to be passed to test/py.
+        Can be used, for example, to limit which tests should be run (using
+        ``testpy_args=["-k", "sf"]``).
+
+    **Example**:
+
+    The following additions to a board-config make it possible to call
+    ``tbot ... -vv uboot_testpy``:
+
+    .. code-block:: python
+
+        from tbot.tc import uboot
+
+        class DHComUBootBuilder(uboot.UBootBuilder):
+            name = "dhcom-pdk2"
+            defconfig = "dh_imx6_defconfig"
+            toolchain = "imx6q"
+
+            testpy_boardenv = r\"""# Config for dhcom pdk2 board
+
+        # A list of sections of Flash memory to be tested.
+        env__sf_configs = (
+            {
+                # Where in SPI Flash should the test operate.
+                'offset': 0x140000,
+                # This value is optional.
+                #   If present, specifies if the test can write to Flash offset
+                #   If missing, defaults to False.
+                'writeable': True,
+            },
+        )
+        \"""
+
+
+        class DHComUBoot(board.Connector, board.UBootShell):
+            name = "dhcom-uboot"
+            prompt = "=> "
+
+            # Don't forget this!
+            build = DHComUBootBuilder()
+    """
     with contextlib.ExitStack() as cx:
         if build_host is not None:
             bh = cx.enter_context(build_host)

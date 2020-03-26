@@ -49,3 +49,13 @@ tbot has testcases to automatically build U-Boot for your board.  These integrat
 .. autofunction:: tbot.tc.uboot.checkout
 .. autoclass:: tbot.tc.uboot.UBootBuilder
     :members:
+
+U-Boot test/py
+--------------
+
+tbot can also run `U-Boot's test/py`_ when U-Boot building is properly
+configured.  The ``uboot_testpy`` testcase is used for this:
+
+.. _U-Boot's test/py: https://gitlab.denx.de/u-boot/u-boot/-/tree/master/test%2Fpy
+
+.. autofunction:: tbot.tc.uboot.testpy
