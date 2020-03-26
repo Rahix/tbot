@@ -148,7 +148,7 @@ class ChannelBorrowedException(Exception):
 
 class ChannelTakenException(Exception):
     def __str__(self) -> str:
-        return "Another machine has taken this channel.  It can no longer from here."
+        return "Another machine has taken this channel.  It can no longer be accessed from here."
 
 
 class ChannelBorrowed(ChannelIO):
