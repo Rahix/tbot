@@ -34,7 +34,23 @@ H = typing.TypeVar("H", bound="Builder")
 
 
 class EnvScriptToolchain(Toolchain):
-    """Toolchain that is initialized using an env script."""
+    """
+    Toolchain that is initialized using an env script (e.g. yocto toolchain).
+
+    **Example**:
+
+    .. code-block:: python
+
+        @property
+        def toolchains(self):
+            yocto_root = self.fsroot / "opt" / "poky" / "2.6"
+
+            return {
+                "cortexa8hf": linux.build.EnvScriptToolchain(
+                    yocto_root / "environment-setup-cortexa8hf-neon-poky-linux-gnueabi",
+                ),
+            }
+    """
 
     def __init__(self, path: path.Path[H]) -> None:
         """
@@ -50,7 +66,20 @@ class EnvScriptToolchain(Toolchain):
 
 
 class DistroToolchain(Toolchain):
-    """Toolchain that was installed from distribution repositories."""
+    """
+    Toolchain that was installed from distribution repositories.
+
+    **Example**:
+
+    .. code-block:: python
+
+        @property
+        def toolchains(self):
+            return {
+                "armv7a": linux.build.DistroToolchain("arm", "arm-linux-gnueabi-"),
+                "armv8": linux.build.DistroToolchain("aarch64", "aarch64-linux-gnu-"),
+            }
+    """
 
     def __init__(self, arch: str, prefix: str) -> None:
         self.arch = arch
@@ -128,23 +157,16 @@ class Builder(linux_shell.LinuxShell):
         """
         Return a dictionary of all toolchains that exist on this buildhost.
 
-        **Example**::
+        **Example**:
+
+        .. code-block:: python
 
             @property
             def toolchains(self) -> typing.Dict[str, linux.build.Toolchain]:
                 return {
-                    "generic-armv7a": linux.build.EnvScriptToolchain(
-                        linux.Path(
-                            self,
-                            "/path/to/environment-setup-armv7a-neon-poky-linux-gnueabi",
-                        )
-                    ),
-                    "generic-armv7a-hf": linux.build.EnvScriptToolchain(
-                        linux.Path(
-                            self,
-                            "/path/to/environment-setup-armv7ahf-neon-poky-linux-gnueabi",
-                        )
-                    ),
+                    "armv7a": linux.build.DistroToolchain("arm", "arm-linux-gnueabi-"),
+                    "armv8": linux.build.DistroToolchain("aarch64", "aarch64-linux-gnu-"),
+                    "mipsel": linux.build.DistroToolchain("mips", "mipsel-linux-gnu-"),
                 }
         """
         pass

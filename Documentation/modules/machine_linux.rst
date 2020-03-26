@@ -190,8 +190,9 @@ Toolchains
 .. autoclass:: tbot.machine.linux.build.Toolchain
    :members:
 
+.. autoclass:: tbot.machine.linux.build.DistroToolchain
+
 .. autoclass:: tbot.machine.linux.build.EnvScriptToolchain
-   :members:
 
 
 .. py:module:: tbot.machine.linux.auth
