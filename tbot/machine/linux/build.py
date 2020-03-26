@@ -49,6 +49,33 @@ class EnvScriptToolchain(Toolchain):
         self.env_script = path
 
 
+class DistroToolchain(Toolchain):
+    """Toolchain that was installed from distribution repositories."""
+
+    def __init__(self, arch: str, prefix: str) -> None:
+        self.arch = arch
+        self.prefix = prefix
+
+    def enable(self, host: H) -> None:
+        host.env("ARCH", self.arch)
+        host.env("CROSS_COMPILE", self.prefix)
+
+        host.env("CC", self.prefix + "gcc")
+        for tool in [
+            "objdump",
+            "size",
+            "ar",
+            "nm",
+            "strings",
+            "as",
+            "ld",
+            "objcopy",
+            "readelf",
+            "strip",
+        ]:
+            host.env(tool.upper(), self.prefix + tool)
+
+
 class Builder(linux_shell.LinuxShell):
     """
     Mixin to mark a machine as a build-host.
