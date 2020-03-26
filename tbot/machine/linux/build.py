@@ -36,10 +36,6 @@ H = typing.TypeVar("H", bound="Builder")
 class EnvScriptToolchain(Toolchain):
     """Toolchain that is initialized using an env script."""
 
-    def enable(self, host: H) -> None:
-        host.exec0("unset", "LD_LIBRARY_PATH")
-        host.exec0("source", self.env_script)
-
     def __init__(self, path: path.Path[H]) -> None:
         """
         Create a new EnvScriptToolchain.
@@ -47,6 +43,10 @@ class EnvScriptToolchain(Toolchain):
         :param linux.Path path: Path to the env script
         """
         self.env_script = path
+
+    def enable(self, host: H) -> None:
+        host.exec0("unset", "LD_LIBRARY_PATH")
+        host.exec0("source", self.env_script)
 
 
 class DistroToolchain(Toolchain):
