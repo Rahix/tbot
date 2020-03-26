@@ -789,6 +789,10 @@ class Channel(typing.ContextManager):
             maxlen=len(end_magic_bytes) if end_magic_bytes is not None else 1
         )
 
+        # During an interactive session, the blacklist should not apply
+        old_blacklist = self._write_blacklist
+        self._write_blacklist = []
+
         previous: typing.Deque[int] = collections.deque(maxlen=3)
 
         oldtty = termios.tcgetattr(sys.stdin)
@@ -833,6 +837,7 @@ class Channel(typing.ContextManager):
 
             sys.stdout.write("\r\n")
         finally:
+            self._write_blacklist = old_blacklist
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, oldtty)
 
     # }}}
