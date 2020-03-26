@@ -38,6 +38,23 @@ class Bash(linux_shell.LinuxShell):
             # Wait for shell to appear
             util.wait_for_shell(self.ch)
 
+            # Set a blacklist of control characters.  These characters are
+            # known to mess up the state of the shell.  They are:
+            self.ch._write_blacklist = [
+                0x03,  # ETX  | End of Text / Interrupt
+                0x04,  # EOT  | End of Transmission
+                0x11,  # DC1  | Device Control One (XON)
+                0x12,  # DC2  | Device Control Two
+                0x13,  # DC3  | Device Control Three (XOFF)
+                0x14,  # DC4  | Device Control Four
+                0x15,  # NAK  | Negative Acknowledge
+                0x16,  # SYN  | Synchronous Idle
+                0x17,  # ETB  | End of Transmission Block
+                0x1A,  # SUB  | Substitute / Suspend Process
+                0x1C,  # FS   | File Separator
+                0x7F,  # DEL  | Delete
+            ]
+
             # Set prompt to a known string
             #
             # `read_back=True` is needed here so the following
@@ -157,23 +174,6 @@ class Bash(linux_shell.LinuxShell):
                 ev = cx.enter_context(tbot.log_event.command(self.name, cmd))
                 proxy_ch.sendline(cmd, read_back=True)
                 cx.enter_context(proxy_ch.with_stream(ev, show_prompt=False))
-
-                # Set a blacklist of control characters.  These characters are
-                # known to mess up the state of the remote terminal.  They are:
-                proxy_ch._write_blacklist = [
-                    0x03,  # ETX  | End of Text / Interrupt
-                    0x04,  # EOT  | End of Transmission
-                    0x11,  # DC1  | Device Control One (XON)
-                    0x12,  # DC2  | Device Control Two
-                    0x13,  # DC3  | Device Control Three (XOFF)
-                    0x14,  # DC4  | Device Control Four
-                    0x15,  # NAK  | Negative Acknowledge
-                    0x16,  # SYN  | Synchronous Idle
-                    0x17,  # ETB  | End of Transmission Block
-                    0x1A,  # SUB  | Substitute / Suspend Process
-                    0x1C,  # FS   | File Separator
-                    0x7F,  # DEL  | Delete
-                ]
 
                 assert proxy_ch.prompt is not None, "prompt is missing!"
 
