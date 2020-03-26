@@ -185,7 +185,13 @@ def main() -> None:  # noqa: C901
         log.VERBOSITY = max(log.VERBOSITY, log.Verbosity.COMMAND)
     # }}}
 
+    import tbot
     from tbot import loader
+
+    for flag in args.flags:
+        tbot.flags.add(flag)
+
+    log_event.tbot_start()
 
     # Load testcases {{{
     if "TBOTPATH" in os.environ:
@@ -230,13 +236,6 @@ def main() -> None:  # noqa: C901
             )
         return
     # }}}
-
-    log_event.tbot_start()
-
-    import tbot
-
-    for flag in args.flags:
-        tbot.flags.add(flag)
 
     # Load configs {{{
     # Set the actual selected types, needs to be ignored by mypy
