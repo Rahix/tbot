@@ -16,7 +16,9 @@
 
 import re
 import typing
-from .. import channel
+from tbot.machine import channel, linux
+
+M = typing.TypeVar("M", bound="linux.LinuxShell")
 
 
 def wait_for_shell(ch: channel.Channel) -> None:
@@ -34,6 +36,22 @@ def wait_for_shell(ch: channel.Channel) -> None:
                 break
             except TimeoutError:
                 pass
+
+
+def posix_environment(
+    mach: M, var: str, value: "typing.Union[str, linux.Path[M], None]" = None
+) -> str:
+    if value is not None:
+        mach.exec0("export", linux.Raw(f"{mach.escape(var)}={mach.escape(value)}"))
+        if isinstance(value, linux.Path):
+            return value._local_str()
+        else:
+            return value
+    else:
+        # Add a space in front of the expanded environment variable to ensure
+        # values like `-E` will not get picked up as parameters by echo.  This
+        # space is then cut away again so calling tests don't notice this trick.
+        return mach.exec0("echo", linux.Raw(f'" ${{{mach.escape(var)}}}"'))[1:-1]
 
 
 # Type alias for the command context function/generator.  This function needs

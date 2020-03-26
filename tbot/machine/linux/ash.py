@@ -129,12 +129,7 @@ class Ash(linux_shell.LinuxShell):
     def env(
         self: Self, var: str, value: typing.Union[str, path.Path[Self], None] = None
     ) -> str:
-        if value is not None:
-            self.exec0(
-                "export", special.Raw(f"{self.escape(var)}={self.escape(value)}")
-            )
-
-        return self.exec0("echo", special.Raw(f'"${{{self.escape(var)}}}"'))[:-1]
+        return util.posix_environment(self, var, value)
 
     def open_channel(
         self: Self, *args: typing.Union[str, special.Special[Self], path.Path[Self]]

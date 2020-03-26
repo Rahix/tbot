@@ -142,19 +142,7 @@ class Bash(linux_shell.LinuxShell):
     def env(
         self: Self, var: str, value: typing.Union[str, path.Path[Self], None] = None
     ) -> str:
-        if value is not None:
-            self.exec0(
-                "export", special.Raw(f"{self.escape(var)}={self.escape(value)}")
-            )
-            if isinstance(value, path.Path):
-                return value._local_str()
-            else:
-                return value
-        else:
-            # Add a space in front of the expanded environment variable to ensure
-            # values like `-E` will not get picked up as parameters by echo.  This
-            # space is then cut away again so calling tests don't notice this trick.
-            return self.exec0("echo", special.Raw(f'" ${{{self.escape(var)}}}"'))[1:-1]
+        return util.posix_environment(self, var, value)
 
     @contextlib.contextmanager
     def run(
