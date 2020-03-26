@@ -1,6 +1,47 @@
 # Changelog
 
 ## [Unreleased]
+_Update_: Development now happens on the `master` branch instead of `development`.
+
+### Added
+- Added `LinuxShell.run()` to run a command and interact with its stdio:
+  ```python
+  with lh.run("gdb") as gdb:
+      gdb.read_until_prompt("(gdb) ")
+      gdb.sendline("target remote 127.0.0.1:3333")
+      gdb.read_until_prompt("(gdb) ")
+      gdb.sendline("load")
+      gdb.read_until_prompt("(gdb) ")
+      gdb.sendline("quit")
+      gdb.terminate0()
+  ```
+- `Path.write_text()`, `Path.read_text()`, `Path.write_bytes()`, and
+  `Path.read_bytes()`: Methods to easily manipulate remote files.
+- A connector for connection to a [conserver](https://www.conserver.com/)
+  based serial console: `tbot_contrib.connector.conserver`
+- Testcases for timing the duration of an operation (`tbot_contrib.timing`).
+- A testcase to deploy an `swu`-file to
+  [SWUpdate](https://github.com/sbabic/swupdate) (`tbot_contrib.swupdate`).
+- Machines now implement `==` and `hash()`.  A machine which was cloned
+  from another machine has the same hash, i.e. they can be treated as equal.
+- Added a U-Boot smoke-test: `tbot.tc.uboot.smoke_test()` or `uboot_smoke_test`
+- Added a `DistroToolchain` class to easily allow using pre-installed
+  toolchains with tbot.
+
+### Changed
+- `UBootBuilder` now points to the new U-Boot upstream
+  (<https://gitlab.denx.de/u-boot/u-boot.git>) by default.
+- Fixed `linux.Bash`'s `.env()` implementation unnecessarily querying the
+  variable after setting it.
+
+### Fixed
+- Fixed tbot sometimes not displaying a message before entering
+  interactive mode, thus leaving the user clueless what escape-sequence to
+  use to exit.
+- Fixed both `linux.Ash` and `linux.Bash` allowing some bad characters in
+  command invocations which would mess up the shell's state.
+- Fixed `tbot.flags` only being set _after_ loading the testcases which
+  could lead to weird inconsistency errors.
 
 
 ## [0.8.1] - 2020-03-06
@@ -562,7 +603,7 @@ Version **0.6.0** is basically a complete rewrite of TBot.  A rough summary of c
   were loaded later
 - Fix `call_then` not returning the function itself
 
-[Unreleased]: https://github.com/Rahix/tbot/compare/v0.8.1...development
+[Unreleased]: https://github.com/Rahix/tbot/compare/v0.8.1...master
 [0.8.1]: https://github.com/Rahix/tbot/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/Rahix/tbot/compare/v0.7.1...v0.8.0
 [0.7.1]: https://github.com/Rahix/tbot/compare/v0.7.0...v0.7.1
