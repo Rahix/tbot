@@ -38,6 +38,30 @@ class Ash(linux_shell.LinuxShell):
             # Wait for shell to appear
             util.wait_for_shell(self.ch)
 
+            # Set a blacklist of control characters.  These characters are
+            # known to mess up the state of the shell.  They are:
+            self.ch._write_blacklist = [
+                0x03,  # ETX  | End of Text / Interrupt
+                0x04,  # EOT  | End of Transmission
+                0x08,  # BS   | Backspace
+                0x09,  # HT   | Horizontal Tab
+                0x0E,  # SO   | Shift Out
+                0x10,  # DLE  | Data Link Escape
+                0x11,  # DC1  | Device Control One (XON)
+                0x12,  # DC2  | Device Control Two
+                0x13,  # DC3  | Device Control Three (XOFF)
+                0x14,  # DC4  | Device Control Four
+                0x15,  # NAK  | Negative Acknowledge
+                0x16,  # SYN  | Synchronous Idle
+                0x17,  # ETB  | End of Transmission Block
+                0x19,  # EM   | End of Medium
+                0x1A,  # SUB  | Substitute / Suspend Process
+                0x1B,  # ESC  | Escape
+                0x1C,  # FS   | File Separator
+                0x1F,  # US   | Unit Separator
+                0x7F,  # DEL  | Delete
+            ]
+
             # Set prompt to a known string
             #
             # `read_back=True` is needed here so the following
