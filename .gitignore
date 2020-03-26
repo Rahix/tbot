@@ -7,3 +7,4 @@ log/
 dist/
 .doctrees
 /Documentation/output*/
+.hypothesis/
