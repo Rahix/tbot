@@ -609,10 +609,12 @@ class Channel(typing.ContextManager):
 
         :param str c: Control character to send.
         """
-        assert len(c) == 1
-        assert c.isalpha() or c == "@"
+        assert len(c) == 1, "Only a single character is allowed for sendcontrol()"
 
-        self.write(bytes([ord(c) - 64]), _ignore_blacklist=True)
+        num = ord(c) - 64
+        assert 0 <= num <= 0x1F, f"Character {c!r} does not represent a control char!"
+
+        self.write(bytes([num]), _ignore_blacklist=True)
 
     def sendeof(self) -> None:
         raise NotImplementedError()
