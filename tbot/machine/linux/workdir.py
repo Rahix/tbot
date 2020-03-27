@@ -78,15 +78,15 @@ class Workdir(path.Path[H]):
     @classmethod
     def xdg_data(cls, host: H, subdir: str) -> "Workdir[H]":
         """
-        Create a workdir in ``$XDG_DATA_HOME`` (usually ``~/.local/share``).
+        Create a workdir in ``$XDG_DATA_HOME/tbot`` (usually ``~/.local/share/tbot``).
 
         **Example**:
 
         .. code-block:: python
 
             with tbot.acquire_lab() as lh:
-                # Use ~/.local/share/tbot-foo-dir
-                workdir = linux.Workdir.xdg_data(lh, "tbot-foo-dir")
+                # Use ~/.local/share/tbot/foo-dir
+                workdir = linux.Workdir.xdg_data(lh, "foo-dir")
         """
         key = (host, subdir)
         try:
@@ -103,7 +103,7 @@ class Workdir(path.Path[H]):
             if xdg_data_dir is None:
                 xdg_data_dir = path.Path(host, host.env("HOME")) / ".local" / "share"
 
-            p = typing.cast(Workdir, path.Path(host, xdg_data_dir) / subdir)
+            p = typing.cast(Workdir, path.Path(host, xdg_data_dir) / "tbot" / subdir)
             host.exec0("mkdir", "-p", p)
             Workdir._workdirs[key] = p
             return p
