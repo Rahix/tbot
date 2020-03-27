@@ -4,7 +4,20 @@ from tbot.machine import linux
 
 from tbot import tc
 
-from . import path, machine, board_machine, testcase
+Self = typing.TypeVar("Self", bound=linux.LinuxShell)
+
+
+class SelftestHost(tbot.selectable.LocalLabHost):
+    """A host machine for selftests."""
+
+    name = "selftest-local"
+
+    @property
+    def workdir(self: Self) -> linux.Path[Self]:
+        return linux.Workdir.xdg_runtime(self, "selftest-data")
+
+
+from . import path, machine, board_machine, testcase  # noqa: F402
 from .path import *  # noqa: F403, F401
 from .machine import *  # noqa: F403, F401
 from .board_machine import *  # noqa: F403, F401
@@ -60,10 +73,10 @@ def selftest_skipping(lab: typing.Optional[linux.Lab] = None,) -> None:
     assert inner() is None, "Testcase was not skipped!"
 
 
-@tbot.testcase
-def selftest(lab: typing.Optional[linux.Lab] = None,) -> None:
+@tbot.testcase  # type: ignore
+def selftest(lab: None = None) -> None:
     """Run all selftests."""
-    with lab or tbot.acquire_lab() as lh:
+    with SelftestHost() as lh:
         tc.testsuite(
             selftest_failing,
             selftest_skipping,
