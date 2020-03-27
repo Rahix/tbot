@@ -16,6 +16,7 @@
 
 import typing
 
+import tbot
 from . import path, linux_shell
 from .path import H
 
@@ -104,6 +105,46 @@ class Workdir(path.Path[H]):
                 xdg_data_dir = path.Path(host, host.env("HOME")) / ".local" / "share"
 
             p = typing.cast(Workdir, path.Path(host, xdg_data_dir) / "tbot" / subdir)
+            host.exec0("mkdir", "-p", p)
+            Workdir._workdirs[key] = p
+            return p
+
+    @classmethod
+    def xdg_runtime(cls, host: H, subdir: str) -> "Workdir[H]":
+        """
+        Create a workdir in ``$XDG_RUNTIME_DIR``.
+
+        ``$XDG_RUNTIME_DIR`` is meant for *non-essential runtime files and
+        other file objects (such as sockets, named pipes, ...)* as specified by
+        the `XDG Base Directory Specification`_.
+
+        **Example**:
+
+        .. code-block:: python
+
+            with tbot.acquire_lab() as lh:
+                # Results in `$XDG_RUNTIME_DIR/tbot/tbot-pipes`
+                workdir = linux.Workdir.xdg_runtime(lh, "tbot-pipes")
+
+        .. _XDG Base Directory Specification: https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
+        """
+        key = (host, subdir)
+        try:
+            return Workdir._workdirs[key]
+        except KeyError:
+            xdg_runtime_dir = None
+            try:
+                res = host.env("XDG_RUNTIME_DIR")
+                if res != "":
+                    xdg_runtime_dir = path.Path(host, res)
+            except Exception:
+                pass
+
+            if xdg_runtime_dir is None:
+                tbot.log.warning("No XDG_RUNTIME_DIR was set. Falling back to /tmp ...")
+                xdg_runtime_dir = path.Path(host, "/tmp")
+
+            p = typing.cast(Workdir, path.Path(host, xdg_runtime_dir) / "tbot" / subdir)
             host.exec0("mkdir", "-p", p)
             Workdir._workdirs[key] = p
             return p

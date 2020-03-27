@@ -168,6 +168,7 @@ Workdir
    .. automethod:: tbot.machine.linux.Workdir.static
    .. automethod:: tbot.machine.linux.Workdir.athome
    .. automethod:: tbot.machine.linux.Workdir.xdg_data
+   .. automethod:: tbot.machine.linux.Workdir.xdg_runtime
 
 Lab-Host
 --------
