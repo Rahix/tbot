@@ -84,3 +84,36 @@ class Workdir(path.Path[H]):
             host.exec0("mkdir", "-p", p)
             Workdir._workdirs[key] = p
             return p
+
+    @classmethod
+    def xdg_data(cls, host: H, subdir: str) -> "Workdir[H]":
+        """
+        Create a workdir in ``$XDG_DATA_HOME`` (usually ``~/.local/share``).
+
+        **Example**:
+
+        .. code-block:: python
+
+            with tbot.acquire_lab() as lh:
+                # Use ~/.local/share/tbot-foo-dir
+                workdir = linux.Workdir.xdg_data(lh, "tbot-foo-dir")
+        """
+        key = (host, subdir)
+        try:
+            return Workdir._workdirs[key]
+        except KeyError:
+            xdg_data_dir = None
+            try:
+                res = host.env("XDG_DATA_HOME")
+                if res != "":
+                    xdg_data_dir = path.Path(host, res)
+            except Exception:
+                pass
+
+            if xdg_data_dir is None:
+                xdg_data_dir = path.Path(host, host.env("HOME")) / ".local" / "share"
+
+            p = typing.cast(Workdir, path.Path(host, xdg_data_dir) / subdir)
+            host.exec0("mkdir", "-p", p)
+            Workdir._workdirs[key] = p
+            return p
