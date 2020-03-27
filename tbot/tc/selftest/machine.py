@@ -21,6 +21,7 @@ import tbot
 from tbot.machine import channel
 from tbot.machine import linux
 from tbot.machine import board
+from tbot.tc import selftest
 
 __all__ = (
     "selftest_machine_reentrant",
@@ -31,9 +32,11 @@ __all__ = (
 
 
 @tbot.testcase
-def selftest_machine_reentrant(lab: typing.Optional[linux.Lab] = None,) -> None:
+def selftest_machine_reentrant(
+    lab: typing.Optional[selftest.SelftestHost] = None,
+) -> None:
     """Test if a machine can be entered multiple times."""
-    with lab or tbot.acquire_lab() as lh:
+    with lab or selftest.SelftestHost() as lh:
         with lh as h1:
             assert h1.exec0("echo", "FooBar") == "FooBar\n"
 
@@ -42,9 +45,11 @@ def selftest_machine_reentrant(lab: typing.Optional[linux.Lab] = None,) -> None:
 
 
 @tbot.testcase
-def selftest_machine_labhost_shell(lab: typing.Optional[linux.Lab] = None,) -> None:
+def selftest_machine_labhost_shell(
+    lab: typing.Optional[selftest.SelftestHost] = None,
+) -> None:
     """Test the LabHost's shell."""
-    with lab or tbot.acquire_lab() as lh:
+    with lab or selftest.SelftestHost() as lh:
         selftest_machine_shell(lh)
 
         with lh.clone() as l2:
@@ -55,11 +60,13 @@ def selftest_machine_labhost_shell(lab: typing.Optional[linux.Lab] = None,) -> N
 
 
 @tbot.testcase
-def selftest_machine_ssh_shell(lab: typing.Optional[linux.Lab] = None,) -> None:
+def selftest_machine_ssh_shell(
+    lab: typing.Optional[selftest.SelftestHost] = None,
+) -> None:
     """Test an SSH shell."""
     from tbot.tc.selftest import minisshd
 
-    with lab or tbot.acquire_lab() as lh:
+    with lab or selftest.SelftestHost() as lh:
         if not minisshd.check_minisshd(lh):
             tbot.skip("dropbear is not installed so ssh can't be tested")
 
@@ -70,11 +77,13 @@ def selftest_machine_ssh_shell(lab: typing.Optional[linux.Lab] = None,) -> None:
 
 
 @tbot.testcase
-def selftest_machine_sshlab_shell(lab: typing.Optional[linux.Lab] = None,) -> None:
+def selftest_machine_sshlab_shell(
+    lab: typing.Optional[selftest.SelftestHost] = None,
+) -> None:
     """Test an SSH LabHost shell."""
     from tbot.tc.selftest import minisshd
 
-    with lab or tbot.acquire_lab() as lh:
+    with lab or selftest.SelftestHost() as lh:
         if not minisshd.check_minisshd(lh):
             tbot.skip("dropbear is not installed so ssh can't be tested")
 

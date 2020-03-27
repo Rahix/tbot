@@ -20,6 +20,7 @@ import typing
 
 import tbot
 from tbot.machine import channel, linux, board, connector
+from tbot.tc import selftest
 from . import machine as mach
 
 
@@ -199,7 +200,7 @@ def selftest_board_power(lab: typing.Optional[tbot.selectable.LabHost] = None) -
         def poweroff(self) -> None:
             self.mach.exec0("rm", self.mach.workdir / "selftest_power")
 
-    with lab or tbot.acquire_lab() as lh:
+    with lab or selftest.SelftestHost() as lh:
         power_path = lh.workdir / "selftest_power"
         if power_path.exists():
             lh.exec0("rm", power_path)
@@ -258,7 +259,7 @@ def selftest_board_linux_uboot(
 ) -> None:
     """Test linux booting from U-Boot."""
 
-    with lab or tbot.acquire_lab() as lh:
+    with lab or selftest.SelftestHost() as lh:
         tbot.log.message("Testing without UB ...")
         with TestBoard(lh) as b:
             with TestBoardLinuxUB(b) as lnx:
@@ -304,7 +305,7 @@ def selftest_board_linux_nopw(
             """Return workdir."""
             return linux.Workdir.athome(self, "tbot-wd")
 
-    with lab or tbot.acquire_lab() as lh:
+    with lab or selftest.SelftestHost() as lh:
         tbot.log.message("Testing without UB ...")
         with TestBoard(lh) as b:
             with TestBoardLinuxUB_NOPW(b) as lnx:
@@ -329,7 +330,7 @@ def selftest_board_linux_standalone(
         password = None
         login_prompt = "Autoboot: "
 
-    with lab or tbot.acquire_lab() as lh:
+    with lab or selftest.SelftestHost() as lh:
         tbot.log.message("Testing without UB ...")
         with TestBoard(lh) as b:
             with TestBoardLinuxStandalone(b) as lnx:
@@ -390,7 +391,7 @@ read -p ""\
         password = "toor"
         login_delay = 1
 
-    with lab or tbot.acquire_lab() as lh:
+    with lab or selftest.SelftestHost() as lh:
         with BadBoard(lh) as b:
             with BadBoardLinux(b) as lnx:
                 name = lnx.env("UNAME")

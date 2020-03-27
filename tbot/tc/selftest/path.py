@@ -18,15 +18,16 @@ import typing
 import stat
 import tbot
 from tbot.machine import linux
+from tbot.tc import selftest
 
 __all__ = ["selftest_path_integrity", "selftest_path_stat", "selftest_path_files"]
 
 
 @tbot.testcase
-def selftest_path_integrity(lab: typing.Optional[linux.Lab] = None,) -> None:
+def selftest_path_integrity(lab: typing.Optional[selftest.SelftestHost] = None) -> None:
     """Test if using a path on the wrong host fails."""
 
-    with lab or tbot.acquire_lab() as lh:
+    with lab or selftest.SelftestHost() as lh:
         p = lh.workdir / "folder" / "file.txt"
 
         with tbot.acquire_lab() as lh2:
@@ -53,10 +54,10 @@ def selftest_path_integrity(lab: typing.Optional[linux.Lab] = None,) -> None:
 
 
 @tbot.testcase
-def selftest_path_stat(lab: typing.Optional[linux.Lab] = None,) -> None:
+def selftest_path_stat(lab: typing.Optional[selftest.SelftestHost] = None) -> None:
     """Test path stat utilities."""
 
-    with lab or tbot.acquire_lab() as lh:
+    with lab or selftest.SelftestHost() as lh:
         tbot.log.message("Setting up test files ...")
         symlink = lh.workdir / "symlink"
         if symlink.exists():
@@ -129,10 +130,10 @@ def selftest_path_stat(lab: typing.Optional[linux.Lab] = None,) -> None:
 
 
 @tbot.testcase
-def selftest_path_files(lab: typing.Optional[linux.Lab] = None,) -> None:
+def selftest_path_files(lab: typing.Optional[selftest.SelftestHost] = None) -> None:
     """Test accessing file via the Path class"""
 
-    with lab or tbot.acquire_lab() as lh:
+    with lab or selftest.SelftestHost() as lh:
         f = lh.workdir / "test-file.dat"
 
         tbot.log.message("Testing text file access ...")

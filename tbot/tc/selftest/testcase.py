@@ -18,6 +18,7 @@ import typing
 import tbot
 from tbot.machine import linux, board
 from . import board_machine
+from tbot.tc import selftest
 
 __all__ = ("selftest_with_lab", "selftest_with_uboot", "selftest_with_linux")
 
@@ -49,7 +50,7 @@ def selftest_decorated_lab(lh: linux.Lab) -> None:
 @tbot.testcase
 def selftest_with_lab(lab: typing.Optional[linux.Lab] = None) -> None:
     """Test the tbot.with_lab decorator."""
-    with lab or tbot.acquire_lab() as lh:
+    with lab or selftest.SelftestHost() as lh:
         # Call without parameter
         selftest_decorated_lab()
 
@@ -66,7 +67,7 @@ def selftest_decorated_uboot(ub: board.UBootShell) -> None:
 @tbot.testcase
 def selftest_with_uboot(lab: typing.Optional[tbot.selectable.LabHost] = None) -> None:
     """Test the tbot.with_uboot decorator."""
-    with lab or tbot.acquire_lab() as lh:
+    with lab or selftest.SelftestHost() as lh:
         with SubstituteBoard():
             # Call without anything
             selftest_decorated_uboot()
@@ -89,7 +90,7 @@ def selftest_decorated_linux(lnx: linux.LinuxShell) -> None:
 @tbot.testcase
 def selftest_with_linux(lab: typing.Optional[tbot.selectable.LabHost] = None) -> None:
     """Test the tbot.with_linux decorator."""
-    with lab or tbot.acquire_lab() as lh:
+    with lab or selftest.SelftestHost() as lh:
         with SubstituteBoard():
             # Call without anything
             selftest_decorated_linux()

@@ -17,7 +17,7 @@
 import typing
 import tbot
 from tbot.machine import linux
-from tbot.tc import git
+from tbot.tc import git, selftest
 
 __all__ = (
     "selftest_tc_git_checkout",
@@ -84,9 +84,11 @@ A second file that will have been added by patching.""",
 
 
 @tbot.testcase
-def selftest_tc_git_checkout(lab: typing.Optional[linux.Lab] = None,) -> None:
+def selftest_tc_git_checkout(
+    lab: typing.Optional[selftest.SelftestHost] = None,
+) -> None:
     """Test checking out a repository."""
-    with lab or tbot.acquire_lab() as lh:
+    with lab or selftest.SelftestHost() as lh:
         remote = git_prepare(lh)
         target = lh.workdir / "selftest-git-checkout"
 
@@ -123,9 +125,9 @@ def selftest_tc_git_checkout(lab: typing.Optional[linux.Lab] = None,) -> None:
 
 
 @tbot.testcase
-def selftest_tc_git_apply(lab: typing.Optional[linux.Lab] = None,) -> None:
+def selftest_tc_git_apply(lab: typing.Optional[selftest.SelftestHost] = None) -> None:
     """Test applying patches."""
-    with lab or tbot.acquire_lab() as lh:
+    with lab or selftest.SelftestHost() as lh:
         remote = git_prepare(lh)
         target = lh.workdir / "selftest-git-apply"
 
@@ -177,9 +179,9 @@ This section was added by a second patch""",
 
 
 @tbot.testcase
-def selftest_tc_git_am(lab: typing.Optional[linux.Lab] = None,) -> None:
+def selftest_tc_git_am(lab: typing.Optional[selftest.SelftestHost] = None) -> None:
     """Test applying patches as commits."""
-    with lab or tbot.acquire_lab() as lh:
+    with lab or selftest.SelftestHost() as lh:
         remote = git_prepare(lh)
         target = lh.workdir / "selftest-git-am"
 
@@ -246,9 +248,9 @@ def git_increment_commits(repo: git.GitRepository) -> str:
 
 
 @tbot.testcase
-def selftest_tc_git_bisect(lab: typing.Optional[linux.Lab] = None,) -> None:
+def selftest_tc_git_bisect(lab: typing.Optional[selftest.SelftestHost] = None) -> None:
     """Test the git-bisect testcase."""
-    with lab or tbot.acquire_lab() as lh:
+    with lab or selftest.SelftestHost() as lh:
         remote = git_prepare(lh)
         target = lh.workdir / "selftest-git-bisect"
 

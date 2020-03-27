@@ -17,14 +17,14 @@
 import tbot
 import typing
 from tbot.machine import linux
-from tbot.tc import shell
+from tbot.tc import shell, selftest
 from tbot.tc.selftest import minisshd
 
 __all__ = ("selftest_tc_shell_copy",)
 
 
 @tbot.testcase
-def selftest_tc_shell_copy(lab: typing.Optional[linux.Lab] = None,) -> None:
+def selftest_tc_shell_copy(lab: typing.Optional[selftest.SelftestHost] = None) -> None:
     """Test ``shell.copy``."""
 
     def do_test(a: linux.Path, b: linux.Path, msg: str) -> None:
@@ -37,7 +37,7 @@ def selftest_tc_shell_copy(lab: typing.Optional[linux.Lab] = None,) -> None:
         out = b.host.exec0("cat", b).strip()
         assert out == msg, repr(out) + " != " + repr(msg)
 
-    with lab or tbot.acquire_lab() as lh:
+    with lab or selftest.SelftestHost() as lh:
         tbot.log.message("Test copying a file on the same host ...")
         do_test(
             lh.workdir / ".selftest-copy-local1",

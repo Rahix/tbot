@@ -26,16 +26,16 @@ from .testcase import *  # noqa: F403, F401
 
 
 @tbot.testcase
-def selftest_uname(lab: typing.Optional[linux.Lab] = None,) -> None:
+def selftest_uname(lab: typing.Optional[SelftestHost] = None,) -> None:
     """Test lab-host shell basics."""
-    with lab or tbot.acquire_lab() as lh:
+    with lab or SelftestHost() as lh:
         lh.exec0("uname", "-a")
 
 
 @tbot.testcase
-def selftest_user(lab: typing.Optional[linux.Lab] = None,) -> None:
+def selftest_user(lab: typing.Optional[SelftestHost] = None,) -> None:
     """Test lab-host variable expansion."""
-    with lab or tbot.acquire_lab() as lh:
+    with lab or SelftestHost() as lh:
         lh.exec0("echo", lh.env("USER"))
 
         user = lh.env("USER")
@@ -43,7 +43,7 @@ def selftest_user(lab: typing.Optional[linux.Lab] = None,) -> None:
 
 
 @tbot.testcase
-def selftest_failing(lab: typing.Optional[linux.Lab] = None,) -> None:
+def selftest_failing(lab: typing.Optional[SelftestHost] = None) -> None:
     """Test if a testcase failure is properly detected."""
 
     class CustomException(Exception):
@@ -62,7 +62,7 @@ def selftest_failing(lab: typing.Optional[linux.Lab] = None,) -> None:
 
 
 @tbot.testcase
-def selftest_skipping(lab: typing.Optional[linux.Lab] = None,) -> None:
+def selftest_skipping(lab: typing.Optional[SelftestHost] = None) -> None:
     """Test skipping a testcase."""
 
     @tbot.testcase

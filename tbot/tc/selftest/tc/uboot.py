@@ -17,7 +17,7 @@
 import typing
 import tbot
 from tbot.machine import linux
-from tbot.tc import uboot, git
+from tbot.tc import uboot, git, selftest
 
 __all__ = (
     "selftest_tc_uboot_checkout",
@@ -102,7 +102,7 @@ index b5319d7..0f01838 100644
 
 @tbot.testcase
 def selftest_tc_uboot_checkout(lab: typing.Optional[linux.Lab] = None) -> None:
-    with lab or tbot.acquire_lab() as lh:
+    with lab or selftest.SelftestHost() as lh:
         builder = _uboot_prepare(lh)
 
         @tbot.testcase

@@ -17,7 +17,7 @@
 import typing
 import tbot
 from tbot.machine import linux
-from tbot.tc import kconfig
+from tbot.tc import kconfig, selftest
 
 __all__ = ("selftest_tc_kconfig",)
 
@@ -25,7 +25,7 @@ __all__ = ("selftest_tc_kconfig",)
 @tbot.testcase
 def selftest_tc_kconfig(lab: typing.Optional[linux.Lab] = None) -> None:
     """Test kconig setting."""
-    with lab or tbot.acquire_lab() as lh:
+    with lab or selftest.SelftestHost() as lh:
         conf = lh.workdir / "selftest-kconfig"
 
         for i in range(4):
