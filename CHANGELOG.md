@@ -17,6 +17,8 @@ _Update_: Development now happens on the `master` branch instead of `development
   ```
 - `Path.write_text()`, `Path.read_text()`, `Path.write_bytes()`, and
   `Path.read_bytes()`: Methods to easily manipulate remote files.
+- Added integration for U-Boot's test/py test-framework.  See the
+  ``uboot_testpy`` testcase fore more.
 - A connector for connection to a [conserver](https://www.conserver.com/)
   based serial console: `tbot_contrib.connector.conserver`
 - Testcases for timing the duration of an operation (`tbot_contrib.timing`).
@@ -27,6 +29,10 @@ _Update_: Development now happens on the `master` branch instead of `development
 - Added a U-Boot smoke-test: `tbot.tc.uboot.smoke_test()` or `uboot_smoke_test`
 - Added a `DistroToolchain` class to easily allow using pre-installed
   toolchains with tbot.
+- Added a Workdir which lives in ``$XDG_DATA_HOME`` and one living in
+  ``$XDG_RUNTIME_DIR`` (``Workdir.xdg_home()`` and ``Workdir.xdg_runtime()``).
+- You can now specify the U-Boot revision to checkout:
+  ``tbot uboot_checkout -prev=\"v2020.01\"``
 
 ### Changed
 - `UBootBuilder` now points to the new U-Boot upstream
@@ -42,6 +48,8 @@ _Update_: Development now happens on the `master` branch instead of `development
   command invocations which would mess up the shell's state.
 - Fixed `tbot.flags` only being set _after_ loading the testcases which
   could lead to weird inconsistency errors.
+- Fixed ``Channel.sendcontrol()`` not actually allowing all C0 control
+  characters.
 
 
 ## [0.8.1] - 2020-03-06
