@@ -13,8 +13,24 @@ TimingResults = collections.namedtuple(
 def time_testcase(
     testcase: typing.Callable, *args: typing.Any, **kwargs: typing.Any
 ) -> typing.Tuple[float, typing.Any]:
-    """Return the time that the given testcase took
-    you can pass any arguments that the testcase needs"""
+    """
+    Time the duration of a testcase.
+
+    :param testcase: Testcase to call.
+    :param args,\\ kwargs: Arguments to pass to the testcase.
+    :returns: A tuple of the time (in seconds) and the testcase's return value.
+
+    **Example**:
+
+    .. code-block:: python
+
+        from tbot_contrib import timing
+
+        def foo(arg1: str, arg2: int) -> int:
+            ...
+
+        duration, ret = timing.time_testcase(foo, "hello", arg2=42)
+    """
     start = time.monotonic()
     result = testcase(*args, **kwargs)
     finish = time.monotonic()
@@ -29,20 +45,20 @@ def time_testcase_statistics(
     sleep: float = 0,
     **kwargs: typing.Any,
 ) -> None:
-    """receive a testcase and prints descriptive statics
-    you can pass as an argument:
-    runs = the number of times that the testcase is to be repeated
-    sleep = the time in seconds that the bucle must wait
+    """
+    Take multiple measurements about the run-time of a testcase and return/display statistics.
 
-    example use of sleep: maybe the board does not discharge quick enough
-    so it can cause troubles when the subsecuent testcase tries to boot again the board
-
-    you can pass any arguments that the testcase needs """
+    :param testcase: Testcase to call.
+    :param args,\\ kwargs: Arguments to pass to the testcase.
+    :param int runs: How many samples to take.
+    :param float sleep: How much time to sleep in between the runs.  Example
+        use:  Maybe the board does not discharge quick enough so it can cause
+        troubles when the subsecuent testcase run tries to boot again the board
+    """
 
     elapsed_times = []
 
     for n in range(runs):
-
         elapsed_time, _ = time_testcase(testcase, *args, **kwargs)
         elapsed_times.append(elapsed_time)
         time.sleep(sleep)

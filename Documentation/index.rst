@@ -35,6 +35,7 @@ started with our :ref:`quickstart` guide!
 
    modules/tc
    contrib/connector
+   contrib/timing
 
 .. toctree::
    :maxdepth: 1
