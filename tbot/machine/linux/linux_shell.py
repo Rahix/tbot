@@ -318,6 +318,6 @@ class LinuxShell(shell.Shell):
 
             # This is the defaut implementation
             def workdir(self):
-                return linux.Workdir(self, "/tmp/tbot-wd")
+                return linux.Workdir.xdg_data(self, "")
         """
-        return workdir.Workdir.static(self, "/tmp/tbot-wd")
+        return workdir.Workdir.xdg_data(self, "")
