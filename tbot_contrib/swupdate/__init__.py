@@ -8,6 +8,14 @@ from tbot.machine import linux
 def swupdate_update_web(
     lh: linux.Lab, swu_file: linux.Path, target_ip: str, timeout: int = 300
 ) -> None:
+    """
+    Upload an ``.swu`` file to a running swupdate server.
+
+    :param linux.Lab lh: Optionally the lab-host from where to initiate the update.
+    :param linux.Path swu_file: Path to the ``.swu`` file (on the lab-host or locally).
+    :param str target_ip: IP-Address of the target host.
+    :param int timeout: Timeout.
+    """
     with tbot.acquire_local() as lo:  # Needed for the script
         script_path = lh.workdir / "tbot_swupdate_web.py"
         swu_path = lh.workdir / "image.swu"
