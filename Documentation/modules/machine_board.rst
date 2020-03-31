@@ -123,6 +123,12 @@ In case your U-Boot is configured for autoboot, you'll want to use the optional
 .. autoclass:: tbot.machine.board.UBootShell
    :members:
 
+   .. autoattribute:: tbot.machine.board.UBootShell.boot_timeout
+
+      Maximum time from power-on to U-Boot shell.
+
+      If tbot can't reach the U-Boot shell during this time, an exception will be thrown.
+
 .. autoclass:: tbot.machine.board.UBootAutobootIntercept
    :members:
 

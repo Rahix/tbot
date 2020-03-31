@@ -16,6 +16,7 @@
 
 import contextlib
 import re
+import time
 import typing
 
 import tbot
@@ -43,10 +44,20 @@ class UBootStartupEvent(tbot.log.EventIO):
 
 class UbootStartup(machine.Machine):
     _uboot_init_event: typing.Optional[tbot.log.EventIO] = None
+    _timeout_start: typing.Optional[float] = None
+
+    boot_timeout: typing.Optional[float] = None
+    """
+    Maximum time from power-on to U-Boot shell.
+
+    If tbot can't reach the U-Boot shell during this time, an exception will be thrown.
+    """
 
     def _uboot_startup_event(self) -> tbot.log.EventIO:
         if self._uboot_init_event is None:
             self._uboot_init_event = UBootStartupEvent(self)
+
+            self._timeout_start = time.monotonic()
 
         return self._uboot_init_event
 
@@ -88,7 +99,14 @@ class UBootAutobootIntercept(machine.Initializer, UbootStartup):
     def _init_machine(self) -> typing.Iterator:
         if self.autoboot_prompt is not None:
             with self.ch.with_stream(self._uboot_startup_event()):
-                self.ch.read_until_prompt(prompt=self.autoboot_prompt)
+                timeout = None
+                if self.boot_timeout is not None:
+                    assert self._timeout_start is not None
+                    timeout = self.boot_timeout - (
+                        time.monotonic() - self._timeout_start
+                    )
+
+                self.ch.read_until_prompt(prompt=self.autoboot_prompt, timeout=timeout)
                 self.ch.send(self.autoboot_keys)
 
         yield None
@@ -164,6 +182,10 @@ class UBootShell(shell.Shell, UbootStartup):
             )
 
             while True:
+                if self.boot_timeout is not None:
+                    assert self._timeout_start is not None
+                    if (time.monotonic() - self._timeout_start) > self.boot_timeout:
+                        raise TimeoutError("U-Boot did not reach shell in time")
                 try:
                     self.ch.read_until_prompt(timeout=0.2)
                     break
