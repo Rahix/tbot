@@ -191,7 +191,10 @@ def main() -> None:  # noqa: C901
     for flag in args.flags:
         tbot.flags.add(flag)
 
-    log_event.tbot_start()
+    if args.list_testcases or args.list_files:
+        log.VERBOSITY = -1  # type: ignore
+    else:
+        log_event.tbot_start()
 
     # Load testcases {{{
     if "TBOTPATH" in os.environ:
