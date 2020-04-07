@@ -181,6 +181,38 @@ class UBootShell(shell.Shell, UbootStartup):
                 else self.prompt
             )
 
+            # Set a blacklist of control characters.  These characters are
+            # known to mess up the state of the U-Boot shell.  They are:
+            self.ch._write_blacklist = [
+                0x00,  # NUL  | Null
+                0x01,  # SOH  | Start of Heading
+                0x02,  # STX  | Start of Text
+                0x03,  # ETX  | End of Text / Interrupt
+                0x04,  # EOT  | End of Transmission
+                0x05,  # ENQ  | Enquiry
+                0x06,  # ACK  | Acknowledge
+                0x07,  # BEL  | Bell, Alert
+                0x08,  # BS   | Backspace
+                0x09,  # HT   | Character Tabulation, Horizontal Tabulation
+                0x0B,  # VT   | Line Tabulation, Vertical Tabulation
+                0x0C,  # FF   | Form Feed
+                0x0E,  # SO   | Shift Out
+                0x0F,  # SI   | Shift In
+                0x10,  # DLE  | Data Link Escape
+                0x11,  # DC1  | Device Control One (XON)
+                0x12,  # DC2  | Device Control Two
+                0x13,  # DC3  | Device Control Three (XOFF)
+                0x14,  # DC4  | Device Control Four
+                0x15,  # NAK  | Negative Acknowledge
+                0x16,  # SYN  | Synchronous Idle
+                0x17,  # ETB  | End of Transmission Block
+                0x18,  # CAN  | Cancel
+                0x1A,  # SUB  | Substitute / Suspend Process
+                0x1B,  # ESC  | Escape
+                0x1C,  # FS   | File Separator
+                0x7F,  # DEL  | Delete
+            ]
+
             while True:
                 if self.boot_timeout is not None:
                     assert self._timeout_start is not None
