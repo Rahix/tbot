@@ -33,19 +33,31 @@ _Update_: Development now happens on the `master` branch instead of `development
   ``$XDG_RUNTIME_DIR`` (``Workdir.xdg_home()`` and ``Workdir.xdg_runtime()``).
 - You can now specify the U-Boot revision to checkout:
   ``tbot uboot_checkout -prev=\"v2020.01\"``
+- A ``boot_timeout`` parameter was added to U-Boot machines to limit the maximum
+  time, U-Boot is allowed to take during boot.
+- Testcases for interacting with GPIOs (`tbot_contrib.gpio`).
+- ``tbot.Re``: A convenience wrapper around ``re.compile``.  Whereever
+  regex-patterns are needed (e.g. in channel-interaction), you can now use
+  `tbot.Re` instead of `re.compile("...".encode())`.
+- A `Channel.readline()` and a `Channel.expect()` method to mimic pexpect.
 
 ### Changed
+- The default workdir for Linux shells is no longer `/tmp/tbot-wd`.  It is
+  now `$XDG_DATA_HOME/tbot` (usually `~/.local/share/tbot`).
 - `UBootBuilder` now points to the new U-Boot upstream
   (<https://gitlab.denx.de/u-boot/u-boot.git>) by default.
 - Fixed `linux.Bash`'s `.env()` implementation unnecessarily querying the
   variable after setting it.
+- ``selftest`` now uses a dedicated machine class which does not clobber
+  the default workdir and instead stores data in a temporary directory.
 
 ### Fixed
 - Fixed tbot sometimes not displaying a message before entering
   interactive mode, thus leaving the user clueless what escape-sequence to
   use to exit.
-- Fixed both `linux.Ash` and `linux.Bash` allowing some bad characters in
-  command invocations which would mess up the shell's state.
+- Fixed `linux.Bash`, `linux.Ash`, and `board.UBootShell` allowing some
+  bad characters in command invocations which would mess up the shell's
+  state.
 - Fixed `tbot.flags` only being set _after_ loading the testcases which
   could lead to weird inconsistency errors.
 - Fixed ``Channel.sendcontrol()`` not actually allowing all C0 control
