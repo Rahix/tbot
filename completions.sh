@@ -47,6 +47,12 @@ _tbot()
     if [[ "$cur" == \@* ]]; then
         cur="${cur:1}"
         _filedir
+        # If the completion is a directory, append a / and prevent a space
+        # being added.  Courtesy of curl(1) completion.
+        if [[ ${#COMPREPLY[@]} -eq 1 && -d "${COMPREPLY[0]}" ]]; then
+            COMPREPLY[0]+=/
+            compopt -o nospace
+        fi
         COMPREPLY=("${COMPREPLY[@]/#/@}")
         return
     fi
