@@ -14,14 +14,18 @@ _tbot()
         if [[ "$current_word" == @(-T|-t) ]]; then
             local index=$((index + 1))
             [[ "${words[$index]}" == "=" ]] && index=$((index + 1))
-            path_args=("${path_args[@]}" "$current_word" "${words[$index]}")
+            local path="${words[$index]}"
+            __expand_tilde_by_ref path
+            path_args+=("$current_word" "$path")
         elif [[ "$current_word" == @* ]]; then
             path_args=("${path_args[@]}" "${current_word}")
         elif [[ "$current_word" == -C ]]; then
             local index=$((index + 1))
             [[ "${words[$index]}" == "=" ]] && index=$((index + 1))
-            path_args=("${path_args[@]}" "$current_word" "${words[$index]}")
-            workdir="${words[$index]}"
+            local path="${words[$index]}"
+            __expand_tilde_by_ref path
+            path_args+=("$current_word" "$path")
+            workdir="$path"
         fi
 
         local index=$((index + 1))
