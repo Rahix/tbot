@@ -43,32 +43,23 @@ to your ``.bashrc`` or equivalent.
 Blinks a GPIO Led on your selected target.
 
 ```python
-import contextlib
-import typing
 import time
 import tbot
-from tbot.machine import linux
+from tbot_contrib import gpio
 
 
 @tbot.testcase
 @tbot.with_linux
 def blink(lnx, pin: int = 18) -> None:
     """Blink the led on pin ``pin``."""
-    sys_gpio = lnx.fsroot / "sys/class/gpio"
-    gpio_n = sys_gpio / f"gpio{pin}"
-    try:
-        lnx.exec0("echo", str(pin), linux.RedirStdout(sys_gpio / "export"))
 
-        # Wait for the gpio pin to be initialized
+    led = gpio.Gpio(lnx, pin)
+    led.set_direction("out")
+    for _ in range(5):
+        led.set_value(True)
         time.sleep(0.5)
-        lnx.exec0("echo", "out", linux.RedirStdout(gpio_n / "direction"))
-        for _ in range(5):
-            lnx.exec0("echo", "1", linux.RedirStdout(gpio_n / "value"))
-            time.sleep(0.5)
-            lnx.exec0("echo", "0", linux.RedirStdout(gpio_n / "value"))
-            time.sleep(0.5)
-    finally:
-        lnx.exec0("echo", str(pin), linux.RedirStdout(sys_gpio / "unexport"))
+        led.set_value(False)
+        time.sleep(0.5)
 ```
 
 ## Credits
