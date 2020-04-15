@@ -292,6 +292,13 @@ def main() -> None:  # noqa: C901
         )
     # }}}
 
+    if len(tbot.flags) != 0:
+        highlight = _import_hightlighter()
+        tbot.log.message(
+            tbot.log.c("Flags:\n").bold
+            + ", ".join(highlight(f"{flag!r}") for flag in tbot.flags)
+        )
+
     try:
         for tc in args.testcase:
             func = testcases[tc]
