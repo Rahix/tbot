@@ -19,6 +19,7 @@ import contextlib
 import typing
 
 import tbot
+import tbot.error
 from . import machine
 
 
@@ -53,7 +54,7 @@ class Shell(machine.Machine):
                         # Optionally destruct shell
                         ...
         """
-        raise NotImplementedError("abstract method")
+        raise tbot.error.AbstractMethodError()
 
     @abc.abstractmethod
     def exec(self, *args: typing.Any) -> typing.Any:
@@ -76,7 +77,7 @@ class Shell(machine.Machine):
             :py:class:`~tbot.machine.linux.LinuxShell`, ``exec`` returns a
             tuple of the return code and console output: ``Tuple[int, str]``.
         """
-        raise NotImplementedError("abstract method")
+        raise tbot.error.AbstractMethodError()
 
 
 class RawShell(machine.Machine):

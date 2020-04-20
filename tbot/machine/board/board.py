@@ -18,6 +18,7 @@ import abc
 import contextlib
 import typing
 import tbot
+import tbot.error
 from .. import machine, shell, connector, channel
 
 
@@ -116,4 +117,4 @@ class Connector(connector.Connector):
                 yield ch
 
     def clone(self) -> typing.NoReturn:
-        raise NotImplementedError("abstract method")
+        raise tbot.error.AbstractMethodError()

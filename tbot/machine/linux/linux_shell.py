@@ -17,6 +17,7 @@
 import abc
 import typing
 import tbot
+import tbot.error
 from .. import shell, channel
 from . import path, workdir, util
 from .special import Special
@@ -52,7 +53,7 @@ class LinuxShell(shell.Shell):
         :param \\*args: Arguments to be escaped.  See :ref:`linux-argtypes` for details.
         :returns: A string with quoted/escaped versions of the input arguments.
         """
-        raise NotImplementedError("abstract method")
+        raise tbot.error.AbstractMethodError()
 
     def build_command(
         self: Self, *args: typing.Union[str, Special[Self], path.Path[Self]]
@@ -83,7 +84,7 @@ class LinuxShell(shell.Shell):
             output.  Note that the output is ``stdout`` and ``stderr`` merged.
             It will also contain a trailing newline in most cases.
         """
-        raise NotImplementedError("abstract method")
+        raise tbot.error.AbstractMethodError()
 
     @abc.abstractmethod
     def exec0(
@@ -108,7 +109,7 @@ class LinuxShell(shell.Shell):
             ``stdout`` and ``stderr`` merged.  It will also contain a trailing
             newline in most cases.
         """
-        raise NotImplementedError("abstract method")
+        raise tbot.error.AbstractMethodError()
 
     @abc.abstractmethod
     def test(
@@ -130,7 +131,7 @@ class LinuxShell(shell.Shell):
         :returns: Boolean representation of commands success.  ``True`` if
             return code was ``0``, ``False`` otherwise.
         """
-        raise NotImplementedError("abstract method")
+        raise tbot.error.AbstractMethodError()
 
     @abc.abstractmethod
     def env(
@@ -155,7 +156,7 @@ class LinuxShell(shell.Shell):
         :rtype: str
         :returns: Current (new) value of the environment variable.
         """
-        raise NotImplementedError("abstract method")
+        raise tbot.error.AbstractMethodError()
 
     def run(
         self: Self, *args: typing.Union[str, Special[Self], path.Path[Self]]
@@ -229,7 +230,7 @@ class LinuxShell(shell.Shell):
 
         :rtype: tbot.machine.channel.Channel
         """
-        raise NotImplementedError("abstract method")
+        raise tbot.error.AbstractMethodError()
 
     @abc.abstractmethod
     def interactive(self) -> None:
@@ -240,7 +241,7 @@ class LinuxShell(shell.Shell):
         can interactively run commands.  This method is used by the
         ``interactive_lab`` and ``interactive_linux`` testcases.
         """
-        raise NotImplementedError("abstract method")
+        raise tbot.error.AbstractMethodError()
 
     @abc.abstractmethod
     def subshell(

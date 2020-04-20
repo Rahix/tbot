@@ -19,6 +19,7 @@ import contextlib
 import typing
 
 import tbot
+import tbot.error
 from .. import machine, board, channel, connector
 
 
@@ -146,7 +147,7 @@ class LinuxUbootConnector(connector.Connector, LinuxBootLogin):
         U-Boot machine to use when booting directly from a
         :py:class:`~tbot.machine.board.Board` instance.
         """
-        raise NotImplementedError("abstract method")
+        raise tbot.error.AbstractMethodError()
 
     def do_boot(self, ub: board.UBootShell) -> channel.Channel:
         """

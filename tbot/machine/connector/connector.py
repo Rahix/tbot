@@ -16,6 +16,7 @@
 
 import abc
 import typing
+import tbot.error
 from .. import channel, machine
 
 Self = typing.TypeVar("Self", bound="Connector")
@@ -57,7 +58,7 @@ class Connector(machine.Machine):
                         # Do teardown
                         ...
         """
-        raise NotImplementedError("abstract method")
+        raise tbot.error.AbstractMethodError()
 
     @abc.abstractmethod
     def clone(self: Self) -> Self:
@@ -90,4 +91,4 @@ class Connector(machine.Machine):
             instances as separate machines which (theoretically) can't interact
             with each other.
         """
-        raise NotImplementedError("abstract method")
+        raise tbot.error.AbstractMethodError()

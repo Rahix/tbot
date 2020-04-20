@@ -18,6 +18,7 @@ import abc
 import contextlib
 import re
 import typing
+import tbot.error
 from . import channel
 
 Self = typing.TypeVar("Self", bound="Machine")
@@ -66,15 +67,15 @@ class Machine(abc.ABC):
     # Abstract methods that will be implemented by connector and shell
     @abc.abstractmethod
     def _connect(self) -> typing.ContextManager[channel.Channel]:
-        raise NotImplementedError("abstract method")
+        raise tbot.error.AbstractMethodError()
 
     @abc.abstractmethod
     def clone(self: Self) -> Self:
-        raise NotImplementedError("abstract method")
+        raise tbot.error.AbstractMethodError()
 
     @abc.abstractmethod
     def _init_shell(self) -> typing.ContextManager:
-        raise NotImplementedError("abstract method")
+        raise tbot.error.AbstractMethodError()
 
     def init(self) -> None:
         """
@@ -185,4 +186,4 @@ class Initializer(Machine):
 
             More docs for this ...
         """
-        raise NotImplementedError("abstract method")
+        raise tbot.error.AbstractMethodError()

@@ -18,6 +18,7 @@ import abc
 import shlex
 import typing
 
+import tbot.error
 from . import linux_shell, path  # noqa: F401
 
 H = typing.TypeVar("H", bound="linux_shell.LinuxShell")
@@ -28,7 +29,7 @@ class Special(typing.Generic[H]):
 
     @abc.abstractmethod
     def _to_string(self, host: H) -> str:
-        raise NotImplementedError("abstract method")
+        raise tbot.error.AbstractMethodError()
 
 
 class Raw(Special[H]):
@@ -47,7 +48,7 @@ class _Stdio(Special[H]):
     @property
     @abc.abstractmethod
     def _redir_token(self) -> str:
-        raise NotImplementedError("abstract method")
+        raise tbot.error.AbstractMethodError()
 
     def __init__(self, file: path.Path[H]) -> None:
         self.file = file

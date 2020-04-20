@@ -18,6 +18,7 @@ import abc
 import contextlib
 import typing
 
+import tbot.error
 from .. import channel, linux
 from . import connector
 
@@ -102,7 +103,7 @@ class ConsoleConnector(connector.Connector):
         In most cases you'll accomplish this using
         :py:meth:`mach.open_channel(...) <tbot.machine.linux.LinuxShell.open_channel>`.
         """
-        raise NotImplementedError("abstract method")
+        raise tbot.error.AbstractMethodError()
 
     def __init__(self, mach: linux.LinuxShell) -> None:
         """
