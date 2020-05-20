@@ -5,7 +5,7 @@ python:
   - "3.6"
 cache: pip
 before_install:
-  - pip install junit-xml mypy paramiko pre-commit recommonmark sphinx sphinx_rtd_theme termcolor2
+  - pip install junit-xml mypy paramiko pre-commit recommonmark sphinx sphinx_rtd_theme termcolor2 pyserial
 script:
   - env CLICOLOR_FORCE=1 pre-commit run --all-files --verbose
   - python3 -c "__import__('tbot.main').main.main()" --log /dev/null -vv selftest_tc
