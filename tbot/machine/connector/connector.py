@@ -49,7 +49,7 @@ class Connector(machine.Machine):
 
             class MyConnector(Connector):
                 @contextlib.contextmanager
-                def _connext(self) -> typing.Iterator[channel.Channel]:
+                def _connect(self) -> typing.Iterator[channel.Channel]:
                     try:
                         # Do setup
                         ...
