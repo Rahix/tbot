@@ -17,12 +17,12 @@ class SelftestHost(tbot.selectable.LocalLabHost):
         return linux.Workdir.xdg_runtime(self, "selftest-data")
 
 
-from . import path, machine, board_machine, testcase  # noqa: F402
-from .path import *  # noqa: F403, F401
-from .machine import *  # noqa: F403, F401
-from .board_machine import *  # noqa: F403, F401
-from .tc import *  # noqa: F403, F401
-from .testcase import *  # noqa: F403, F401
+from . import path, machine, board_machine, testcase  # noqa: F402, E402
+from .path import *  # noqa: F403, F401, E402
+from .machine import *  # noqa: F403, F401, E402
+from .board_machine import *  # noqa: F403, F401, E402
+from .tc import *  # noqa: F403, F401, E402
+from .testcase import *  # noqa: F403, F401, E402
 
 
 @tbot.testcase
