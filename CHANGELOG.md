@@ -1,6 +1,18 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Added `ensure_sd_unit()` testcase/util-function which starts systemd
+  services if not yet running.
+- `tbot.error` module as a central place for defining all exception types.
+- Added a `PyserialConnector` to connect to a serial port using
+  [PySerial][pyserial].
+
+### Changed
+- tbot now prints all passed flags on start (and thus also stores this
+  info in the log-file).
+
+[pyserial]: https://pyserial.readthedocs.io/en/latest/pyserial.html
 
 
 ## [0.8.2] - 2020-04-08
