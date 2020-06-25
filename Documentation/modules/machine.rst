@@ -29,7 +29,7 @@ Composition is done using multiple-inheritance, like this:
 
    from tbot.machine import connector, linux
 
-   def MyLabHost(
+   class MyLabHost(
        # The connector:
        connector.ParamikoConnector,
 

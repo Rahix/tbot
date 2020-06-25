@@ -318,6 +318,7 @@ class LinuxShell(shell.Shell):
         .. code-block:: python
 
             # This is the defaut implementation
+            @property
             def workdir(self):
                 return linux.Workdir.xdg_data(self, "")
         """
