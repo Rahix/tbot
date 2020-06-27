@@ -43,7 +43,7 @@ class Workdir(path.Path[H]):
         """
         key = (host, pathstr)
         try:
-            return Workdir._workdirs[key]
+            return typing.cast(Workdir, path.Path(host, Workdir._workdirs[key]))
         except KeyError:
             p = typing.cast(Workdir, path.Path(host, pathstr))
             host.exec0("mkdir", "-p", p)
@@ -68,7 +68,7 @@ class Workdir(path.Path[H]):
         """
         key = (host, subdir)
         try:
-            return Workdir._workdirs[key]
+            return typing.cast(Workdir, path.Path(host, Workdir._workdirs[key]))
         except KeyError:
             home = host.env("HOME")
             p = typing.cast(Workdir, path.Path(host, home) / subdir)
@@ -91,7 +91,7 @@ class Workdir(path.Path[H]):
         """
         key = (host, subdir)
         try:
-            return Workdir._workdirs[key]
+            return typing.cast(Workdir, path.Path(host, Workdir._workdirs[key]))
         except KeyError:
             xdg_data_dir = None
             try:
@@ -130,7 +130,7 @@ class Workdir(path.Path[H]):
         """
         key = (host, subdir)
         try:
-            return Workdir._workdirs[key]
+            return typing.cast(Workdir, path.Path(host, Workdir._workdirs[key]))
         except KeyError:
             xdg_runtime_dir = None
             try:
