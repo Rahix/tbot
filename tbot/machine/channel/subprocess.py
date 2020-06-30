@@ -51,7 +51,7 @@ class SubprocessChannelIO(channel.ChannelIO):
         if self.closed:
             raise channel.ChannelClosedException()
 
-        channel._debug_log(buf, True)
+        channel._debug_log(self, buf, True)
         bytes_written = os.write(self.pty_master, buf)
         if bytes_written == 0:
             raise channel.ChannelClosedException
@@ -66,7 +66,7 @@ class SubprocessChannelIO(channel.ChannelIO):
                 raise TimeoutError()
 
         try:
-            return channel._debug_log(os.read(self.pty_master, n))
+            return channel._debug_log(self, os.read(self.pty_master, n))
         except (BlockingIOError, OSError):
             raise channel.ChannelClosedException
 

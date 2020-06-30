@@ -121,17 +121,25 @@ class ChannelIO(typing.ContextManager):
         self.close()
 
 
-def _debug_log(data: bytes, is_out: bool = False) -> bytes:
+_CHANID_COLORS = ["red", "green", "yellow", "blue", "magenta", "cyan"]
+
+
+def _debug_log(chan: ChannelIO, data: bytes, is_out: bool = False) -> bytes:
     if tbot.log.VERBOSITY >= tbot.log.Verbosity.CHANNEL:
         json_data = data.decode("utf-8", errors="replace")
+
+        # Find a color for this channel to make distinguishing them easier
+        chanid_color = _CHANID_COLORS[(id(chan) >> 6) % len(_CHANID_COLORS)]
+        chanid = tbot.log.c(f"{id(chan) & 0xffffff:x}")
+        chanid_colored = "(" + getattr(chanid, chanid_color).dark + ")"
 
         msg = tbot.log.c(repr(data)[1:])
         tbot.log.EventIO(
             ["__debug__"],
             (
-                tbot.log.c("> ").blue.bold + msg.blue
+                chanid_colored + tbot.log.c("> ").blue.bold + msg.blue
                 if is_out
-                else tbot.log.c("< ").yellow.bold + msg.yellow
+                else chanid_colored + tbot.log.c("< ").yellow.bold + msg.yellow
             ),
             verbosity=tbot.log.Verbosity.CHANNEL,
             direction="send" if is_out else "recv",

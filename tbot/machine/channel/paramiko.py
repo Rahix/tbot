@@ -37,7 +37,7 @@ class ParamikoChannelIO(channel.ChannelIO):
         if self.closed:
             raise channel.ChannelClosedException()
 
-        channel._debug_log(buf, True)
+        channel._debug_log(self, buf, True)
         bytes_written = self.ch.send(buf)
         if bytes_written == 0:
             raise channel.ChannelClosedException()
@@ -47,7 +47,7 @@ class ParamikoChannelIO(channel.ChannelIO):
         self.ch.settimeout(timeout)
 
         try:
-            return channel._debug_log(self.ch.recv(n))
+            return channel._debug_log(self, self.ch.recv(n))
         except socket.timeout:
             raise TimeoutError()
         finally:
