@@ -7,10 +7,18 @@
 - `tbot.error` module as a central place for defining all exception types.
 - Added a `PyserialConnector` to connect to a serial port using
   [PySerial][pyserial].
+- super-verbose mode (`-vvv`) now prefixes each output line with a channel
+  identifier to help separate what data came from which channel.
 
 ### Changed
 - tbot now prints all passed flags on start (and thus also stores this
   info in the log-file).
+
+### Fixed
+- Fixed an issue where the path returned by `mach.workdir` would be
+  associated with a wrong host machine.
+- Fixed bash completions for `@args` not properly dealing with
+  directories.
 
 [pyserial]: https://pyserial.readthedocs.io/en/latest/pyserial.html
 
