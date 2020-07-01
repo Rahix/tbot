@@ -31,7 +31,7 @@ class PyserialChannelIO(channel.ChannelIO):
         if self.closed:
             raise channel.ChannelClosedException()
 
-        channel.channel._debug_log(buf, True)
+        channel.channel._debug_log(self, buf, True)
         self.serial.write(buf)
         return len(buf)
 
@@ -56,7 +56,7 @@ class PyserialChannelIO(channel.ChannelIO):
             # If there is more, read it now (non-blocking)
             remaining = self.serial.read(min(n, READ_CHUNK_SIZE) - 1)
 
-        return channel.channel._debug_log(first + remaining, False)
+        return channel.channel._debug_log(self, first + remaining, False)
 
     def close(self) -> None:
         if self.closed:
