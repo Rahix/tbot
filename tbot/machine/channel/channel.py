@@ -866,6 +866,40 @@ class Channel(typing.ContextManager):
 
     # }}}
 
+    # miscellaneous {{{
+    def read_until_timeout(self, timeout: typing.Optional[float]) -> str:
+        """
+        Read until the given timeout expires.
+
+        This method will only return after the given timeout expires.  This can
+        be useful when waiting for something to start up, but when all console
+        output should still become immediately visible on stdout.
+
+        Another use-case is waiting for a death-string to appear or a
+        run-command to exit.  In those cases, pass ``None`` as timeout to make
+        this method wait indefinitely.
+
+        :param float timeout: The time to wait for, before returning.  Can be
+            ``None`` to signal infinite wait time.
+        :rtype: str
+        :returns: All data received while waiting.
+        """
+        buf = bytearray()
+
+        try:
+            for new in self.read_iter(timeout=timeout):
+                buf += new
+        except TimeoutError:
+            pass
+
+        return (
+            buf.decode("utf-8", errors="replace")
+            .replace("\r\n", "\n")
+            .replace("\n\r", "\n")
+        )
+
+    # }}}
+
     # borrowing & taking {{{
     @contextlib.contextmanager
     def borrow(self) -> "typing.Iterator[Channel]":
