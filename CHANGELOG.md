@@ -9,6 +9,8 @@
   [PySerial][pyserial].
 - super-verbose mode (`-vvv`) now prefixes each output line with a channel
   identifier to help separate what data came from which channel.
+- Added a `Channel.read_until_timeout()` method for reading all data until
+  a timeout is reached (or an Exception is thrown).
 
 ### Changed
 - tbot now prints all passed flags on start (and thus also stores this
@@ -19,6 +21,8 @@
   associated with a wrong host machine.
 - Fixed bash completions for `@args` not properly dealing with
   directories.
+- Fixed `login_delay` for board-linux not behaving as documented and in
+  some circumstances leading to a login without waiting.
 
 [pyserial]: https://pyserial.readthedocs.io/en/latest/pyserial.html
 
