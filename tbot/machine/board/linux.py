@@ -112,10 +112,9 @@ class LinuxBootLogin(machine.Initializer, LinuxBoot):
             # console flooding from upper SW layers (and tbot's console
             # setup may get broken)
             if self.login_delay != 0:
-                try:
-                    self.ch.read(timeout=self.login_delay)
-                except TimeoutError:
-                    pass
+                # Read everything while waiting for timeout to expire
+                self.ch.read_until_timeout(self.login_delay)
+
                 self.ch.sendline("")
                 self.ch.read_until_prompt(prompt=self.login_prompt)
 
