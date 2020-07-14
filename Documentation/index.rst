@@ -37,6 +37,7 @@ started with our :ref:`quickstart` guide!
 
    modules/tc
    contrib/connector
+   contrib/gdb
    contrib/locking
    contrib/swupdate
    contrib/timing
