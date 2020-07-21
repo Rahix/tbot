@@ -106,7 +106,14 @@ class UBootAutobootIntercept(machine.Initializer, UbootStartup):
                         time.monotonic() - self._timeout_start
                     )
 
-                self.ch.read_until_prompt(prompt=self.autoboot_prompt, timeout=timeout)
+                try:
+                    self.ch.read_until_prompt(
+                        prompt=self.autoboot_prompt, timeout=timeout
+                    )
+                except TimeoutError:
+                    raise TimeoutError(
+                        "U-Boot autoboot prompt did not show up in time"
+                    ) from None
                 self.ch.send(self.autoboot_keys)
 
         yield None
