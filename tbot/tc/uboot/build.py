@@ -332,9 +332,8 @@ class UBootBuilder(abc.ABC):
                 if clean:
                     tbot.log.message("Cleaning previous build ...")
                     host.exec0("make", "mrproper")
-                if not (repo / ".config").exists():
-                    tbot.log.message("Configuring build ...")
-                    builder.do_configure(host, repo)
+                tbot.log.message("Configuring build ...")
+                builder.do_configure(host, repo)
 
                 with tbot.testcase("uboot_make"):
                     builder.do_build(repo.host, repo)
