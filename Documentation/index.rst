@@ -37,6 +37,7 @@ started with our :ref:`quickstart` guide!
    contrib/connector
    contrib/swupdate
    contrib/timing
+   contrib/utils
 
 .. toctree::
    :maxdepth: 1
