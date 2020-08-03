@@ -240,6 +240,7 @@ class UBootBuilder(abc.ABC):
         builder: "typing.Optional[UBootBuilder]" = None,
         *,
         clean: bool = True,
+        rev: typing.Optional[str] = None,
         repo: typing.Optional[git.GitRepository[BH]] = None,
         unpatched_repo: typing.Optional[git.GitRepository[BH]] = None,
         path: typing.Optional[linux.Path[BH]] = None,
@@ -314,7 +315,8 @@ class UBootBuilder(abc.ABC):
             if repo is None:
                 # Set host to none if we have a path
                 checkout_host = host if path is None else None
-                repo = checkout(builder, clean=clean, path=path, host=checkout_host)
+                repo = checkout(builder, clean=clean, rev=rev, path=path,
+                                host=checkout_host)
 
             with builder.do_toolchain(host):
                 host.exec0("cd", repo)
@@ -338,6 +340,7 @@ class UBootBuilder(abc.ABC):
         self,
         *,
         clean: bool = True,
+        rev: typing.Optional[str] = None,
         path: typing.Optional[linux.Path[H]] = None,
         host: typing.Optional[H] = None,
     ) -> git.GitRepository[H]:
@@ -346,7 +349,8 @@ class UBootBuilder(abc.ABC):
 
         See :func:`tbot.tc.uboot.checkout`.
         """
-        return UBootBuilder._checkout(self, clean=clean, path=path, host=host)
+        return UBootBuilder._checkout(self, clean=clean, rev=rev, path=path,
+                                      host=host)
 
     def build(
         self,
@@ -355,6 +359,7 @@ class UBootBuilder(abc.ABC):
         repo: typing.Optional[git.GitRepository[BH]] = None,
         unpatched_repo: typing.Optional[git.GitRepository[BH]] = None,
         path: typing.Optional[linux.Path[BH]] = None,
+        rev: typing.Optional[str] = None,
         host: typing.Optional[BH] = None,
         lab: typing.Optional[linux.Lab] = None,
     ) -> git.GitRepository[BH]:
@@ -366,6 +371,7 @@ class UBootBuilder(abc.ABC):
         return UBootBuilder._build(
             self,
             clean=clean,
+            rev=rev,
             repo=repo,
             unpatched_repo=unpatched_repo,
             path=path,
