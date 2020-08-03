@@ -18,7 +18,7 @@ import contextlib
 import typing
 import tbot
 from tbot.machine import linux
-from tbot.tc import git
+from tbot.tc import git, shell
 
 H = typing.TypeVar("H", bound=linux.LinuxShell)
 BH = typing.TypeVar("BH", bound=linux.Builder)
@@ -198,6 +198,7 @@ class UBootBuilder(abc.ABC):
         rev: typing.Optional[str] = None,
         path: typing.Optional[linux.Path[H]] = None,
         host: typing.Optional[H] = None,
+        patch: typing.Optional[linux.Path[H]] = None,
     ) -> git.GitRepository[H]:
         """
         Just checkout and patch a version of U-Boot without attempting to build it.
@@ -232,6 +233,12 @@ class UBootBuilder(abc.ABC):
 
             repo = builder.do_checkout(path, clean=clean, rev=rev or builder.revision)
             builder.do_patch(repo)
+            if patch:
+                with tbot.acquire_local() as lo:
+                    file_on_localhost = lo.workdir / patch
+                    file_on_labhost = repo / "001.patch"
+                    shell.copy(file_on_localhost, file_on_labhost)
+                    repo.apply(file_on_labhost)
 
         return repo
 
@@ -244,6 +251,7 @@ class UBootBuilder(abc.ABC):
         repo: typing.Optional[git.GitRepository[BH]] = None,
         unpatched_repo: typing.Optional[git.GitRepository[BH]] = None,
         path: typing.Optional[linux.Path[BH]] = None,
+        patch: typing.Optional[linux.Path[H]] = None,
         host: typing.Optional[BH] = None,
         lab: typing.Optional[linux.Lab] = None,
     ) -> git.GitRepository[BH]:
@@ -316,7 +324,7 @@ class UBootBuilder(abc.ABC):
                 # Set host to none if we have a path
                 checkout_host = host if path is None else None
                 repo = checkout(builder, clean=clean, rev=rev, path=path,
-                                host=checkout_host)
+                                patch=patch, host=checkout_host)
 
             with builder.do_toolchain(host):
                 host.exec0("cd", repo)
@@ -342,6 +350,7 @@ class UBootBuilder(abc.ABC):
         clean: bool = True,
         rev: typing.Optional[str] = None,
         path: typing.Optional[linux.Path[H]] = None,
+        patch: typing.Optional[linux.Path[H]] = None,
         host: typing.Optional[H] = None,
     ) -> git.GitRepository[H]:
         """
@@ -350,7 +359,7 @@ class UBootBuilder(abc.ABC):
         See :func:`tbot.tc.uboot.checkout`.
         """
         return UBootBuilder._checkout(self, clean=clean, rev=rev, path=path,
-                                      host=host)
+                                      patch=patch, host=host)
 
     def build(
         self,
