@@ -101,7 +101,7 @@ class EventIO(io.StringIO):
         Create a log event.
 
         A log event is a :class:`io.StringIO` and everything written to
-        the stram will be added to the log event.
+        the stream will be added to the log event.
 
         :param str message: First line of the log event (the log message).  If
             the message contains newlines, only the first line will be printed as
