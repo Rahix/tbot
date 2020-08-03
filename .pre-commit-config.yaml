@@ -16,14 +16,13 @@ repos:
     - id: debug-statements
     - id: flake8
       exclude: ^(setup\.py$|static_tests|doc|fastentrypoints.py)
--   repo: local
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.782
     hooks:
     - id: mypy
-      name: mypy
-      language: system
-      entry: mypy --no-incremental
+      args: [--no-incremental]
       files: ^.*\.py$
-      exclude: ^(setup\.py$|static_tests|doc|fastentrypoints.py|tbot/machine_v1|Documentation/conf.py)
+      exclude: ^(setup\.py$|static_tests|fastentrypoints.py|Documentation/conf.py)
 -   repo: local
     hooks:
     - id: selftests
