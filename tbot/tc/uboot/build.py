@@ -161,7 +161,7 @@ class UBootBuilder(abc.ABC):
         if self.defconfig is None:
             raise NotImplementedError("Can't build U-Boot without a defconfig")
 
-        bh.exec0("make", self.defconfig)
+        bh.exec0("make", "-s", self.defconfig)
 
     def do_build(self, bh: BH, repo: git.GitRepository[BH]) -> None:
         """
@@ -170,7 +170,7 @@ class UBootBuilder(abc.ABC):
         By default, this steps runs ``make -j $(nproc)``.
         """
         nproc = int(bh.exec0("nproc", "--all"))
-        bh.exec0("make", "-j", str(nproc), "all")
+        bh.exec0("make", "-j", str(nproc), "-s", "all")
 
     # --------------------------------------------------------------------------- #
     @staticmethod
