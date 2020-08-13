@@ -655,7 +655,11 @@ class Channel(typing.ContextManager):
         """Send ``CTRL-C`` to this channel."""
         self.sendcontrol("C")
 
-    def readline(self, timeout: typing.Optional[float] = None) -> str:
+    def readline(
+        self,
+        timeout: typing.Optional[float] = None,
+        lineending: typing.Union[str, bytes] = "\r\n",
+    ) -> str:
         """
         Read until the next line ending.
 
@@ -667,6 +671,11 @@ class Channel(typing.ContextManager):
             assert ch.readline() == "Hello\\n"
             assert ch.readline() == "World\\n"
         """
+
+        if isinstance(lineending, str):
+            end = lineending.encode("utf-8")
+        else:
+            end = lineending
 
         # This implementation is quite naive but any
         # other way would possibly read too much :/
@@ -682,7 +691,7 @@ class Channel(typing.ContextManager):
             c = self.read(1, timeout=timeout_remaining)
             line.extend(c)
 
-            if line.endswith(b"\r\n") or line.endswith(b"\n\r"):
+            if line.endswith(end):
                 break
 
         return (
