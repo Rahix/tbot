@@ -527,6 +527,22 @@ class Channel(typing.ContextManager):
     # and checks it for each chunk of data coming in.  If any of the strings matches,
     # the channel will throw an exception.
 
+    def add_death_string(
+        self,
+        string_in: ConvenientSearchString,
+        exception_type: typing.Optional[typing.Type[DeathStringException]] = None,
+    ) -> None:
+        string = _convert_search_string(string_in)
+
+        if exception_type is None:
+            exception_type = DeathStringException
+
+        previous_length = typing.cast(int, self._ringbuf.maxlen)
+        self.death_strings.insert(0, (string, exception_type))
+        new_length = len(string) * 2
+        if new_length > previous_length:
+            self._ringbuf = collections.deque(self._ringbuf, maxlen=new_length)
+
     @contextlib.contextmanager
     def with_death_string(
         self,
