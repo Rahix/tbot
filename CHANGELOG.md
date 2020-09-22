@@ -11,10 +11,19 @@
   identifier to help separate what data came from which channel.
 - Added a `Channel.read_until_timeout()` method for reading all data until
   a timeout is reached (or an Exception is thrown).
+- Added `find_ip_address()` testcase/util-function to discover the IP
+  address of a machine.
+- One can now pass a custom line-ending to `Channel.readline()` incase the
+  remote does not behave properly and send `\r\n` for every line.
+- Added a `Channel.add_death_string()` method which is like
+  `.with_death_string()` but not a context-manager.  The death string is
+  added for the entire lifetime of the channel with this new method.
 
 ### Changed
 - tbot now prints all passed flags on start (and thus also stores this
   info in the log-file).
+- The `\e[K` is passed through to make output from programs like
+  ninja-build prettier.
 
 ### Fixed
 - Fixed an issue where the path returned by `mach.workdir` would be
