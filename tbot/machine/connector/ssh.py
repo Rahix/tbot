@@ -64,6 +64,20 @@ class SSHConnector(connector.Connector):
         return False
 
     @property
+    def use_multiplexing(self) -> bool:
+        """
+        Whether tbot should attempt to enable connection multiplexing.
+
+        Connection multiplexing is a mechanism to share a connection between
+        multiple sessions.  This can drastically speed up your tests when many
+        connections to the same machine are opened and closed.  Refer to
+        `ControlMaster in sshd_config(5)`_ for details.
+
+        .. _ControlMaster in sshd_config(5): https://man.openbsd.org/ssh_config.5#ControlMaster
+        """
+        return False
+
+    @property
     @abc.abstractmethod
     def hostname(self) -> str:
         """
@@ -159,9 +173,22 @@ class SSHConnector(connector.Connector):
                 ["-o", "StrictHostKeyChecking=no"] if self.ignore_hostkey else []
             )
 
+            multiplexing = []
+            if self.use_multiplexing:
+                multiplexing_dir = self.host.workdir / ".ssh-multi"
+                self.host.exec0("mkdir", "-p", multiplexing_dir)
+
+                multiplexing += ["-o", "ControlMaster=auto"]
+                multiplexing += ["-o", "ControlPersist=10m"]
+                multiplexing += [
+                    "-o",
+                    f"ControlPath={multiplexing_dir._local_str()}/%C",
+                ]
+
             cmd_str = h.escape(
                 *cmd,
                 *hk_disable,
+                *multiplexing,
                 *["-p", str(self.port)],
                 *[arg for opt in self.ssh_config for arg in ["-o", opt]],
                 f"{self.username}@{self.hostname}",
