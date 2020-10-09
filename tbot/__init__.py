@@ -23,6 +23,7 @@ from . import selectable
 from .selectable import (
     acquire_lab,
     acquire_board,
+    acquire_zephyr,
     acquire_uboot,
     acquire_linux,
     acquire_local,
@@ -31,6 +32,7 @@ from .decorators import (
     testcase as _testcase_decorator,
     named_testcase,
     with_lab,
+    with_zephyr,
     with_uboot,
     with_linux,
 )
@@ -39,6 +41,7 @@ __all__ = (
     "selectable",
     "acquire_lab",
     "acquire_board",
+    "acquire_zephyr",
     "acquire_uboot",
     "acquire_linux",
     "acquire_local",
@@ -47,6 +50,7 @@ __all__ = (
     "testcase",
     "named_testcase",
     "with_lab",
+    "with_zephyr",
     "with_uboot",
     "with_linux",
 )
