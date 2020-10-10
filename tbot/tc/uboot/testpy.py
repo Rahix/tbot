@@ -221,6 +221,17 @@ def testpy(
             bh = cx.enter_context(build_host)
         else:
             bh = cx.enter_context(lh.build())
+            if bh is lh:
+                tbot.log.warning(
+                    """\
+The build() method for the selected lab should not return `self` but instead `self.clone()`.
+
+    Otherwise, `uboot_testpy` might not be able to run test/py in parallel to switching board
+    power.
+
+    Attempting to call build_host.clone() automatically now ..."""
+                )
+                bh = cx.enter_context(bh.clone())
 
         # Spawn a subshell to not mess up the parent shell's environment and PWD
         cx.enter_context(bh.subshell())
