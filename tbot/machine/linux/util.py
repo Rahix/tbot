@@ -48,10 +48,13 @@ def posix_environment(
         else:
             return value
     else:
+        # Escape environment variable name, unless it is one of a few special names
+        if var not in ["!", "$"]:
+            var = mach.escape(var)
         # Add a space in front of the expanded environment variable to ensure
         # values like `-E` will not get picked up as parameters by echo.  This
         # space is then cut away again so calling tests don't notice this trick.
-        return mach.exec0("echo", linux.Raw(f'" ${{{mach.escape(var)}}}"'))[1:-1]
+        return mach.exec0("echo", linux.Raw(f'" ${{{var}}}"'))[1:-1]
 
 
 # Type alias for the command context function/generator.  This function needs
