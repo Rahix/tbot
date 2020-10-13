@@ -172,9 +172,12 @@ def selftest_machine_shell(m: typing.Union[linux.LinuxShell, board.UBootShell]) 
         if "jobs" in cap:
             t1 = time.monotonic()
             out = m.exec0(
-                "sleep", "10", linux.Background, "echo", "Hello World"
+                "sleep", "infinity", linux.Background, "echo", "Hello World"
             ).strip()
             t2 = time.monotonic()
+            pid = m.env("!")
+
+            tbot.log.message(pid)
 
             assert re.match(r"\[\d+\] \d+\nHello World", out), repr(out)
             assert (
@@ -188,7 +191,23 @@ def selftest_machine_shell(m: typing.Union[linux.LinuxShell, board.UBootShell]) 
             # channel.  To prevent this from leading to issues, kill the sleep
             # right here instead of relying on tbot to do so correctly at the
             # very end.      Tracking-Issue: Rahix/tbot#13
-            m.exec("kill", linux.Raw("%%"), linux.Then, "wait", linux.Raw("%%"))
+            m.exec("kill", pid, linux.Then, "wait", pid)
+
+            f1 = m.workdir / "bg1.txt"
+            f2 = m.workdir / "bg2.txt"
+            out = m.exec0(
+                "echo",
+                "foo",
+                linux.Background(stdout=f1),
+                "echo",
+                "bar",
+                linux.Background(stdout=f2, stderr=f2),
+                "wait",
+            )
+            out = f1.read_text().strip()
+            assert out == "foo", repr(out)
+            out = f2.read_text().strip()
+            assert out == "bar", repr(out)
 
         if "control" in cap:
             out = m.exec0(

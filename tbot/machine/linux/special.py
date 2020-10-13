@@ -82,6 +82,46 @@ class RedirBoth(Special[H]):
         return ">" + shlex.quote(self.file._local_str()) + " 2>&1"
 
 
+class _Background(Special[H]):
+    def __init__(
+        self,
+        *,
+        stdout: typing.Optional[path.Path[H]] = None,
+        stderr: typing.Optional[path.Path[H]] = None,
+    ) -> None:
+        self.stdout = stdout
+        self.stderr = stderr
+
+    def __call__(
+        self,
+        *,
+        stdout: typing.Optional[path.Path[H]] = None,
+        stderr: typing.Optional[path.Path[H]] = None,
+    ) -> "_Background":
+        return _Background(stdout=stdout, stderr=stderr)
+
+    def _to_string(self, h: H) -> str:
+        if self.stdout is not None and self.stderr is not None:
+            if self.stdout.host != h:
+                raise tbot.error.WrongHostError(self.stdout, h)
+            if self.stderr.host != h:
+                raise tbot.error.WrongHostError(self.stderr, h)
+            if self.stdout == self.stderr:
+                return f"1>{shlex.quote(self.stdout._local_str())} 2>&1 &"
+            else:
+                return f"1>{shlex.quote(self.stdout._local_str())} 2>{shlex.quote(self.stderr._local_str())} &"
+        elif self.stderr is not None:
+            if self.stderr.host != h:
+                raise tbot.error.WrongHostError(self.stderr, h)
+            return f"1>/dev/null 2>{shlex.quote(self.stderr._local_str())} &"
+        elif self.stdout is not None:
+            if self.stdout.host != h:
+                raise tbot.error.WrongHostError(self.stdout, h)
+            return f"2>/dev/null 1>{shlex.quote(self.stdout._local_str())} &"
+        else:
+            return "2>&1 1>/dev/null &"
+
+
 class _Static(Special):
     __slots__ = ("string",)
 
@@ -93,7 +133,7 @@ class _Static(Special):
 
 
 AndThen = _Static("&&")
-Background = _Static("&")
+Background: _Background = _Background()
 OrElse = _Static("||")
 Pipe = _Static("|")
 Then = _Static(";")

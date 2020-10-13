@@ -138,6 +138,44 @@ can be used to chain multiple commands or to redirect output.
 
    Redirect both ``stdout`` and ``stderr`` (``2>&1 >...``) to a file.
 
+.. py:data:: Background
+
+   Tells the shell to run this command in the background (``&``).
+
+   By default all output from the command is suppressed (by redirection to
+   ``/dev/null``).  If you do want to save command output, use the alternate
+   form of :py:data:`Background`:
+
+   .. code-block:: python
+
+      f1 = lh.workdir / "stdout.txt"
+      f2 = lh.workdir / "stderr.txt"
+
+      # Just redirect stdout to a file, discard stderr
+      linux.Background(stdout=f1)
+      # Just redirect stderr to a file, discard stdout
+      linux.Background(stderr=f2)
+      # Redirect both to files
+      linux.Background(stdout=f1, stderr=f2)
+
+   .. warning::
+
+      Beware of the side-effects of running commands in the background!  **Never
+      ever add** ``linux.Background`` **after a command that you expect will
+      terminate at some point on its own!**  This will potentially clobber an
+      unrelated command's output which can have unexpected effects.  Only use
+      this special token with commands that will run forever until terminated
+      manually.  A good pattern to follow is this:
+
+      .. code-block:: python
+
+         lh.exec0("some", "cmd", "that", "won't", "terminate", linux.Background)
+         pid = lh.env("!")
+
+         ...
+
+         lh.exec0("kill", pid, linux.Then, "wait", "pid")
+
 .. py:class:: Raw(str)
 
    Emits a raw string, bypassing shell quoting/escaping.
