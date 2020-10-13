@@ -24,6 +24,7 @@ import termios
 import time
 import typing
 
+import tbot.error
 from . import channel
 
 READ_CHUNK_SIZE = 4096
@@ -96,7 +97,7 @@ class SubprocessChannelIO(channel.ChannelIO):
                 break
             time.sleep(2 ** t / 100)
         else:
-            raise Exception("not done")
+            raise tbot.error.TbotException("some subprocess(es) did not stop")
 
     def fileno(self) -> int:
         return self.pty_master
