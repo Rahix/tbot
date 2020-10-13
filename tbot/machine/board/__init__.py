@@ -1,6 +1,7 @@
 import typing
 import tbot
 
+from .zephyr import ZephyrShell
 from .uboot import UBootShell, UBootAutobootIntercept
 from .board import PowerControl, Board, Connector
 from .linux import LinuxUbootConnector, LinuxBootLogin
@@ -19,6 +20,8 @@ __all__ = (
     "UBootAutobootIntercept",
     "UBootMachine",
     "UBootShell",
+    "ZephyrMachine",
+    "ZephyrShell",
 )
 
 

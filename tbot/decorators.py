@@ -40,7 +40,7 @@ else:
                 pass
 
 
-__all__ = ("testcase", "with_lab", "with_uboot", "with_linux")
+__all__ = ("testcase", "with_lab", "with_zephyr", "with_uboot", "with_linux")
 
 F_tc = typing.TypeVar("F_tc", bound=typing.Callable[..., typing.Any])
 
@@ -161,6 +161,108 @@ def with_lab(tc: F_lh) -> F_lab:
     wrapped.__annotations__[argname] = typing.Optional[linux.Lab]
 
     return typing.cast(F_lab, wrapped)
+
+
+F_ze = typing.TypeVar("F_ze", bound=typing.Callable[..., typing.Any])
+F_zephyr = typing.Callable[
+    [
+        mypy.DefaultArg(typing.Union[selectable.LabHost, board.ZephyrShell, None]),
+        mypy.VarArg(typing.Any),
+        mypy.KwArg(typing.Any),
+    ],
+    typing.Any,
+]
+
+
+def with_zephyr(tc: F_ze) -> F_zephyr:
+    """
+    Decorate a function to automatically supply a Zephyr machine as an argument.
+
+    The idea is that when using this decorator and calling the testcase
+    without an already initialized Zephyr machine, tbot will automatically
+    acquire the selected one.
+
+    **Example**::
+
+        from tbot.machine import board
+
+        @tbot.testcase
+        @tbot.with_zephyr
+        def testcase_with_zephyr(ze: board.ZephyrShell) -> None:
+            ze.exec0("version")
+
+    This is essentially syntactic sugar for::
+
+        import contextlib
+        import typing
+        import tbot
+        from tbot.machine import board, linux
+
+        @tbot.testcase
+        def testcase_with_zephyr(
+            lab_or_ze: typing.Union[linux.Lab, board.ZephyrShell, None] = None,
+        ) -> None:
+            with contextlib.ExitStack() as cx:
+                lh: linux.Lab
+                ze: board.ZephyrShell
+
+                if isinstance(lab_or_ze, linux.Lab):
+                    lh = cx.enter_context(lab_or_ze)
+                elif isinstance(lab_or_ze, board.ZephyrShell):
+                    lh = cx.enter_context(lab_or_ze.host)
+                else:
+                    lh = cx.enter_context(tbot.acquire_lab())
+
+                if isinstance(lab_or_ze, board.ZephyrShell):
+                    ze = cx.enter_context(lab_or_ze)
+                else:
+                    b = cx.enter_context(tbot.acquire_board(lh))
+                    ze = cx.enter_context(tbot.acquire_zephyr(b))
+
+                ze.exec("help")
+
+    .. warning::
+        While making your life a lot easier, this decorator unfortunately has
+        a drawback:  It will erase the type signature of your testcase, so you
+        can no longer rely on type-checking when using the testcase downstream.
+    """
+
+    @functools.wraps(tc)
+    def wrapped(
+        arg: typing.Union[selectable.LabHost, board.ZephyrShell, None] = None,
+        *args: typing.Any,
+        **kwargs: typing.Any,
+    ) -> typing.Any:
+        with contextlib.ExitStack() as cx:
+            lh: selectable.LabHost
+            ze: board.ZephyrShell
+
+            # Acquire LabHost
+            if arg is None:
+                lh = cx.enter_context(selectable.acquire_lab())
+            elif isinstance(arg, linux.Lab):
+                lh = cx.enter_context(arg)
+            elif not isinstance(arg, board.ZephyrShell):
+                raise TypeError(
+                    f"Argument to {tc!r} must either be a lab-host or a ZephyrShell (found {arg!r})"
+                )
+
+            # Acquire Zephyr
+            if isinstance(arg, board.ZephyrShell):
+                ze = cx.enter_context(arg)
+            else:
+                b = cx.enter_context(selectable.acquire_board(lh))
+                ze = cx.enter_context(selectable.acquire_zephyr(b))
+
+            return tc(ze, *args, **kwargs)
+
+    # Adjust annotation
+    argname = tc.__code__.co_varnames[0]
+    wrapped.__annotations__[argname] = typing.Union[
+        selectable.LabHost, board.ZephyrShell, None
+    ]
+
+    return typing.cast(F_zephyr, wrapped)
 
 
 F_ub = typing.TypeVar("F_ub", bound=typing.Callable[..., typing.Any])

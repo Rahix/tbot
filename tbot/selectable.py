@@ -114,6 +114,53 @@ def acquire_board(lh: LabHost) -> Board:
     return Board(lh)  # type: ignore
 
 
+class ZephyrMachine(board.ZephyrShell, typing.ContextManager):
+    """Dummy type that will be replaced by the actual selected Zephyr machine at runtime."""
+
+    _unselected = True
+
+    def __init__(self, lab: LabHost, *args: typing.Any) -> None:
+        raise NotImplementedError("no zephyr selected")
+
+
+def acquire_zephyr(board: Board, *args: typing.Any) -> ZephyrMachine:
+    """
+    Acquire the selected board's Zephyr shell.
+
+    As there can only be one instance of the selected board's :class:`ZephyrShell` at a time,
+    your testcases should optionally take the :class:`ZephyrShell` as a
+    parameter. The recipe looks like this:
+
+    .. code-block:: python
+
+        import contextlib
+        import typing
+        import tbot
+        from tbot.machine import board
+
+
+        @tbot.testcase
+        def my_testcase(
+            lab: typing.Optional[tbot.selectable.LabHost] = None,
+            zephyr: typing.Optional[board.ZephyrShell] = None,
+        ) -> None:
+            with contextlib.ExitStack() as cx:
+                lh = cx.enter_context(lab or tbot.acquire_lab())
+                if zephyr is not None:
+                    ze = zephyr
+                else:
+                    b = cx.enter_context(tbot.acquire_board(lh))
+                    ze = cx.enter_context(tbot.acquire_zephyr(b))
+
+                ...
+
+    :rtype: tbot.selectable.ZephyrMachine
+    """
+    if hasattr(ZephyrMachine, "_unselected"):
+        raise NotImplementedError("Maybe you haven't set a board?")
+    return ZephyrMachine(board, *args)  # type: ignore
+
+
 class UBootMachine(board.UBootShell, typing.ContextManager):
     """Dummy type that will be replaced by the actual selected U-Boot machine at runtime."""
 

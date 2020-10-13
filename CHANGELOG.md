@@ -1,6 +1,7 @@
 # Changelog
 
 ## [Unreleased]
+- Added basic Zephyr board support.
 
 
 ## [0.8.3] - 2020-09-22

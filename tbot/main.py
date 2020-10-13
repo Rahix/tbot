@@ -255,6 +255,8 @@ def main() -> None:  # noqa: C901
         board = loader.load_module(pathlib.Path(args.board).resolve())
         if hasattr(board, "BOARD"):
             tbot.selectable.Board = board.BOARD  # type: ignore
+        if hasattr(board, "ZEPHYR"):
+            tbot.selectable.ZephyrMachine = board.ZEPHYR  # type: ignore
         if hasattr(board, "UBOOT"):
             tbot.selectable.UBootMachine = board.UBOOT  # type: ignore
         if hasattr(board, "LINUX"):
