@@ -21,6 +21,7 @@ import shutil
 import typing
 
 import tbot
+import tbot.error
 from .. import channel
 from . import linux_shell, util, special, path
 
@@ -118,7 +119,7 @@ class Bash(linux_shell.LinuxShell):
                 string_args.append(arg._to_string(self))
             elif isinstance(arg, path.Path):
                 if arg.host != self:
-                    raise Exception(f"{arg!r} is for another host!")
+                    raise tbot.error.WrongHostError(arg, self)
                 string_args.append(shlex.quote(arg._local_str()))
             else:
                 raise TypeError(f"{type(arg)!r} is not a supported argument type!")

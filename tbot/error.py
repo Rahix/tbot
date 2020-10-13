@@ -13,8 +13,12 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
-import typing
 import inspect
+import typing
+from typing import Any, Optional
+
+if typing.TYPE_CHECKING:
+    from tbot import machine
 
 
 class TbotException(Exception):
@@ -31,7 +35,7 @@ class AbstractMethodError(TbotException, NotImplementedError):
     shouldn't ever really happen in practice hopefully ...
     """
 
-    def __init__(self, method: typing.Optional[str] = None) -> None:
+    def __init__(self, method: Optional[str] = None) -> None:
         if method is None:
             # Grab the method name of the calling frame
             calling_frame = inspect.stack()[1]
@@ -42,3 +46,15 @@ class AbstractMethodError(TbotException, NotImplementedError):
         super().__init__(
             f"Called abstract method {self.method!r}.  This is probably an incorrect call to super()."
         )
+
+
+class WrongHostError(TbotException, ValueError):
+    """
+    A method was called with arguments that reference a different host.
+    """
+
+    def __init__(self, arg: Any, host: "machine.Machine") -> None:
+        self.arg = arg
+        self.host = host
+
+        super().__init__(f"{arg!r} references a host/machine that is not {host!r}")

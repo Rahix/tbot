@@ -17,6 +17,7 @@
 import typing
 import stat
 import tbot
+import tbot.error
 from tbot.machine import linux
 from tbot.tc import selftest
 
@@ -35,8 +36,7 @@ def selftest_path_integrity(lab: typing.Optional[selftest.SelftestHost] = None) 
             try:
                 # mypy detects that this is wrong
                 lh2.exec0("echo", p)  # type: ignore
-            # TODO: Proper exception type
-            except:  # noqa: E722
+            except tbot.error.WrongHostError:
                 raised = True
             assert raised
 

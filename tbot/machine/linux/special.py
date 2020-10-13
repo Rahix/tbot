@@ -55,7 +55,7 @@ class _Stdio(Special[H]):
 
     def _to_string(self, h: H) -> str:
         if self.file.host != h:
-            raise Exception("wrong host")
+            raise tbot.error.WrongHostError(self.file, h)
         return self._redir_token + shlex.quote(self.file._local_str())
 
 
@@ -73,7 +73,7 @@ class RedirBoth(Special[H]):
 
     def _to_string(self, h: H) -> str:
         if self.file.host is not h:
-            raise Exception("wrong host")
+            raise tbot.error.WrongHostError(self.file, h)
 
         # The order of the redirects is important!  First, redirect stdout to a
         # file and then redirect stderr to stdout.  If this is switched around,
