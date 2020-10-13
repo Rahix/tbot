@@ -326,6 +326,10 @@ class UBootBuilder(abc.ABC):
                     tbot.log.message("Configuring build ...")
                     builder.do_configure(host, repo)
 
+                    # For cases where do_configure() leaves us with an
+                    # incomplete config, call olddefconfig to complete it.
+                    host.exec0("make", "olddefconfig")
+
                 with tbot.testcase("uboot_make"):
                     builder.do_build(repo.host, repo)
 

@@ -51,8 +51,9 @@ mrproper:
 \trm -f .config
 \ttouch .cleaned
 
-.PHONY: all defconfig mrproper
-"""
+olddefconfig:
+
+.PHONY: all defconfig mrproper olddefconfig"""
 
     h.exec0("echo", makefile, linux.RedirStdout(repo / "Makefile"))
 
@@ -71,7 +72,7 @@ Subject: [PATCH] Fix Makefile
  1 file changed, 1 deletion(-)
 
 diff --git a/Makefile b/Makefile
-index b5319d7..0f01838 100644
+index e76351696ad0..fe143c6d4054 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -1,7 +1,6 @@
