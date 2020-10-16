@@ -185,6 +185,16 @@ class LinuxUbootConnector(connector.Connector, LinuxBootLogin):
     def __init__(self, b: typing.Union[board.Board, board.UBootShell]) -> None:
         self._b = b
 
+    @classmethod
+    @contextlib.contextmanager
+    def from_context(
+        cls: typing.Type[Self], ctx: "tbot.Context"
+    ) -> typing.Iterator[Self]:
+        with contextlib.ExitStack() as cx:
+            ub = cx.enter_context(ctx.request(tbot.role.BoardUBoot))
+            m = cx.enter_context(cls(ub))  # type: ignore
+            yield m
+
     @contextlib.contextmanager
     def _connect(self) -> typing.Iterator[channel.Channel]:
         with contextlib.ExitStack() as cx:

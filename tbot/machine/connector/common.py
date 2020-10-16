@@ -18,6 +18,7 @@ import abc
 import contextlib
 import typing
 
+import tbot
 import tbot.error
 from tbot import machine  # noqa: F401
 from .. import channel, linux
@@ -50,6 +51,12 @@ class SubprocessConnector(connector.Connector):
     """
 
     __slots__ = ()
+
+    @classmethod
+    @contextlib.contextmanager
+    def from_context(cls: typing.Type[M], ctx: "tbot.Context") -> typing.Iterator[M]:
+        with cls() as m:
+            yield m
 
     def _connect(self) -> channel.Channel:
         return channel.SubprocessChannel()
@@ -112,6 +119,14 @@ class ConsoleConnector(connector.Connector):
             respecitive board to the constructor here.
         """
         self.host = mach
+
+    @classmethod
+    @contextlib.contextmanager
+    def from_context(cls: typing.Type[M], ctx: "tbot.Context") -> typing.Iterator[M]:
+        with contextlib.ExitStack() as cx:
+            lh = cx.enter_context(ctx.request(tbot.role.LabHost))
+            m = cx.enter_context(cls(lh))  # type: ignore
+            yield m
 
     @contextlib.contextmanager
     def _connect(self) -> typing.Iterator[channel.Channel]:

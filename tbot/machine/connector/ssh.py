@@ -23,6 +23,8 @@ from . import connector
 from .. import linux, channel
 from ..linux import auth
 
+Self = typing.TypeVar("Self", bound="SSHConnector")
+
 
 class SSHConnector(connector.Connector):
     """
@@ -147,6 +149,16 @@ class SSHConnector(connector.Connector):
             self.host = host
         else:
             self.host = tbot.acquire_local()  # type: ignore
+
+    @classmethod
+    @contextlib.contextmanager
+    def from_context(
+        cls: typing.Type[Self], ctx: "tbot.Context"
+    ) -> typing.Iterator[Self]:
+        with contextlib.ExitStack() as cx:
+            lh = cx.enter_context(ctx.request(tbot.role.LabHost))
+            m = cx.enter_context(cls(lh))  # type: ignore
+            yield m
 
     @contextlib.contextmanager
     def _connect(self) -> typing.Iterator[channel.Channel]:
