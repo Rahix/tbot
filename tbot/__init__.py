@@ -20,6 +20,7 @@ import typing
 from tbot import log, log_event
 
 from . import selectable
+from . import role
 from .selectable import (
     acquire_lab,
     acquire_board,
@@ -52,6 +53,7 @@ __all__ = (
     "with_linux",
     "ctx",
     "Context",
+    "role",
 )
 
 flags: typing.Set[str] = set()
