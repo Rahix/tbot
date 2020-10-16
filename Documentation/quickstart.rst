@@ -251,6 +251,8 @@ a testcase that returns normally passes and one that raises an ``Exception`` has
 pretty convenient:  You can easily catch failures by using a try-block and your testcases will also
 automatically fail if anything unexpected happens.
 
+.. _quickstart_machines:
+
 Machines
 --------
 Next up: Machines!  Machines are what tbot is made for.  Let's take a look at the diagram from the

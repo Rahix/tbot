@@ -107,6 +107,8 @@ defines the software running on it.
    file.  We plan to (optionally) separate this in the future to allow even
    more generic configurations.
 
+.. _config-board-hardware:
+
 Board-Hardware Config
 ~~~~~~~~~~~~~~~~~~~~~
 The hardware is configured as a machine which turns on the board when accessed
@@ -209,6 +211,8 @@ In testcases, you can now access U-Boot by first acquiring the hardware using
        with tbot.acquire_board(lh) as b:
            with tbot.acquire_uboot(b) as ub:
                ub.exec0("version")
+
+.. _config-board-linux-uboot:
 
 Linux (from U-Boot) Config
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

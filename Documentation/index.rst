@@ -13,6 +13,7 @@ started with our :ref:`quickstart` guide!
    configuration
    recipes
    logging
+   context
    migration
 
 .. toctree::
@@ -27,6 +28,7 @@ started with our :ref:`quickstart` guide!
    modules/machine_connector
    modules/machine_shell
    modules/machine_channel
+   modules/role
    modules/selectable
 
 .. toctree::
