@@ -34,6 +34,7 @@ from .decorators import (
     with_uboot,
     with_linux,
 )
+from .context import Context
 
 __all__ = (
     "selectable",
@@ -49,6 +50,8 @@ __all__ = (
     "with_lab",
     "with_uboot",
     "with_linux",
+    "ctx",
+    "Context",
 )
 
 flags: typing.Set[str] = set()
@@ -160,3 +163,6 @@ def Re(pat: typing.Union[str, bytes], flags: int = 0) -> typing.Pattern[bytes]:
     """
     pat_bytes = pat if isinstance(pat, bytes) else pat.encode("utf-8")
     return __import__("re").compile(pat_bytes, flags)  # type: ignore
+
+
+ctx = Context(add_defaults=True)
