@@ -69,6 +69,13 @@ class Machine(abc.ABC):
     def _connect(self) -> typing.ContextManager[channel.Channel]:
         raise tbot.error.AbstractMethodError()
 
+    @classmethod
+    @abc.abstractmethod
+    def from_context(
+        cls: typing.Type[Self], ctx: "tbot.Context"
+    ) -> typing.ContextManager[Self]:
+        raise tbot.error.AbstractMethodError()
+
     @abc.abstractmethod
     def clone(self: Self) -> Self:
         raise tbot.error.AbstractMethodError()
