@@ -7,6 +7,13 @@ Under the hood, the old configuration mechanism and the
 :py:mod:`tbot.selectable` module are already using the context but using it
 directly gives you even more power!
 
+.. note::
+
+   If you want to migrate from the "old" way of accessing the configured
+   machines, please read the :ref:`context_migration` guide at the end of this
+   page.  Though it is a good idea to first familiarize yourself with the new
+   concepts.
+
 The idea
 --------
 At the core, everything revolves around a context object:
@@ -194,3 +201,133 @@ method with custom behavior.  Please keep in mind the special semantics of
 :py:meth:`Connector.from_context()
 <tbot.machine.connector.Connector.from_context>` which are detailed in the
 method documentation.
+
+.. _context_migration:
+
+Migrating to Context
+--------------------
+If you are interested in converting existing testcases and configuration to the
+new "Context" API, this guide is for you.  For the most part the changes are
+small and can be done incrementally as the new API is compatible with old code
+& the other way around.
+
+Migrating Testcases
+^^^^^^^^^^^^^^^^^^^
+The following functions/context-managers can be replaced by equivalent calls to
+the context:
+
+.. code-block:: diff
+
+   -with tbot.acquire_lab() as lh:
+   +with tbot.ctx.request(tbot.role.LabHost) as lh:
+        lh.exec0("uname", "-a")
+
+   -with tbot.acquire_local() as lo:
+   +with tbot.ctx.request(tbot.role.LocalHost) as lo:
+        lh.exec0("uname", "-a")
+
+For some, you can simplify the code because prerequisites are acquired
+automatically:
+
+.. code-block:: diff
+
+   -with tbot.acquire_lab() as lh:
+   -    with tbot.acquire_board(lh) as b:
+   +with tbot.ctx.request(tbot.role.Board) as b:
+            ...
+
+   -with tbot.acquire_lab() as lh:
+   -    with tbot.acquire_board(lh) as b:
+   -        with tbot.acquire_uboot(b) as ub:
+   +with tbot.ctx.request(tbot.role.BoardUBoot) as ub:
+                ub.exec0("version")
+
+    # The above was also often done like this:
+   -with contextlib.ExitStack() as cx:
+   -    lh = cx.enter_context(tbot.acquire_lab())
+   -    b = cx.enter_context(tbot.acquire_board(lh))
+   -    ub = cx.enter_context(tbot.acquire_uboot(b))
+   +with tbot.ctx.request(tbot.role.BoardUBoot) as ub:
+        ub.exec0("version")
+
+    # The same is true for board linux:
+   -with contextlib.ExitStack() as cx:
+   -    lh = cx.enter_context(tbot.acquire_lab())
+   -    b = cx.enter_context(tbot.acquire_board(lh))
+   -    lnx = cx.enter_context(tbot.acquire_linux(b))
+   +with tbot.ctx.request(tbot.role.BoardLinux) as lnx:
+        lnx.exec0("cat", "/etc/os-release")
+
+The :py:func:`tbot.with_lab`, :py:func:`tbot.with_uboot`, and
+:py:func:`tbot.with_linux` decorators do not have a direct replacement but
+because acquring a machine from the context is a single line, the change is not
+too big either:
+
+.. code-block:: diff
+
+    @tbot.testcase
+   -@tbot.with_lab
+   -def lab_name(lh):
+   +def lab_name():
+   +    with tbot.ctx.request(tbot.role.LabHost) as lh:
+            lh.exec0("hostname")
+
+    @tbot.testcase
+   -@tbot.with_linux
+   -def some_test_with_linux(lnx):
+   +def some_test_with_linux():
+   +    with tbot.ctx.request(tbot.role.BoardLinux) as lnx:
+            lnx.exec0("cat", "/etc/os-release")
+
+.. note::
+
+   At some point, a new decorator to replace the existing ones might be
+   introduced.  For the time being, the example above shows what needs to be done.
+
+Migrating Configuration
+^^^^^^^^^^^^^^^^^^^^^^^
+While the old way of configuring tbot still works and is fully compatible with
+the context API, it only provides limited possibilities.  For more complex
+scenarios, the new :ref:`tbot_ctx_config` mechanism is much more flexible.
+
+Switching over is not hard:  You need to define a ``register_machines()``
+function in the lab- and/or board-config which replaces the existing ``LAB =``,
+``BOARD =``, ``UBOOT =``, and ``LINUX =`` statements.  For the lab-config,
+additionally, there is now a cleaner way to define the build-host:
+
+.. code-block:: diff
+
+    class MyBuildHost(...):
+        ...
+
+    class MyPersonalLab(...):
+        ...
+
+   -    def build(self):
+   -        return MyBuildHost(self)
+
+   -LAB = MyPersonalLab
+   +def register_machines(ctx):
+   +    ctx.register(MyPersonalLab, tbot.role.LabHost)
+   +    ctx.register(MyBuildHost, tbot.role.BuildHost)
+
+For the board-config it is even more straight-forward:
+
+.. code-block:: diff
+
+    class MyBoard(...):
+        ...
+
+    class MyUBoot(...):
+        ...
+
+    class MyBoardLinux(...):
+        ...
+
+   +def register_machines(ctx):
+   -BOARD = MyBoard
+   +    ctx.register(MyBoard, tbot.role.Board)
+   -UBOOT = MyUBoot
+   +    ctx.register(MyUBoot, tbot.role.BoardUBoot)
+   -LINUX = MyBoardLinux
+   +    ctx.register(MyBoardLinux, tbot.role.BoardLinux)
