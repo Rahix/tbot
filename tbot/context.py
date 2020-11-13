@@ -123,31 +123,31 @@ class Context(typing.ContextManager):
         """
         type = typing.cast(Type[M], type)
 
-        m = None
+        if type in self._roles:
+            machine_class = typing.cast(Type[M], self._roles[type])
+        elif type in self._instances:
+            machine_class = type
+        else:
+            raise IndexError(f"no machine found for {type!r}")
 
         try:
             with contextlib.ExitStack() as cx:
-                if type not in self._roles and type in self._instances:
-                    m = cx.enter_context(self._instances[type])
-                elif type in self._roles:
-                    machine_class = self._roles[type]
-
-                    if machine_class in self._instances:
-                        m = cx.enter_context(self._instances[machine_class])
-                    else:
-                        m = cx.enter_context(machine_class.from_context(self))
-                        assert isinstance(m, machine_class), f"machine type mismatch"
-                        self._instances[machine_class] = m
+                if machine_class in self._instances:
+                    yield typing.cast(
+                        M, cx.enter_context(self._instances[machine_class])
+                    )
                 else:
-                    raise IndexError(f"no machine found for {type!r}")
+                    m = cx.enter_context(machine_class.from_context(self))
+                    assert isinstance(m, machine_class), f"machine type mismatch"
+                    self._instances[machine_class] = m
 
-                yield typing.cast(M, m)
+                    yield m
         finally:
-            # After exiting the context, check if this machine has a refcount
-            # of 0.  This would mean it was deinitialized and we should discard
-            # it now.
-            if m is not None and m._rc == 0:
-                del self._instances[machine_class]
+            # After exiting the context, the last user of this instance might
+            # be gone.  Thus, it must potentially be garbage-collected:
+            if machine_class in self._instances:
+                if self._instances[machine_class]._rc == 0:
+                    del self._instances[machine_class]
 
     @contextlib.contextmanager
     def __call__(self) -> "Iterator[ContextHandle]":
