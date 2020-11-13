@@ -1,6 +1,21 @@
+import collections
 import contextlib
 import typing
-from typing import Any, Callable, Dict, Iterator, List, Set, Type, TypeVar, Union
+from typing import (
+    Any,
+    Callable,
+    ContextManager,
+    DefaultDict,
+    Dict,
+    Generic,
+    Iterator,
+    List,
+    Optional,
+    Set,
+    Type,
+    TypeVar,
+    Union,
+)
 
 import tbot
 import tbot.error
@@ -8,6 +23,61 @@ import tbot.role
 from tbot import machine
 
 M = TypeVar("M", bound=machine.Machine)
+
+
+class InstanceManager(Generic[M]):
+    def __init__(self) -> None:
+        self._cx = contextlib.ExitStack()
+        self._current_users = 0
+        self._instance: Optional[M] = None
+
+    def init(
+        self,
+        *,
+        context: Optional[ContextManager[M]] = None,
+        instance: Optional[M] = None,
+    ) -> None:
+        if self._instance is not None:
+            raise Exception("trying to re-initialize a live instance")
+
+        self._cx = contextlib.ExitStack()
+
+        if instance is not None and context is not None:
+            raise ValueError("cannot have both `context` and `instance` arguments")
+        elif instance is not None:
+            self._instance = self._cx.enter_context(instance)  # type: ignore
+        elif context is not None:
+            self._instance = self._cx.enter_context(context)
+        else:
+            raise ValueError("needs either `context` or `instance` argument")
+
+    def teardown(self) -> None:
+        if self._instance is None:
+            raise Exception("trying to de-init a closed instance")
+
+        # Necessary to ensure any open contexts for this machine do not
+        # prevent it from running its deinitialization code:
+        self._instance._rc = 1
+
+        self._cx.close()
+        self._instance = None
+
+    @contextlib.contextmanager
+    def request(self) -> Iterator[M]:
+        if self._instance is None:
+            raise Exception("trying to access a closed instance")
+
+        try:
+            self._current_users += 1
+            with self._instance as m:
+                yield m
+        finally:
+            self._current_users -= 1
+            if self._current_users == 0:
+                self.teardown()
+
+    def is_alive(self) -> bool:
+        return self._instance is not None
 
 
 class Context(typing.ContextManager):
@@ -22,8 +92,11 @@ class Context(typing.ContextManager):
     def __init__(self, *, add_defaults: bool = False) -> None:
         self._roles: Dict[Type[tbot.role.Role], Type[machine.Machine]] = {}
         self._weak_roles: Set[Type[tbot.role.Role]] = set()
-        self._instances: Dict[Type[machine.Machine], machine.Machine] = {}
         self._open_contexts = 0
+
+        self._instances: DefaultDict[
+            Type[machine.Machine], InstanceManager
+        ] = collections.defaultdict(InstanceManager)
 
         if add_defaults:
             tbot.role._register_default_machines(self)
@@ -130,24 +203,13 @@ class Context(typing.ContextManager):
         else:
             raise IndexError(f"no machine found for {type!r}")
 
-        try:
-            with contextlib.ExitStack() as cx:
-                if machine_class in self._instances:
-                    yield typing.cast(
-                        M, cx.enter_context(self._instances[machine_class])
-                    )
-                else:
-                    m = cx.enter_context(machine_class.from_context(self))
-                    assert isinstance(m, machine_class), f"machine type mismatch"
-                    self._instances[machine_class] = m
+        instance = self._instances[machine_class]
+        if not instance.is_alive():
+            instance.init(context=machine_class.from_context(self))
 
-                    yield m
-        finally:
-            # After exiting the context, the last user of this instance might
-            # be gone.  Thus, it must potentially be garbage-collected:
-            if machine_class in self._instances:
-                if self._instances[machine_class]._rc == 0:
-                    del self._instances[machine_class]
+        with instance.request() as m:
+            assert isinstance(m, machine_class), f"machine type mismatch"
+            yield m
 
     @contextlib.contextmanager
     def __call__(self) -> "Iterator[ContextHandle]":
@@ -163,8 +225,9 @@ class Context(typing.ContextManager):
         self._open_contexts -= 1
 
         if self._open_contexts == 0:
-            for inst in self._instances:
-                tbot.log.warning("Found a dangling {inst!r} in this context")
+            for ty, inst in self._instances.items():
+                if inst.is_alive():
+                    tbot.log.warning(f"Found dangling {ty!r} instance in this context")
 
 
 class ContextHandle:

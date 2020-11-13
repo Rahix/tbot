@@ -43,8 +43,9 @@ def _inject_into_context(
             ctx.register(type(instance), role)
             did_register = True
 
-        if type(instance) not in ctx._instances:
-            ctx._instances[type(instance)] = instance
+        manager = ctx._instances[type(instance)]
+        if not manager.is_alive():
+            manager.init(instance=instance)
             did_inject = True
 
         yield None
@@ -52,10 +53,10 @@ def _inject_into_context(
         if did_register:
             del ctx._roles[role]  # type: ignore
 
-        # If only the outer context from the acquire_* function is active any
-        # more, remove from context again.
-        if did_inject and instance._rc == 1:
-            del ctx._instances[type(instance)]
+        # If only the outer context from the acquire_*() function and the one
+        # from the instance manager is active any more, remove from context:
+        if did_inject and instance._rc == 2:
+            manager.teardown()
 
 
 def acquire_lab() -> LabHost:
