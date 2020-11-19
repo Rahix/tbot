@@ -30,6 +30,7 @@ class InstanceManager(Generic[M]):
         self._cx = contextlib.ExitStack()
         self._current_users = 0
         self._instance: Optional[M] = None
+        self._available = False
 
     def init(
         self,
@@ -41,6 +42,7 @@ class InstanceManager(Generic[M]):
             raise Exception("trying to re-initialize a live instance")
 
         self._cx = contextlib.ExitStack()
+        self._available = True
 
         if instance is not None and context is not None:
             raise ValueError("cannot have both `context` and `instance` arguments")
@@ -63,18 +65,32 @@ class InstanceManager(Generic[M]):
         self._instance = None
 
     @contextlib.contextmanager
-    def request(self) -> Iterator[M]:
+    def request(self, exclusive: bool = False) -> Iterator[M]:
         if self._instance is None:
             raise Exception("trying to access a closed instance")
 
+        if not self._available:
+            raise Exception("trying to access instance which is not available")
+
         try:
             self._current_users += 1
+
+            if exclusive:
+                # Mark the instance as exclusively used so no future request()
+                # will succeed.
+                self._available = False
+
             with self._instance as m:
                 yield m
         finally:
             self._current_users -= 1
-            if self._current_users == 0:
-                self.teardown()
+
+            if exclusive or self._current_users == 0:
+                # If we were the last user or the request() was an exclusive
+                # one, tear down this instance now.  Future requests will then
+                # need to re-initilize it.
+                if self.is_alive():
+                    self.teardown()
 
     def is_alive(self) -> bool:
         return self._instance is not None
