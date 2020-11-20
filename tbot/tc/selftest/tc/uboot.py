@@ -29,6 +29,13 @@ __all__ = (
 def _uboot_prepare(h: linux.LinuxShell) -> uboot.UBootBuilder:
     remote = h.workdir / "selftest-ub-remote"
 
+    # Git committer and author information in case the user's git
+    # environment is not set up yet
+    h.env("GIT_AUTHOR_NAME", "tbot selftest")
+    h.env("GIT_AUTHOR_EMAIL", "none@example.com")
+    h.env("GIT_COMMITTER_NAME", "tbot selftest")
+    h.env("GIT_COMMITTER_EMAIL", "none@example.com")
+
     if remote.exists():
         h.exec0("rm", "-rf", remote)
 
@@ -97,6 +104,14 @@ index e76351696ad0..fe143c6d4054 100644
 
         def do_patch(self, repo: git.GitRepository) -> None:
             patch = repo.host.workdir / "uboot-selftest.patch"
+
+            # Git committer and author information in case the user's git
+            # environment is not set up yet
+            repo.host.env("GIT_AUTHOR_NAME", "tbot selftest")
+            repo.host.env("GIT_AUTHOR_EMAIL", "none@example.com")
+            repo.host.env("GIT_COMMITTER_NAME", "tbot selftest")
+            repo.host.env("GIT_COMMITTER_EMAIL", "none@example.com")
+
             repo.am(patch)
 
     return UBootBuilder()

@@ -35,6 +35,13 @@ def git_prepare(lab: linux.Lab) -> str:
     global _GIT
 
     if _GIT is None:
+        # Git committer and author information in case the user's git
+        # environment is not set up yet
+        lab.env("GIT_AUTHOR_NAME", "tbot selftest")
+        lab.env("GIT_AUTHOR_EMAIL", "none@example.com")
+        lab.env("GIT_COMMITTER_NAME", "tbot selftest")
+        lab.env("GIT_COMMITTER_EMAIL", "none@example.com")
+
         p = lab.workdir / "selftest-git-remote"
 
         if p.exists():
