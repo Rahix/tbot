@@ -191,7 +191,7 @@ class LinuxUbootConnector(connector.Connector, LinuxBootLogin):
         cls: typing.Type[Self], ctx: "tbot.Context"
     ) -> typing.Iterator[Self]:
         with contextlib.ExitStack() as cx:
-            ub = cx.enter_context(ctx.request(tbot.role.BoardUBoot))
+            ub = cx.enter_context(ctx.request(tbot.role.BoardUBoot, exclusive=True))
             m = cx.enter_context(cls(ub))  # type: ignore
             yield m
 

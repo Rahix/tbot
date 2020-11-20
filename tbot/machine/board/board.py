@@ -115,7 +115,7 @@ class Connector(connector.Connector):
     @contextlib.contextmanager
     def from_context(cls: typing.Type[M], ctx: "tbot.Context") -> typing.Iterator[M]:
         with contextlib.ExitStack() as cx:
-            b = cx.enter_context(ctx.request(tbot.role.Board))
+            b = cx.enter_context(ctx.request(tbot.role.Board, exclusive=True))
             m = cx.enter_context(cls(b))  # type: ignore
             yield m
 
