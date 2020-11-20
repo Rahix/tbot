@@ -28,7 +28,7 @@ author = "Rahix"
 
 # The full version, including alpha/beta/rc tags
 release = (
-    subprocess.run(["git", "describe", "--long"], stdout=subprocess.PIPE)
+    subprocess.run(["git", "describe", "--long"], stdout=subprocess.PIPE, check=True)
     .stdout.decode()
     .strip()[1:]
 )
