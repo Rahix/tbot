@@ -99,6 +99,28 @@ registered in the context.  The best way to do this is this:
    Eventually, tbot might grow a new decorator for making contex usage even
    easier.  For now the above patterns are what should be used.
 
+Complex Testcases (e.g. Powercycle)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Sometimes, testcases need to do more complex things with instances than to
+simply interact with them.  A common example would be a powercycle of a DUT.
+For such cases, the :py:meth:`Context.request() <tbot.Context.request>` method
+provides some keyword arguments to allow fine-grained control over instance
+requesting.
+
+For the DUT powercycle example, a testcase might look like this:
+
+.. code-block:: python
+
+   @tbot.testcase
+   def test_with_dut_reboot():
+       with tbot.ctx.request(tbot.role.BoardLinux) as lnx:
+           # Do some things before powercycle
+           lnx.exec0("hwclock", "--systohc")
+
+       with tbot.ctx.request(tbot.role.BoardLinux, reset=True) as lnx:
+           # The DUT was powercycled before entering this context
+           lnx.exec0("hwclock", "--hctosys")
+
 .. _tbot_role:
 
 Roles
