@@ -12,6 +12,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          # So we can find out the version information for the docs
+          fetch-depth: 0
       - name: Install Python
         uses: actions/setup-python@v2
         with:
