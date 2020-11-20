@@ -280,6 +280,13 @@ class Context(typing.ContextManager):
             assert isinstance(m, machine_class), f"machine type mismatch"
             yield m
 
+    def get_machine_class(self, type: Callable[..., M]) -> Type[M]:
+        """
+        Return the registered machine class for a :py:class:`~tbot.role.Role`.
+        """
+        type = typing.cast(Type[M], type)
+        return typing.cast(Type[M], self._roles[type])
+
     @contextlib.contextmanager
     def __call__(self) -> "Iterator[ContextHandle]":
         with contextlib.ExitStack() as exitstack:
@@ -310,3 +317,6 @@ class ContextHandle:
         return self._exitstack.enter_context(
             self.ctx.request(type, reset=reset, exclusive=exclusive)
         )
+
+    def get_machine_class(self, type: Callable[..., M]) -> Type[M]:
+        return self.ctx.get_machine_class(type)
