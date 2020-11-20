@@ -176,13 +176,17 @@ class Context(typing.ContextManager):
             self._roles[role] = machine
 
     @contextlib.contextmanager
-    def request(self, type: Callable[..., M]) -> Iterator[M]:
+    def request(
+        self, type: Callable[..., M], *, reset: bool = False, exclusive: bool = False
+    ) -> Iterator[M]:
         """
         Request a machine instance from this context.
 
-        Requests an instance of the :ref:`role <tbot_role>` ``type`` from the context.  If no
-        instance exists, one will be created.  If a previous testcase has
-        already requested such an instance, the same instance is returned.
+        Requests an instance of the :ref:`role <tbot_role>` ``type`` from the
+        context.  If no instance exists, one will be created.  If a previous
+        testcase has already requested such an instance, the same instance is
+        returned (this behavior can be controlled with the ``reset`` and
+        ``exclusive`` keyword arguments).
 
         This function must be used as a context manager:
 
@@ -207,8 +211,52 @@ class Context(typing.ContextManager):
                     lh.exec0("cat", "/etc/os-release")
                     bh.exec0("free", "-h")
 
-        :param type: The :ref:`role <tbot_role>` for which a machine instance
+        The semantics of a ``request()`` can be controlled further by the
+        ``reset`` and ``exclusive`` keyword arguments.  See their documentation
+        for the details.
+
+        :param tbot.role.Role type: The :ref:`role <tbot_role>` for which a machine instance
             is requested.
+
+        :param bool reset: Controls what happens if an instance already exists:
+
+            - ``False`` (default): If an instance already exists due to a
+              previous **request()**, it will be returned (both requests
+              *share* it).
+            - ``True``: If an instance already exists due to a previous
+              **request()**, it will be torn down and re-initialized (the
+              previous request thus looses access to it).
+
+            ``reset=True`` can, for example, be used to write a testcase where
+            the DUT is powercycled:
+
+            .. code-block:: python
+
+                @tbot.testcase
+                def test_with_reboot():
+                    with tbot.ctx.request(tbot.role.BoardUBoot) as ub:
+                        ub.exec0("version")
+
+                    # Device will be powercycled here, even though if some "outer"
+                    # context for U-Boot is still active.  Note that such an outer
+                    # context will loose access to the instance after this point.
+
+                    with tbot.ctx.request(tbot.role.BoardUBoot, reset=True) as ub:
+                        ub.exec0("version")
+
+        :param bool exclusive: Controls whether other requests can get
+            access to the same instance while this request is active:
+
+            - ``False`` (default): A **request()** after this one will get
+              *shared* access to the same instance.
+            - ``True``: Any future **request()** while this one is active is
+              forbidden and will fail.  Once this **request()** ends, the
+              instance will be torn down so future requests will need to
+              re-initialize it.
+
+            This mode should be used when you are going to do changes to the
+            instance which could potentially bring it into a state that other
+            testcases won't expect.
         """
         type = typing.cast(Type[M], type)
 
@@ -220,10 +268,15 @@ class Context(typing.ContextManager):
             raise IndexError(f"no machine found for {type!r}")
 
         instance = self._instances[machine_class]
+
+        if instance.is_alive() and reset:
+            # Requester wants the machine to be re-initialized if it is already alive.
+            instance.teardown()
+
         if not instance.is_alive():
             instance.init(context=machine_class.from_context(self))
 
-        with instance.request() as m:
+        with instance.request(exclusive) as m:
             assert isinstance(m, machine_class), f"machine type mismatch"
             yield m
 
@@ -251,5 +304,9 @@ class ContextHandle:
         self.ctx = ctx
         self._exitstack = exitstack
 
-    def request(self, type: Callable[..., M]) -> M:
-        return self._exitstack.enter_context(self.ctx.request(type))
+    def request(
+        self, type: Callable[..., M], *, reset: bool = False, exclusive: bool = False
+    ) -> M:
+        return self._exitstack.enter_context(
+            self.ctx.request(type, reset=reset, exclusive=exclusive)
+        )
