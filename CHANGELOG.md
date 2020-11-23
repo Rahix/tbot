@@ -1,6 +1,36 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Warning about incorrect build-host configuration when running `uboot_testpy`
+  testcase.
+- Added support for SSH connection multiplexing to `SSHConnector`.  You can
+  enable it by adding `use_multiplexing = True` to your host config.
+  Multiplexing can drastically speed up testcases which open many connections to
+  the same host (see [`ControlMaster` in `sshd_config(5)`][ssh-multiplexing] for
+  details).
+
+### Changed
+- `LinuxShell.env()` can now be used to query `$!` (last background job PID) and
+  `$$` (current shell PID) special environment  variables (using `m.env("!")`
+  and `m.env("$")`).
+- Added some more specific exception types and started using them where
+  appropriate.  This effort is by far not over yet, though ...
+- The `linux.Background` special token is now more safe to use as it prevents
+  console clobbering as good as it can.  You can manually redirect command
+  output to files using a new call syntax.  See [`Background`][linux-background]
+  documentation for details.
+
+### Fixed
+- Call `olddefconfig` before attempting to build U-Boot.  This prevents kconfig
+  from attempting to interactively query new config settings.
+- Fixed a rare timing-dependent bash initialization deadlock.
+- Fixed `selftest_tc` failing if user has no git identity set up.
+- Fixed documentation silently building without version information if
+  `git describe` fails.
+
+[ssh-multiplexing]: https://man.openbsd.org/ssh_config.5#ControlMaster
+[linux-background]: https://tbot.tools/modules/machine_linux.html#tbot.machine.linux.Background
 
 
 ## [0.8.3] - 2020-09-22
