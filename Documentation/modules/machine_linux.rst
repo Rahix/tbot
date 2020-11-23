@@ -174,7 +174,7 @@ can be used to chain multiple commands or to redirect output.
 
          ...
 
-         lh.exec0("kill", pid, linux.Then, "wait", "pid")
+         lh.exec0("kill", pid, linux.Then, "wait", pid)
 
 .. py:class:: Raw(str)
 
