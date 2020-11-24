@@ -306,6 +306,9 @@ class Context(typing.ContextManager):
                     tbot.log.warning(f"Found dangling {ty!r} instance in this context")
 
 
+T = TypeVar("T")
+
+
 class ContextHandle:
     def __init__(self, ctx: Context, exitstack: contextlib.ExitStack) -> None:
         self.ctx = ctx
@@ -314,9 +317,12 @@ class ContextHandle:
     def request(
         self, type: Callable[..., M], *, reset: bool = False, exclusive: bool = False
     ) -> M:
-        return self._exitstack.enter_context(
+        return self.enter_context(
             self.ctx.request(type, reset=reset, exclusive=exclusive)
         )
 
     def get_machine_class(self, type: Callable[..., M]) -> Type[M]:
         return self.ctx.get_machine_class(type)
+
+    def enter_context(self, context: ContextManager[T]) -> T:
+        return self._exitstack.enter_context(context)
