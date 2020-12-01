@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 ### Added
+- Added the **Context** API for much easier and more flexible machine
+  management.  Please read the [Context API][context-api] documentation for an
+  introduction and migration guide.  **Note**: For now the old `tbot.selectable`
+  API still exists and will be compatible both ways with the new API.  It will,
+  however, slowly be phased out in the future.
 - Warning about incorrect build-host configuration when running `uboot_testpy`
   testcase.
 - Added support for SSH connection multiplexing to `SSHConnector`.  You can
@@ -29,6 +34,7 @@
 - Fixed documentation silently building without version information if
   `git describe` fails.
 
+[context-api]: https://tbot.tools/context.html
 [ssh-multiplexing]: https://man.openbsd.org/ssh_config.5#ControlMaster
 [linux-background]: https://tbot.tools/modules/machine_linux.html#tbot.machine.linux.Background
 
