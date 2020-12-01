@@ -246,19 +246,36 @@ def main() -> None:  # noqa: C901
     lab = None
     if args.lab is not None:
         lab = loader.load_module(pathlib.Path(args.lab).resolve())
-        tbot.selectable.LabHost = lab.LAB  # type: ignore
+        if hasattr(lab, "register_machines"):
+            getattr(lab, "register_machines")(tbot.ctx)
+        else:
+            tbot.ctx.register(getattr(lab, "LAB"), [tbot.role.LabHost])
+
+        # Needed to make legacy tbot.selectable module work
+        tbot.selectable.LabHost = tbot.ctx._roles[tbot.role.LabHost]  # type: ignore
     else:
         pass
 
     board = None
     if args.board is not None:
         board = loader.load_module(pathlib.Path(args.board).resolve())
-        if hasattr(board, "BOARD"):
-            tbot.selectable.Board = board.BOARD  # type: ignore
-        if hasattr(board, "UBOOT"):
-            tbot.selectable.UBootMachine = board.UBOOT  # type: ignore
-        if hasattr(board, "LINUX"):
-            tbot.selectable.LinuxMachine = board.LINUX  # type: ignore
+        if hasattr(board, "register_machines"):
+            getattr(board, "register_machines")(tbot.ctx)
+        else:
+            if hasattr(board, "BOARD"):
+                tbot.ctx.register(getattr(board, "BOARD"), [tbot.role.Board])
+            if hasattr(board, "UBOOT"):
+                tbot.ctx.register(getattr(board, "UBOOT"), [tbot.role.BoardUBoot])
+            if hasattr(board, "LINUX"):
+                tbot.ctx.register(getattr(board, "LINUX"), [tbot.role.BoardLinux])
+
+        # Needed to make legacy tbot.selectable module work
+        if tbot.role.Board in tbot.ctx._roles:
+            tbot.selectable.Board = tbot.ctx._roles[tbot.role.Board]  # type: ignore
+        if tbot.role.BoardUBoot in tbot.ctx._roles:
+            tbot.selectable.UBootMachine = tbot.ctx._roles[tbot.role.BoardUBoot]  # type: ignore
+        if tbot.role.BoardLinux in tbot.ctx._roles:
+            tbot.selectable.LinuxMachine = tbot.ctx._roles[tbot.role.BoardLinux]  # type: ignore
     else:
         pass
 
@@ -300,31 +317,32 @@ def main() -> None:  # noqa: C901
         )
 
     try:
-        for tc in args.testcase:
-            func = testcases[tc]
+        with tbot.ctx:
+            for tc in args.testcase:
+                func = testcases[tc]
 
-            if len(args.testcase) == 1:
-                params = parameters
-            else:
-                # Filter parameter list if multiple testcases are scheduled to run
+                if len(args.testcase) == 1:
+                    params = parameters
+                else:
+                    # Filter parameter list if multiple testcases are scheduled to run
 
-                try:
-                    func_code = getattr(func, "__wrapped__").__code__
-                except AttributeError:
-                    func_code = func.__code__
-                # Get list of argument names
-                argspec = inspect.getargs(func_code)
+                    try:
+                        func_code = getattr(func, "__wrapped__").__code__
+                    except AttributeError:
+                        func_code = func.__code__
+                    # Get list of argument names
+                    argspec = inspect.getargs(func_code)
 
-                params = {}
-                for name, value in parameters.items():
-                    if argspec.varkw is not None or name in argspec.args:
-                        params[name] = value
-                    else:
-                        tbot.log.warning(
-                            f"Parameter {name!r} not defined for testcase {tc!r}, ignoring ..."
-                        )
+                    params = {}
+                    for name, value in parameters.items():
+                        if argspec.varkw is not None or name in argspec.args:
+                            params[name] = value
+                        else:
+                            tbot.log.warning(
+                                f"Parameter {name!r} not defined for testcase {tc!r}, ignoring ..."
+                            )
 
-            func(**params)
+                func(**params)
     except Exception as e:  # noqa: E722
         import traceback
 

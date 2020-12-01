@@ -18,11 +18,13 @@ import abc
 import contextlib
 import typing
 
+import tbot
 import tbot.error
+from tbot import machine  # noqa: F401
 from .. import channel, linux
 from . import connector
 
-SelfSubprocess = typing.TypeVar("SelfSubprocess", bound="SubprocessConnector")
+M = typing.TypeVar("M", bound="machine.Machine")
 
 
 class SubprocessConnector(connector.Connector):
@@ -50,17 +52,20 @@ class SubprocessConnector(connector.Connector):
 
     __slots__ = ()
 
+    @classmethod
+    @contextlib.contextmanager
+    def from_context(cls: typing.Type[M], ctx: "tbot.Context") -> typing.Iterator[M]:
+        with cls() as m:
+            yield m
+
     def _connect(self) -> channel.Channel:
         return channel.SubprocessChannel()
 
-    def clone(self: SelfSubprocess) -> SelfSubprocess:
+    def clone(self: M) -> M:
         """Clone this machine."""
         new = type(self)()
         new._orig = self._orig or self
         return new
-
-
-SelfConsole = typing.TypeVar("SelfConsole", bound="ConsoleConnector")
 
 
 class ConsoleConnector(connector.Connector):
@@ -115,12 +120,20 @@ class ConsoleConnector(connector.Connector):
         """
         self.host = mach
 
+    @classmethod
+    @contextlib.contextmanager
+    def from_context(cls: typing.Type[M], ctx: "tbot.Context") -> typing.Iterator[M]:
+        with contextlib.ExitStack() as cx:
+            lh = cx.enter_context(ctx.request(tbot.role.LabHost))
+            m = cx.enter_context(cls(lh))  # type: ignore
+            yield m
+
     @contextlib.contextmanager
     def _connect(self) -> typing.Iterator[channel.Channel]:
         with self.host.clone() as cloned, self.connect(cloned) as ch:
             yield ch
             # yield cloned.open_channel("picocom", "-b", str(115200), "/dev/ttyUSB0")
 
-    def clone(self: SelfConsole) -> SelfConsole:
+    def clone(self: M) -> M:
         """This machine is **not** cloneable."""
         raise NotImplementedError("can't clone a serial connection")

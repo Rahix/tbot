@@ -99,6 +99,9 @@ class Board(shell.RawShell):
     pass
 
 
+M = typing.TypeVar("M", bound=machine.Machine)
+
+
 class Connector(connector.Connector):
     def __init__(self, board: typing.Union[Board, channel.Channel]) -> None:
         if not (isinstance(board, Board) or isinstance(board, channel.Channel)):
@@ -107,6 +110,14 @@ class Connector(connector.Connector):
             )
         self._board = board
         self.host = getattr(board, "host", None)
+
+    @classmethod
+    @contextlib.contextmanager
+    def from_context(cls: typing.Type[M], ctx: "tbot.Context") -> typing.Iterator[M]:
+        with contextlib.ExitStack() as cx:
+            b = cx.enter_context(ctx.request(tbot.role.Board, exclusive=True))
+            m = cx.enter_context(cls(b))  # type: ignore
+            yield m
 
     @contextlib.contextmanager
     def _connect(self) -> typing.Iterator[channel.Channel]:

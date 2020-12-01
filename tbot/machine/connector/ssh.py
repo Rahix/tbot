@@ -23,6 +23,8 @@ from . import connector
 from .. import linux, channel
 from ..linux import auth
 
+Self = typing.TypeVar("Self", bound="SSHConnector")
+
 
 class SSHConnector(connector.Connector):
     """
@@ -143,14 +145,26 @@ class SSHConnector(connector.Connector):
         return []
 
     def __init__(self, host: typing.Optional[linux.LinuxShell] = None) -> None:
-        if host is not None:
-            self.host = host
-        else:
-            self.host = tbot.acquire_local()  # type: ignore
+        self.host: linux.LinuxShell
+        self.host = host  # type: ignore
+
+    @classmethod
+    @contextlib.contextmanager
+    def from_context(
+        cls: typing.Type[Self], ctx: "tbot.Context"
+    ) -> typing.Iterator[Self]:
+        with contextlib.ExitStack() as cx:
+            lh = cx.enter_context(ctx.request(tbot.role.LabHost))
+            m = cx.enter_context(cls(lh))  # type: ignore
+            yield m
 
     @contextlib.contextmanager
     def _connect(self) -> typing.Iterator[channel.Channel]:
-        with self.host.clone() as h:
+        with contextlib.ExitStack() as cx:
+            if self.host is None:
+                self.host = cx.enter_context(tbot.acquire_local())
+            h = cx.enter_context(self.host.clone())
+
             authenticator = self.authenticator
             if isinstance(authenticator, auth.NoneAuthenticator):
                 cmd = ["ssh", "-o", "BatchMode=yes"]

@@ -15,6 +15,10 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import typing
+import contextlib
+from typing import Any, Callable, Iterator
+
+import tbot
 from tbot.machine import connector, linux, board
 
 
@@ -25,6 +29,34 @@ class LocalLabHost(
 
 
 LabHost = LocalLabHost
+
+
+@contextlib.contextmanager
+def _inject_into_context(
+    ctx: "tbot.Context", role: Callable[..., "tbot.role.Role"], instance: Any
+) -> Iterator:
+    did_register = False
+    did_inject = False
+
+    try:
+        if role not in ctx._roles:
+            ctx.register(type(instance), role)
+            did_register = True
+
+        manager = ctx._instances[type(instance)]
+        if not manager.is_alive():
+            manager.init(instance=instance)
+            did_inject = True
+
+        yield None
+    finally:
+        if did_register:
+            del ctx._roles[role]  # type: ignore
+
+        # If only the outer context from the acquire_*() function and the one
+        # from the instance manager is active any more, remove from context:
+        if did_inject and instance._rc == 2:
+            manager.teardown()
 
 
 def acquire_lab() -> LabHost:
@@ -55,7 +87,13 @@ def acquire_lab() -> LabHost:
     """
     if hasattr(LabHost, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a lab?")
-    return LabHost()
+
+    @contextlib.contextmanager
+    def _internal() -> Any:
+        with LabHost() as lh, _inject_into_context(tbot.ctx, tbot.role.LabHost, lh):
+            yield lh
+
+    return _internal()  # type: ignore
 
 
 def acquire_local() -> LocalLabHost:
@@ -79,7 +117,14 @@ def acquire_local() -> LocalLabHost:
                 # On local machines you can access tbot's working directory:
                 tbot.log.message(f"CWD: {lo.workdir}")
     """
-    return LocalLabHost()
+
+    @contextlib.contextmanager
+    def _internal() -> Any:
+        with LocalLabHost() as lo:
+            with _inject_into_context(tbot.ctx, tbot.role.LocalHost, lo):
+                yield lo
+
+    return _internal()  # type: ignore
 
 
 class Board(board.Board):
@@ -111,7 +156,14 @@ def acquire_board(lh: LabHost) -> Board:
     """
     if hasattr(Board, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a board?")
-    return Board(lh)  # type: ignore
+
+    @contextlib.contextmanager
+    def _internal() -> Any:
+        with Board(lh) as b:  # type: ignore
+            with _inject_into_context(tbot.ctx, tbot.role.Board, b):
+                yield b
+
+    return _internal()  # type: ignore
 
 
 class UBootMachine(board.UBootShell, typing.ContextManager):
@@ -158,7 +210,14 @@ def acquire_uboot(board: Board, *args: typing.Any) -> UBootMachine:
     """
     if hasattr(UBootMachine, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a board?")
-    return UBootMachine(board, *args)  # type: ignore
+
+    @contextlib.contextmanager
+    def _internal() -> Any:
+        with UBootMachine(board, *args) as ub:  # type: ignore
+            with _inject_into_context(tbot.ctx, tbot.role.BoardUBoot, ub):
+                yield ub
+
+    return _internal()  # type: ignore
 
 
 class LinuxMachine(board.LinuxBootLogin, linux.LinuxShell, typing.ContextManager):
@@ -207,4 +266,11 @@ def acquire_linux(
     """
     if hasattr(LinuxMachine, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a board?")
-    return LinuxMachine(b, *args)  # type: ignore
+
+    @contextlib.contextmanager
+    def _internal() -> Any:
+        with LinuxMachine(b, *args) as lnx:  # type: ignore
+            with _inject_into_context(tbot.ctx, tbot.role.BoardLinux, lnx):
+                yield lnx
+
+    return _internal()  # type: ignore

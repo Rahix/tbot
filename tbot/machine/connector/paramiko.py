@@ -19,6 +19,7 @@ import getpass
 import paramiko
 import pathlib
 import typing
+import contextlib
 
 import tbot
 from .. import channel
@@ -141,6 +142,14 @@ class ParamikoConnector(connector.Connector):
         if other is not None:
             self._client = other._client
             self._config = other._config
+
+    @classmethod
+    @contextlib.contextmanager
+    def from_context(
+        cls: typing.Type[Self], ctx: "tbot.Context"
+    ) -> typing.Iterator[Self]:
+        with cls() as m:
+            yield m
 
     def _connect(self) -> channel.Channel:
         if self._client is None:

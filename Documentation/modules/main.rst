@@ -12,6 +12,46 @@ The testcase decorators will also track time and success of each run.
 .. autofunction:: tbot.testcase
 .. autofunction:: tbot.named_testcase
 
+Context
+-------
+The new mechanism for machine management is the :ref:`context <context>`
+(superseding :py:mod:`tbot.selectable`).  The global context is stored in
+:py:data:`tbot.ctx` which is an instance of :py:class:`tbot.Context`.  Read the
+:ref:`context` guide for a detailed introduction.
+
+.. py:data:: tbot.ctx
+   :type: tbot.Context
+
+   The global context.  This context should be used in testcases for accessing
+   machines via the following pattern:
+
+   **Single Machine**:
+
+   .. code-block:: python
+
+      @tbot.testcase
+      def test_with_labhost():
+          with tbot.ctx.request(tbot.role.LabHost) as lh:
+              lh.exec0("uname", "-a")
+
+   **Multiple Machines**:
+
+   .. code-block:: python
+
+      @tbot.testcase
+      def test_with_board_and_lab():
+         with tbot.ctx() as cx:
+            lh = cx.request(tbot.role.LabHost)
+            lnx = cx.request(tbot.role.BoardLinux)
+
+            lh.exec0("hostname")
+            lnx.exec0("hostname")
+
+   See the :py:class:`tbot.Context` class below for the API details.
+
+.. autoclass:: tbot.Context
+   :members:
+
 Convenience Decorators
 ----------------------
 To make writing testcase interacting with machines easier, tbot provides three

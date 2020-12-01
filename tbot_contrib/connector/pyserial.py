@@ -1,6 +1,7 @@
 import abc
 import os
 import typing
+import contextlib
 
 import tbot.error
 from tbot.machine import channel, connector, linux
@@ -80,6 +81,9 @@ class PyserialChannel(channel.Channel):
         super().__init__(PyserialChannelIO(port, baudrate))
 
 
+M = typing.TypeVar("M", bound="PyserialConnector")
+
+
 class PyserialConnector(connector.Connector):
     """
     Connect to a console connected to **localhost** (i.e. the host tbot is
@@ -114,6 +118,12 @@ class PyserialConnector(connector.Connector):
                 "PyserialConnector can only use a localhost host (got {host!r})!"
             )
         self.host = host
+
+    @classmethod
+    @contextlib.contextmanager
+    def from_context(cls: typing.Type[M], ctx: "tbot.Context") -> typing.Iterator[M]:
+        with cls() as m:
+            yield m
 
     def _connect(self) -> channel.Channel:
         return PyserialChannel(self.serial_port, self.baudrate)

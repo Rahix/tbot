@@ -16,6 +16,8 @@
 
 import abc
 import typing
+
+import tbot
 import tbot.error
 from .. import channel, machine
 
@@ -59,6 +61,36 @@ class Connector(machine.Machine):
                         ...
         """
         raise tbot.error.AbstractMethodError()
+
+    @classmethod
+    def from_context(
+        cls: typing.Type[Self], ctx: "tbot.Context"
+    ) -> typing.ContextManager[Self]:
+        """
+        Create this machine from a tbot context.
+
+        This method defines how tbot can automatically attempt creating this
+        machine from a given context.  It is usually defined by the connector
+        but might be overridden by board config in certain more complex
+        scenarios.
+
+        This method must return a context-manager that, upen entering, yields a
+        **fully initialized** machine.  In practical terms this means, the
+        implementation must enter the "machine's context" as well.  As an
+        example, the most basic implementation would look like this:
+
+        .. code-block:: python
+
+            @contextlib.contextmanager
+            def from_context(cls, ctx):
+                # Create instance and enter its context, in this example, no
+                # args are passed to the constructor ...
+                with cls() as m:
+                    yield m
+        """
+        raise NotImplementedError(
+            f"connector of {cls!r} does not (yet) implement from_context()"
+        )
 
     @abc.abstractmethod
     def clone(self: Self) -> Self:
