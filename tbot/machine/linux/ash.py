@@ -226,7 +226,7 @@ class Ash(linux_shell.LinuxShell):
     @contextlib.contextmanager
     def subshell(
         self: Self, *args: typing.Union[str, special.Special[Self], path.Path[Self]]
-    ) -> "typing.Iterator[Ash]":
+    ) -> typing.Iterator[Self]:
         if args == ():
             cmd = "ash"
         else:
