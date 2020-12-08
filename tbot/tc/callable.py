@@ -25,38 +25,34 @@ from tbot.tc.uboot import testpy as uboot_testpy  # noqa
 @tbot.testcase
 def interactive_lab() -> None:
     """Start an interactive shell on the lab-host."""
-    with tbot.acquire_lab() as lh:
+    with tbot.ctx.request(tbot.role.LabHost) as lh:
         lh.interactive()
 
 
 @tbot.testcase
 def interactive_build() -> None:
     """Start an interactive shell on the build-host."""
-    with tbot.acquire_lab() as lh:
-        with lh.build() as bh:
-            bh.exec0("cd", bh.workdir)
-            bh.interactive()
+    with tbot.ctx.request(tbot.role.BuildHost) as bh:
+        bh.exec0("cd", bh.workdir)
+        bh.interactive()
 
 
 @tbot.testcase
 def interactive_board() -> None:
     """Start an interactive session on the selected boards serial console."""
-    with tbot.acquire_lab() as lh:
-        with tbot.acquire_board(lh) as b:
-            b.interactive()
+    with tbot.ctx.request(tbot.role.Board) as b:
+        b.interactive()
 
 
 @tbot.testcase
 def interactive_uboot() -> None:
     """Start an interactive U-Boot shell on the selected board."""
-    with tbot.acquire_lab() as lh:
-        with tbot.acquire_board(lh) as b, tbot.acquire_uboot(b) as ub:
-            ub.interactive()
+    with tbot.ctx.request(tbot.role.BoardUBoot) as ub:
+        ub.interactive()
 
 
 @tbot.testcase
 def interactive_linux() -> None:
     """Start an interactive Linux shell on the selected board."""
-    with tbot.acquire_lab() as lh:
-        with tbot.acquire_board(lh) as b, tbot.acquire_linux(b) as lnx:
-            lnx.interactive()
+    with tbot.ctx.request(tbot.role.BoardLinux) as lnx:
+        lnx.interactive()
