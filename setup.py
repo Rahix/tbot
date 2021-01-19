@@ -19,7 +19,10 @@ setup(
     packages=find_packages(
         include=("tbot", "tbot.*", "tbot_contrib", "tbot_contrib.*")
     ),
-    install_requires=["paramiko", "termcolor2"],
+    install_requires=["termcolor2"],
+    extras_require={
+        "paramiko": ["paramiko"],
+    },
     entry_points={
         "console_scripts": ["tbot = tbot.main:main"]
     },
