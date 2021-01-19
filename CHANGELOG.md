@@ -25,6 +25,8 @@
   console clobbering as good as it can.  You can manually redirect command
   output to files using a new call syntax.  See [`Background`][linux-background]
   documentation for details.
+- `paramiko` is now an optional dependency.  tbot works just fine without
+  paramiko, but if it is installed, the `ParamikoConnector` becomes available.
 
 ### Fixed
 - Call `olddefconfig` before attempting to build U-Boot.  This prevents kconfig
