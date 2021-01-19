@@ -91,9 +91,12 @@ def selftest_machine_sshlab_shell(
         with minisshd.minisshd(lh) as ssh:
             ssh.exec0("true")
 
-            tbot.log.message(tbot.log.c("Testing with paramiko ...").bold)
-            with minisshd.MiniSSHLabHostParamiko(ssh.port) as slp:
-                selftest_machine_shell(slp)
+            if not minisshd.has_paramiko:
+                tbot.log.warning("Skipping paramiko test.")
+            else:
+                tbot.log.message(tbot.log.c("Testing with paramiko ...").bold)
+                with minisshd.MiniSSHLabHostParamiko(ssh.port) as slp:
+                    selftest_machine_shell(slp)
 
             tbot.log.message(tbot.log.c("Testing with plain ssh ...").bold)
             with minisshd.MiniSSHLabHostSSH(ssh.port) as sls:

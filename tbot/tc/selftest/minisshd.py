@@ -83,8 +83,14 @@ class MiniSSHLabHostBase(linux.Bash):
         super().__init__()
 
 
-class MiniSSHLabHostParamiko(MiniSSHLabHostBase, connector.ParamikoConnector):
-    name = "minissh-lab-paramiko"
+if hasattr(connector, "ParamikoConnector"):
+
+    class MiniSSHLabHostParamiko(MiniSSHLabHostBase, connector.ParamikoConnector):
+        name = "minissh-lab-paramiko"
+
+    has_paramiko = True
+else:
+    has_paramiko = False
 
 
 class MiniSSHLabHostSSH(MiniSSHLabHostBase, connector.SSHConnector):

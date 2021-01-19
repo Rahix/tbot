@@ -9,7 +9,12 @@ from .channel import (
 )
 
 from .subprocess import SubprocessChannel
-from .paramiko import ParamikoChannel
+
+try:
+    from .paramiko import ParamikoChannel
+except ImportError:
+    # allow this to fail if paramiko is not installed
+    pass
 
 __all__ = (
     "BoundedPattern",
