@@ -154,7 +154,9 @@ class SSHConnector(connector.Connector):
         cls: typing.Type[Self], ctx: "tbot.Context"
     ) -> typing.Iterator[Self]:
         with contextlib.ExitStack() as cx:
-            lh = cx.enter_context(ctx.request(tbot.role.LabHost))
+            lh = None
+            if isinstance(cls, ctx.get_machine_class(tbot.role.LabHost)):
+                lh = cx.enter_context(ctx.request(tbot.role.LabHost))
             m = cx.enter_context(cls(lh))  # type: ignore
             yield m
 
