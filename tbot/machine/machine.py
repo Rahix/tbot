@@ -149,6 +149,11 @@ class Machine(abc.ABC):
             # If anything goes wrong, execute this machine's __exit__()
             cx.push(self)
 
+            # Run pre-connection init, if specified
+            for cls in type(self).mro():
+                if PreConnectInitializer in cls.__bases__:
+                    self._cx.enter_context(getattr(cls, "_init_pre_connect")(self))
+
             # Run the connector
             self.ch = self._cx.enter_context(self._connect())
 
@@ -159,6 +164,11 @@ class Machine(abc.ABC):
 
             # Initialize the shell
             self._cx.enter_context(self._init_shell())
+
+            # Run post-shell init, if specified
+            for cls in type(self).mro():
+                if PostShellInitializer in cls.__bases__:
+                    self._cx.enter_context(getattr(cls, "_init_post_shell")(self))
 
             # Run optional custom initialization code
             self.init()
@@ -192,5 +202,37 @@ class Initializer(Machine):
         .. todo::
 
             More docs for this ...
+        """
+        raise tbot.error.AbstractMethodError()
+
+
+class PreConnectInitializer(Machine):
+    """
+    Base-class for pre-connection initializer context.
+
+    This initializer is run  before connecting to the machine, before
+    :py:meth:`tbot.machine.Initializer._init_machine`
+    """
+
+    @abc.abstractmethod
+    def _init_pre_connect(self) -> typing.ContextManager:
+        """
+        Pre-connection initialization context.
+        """
+        raise tbot.error.AbstractMethodError()
+
+
+class PostShellInitializer(Machine):
+    """
+    Base-class for post-shell initializer context.
+
+    This initializer is run after :py:meth:`tbot.machine.Initializer._init_machine`
+    and after the shell has been initialized.
+    """
+
+    @abc.abstractmethod
+    def _init_post_shell(self) -> typing.ContextManager:
+        """
+        Post-shell initialization context.
         """
         raise tbot.error.AbstractMethodError()

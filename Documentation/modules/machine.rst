@@ -74,3 +74,11 @@ Initializers
 .. autoclass:: tbot.machine.Initializer
    :members:
    :private-members:
+
+.. autoclass:: tbot.machine.PreConnectInitializer
+   :members:
+   :private-members:
+
+.. autoclass:: tbot.machine.PostShellInitializer
+   :members:
+   :private-members:
