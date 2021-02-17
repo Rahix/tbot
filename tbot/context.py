@@ -103,6 +103,13 @@ class Context(typing.ContextManager):
     You will usually access the global context :py:data:`tbot.ctx` which is an
     instance of this class instead of instanciating :py:class:`tbot.Context`
     yourself.  See the :ref:`context` guide for a detailed introduction.
+
+    In case you do need to construct a context yourself, there are a few
+    customization possibilities:
+
+    :param bool add_defaults: Add default machines for some roles from
+        :py:mod:`tbot.role`, for example for :py:class:`tbot.role.LocalHost`.
+        Defaults to ``False``.
     """
 
     def __init__(self, *, add_defaults: bool = False) -> None:
