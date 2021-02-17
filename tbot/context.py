@@ -121,7 +121,8 @@ class Context(typing.ContextManager):
 
             To avoid such problems, always write testcase to leave the instance
             in a clean state.  If a testcase can't guarantee this, it should
-            request the instance with ``exclusive=True``.
+            request the instance with ``reset_on_error=True`` or even
+            ``exclusive=True``.
     :param bool add_defaults: Add default machines for some roles from
         :py:mod:`tbot.role`, for example for :py:class:`tbot.role.LocalHost`.
         Defaults to ``False``.
@@ -200,7 +201,12 @@ class Context(typing.ContextManager):
 
     @contextlib.contextmanager
     def request(
-        self, type: Callable[..., M], *, reset: bool = False, exclusive: bool = False
+        self,
+        type: Callable[..., M],
+        *,
+        reset: bool = False,
+        exclusive: bool = False,
+        reset_on_error: bool = False,
     ) -> Iterator[M]:
         """
         Request a machine instance from this context.
@@ -235,8 +241,8 @@ class Context(typing.ContextManager):
                     bh.exec0("free", "-h")
 
         The semantics of a ``request()`` can be controlled further by the
-        ``reset`` and ``exclusive`` keyword arguments.  See their documentation
-        for the details.
+        ``reset``, ``exclusive``, and ``reset_on_error`` keyword arguments.
+        See their documentation for the details.
 
         :param tbot.role.Role type: The :ref:`role <tbot_role>` for which a machine instance
             is requested.
@@ -280,6 +286,23 @@ class Context(typing.ContextManager):
             This mode should be used when you are going to do changes to the
             instance which could potentially bring it into a state that other
             testcases won't expect.
+
+        :param bool reset_on_error:  Controls behavior when the context-manager
+            returned by this ``request()`` is exited abnormally via an exception:
+
+            - ``False`` (default):  The exception is ignored (and just
+              propagates further up), no special behavior.
+            - ``True``: Instructs the ``Context`` to forcefully de-initialize
+              this instance if the context-manager returned from this
+              ``request()`` was exited with an exception.  The exception is
+              then of course propagated further up.
+
+            This can be useful to ensure a follow-up request will always get a
+            clean instance, even when something went wrong here.  This is
+            especially relevant for a :py:class:`Context` which has
+            ``keep_alive=True``.
+
+            If ``exclusive=True``, ``reset_on_error=True`` is essentially a no-op.
         """
         type = typing.cast(Type[M], type)
 
@@ -307,7 +330,13 @@ class Context(typing.ContextManager):
 
         with instance.request(exclusive, self._keep_alive) as m:
             assert isinstance(m, machine_class), f"machine type mismatch"
-            yield m
+
+            try:
+                yield m
+            except BaseException as e:
+                if reset_on_error:
+                    instance.teardown()
+                raise e from None
 
     def get_machine_class(self, type: Callable[..., M]) -> Type[M]:
         """
@@ -352,10 +381,17 @@ class ContextHandle:
         self._exitstack = exitstack
 
     def request(
-        self, type: Callable[..., M], *, reset: bool = False, exclusive: bool = False
+        self,
+        type: Callable[..., M],
+        *,
+        reset: bool = False,
+        exclusive: bool = False,
+        reset_on_error: bool = False,
     ) -> M:
         return self.enter_context(
-            self.ctx.request(type, reset=reset, exclusive=exclusive)
+            self.ctx.request(
+                type, reset=reset, exclusive=exclusive, reset_on_error=reset_on_error
+            )
         )
 
     def get_machine_class(self, type: Callable[..., M]) -> Type[M]:
