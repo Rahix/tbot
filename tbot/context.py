@@ -126,13 +126,23 @@ class Context(typing.ContextManager):
     :param bool add_defaults: Add default machines for some roles from
         :py:mod:`tbot.role`, for example for :py:class:`tbot.role.LocalHost`.
         Defaults to ``False``.
+    :param bool reset_on_error_by_default: Set ``reset_on_error=True`` for all
+        ``request()`` s which do not explicitly overwrite it.  It is a good idea
+        to set this in conjunction with ``keep_alive=True``.
     """
 
-    def __init__(self, *, keep_alive: bool = False, add_defaults: bool = False) -> None:
+    def __init__(
+        self,
+        *,
+        keep_alive: bool = False,
+        add_defaults: bool = False,
+        reset_on_error_by_default: bool = False,
+    ) -> None:
         self._roles: Dict[Type[tbot.role.Role], Type[machine.Machine]] = {}
         self._weak_roles: Set[Type[tbot.role.Role]] = set()
         self._open_contexts = 0
         self._keep_alive = keep_alive
+        self._reset_on_error_default = reset_on_error_by_default
 
         self._instances: DefaultDict[
             Type[machine.Machine], InstanceManager
@@ -206,7 +216,7 @@ class Context(typing.ContextManager):
         *,
         reset: bool = False,
         exclusive: bool = False,
-        reset_on_error: bool = False,
+        reset_on_error: Optional[bool] = None,
     ) -> Iterator[M]:
         """
         Request a machine instance from this context.
@@ -303,8 +313,14 @@ class Context(typing.ContextManager):
             ``keep_alive=True``.
 
             If ``exclusive=True``, ``reset_on_error=True`` is essentially a no-op.
+
+            The default might be ``True`` if the :py:class:`~tbot.Context` was
+            instanciated with ``reset_on_error_by_default=True``.
         """
         type = typing.cast(Type[M], type)
+
+        if reset_on_error is None:
+            reset_on_error = self._reset_on_error_default
 
         if self._keep_alive and self._open_contexts == 0:
             raise tbot.error.TbotException(
@@ -386,7 +402,7 @@ class ContextHandle:
         *,
         reset: bool = False,
         exclusive: bool = False,
-        reset_on_error: bool = False,
+        reset_on_error: Optional[bool] = None,
     ) -> M:
         return self.enter_context(
             self.ctx.request(
