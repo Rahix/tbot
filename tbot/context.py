@@ -65,7 +65,7 @@ class InstanceManager(Generic[M]):
         self._instance = None
 
     @contextlib.contextmanager
-    def request(self, exclusive: bool = False) -> Iterator[M]:
+    def request(self, exclusive: bool = False, keep_alive: bool = False) -> Iterator[M]:
         if self._instance is None:
             raise Exception("trying to access a closed instance")
 
@@ -85,7 +85,7 @@ class InstanceManager(Generic[M]):
         finally:
             self._current_users -= 1
 
-            if exclusive or self._current_users == 0:
+            if exclusive or (not keep_alive and self._current_users == 0):
                 # If we were the last user or the request() was an exclusive
                 # one, tear down this instance now.  Future requests will then
                 # need to re-initilize it.
@@ -107,15 +107,31 @@ class Context(typing.ContextManager):
     In case you do need to construct a context yourself, there are a few
     customization possibilities:
 
+    :param bool keep_alive: Whether machines should be immediately
+        de-initialized once their context-manager is exited or whether they
+        should be "kept alive" for a future request to immediately re-access
+        them.
+
+        .. warning::
+
+            Keeping instances alive can have unintended side-effects:  If, for
+            example, a test brings a machine into an unusable state and then
+            fails, a followup testcase could gain access to the same broken
+            instance without reinitialization.
+
+            To avoid such problems, always write testcase to leave the instance
+            in a clean state.  If a testcase can't guarantee this, it should
+            request the instance with ``exclusive=True``.
     :param bool add_defaults: Add default machines for some roles from
         :py:mod:`tbot.role`, for example for :py:class:`tbot.role.LocalHost`.
         Defaults to ``False``.
     """
 
-    def __init__(self, *, add_defaults: bool = False) -> None:
+    def __init__(self, *, keep_alive: bool = False, add_defaults: bool = False) -> None:
         self._roles: Dict[Type[tbot.role.Role], Type[machine.Machine]] = {}
         self._weak_roles: Set[Type[tbot.role.Role]] = set()
         self._open_contexts = 0
+        self._keep_alive = keep_alive
 
         self._instances: DefaultDict[
             Type[machine.Machine], InstanceManager
@@ -267,6 +283,12 @@ class Context(typing.ContextManager):
         """
         type = typing.cast(Type[M], type)
 
+        if self._keep_alive and self._open_contexts == 0:
+            raise tbot.error.TbotException(
+                "When a context is marked with `keep_alive` you **must** enter "
+                + "its own context-manager to ensure proper cleanup."
+            )
+
         if type in self._roles:
             machine_class = typing.cast(Type[M], self._roles[type])
         elif type in self._instances:
@@ -283,7 +305,7 @@ class Context(typing.ContextManager):
         if not instance.is_alive():
             instance.init(context=machine_class.from_context(self))
 
-        with instance.request(exclusive) as m:
+        with instance.request(exclusive, self._keep_alive) as m:
             assert isinstance(m, machine_class), f"machine type mismatch"
             yield m
 
@@ -310,7 +332,15 @@ class Context(typing.ContextManager):
         if self._open_contexts == 0:
             for ty, inst in self._instances.items():
                 if inst.is_alive():
-                    tbot.log.warning(f"Found dangling {ty!r} instance in this context")
+                    if self._keep_alive:
+                        # If we kept instances alive, now is a good time to
+                        # finally tear them down; there won't be any users
+                        # after this point...
+                        inst.teardown()
+                    else:
+                        tbot.log.warning(
+                            f"Found dangling {ty!r} instance in this context"
+                        )
 
 
 T = TypeVar("T")
