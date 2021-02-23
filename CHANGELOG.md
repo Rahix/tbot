@@ -32,14 +32,19 @@
   documentation for details.
 - `paramiko` is now an optional dependency.  tbot works just fine without
   paramiko, but if it is installed, the `ParamikoConnector` becomes available.
+- Switched to `pytest` for tbot's selftests.
 
 ### Fixed
 - Call `olddefconfig` before attempting to build U-Boot.  This prevents kconfig
   from attempting to interactively query new config settings.
-- Fixed a rare timing-dependent bash initialization deadlock.
+- Fixed a rare timing-dependent bash/ash initialization deadlock.
 - Fixed `selftest_tc` failing if user has no git identity set up.
 - Fixed documentation silently building without version information if
   `git describe` fails.
+- Fixed tbot configuring an overly narrow terminal in some cases, leading to
+  weird looking output (now the minimum is 80 chars wide).
+- Fixed `Path.write_text()`/`Path.write_bytes()` hanging when an error occurs
+  and the channel receives data very slowly.
 
 [context-api]: https://tbot.tools/context.html
 [ssh-multiplexing]: https://man.openbsd.org/ssh_config.5#ControlMaster
