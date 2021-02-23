@@ -23,6 +23,7 @@ AnyLinuxShell = Callable[[], ContextManager[tbot.machine.linux.LinuxShell]]
     scope="module",
     params=[
         testmachines.LocalhostBash,
+        testmachines.LocalhostSlowBash,
         testmachines.LocalhostAsh,
         testmachines.MocksshClient,
     ],

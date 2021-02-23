@@ -35,6 +35,20 @@ class LocalhostBash(connector.ConsoleConnector, linux.Bash, tbot.role.Role):
         return mach.open_channel("bash", "--norc", "--noprofile")
 
 
+class LocalhostSlowBash(LocalhostBash, tbot.role.Role):
+    name = "local-slow-bash"
+
+    @property
+    def workdir(self) -> linux.Path:
+        return linux.Workdir.xdg_runtime(self, "selftest-data-bash-slow")
+
+    def connect(self, mach: linux.LinuxShell) -> channel.Channel:
+        ch = super().connect(mach)
+        # Make the channel read one byte at a time, simulating a slow connection
+        ch.READ_CHUNK_SIZE = 1
+        return ch
+
+
 class LocalhostAsh(connector.ConsoleConnector, linux.Ash, tbot.role.Role):
     name = "local-ash"
 
@@ -257,6 +271,7 @@ class MockhwBoardUBoot(
 def register_machines(ctx: tbot.Context) -> None:
     ctx.register(Localhost, [Localhost, tbot.role.LabHost, tbot.role.LocalHost])
     ctx.register(LocalhostBash, [LocalhostBash])
+    ctx.register(LocalhostSlowBash, [LocalhostSlowBash])
     ctx.register(LocalhostAsh, [LocalhostAsh])
     ctx.register(MocksshServer, [MocksshServer])
     ctx.register(MocksshClient, [MocksshClient])
