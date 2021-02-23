@@ -20,7 +20,12 @@ AnyLinuxShell = Callable[[], ContextManager[tbot.machine.linux.LinuxShell]]
 
 
 @pytest.fixture(
-    scope="module", params=[testmachines.LocalhostBash, testmachines.LocalhostAsh]
+    scope="module",
+    params=[
+        testmachines.LocalhostBash,
+        testmachines.LocalhostAsh,
+        testmachines.MocksshClient,
+    ],
 )
 def any_linux_shell(tbot_context: tbot.Context, request: Any) -> AnyLinuxShell:
     def inner() -> ContextManager[tbot.machine.linux.LinuxShell]:
