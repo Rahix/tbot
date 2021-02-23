@@ -21,8 +21,13 @@ import typing
 import pathlib
 import itertools
 from .. import linux  # noqa: F401
+from .. import channel  # noqa: F401
 
 H = typing.TypeVar("H", bound="linux.LinuxShell")
+
+
+class PathWriteDeathStringException(channel.DeathStringException):
+    pass
 
 
 class Path(pathlib.PurePosixPath, typing.Generic[H]):
@@ -213,13 +218,16 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
         with self.host.run(
             "tee", self, linux.RedirStdout(self.host.fsroot / "/dev/null")
         ) as ch:
-            with ch.with_death_string("tee: "):
-                ch.send(byte_data, read_back=True)
+            with ch.with_death_string("tee: ", PathWriteDeathStringException):
+                try:
+                    ch.send(byte_data, read_back=True)
 
-                # Send ^D twice if the file does not end with a line ending.  This
-                # is necessary to make `tee` notice the EOF correctly.
-                if not (byte_data == b"" or byte_data[-1:] in [b"\n", b"\r"]):
-                    ch.sendcontrol("D")
+                    # Send ^D twice if the file does not end with a line ending.  This
+                    # is necessary to make `tee` notice the EOF correctly.
+                    if not (byte_data == b"" or byte_data[-1:] in [b"\n", b"\r"]):
+                        ch.sendcontrol("D")
+                except PathWriteDeathStringException:
+                    pass
 
                 ch.sendcontrol("D")
                 ch.terminate0()
@@ -267,18 +275,21 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
             self,
             linux.RedirStdout(self.host.fsroot / "/dev/null"),
         ) as ch:
-            with ch.with_death_string("tee: "):
-                # Encode as base64 and split into 76 character lines.  This makes
-                # output more readable and does not affect parsing on the remote
-                # end.
-                encoded = iter(base64.b64encode(data))
-                while True:
-                    chunk = bytes(itertools.islice(encoded, 76))
+            with ch.with_death_string("tee: ", PathWriteDeathStringException):
+                try:
+                    # Encode as base64 and split into 76 character lines.  This makes
+                    # output more readable and does not affect parsing on the remote
+                    # end.
+                    encoded = iter(base64.b64encode(data))
+                    while True:
+                        chunk = bytes(itertools.islice(encoded, 76))
 
-                    if chunk == b"":
-                        break
+                        if chunk == b"":
+                            break
 
-                    ch.sendline(chunk, read_back=True)
+                        ch.sendline(chunk, read_back=True)
+                except PathWriteDeathStringException:
+                    pass
 
                 ch.sendcontrol("D")
                 ch.terminate0()
