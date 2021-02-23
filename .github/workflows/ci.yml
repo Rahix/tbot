@@ -1,6 +1,11 @@
 name: tbot selftest CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+      - wip
+  pull_request:
 
 jobs:
   test:
