@@ -4,7 +4,7 @@ from typing import Iterator, Union
 import pytest
 import tbot
 from tbot import machine
-from tbot.machine import channel, connector, linux
+from tbot.machine import board, channel, connector, linux
 from tbot.tc import shell
 
 
@@ -171,9 +171,94 @@ class MocksshClient(connector.SSHConnector, linux.Bash, tbot.role.Role):
         self.exec0("mkdir", self.workdir)
 
 
+class MockhwBoard(
+    connector.ConsoleConnector,
+    machine.PreConnectInitializer,
+    board.Board,
+    tbot.role.Role,
+):
+    name = "mockhw-board"
+
+    @contextlib.contextmanager
+    def _init_pre_connect(self) -> Iterator:
+        workdir = linux.Workdir.xdg_runtime(self.host, "selftest-data-mockhw")
+        self.host.exec0("rm", "-rf", workdir)
+        self.host.exec0("mkdir", workdir)
+        self._mockhw_script = workdir / "mockhw-script.sh"
+        self._mockhw_script.write_text(
+            """\
+# This script "simulates" a serial session with a board.
+
+# Make sure nothing enters the history
+unset HISTFILE
+
+# Disable commandline editing
+set +o emacs
+set +o vi
+
+# Disable secondary prompt
+PS2=""
+
+# Simulated autoboot prompt
+read -p "Autoboot: 3"
+
+# Make this shell look a lot like U-Boot
+PROMPT_COMMAND=
+PS1='=> '
+function version() {
+    echo "Mockhw U-Boot, running in the most fake environment you can imagine."
+    echo ""
+    uname -a
+}
+function printenv() {
+    if [ $# = 0 ]; then
+        set | grep -E '^U'
+    else
+        set | grep "$1" | sed "s/'//g"
+    fi
+}
+function setenv() {
+    local var="$1"
+    shift
+    eval "$var=\\"$*\\""
+}
+function boot() {
+    echo "Pretending to boot Linux..."
+    echo ""
+    echo "[0.0000] Welcome to the simulation."
+    read -p "login: "
+    read -s -p "password: "
+    echo ""
+
+    # Now undo the U-Boot hacks and make this look like a Linux
+    PS1="bash@target-linux$ "
+    unset -f printenv
+    unset -f setenv
+    unset -f version
+}"""
+        )
+        self.host.exec0("chmod", "+x", self._mockhw_script)
+        yield None
+
+    def connect(self, mach: linux.LinuxShell) -> channel.Channel:
+        return mach.open_channel(
+            "bash", "--noprofile", "--init-file", self._mockhw_script, "-i",
+        )
+
+
+class MockhwBoardUBoot(
+    board.Connector, board.UBootAutobootIntercept, board.UBootShell, tbot.role.Role
+):
+    name = "mockhw-uboot"
+    autoboot_prompt = tbot.Re(r"Autoboot: \d{0,10}")
+    prompt = "=> "
+
+
 def register_machines(ctx: tbot.Context) -> None:
     ctx.register(Localhost, [Localhost, tbot.role.LabHost, tbot.role.LocalHost])
     ctx.register(LocalhostBash, [LocalhostBash])
     ctx.register(LocalhostAsh, [LocalhostAsh])
     ctx.register(MocksshServer, [MocksshServer])
     ctx.register(MocksshClient, [MocksshClient])
+    ctx.register(MockhwBoard, [MockhwBoard, tbot.role.Board])
+    ctx.register(MockhwBoardUBoot, [MockhwBoardUBoot, tbot.role.BoardUBoot])
