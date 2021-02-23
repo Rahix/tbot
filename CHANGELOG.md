@@ -14,6 +14,11 @@
   Multiplexing can drastically speed up testcases which open many connections to
   the same host (see [`ControlMaster` in `sshd_config(5)`][ssh-multiplexing] for
   details).
+- Added two more types of machine initializers:
+  - [`PreConnectInitializer`][pre-connect-initializer]: Runs before the
+    connection is established.
+  - [`PostShellInitializer`][post-shell-initializer]: Runs after the shell is
+    available (and thus can interact with it).
 
 ### Changed
 - `LinuxShell.env()` can now be used to query `$!` (last background job PID) and
@@ -39,6 +44,8 @@
 [context-api]: https://tbot.tools/context.html
 [ssh-multiplexing]: https://man.openbsd.org/ssh_config.5#ControlMaster
 [linux-background]: https://tbot.tools/modules/machine_linux.html#tbot.machine.linux.Background
+[pre-connect-initializer]: https://tbot.tools/modules/machine.html#tbot.machine.PreConnectInitializer
+[post-shell-initializer]: https://tbot.tools/modules/machine.html#tbot.machine.PostShellInitializer
 
 
 ## [0.8.3] - 2020-09-22
