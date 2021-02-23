@@ -94,7 +94,7 @@ class Bash(linux_shell.LinuxShell):
 
             # Set terminal size
             termsize = shutil.get_terminal_size()
-            self.ch.sendline(f"stty cols {max(40, termsize.columns - 48)}")
+            self.ch.sendline(f"stty cols {max(80, termsize.columns - 48)}")
             self.ch.read_until_prompt()
             self.ch.sendline(f"stty rows {termsize.lines}")
             self.ch.read_until_prompt()
