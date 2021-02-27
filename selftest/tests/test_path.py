@@ -1,4 +1,5 @@
 import contextlib
+import typing
 from typing import Callable, ContextManager, Iterator, Optional
 
 import pytest
@@ -7,11 +8,12 @@ import testmachines
 from conftest import AnyLinuxShell
 from tbot.machine import linux
 
-TestDir = Callable[[], ContextManager[tbot.machine.linux.Path]]
+if typing.TYPE_CHECKING:
+    TestDir = Callable[[], ContextManager[tbot.machine.linux.Path]]
 
 
 @pytest.fixture
-def testdir_builder(any_linux_shell: AnyLinuxShell) -> TestDir:
+def testdir_builder(any_linux_shell: AnyLinuxShell) -> "TestDir":
     @contextlib.contextmanager
     def inner() -> Iterator[tbot.machine.linux.Path]:
         with any_linux_shell() as linux_shell:
@@ -47,7 +49,7 @@ def test_integrity(tbot_context: tbot.Context) -> None:
             lo3.exec0("echo", p)
 
 
-def test_missing(testdir_builder: TestDir) -> None:
+def test_missing(testdir_builder: "TestDir") -> None:
     with testdir_builder() as testdir:
         missing = testdir / "a-file-that-does-not-exist"
         assert not missing.exists()
@@ -61,7 +63,7 @@ def test_missing(testdir_builder: TestDir) -> None:
         assert not missing.is_socket()
 
 
-def test_directory(testdir_builder: TestDir) -> None:
+def test_directory(testdir_builder: "TestDir") -> None:
     with testdir_builder() as testdir:
         directory = testdir / "directory"
         testdir.host.exec0("mkdir", directory)
@@ -86,7 +88,7 @@ def test_blockdev(any_linux_shell: AnyLinuxShell) -> None:
         assert not blockdev.is_socket()
 
 
-def test_symlink(testdir_builder: TestDir) -> None:
+def test_symlink(testdir_builder: "TestDir") -> None:
     with testdir_builder() as testdir:
         target = testdir / "symlink-target"
         symlink = testdir / "symlink"
@@ -105,7 +107,7 @@ def test_symlink(testdir_builder: TestDir) -> None:
         assert symlink.is_file()
 
 
-def test_fifo(testdir_builder: TestDir) -> None:
+def test_fifo(testdir_builder: "TestDir") -> None:
     with testdir_builder() as testdir:
         fifo = testdir / "fifo"
         testdir.host.exec0("mkfifo", fifo)
@@ -131,7 +133,7 @@ def test_stat(any_linux_shell: AnyLinuxShell) -> None:
             assert check(p.stat().st_mode)
 
 
-def test_text_io(testdir_builder: TestDir) -> None:
+def test_text_io(testdir_builder: "TestDir") -> None:
     with testdir_builder() as testdir:
         f = testdir / "test-file.txt"
         content = "This is a test file\nwith multiple lines.\n"
@@ -142,7 +144,7 @@ def test_text_io(testdir_builder: TestDir) -> None:
         assert output == content
 
 
-def test_binary_io(testdir_builder: TestDir) -> None:
+def test_binary_io(testdir_builder: "TestDir") -> None:
     with testdir_builder() as testdir:
         f = testdir / "test-file.bin"
         content = b"\x00\x1b[m\x04\x01\x10"
@@ -153,7 +155,7 @@ def test_binary_io(testdir_builder: TestDir) -> None:
         assert output == content
 
 
-def test_write_dir_text(testdir_builder: TestDir) -> None:
+def test_write_dir_text(testdir_builder: "TestDir") -> None:
     with testdir_builder() as testdir:
         path = testdir / "test-dir"
         testdir.host.exec0("mkdir", "-p", path)
@@ -165,7 +167,7 @@ def test_write_dir_text(testdir_builder: TestDir) -> None:
             path.read_text()
 
 
-def test_write_dir_binary(testdir_builder: TestDir) -> None:
+def test_write_dir_binary(testdir_builder: "TestDir") -> None:
     with testdir_builder() as testdir:
         path = testdir / "test-dir"
         testdir.host.exec0("mkdir", "-p", path)
