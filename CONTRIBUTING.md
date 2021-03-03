@@ -35,15 +35,6 @@ Always add a signoff-line to your commits.  By doing so, you certify the
 "Developer Certificate of Origin" which can be found at the end of this
 document.
 
-### Changelog
-Please add your changes to `CHANGELOG.md` in your commits as well.  This way,
-the changelog grows alongside the project and doesn't need to be written
-retrospectively.  Add your changes under `## [Unreleased]`, following the
-conventions from [keep-a-changelog](https://keepachangelog.com/en/1.0.0/).
-
-If your changes require non-trivial downstream fixes, please add a short
-migration-guide as well.
-
 
 ## Coding Style
 ### Type-Annotations
