@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+
+
+## [0.9.0] - 2021-03-03
 ### Added
 - Added the **Context** API for much easier and more flexible machine
   management.  Please read the [Context API][context-api] documentation for an
@@ -712,7 +715,8 @@ Version **0.6.0** is basically a complete rewrite of TBot.  A rough summary of c
   were loaded later
 - Fix `call_then` not returning the function itself
 
-[Unreleased]: https://github.com/Rahix/tbot/compare/v0.8.3...master
+[Unreleased]: https://github.com/Rahix/tbot/compare/v0.9.0...master
+[0.9.0]: https://github.com/Rahix/tbot/compare/v0.8.3...v0.9.0
 [0.8.3]: https://github.com/Rahix/tbot/compare/v0.8.2...v0.8.3
 [0.8.2]: https://github.com/Rahix/tbot/compare/v0.8.1...v0.8.2
 [0.8.1]: https://github.com/Rahix/tbot/compare/v0.8.0...v0.8.1
