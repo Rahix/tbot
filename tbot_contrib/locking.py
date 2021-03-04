@@ -3,8 +3,10 @@
 import abc
 import contextlib
 import typing
+
 import tbot
-from tbot.machine import machine, linux
+import tbot.tc.shell
+from tbot.machine import linux, machine
 
 
 class LockManagerBase(abc.ABC):
@@ -18,14 +20,25 @@ class LockManagerBase(abc.ABC):
         self, name: str, *, expiry: typing.Optional[int] = None
     ) -> bool:
         """
-        Abstract method for requesting a machine lock
+        Request lock for machine named ``name``.
+
+        This method will usually be called via the
+        :py:class:`~tbot_contrib.locking.MachineLock` mixin.
+
+        :param str name: Name of the lock to be acquired.
+        :param int expiry: Optional timeout after which a lock should 'expire'.
+            When a lock is expired, followup locking requests will treat it as
+            unlocked.  This can be used as a safeguard if a testcase fails
+            without unlocking.
+        :returns: ``True`` if the lock has been acquired successfully and
+            ``False`` otherwise.
         """
         raise tbot.error.AbstractMethodError()
 
     @abc.abstractmethod
     def release_machine_lock(self, name: str) -> None:
         """
-        Abstract method for releasing a machine lock
+        Release lock for machine named ``name``.
         """
         raise tbot.error.AbstractMethodError()
 
@@ -37,11 +50,20 @@ class MachineLock(machine.PreConnectInitializer):
     """
 
     lock_expiry: typing.Optional[int] = None
+    """
+    Timeout after which the lock should be considered expired.
+
+    This provides a safeguard in case a testcase crashes without unlocking
+    a lock - After the lock has expired, it will be considered unlocked again
+    and a new testcase can acquire it.
+    """
 
     @property
     def lock_name(self) -> str:
         """
-        Prefix from which lock file name is derived
+        Prefix from which lock file name is derived.
+
+        Defaults to the machine's name: ``self.name``.
         """
         return self.name
 
@@ -112,7 +134,13 @@ class LockManager(LockManagerBase, machine.PostShellInitializer, linux.LinuxShel
     Machine locking implementation based on Python, bash and flock(1)
     """
 
-    lock_checkpid: bool = True  # Check whether PID of lock holder is still valid
+    lock_checkpid: bool = True
+    """
+    Make tbot check whether the PID associated with a lockfile is still alive.
+
+    If this check is enabled and the PID is found, the lock will be considered
+    active, even if it would otherwise have been assumed expired.
+    """
     lock_fd: int = 9  # Default file descriptor in shell for lock file
 
     _active_locks: typing.Set[str]  # list of active locks
@@ -120,7 +148,11 @@ class LockManager(LockManagerBase, machine.PostShellInitializer, linux.LinuxShel
     @property
     def lock_dir(self) -> linux.Path:
         """
-        The directory where tbot locks are stored
+        The directory where tbot locks are stored.
+
+        Defaults to ``/tmp/tbot-locks``.  If this directory does not exist, it
+        will be created and given ``0777`` access mode to allow all users to
+        write lockfiles to it.
         """
         return self.fsroot / "tmp" / "tbot-locks"
 
@@ -182,6 +214,13 @@ class LockManager(LockManagerBase, machine.PostShellInitializer, linux.LinuxShel
         return True
 
     def release_machine_lock(self, name: str) -> None:
+        """
+        Release lock for machine named ``name``.
+
+        If not explicitly released, the
+        :py:class:`~tbot_contrib.locking.LockManager` will automatically unlock
+        all locks it is holding when the lab-host machine is deinitialized.
+        """
         lockfile = self.lock_dir / name
         self._active_locks.discard(name)
         self.exec("rm", lockfile)
