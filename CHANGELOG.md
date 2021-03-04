@@ -1,6 +1,12 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Added a mechanism for "locking" connections to certain machines.  This can be
+  used, for example, to ensure exlusive access to a certain board.  See
+  [`tbot_contrib.locking`][tbot-locking] for details.
+
+[tbot-locking]: https://tbot.tools/contrib/locking.html
 
 
 ## [0.9.0] - 2021-03-03
