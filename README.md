@@ -23,20 +23,19 @@ Most info about *tbot* can be found in its documentation at <https://tbot.tools>
 
 ## Installation
 ```bash
-python3 setup.py install --user
+pip3 install --user -U git+https://github.com/rahix/tbot@v0.9.0
 ```
 
 If you haven't done it already, you need to add ``~/.local/bin`` to your ``$PATH``.
 
 
 ### Completions
-*tbot* supports command line completions. Enable them by adding
+*tbot* supports command line completions.  Install them with the following commands:
 
 ```bash
-source /path/to/tbot/completions.sh
+curl --create-dirs -L -o .local/lib/tbot/completions.sh https://github.com/Rahix/tbot/raw/master/completions.sh
+echo "source ~/.local/lib/tbot/completions.sh" >>~/.bashrc
 ```
-
-to your ``.bashrc`` or equivalent.
 
 
 ## Example

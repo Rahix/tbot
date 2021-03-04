@@ -2,12 +2,11 @@
 
 Installation
 ============
-Clone `tbot's repository <https://github.com/Rahix/tbot>`_, then install
-tbot using
+Install tbot using
 
 .. code-block:: shell-session
 
-   $ python3 setup.py install --user
+   $ pip3 install -U --user git+https://github.com/rahix/tbot@v0.9.0
 
 Also, if you haven't done this already, you need to add ``~/.local/bin``
 to your ``$PATH``.
@@ -25,13 +24,12 @@ You can install tbot's man-page using
 
 Completions
 -----------
-tbot supports command line completions. Enable them by adding
+tbot supports command line completions.  Install them with the following commands:
 
 .. code-block:: bash
 
-   source /path/to/tbot/completions.sh
-
-to your ``.bashrc`` or equivalent.
+   curl --create-dirs -L -o .local/lib/tbot/completions.sh https://github.com/Rahix/tbot/raw/master/completions.sh
+   echo "source ~/.local/lib/tbot/completions.sh" >>~/.bashrc
 
 Troubleshooting
 ---------------
