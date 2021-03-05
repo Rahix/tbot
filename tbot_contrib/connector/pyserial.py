@@ -115,14 +115,18 @@ class PyserialConnector(connector.Connector):
     def __init__(self, host: typing.Optional[linux.LinuxShell] = None) -> None:
         if not isinstance(host, connector.SubprocessConnector):
             raise tbot.error.TbotException(
-                "PyserialConnector can only use a localhost host (got {host!r})!"
+                f"PyserialConnector can only use a localhost host (got {host!r})!"
             )
         self.host = host
 
     @classmethod
     @contextlib.contextmanager
-    def from_context(cls: typing.Type[M], ctx: "tbot.Context") -> typing.Iterator[M]:
-        with cls() as m:
+    def from_context(
+        cls: typing.Type[M], context: "tbot.Context"
+    ) -> typing.Iterator[M]:
+        with context() as ctx:
+            lh = ctx.request(tbot.role.LabHost)
+            m = ctx.enter_context(cls(lh))  # type: ignore
             yield m
 
     def _connect(self) -> channel.Channel:
