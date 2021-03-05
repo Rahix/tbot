@@ -6,6 +6,9 @@
   used, for example, to ensure exlusive access to a certain board.  See
   [`tbot_contrib.locking`][tbot-locking] for details.
 
+### Fixed
+- Fixed the `PyserialConnector` not working properly with tbot contexts.
+
 [tbot-locking]: https://tbot.tools/contrib/locking.html
 
 
