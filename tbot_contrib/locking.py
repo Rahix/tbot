@@ -42,6 +42,13 @@ class LockManagerBase(abc.ABC):
         """
         raise tbot.error.AbstractMethodError()
 
+    @abc.abstractmethod
+    def get_active_machine_locks(self) -> typing.Set[str]:
+        """
+        Return the active machine locks managed by this LockManager instance.
+        """
+        raise tbot.error.AbstractMethodError()
+
 
 class MachineLock(machine.PreConnectInitializer):
     """
@@ -103,10 +110,16 @@ class PooledMachineLock(machine.PreConnectInitializer):
             if not isinstance(labhost, LockManagerBase):
                 raise Exception("selected lab-host is not a lock manager")
             self.selected_machine = None
-            for name in self.available_machines:  # iterate through machines
-                if labhost.request_machine_lock(name, expiry=self.lock_expiry):
-                    self.selected_machine = name
-                    break
+            for name in labhost.get_active_machine_locks():  # iterate all locks
+                if name in self.available_machines:  # if lock is one of ours
+                    if labhost.request_machine_lock(name, expiry=self.lock_expiry):
+                        self.selected_machine = name
+                        break
+            if self.selected_machine is None:
+                for name in self.available_machines:  # iterate through machines
+                    if labhost.request_machine_lock(name, expiry=self.lock_expiry):
+                        self.selected_machine = name
+                        break
             if self.selected_machine is None:
                 raise Exception("Could not get free lock")
 
@@ -202,6 +215,8 @@ class LockManager(LockManagerBase, machine.PostShellInitializer, linux.LinuxShel
     def request_machine_lock(
         self, name: str, *, expiry: typing.Optional[int] = None
     ) -> bool:
+        if name in self._active_locks:
+            return True
         if not self.lock_dir.is_dir():
             self.exec0("mkdir", self.lock_dir)
             self.exec0("chmod", "0777", self.lock_dir)
@@ -224,6 +239,9 @@ class LockManager(LockManagerBase, machine.PostShellInitializer, linux.LinuxShel
         lockfile = self.lock_dir / name
         self._active_locks.discard(name)
         self.exec("rm", lockfile)
+
+    def get_active_machine_locks(self) -> typing.Set[str]:
+        return self._active_locks
 
     @contextlib.contextmanager
     def _init_post_shell(self) -> typing.Iterator:
