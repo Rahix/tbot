@@ -48,7 +48,7 @@ Composition is done using multiple-inheritance, like this:
            return linux.Workdir.static(self, "/opt/tbot-{self.username}")
 
 Machines are used as context-managers.  This means you will later on
-instanciate the above machine like this (if you were to hardcode the machine.
+instantiate the above machine like this (if you were to hardcode the machine.
 You should probably use tbot's :ref:`configuration` mechanism instead):
 
 .. code-block:: python

@@ -101,7 +101,7 @@ class Context(typing.ContextManager):
     A context which machines can be registered in and where instances can be retrieved from.
 
     You will usually access the global context :py:data:`tbot.ctx` which is an
-    instance of this class instead of instanciating :py:class:`tbot.Context`
+    instance of this class instead of instantiating :py:class:`tbot.Context`
     yourself.  See the :ref:`context` guide for a detailed introduction.
 
     In case you do need to construct a context yourself, there are a few
@@ -176,7 +176,7 @@ class Context(typing.ContextManager):
                 ctx.register(SomeLabHostClass, [tbot.role.LabHost, tbot.role.BuildHost])
 
         :param machine: A concrete machine-class to be registered.  This
-            machine-class will later be instanciated on request via its
+            machine-class will later be instantiated on request via its
             :py:meth:`Connector.from_context()
             <tbot.machine.connector.Connector.from_context()>` classmethod.
         :param roles: Either a single role or a list of roles for which
@@ -315,7 +315,7 @@ class Context(typing.ContextManager):
             If ``exclusive=True``, ``reset_on_error=True`` is essentially a no-op.
 
             The default might be ``True`` if the :py:class:`~tbot.Context` was
-            instanciated with ``reset_on_error_by_default=True``.
+            instantiated with ``reset_on_error_by_default=True``.
         """
         type = typing.cast(Type[M], type)
 

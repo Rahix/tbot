@@ -190,7 +190,7 @@ Example board-config
        ctx.register(MyBoard, tbot.role.Board)
        ctx.register(MyBoardLinux, tbot.role.BoardLinux)
 
-Controlling machine instanciation
+Controlling machine instantiation
 ---------------------------------
 When a testcase calls :py:meth:`tbot.Context.request` to request a machine
 instance, this instance needs to be created which is not trivial in all cases.
@@ -214,7 +214,7 @@ implementation of ``from_context()`` for
             # lab-host here:
             lh = cx.enter_context(ctx.request(tbot.role.LabHost))
 
-            # Then instanciate the machine-class using `lh`:
+            # Then instantiate the machine-class using `lh`:
             m = cx.enter_context(cls(lh))
             yield m
 

@@ -106,7 +106,7 @@ class Connector(connector.Connector):
     def __init__(self, board: typing.Union[Board, channel.Channel]) -> None:
         if not (isinstance(board, Board) or isinstance(board, channel.Channel)):
             raise TypeError(
-                f"{self.__class__!r} can only be instanciated from a `Board` (got {board!r})."
+                f"{self.__class__!r} can only be instantiated from a `Board` (got {board!r})."
             )
         self._board = board
         self.host = getattr(board, "host", None)
