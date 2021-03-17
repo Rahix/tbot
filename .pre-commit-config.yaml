@@ -34,10 +34,3 @@ repos:
       entry: python3 -m pytest selftest/
       files: ^.*\.py$
       pass_filenames: false
-    - id: static_tests
-      name: tbot type system tests
-      language: system
-      entry: ./static_tests/run.sh
-      files: ^.*\.py$
-      pass_filenames: false
-      require_serial: true
