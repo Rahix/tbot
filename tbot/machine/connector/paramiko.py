@@ -157,7 +157,8 @@ class ParamikoConnector(connector.Connector):
 
             try:
                 c = paramiko.config.SSHConfig()
-                c.parse(open(pathlib.Path.home() / ".ssh" / "config"))
+                with open(pathlib.Path.home() / ".ssh" / "config") as cfg:
+                    c.parse(cfg)
                 self._config = c.lookup(self.hostname)
             except FileNotFoundError:
                 # Config file does not exist
