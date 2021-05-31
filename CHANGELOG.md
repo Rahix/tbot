@@ -5,6 +5,8 @@
 - Added a mechanism for "locking" connections to certain machines.  This can be
   used, for example, to ensure exlusive access to a certain board.  See
   [`tbot_contrib.locking`][tbot-locking] for details.
+- `Path.rmdir()` and `Path.unlink()`: Methods to conveniently delete an empty
+  directory, a symlink, or a file from a host's filesystem.
 
 ### Fixed
 - Fixed the `PyserialConnector` not working properly with tbot contexts.
