@@ -62,6 +62,14 @@ def test_missing(testdir_builder: "TestDir") -> None:
         assert not missing.is_fifo()
         assert not missing.is_socket()
 
+        with pytest.raises(NotADirectoryError):
+            missing.rmdir()
+
+        with pytest.raises(FileNotFoundError):
+            missing.unlink()
+
+        missing.unlink(missing_ok=True)
+
 
 def test_directory(testdir_builder: "TestDir") -> None:
     with testdir_builder() as testdir:
@@ -71,6 +79,17 @@ def test_directory(testdir_builder: "TestDir") -> None:
         assert directory.is_dir()
         assert not directory.is_file()
         assert not directory.is_symlink()
+
+        with pytest.raises(Exception):
+            directory.unlink()
+
+        assert directory.exists()
+        assert directory.is_dir()
+
+        directory.rmdir()
+
+        assert not directory.exists()
+        assert not directory.is_dir()
 
 
 def test_blockdev(any_linux_shell: AnyLinuxShell) -> None:
@@ -105,6 +124,15 @@ def test_symlink(testdir_builder: "TestDir") -> None:
         assert symlink.exists()
         # TODO: Is this correct?
         assert symlink.is_file()
+
+        with pytest.raises(NotADirectoryError):
+            symlink.rmdir()
+
+        symlink.unlink()
+
+        assert not symlink.exists()
+        assert not symlink.is_symlink()
+        assert target.exists()
 
 
 def test_fifo(testdir_builder: "TestDir") -> None:
@@ -177,3 +205,19 @@ def test_write_dir_binary(testdir_builder: "TestDir") -> None:
 
         with pytest.raises(Exception):
             path.read_bytes()
+
+
+def test_rmdir_nonempty(testdir_builder: "TestDir") -> None:
+    with testdir_builder() as testdir:
+        path = testdir / "test-dir"
+        subdir = path / "subdir"
+
+        testdir.host.exec0("mkdir", "-p", subdir)
+
+        assert path.exists()
+        assert path.is_dir()
+        assert subdir.exists()
+        assert subdir.is_dir()
+
+        with pytest.raises(Exception):
+            path.rmdir()

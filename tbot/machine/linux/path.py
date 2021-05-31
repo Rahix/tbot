@@ -311,6 +311,34 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
 
         return base64.b64decode(encoded)
 
+    def rmdir(self) -> None:
+        """
+        Remove the directory pointed to by this path. The directory must be
+        empty.
+        """
+        if self.is_symlink() or not self.is_dir():
+            raise NotADirectoryError
+
+        self.host.exec0("rmdir", self)
+
+    def unlink(self, missing_ok: bool = False) -> None:
+        """
+        Remove the file or symbolic link from the filesystem. If the path points
+        to a directory, use :py:meth:`Path.rmdir()
+        <tbot.machine.linux.Path.rmdir>` instead.
+
+        If ``missing_ok`` is false (the default), ``FileNotFoundError`` is
+        raised if the path does not exist.
+        """
+        if not self.exists():
+            if not missing_ok:
+                raise FileNotFoundError(
+                    errno.ENOENT, os.strerror(errno.ENOENT), str(self)
+                )
+            return
+
+        self.host.exec0("rm", self)
+
     def __truediv__(self, key: typing.Any) -> "Path[H]":
         return Path(self._host, super().__truediv__(key))
 
