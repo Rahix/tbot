@@ -163,9 +163,11 @@ class ParamikoConnector(connector.Connector):
             except FileNotFoundError:
                 # Config file does not exist
                 pass
-            except Exception:
+            except Exception as e:
                 # Invalid config
-                tbot.log.warning(tbot.log.c("Invalid").red + " .ssh/config")
+                tbot.log.warning(
+                    tbot.log.c("Invalid").red + f" .ssh/config: {str(e):s}"
+                )
                 raise
 
             if self.ignore_hostkey:
