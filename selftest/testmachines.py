@@ -144,7 +144,9 @@ AcceptEnv=XDG_RUNTIME_DIR"""
         try:
             yield None
         finally:
-            self.exec0("kill", sshd_pid, linux.Then, "wait", sshd_pid)
+            out = self.exec0("true")
+            if sshd_path not in out:
+                self.exec0("kill", sshd_pid, linux.Then, "wait", sshd_pid)
 
 
 class MocksshClient(connector.SSHConnector, linux.Bash, tbot.role.Role):
