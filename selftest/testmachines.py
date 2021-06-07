@@ -67,7 +67,7 @@ class LocalhostAsh(connector.ConsoleConnector, linux.Ash, tbot.role.Role):
         # Patch the shell invocation command if no args are given because we're
         # not using real `ash` here ...
         if len(args) == 0:
-            args = ("bash", "--posix", "--norc", "--noprofile")
+            args = ("bash", "--posix", "--norc", "--noprofile", "--noediting")
 
         with super().subshell(*args):
             yield self
@@ -75,7 +75,9 @@ class LocalhostAsh(connector.ConsoleConnector, linux.Ash, tbot.role.Role):
     def connect(self, mach: linux.LinuxShell) -> channel.Channel:
         # Make sure the terminal is wide enough to not cause breaks.
         mach.exec0("stty", "cols", "1024")
-        return mach.open_channel("bash", "--posix", "--norc", "--noprofile")
+        return mach.open_channel(
+            "bash", "--posix", "--norc", "--noprofile", "--noediting"
+        )
 
 
 class MocksshServer(

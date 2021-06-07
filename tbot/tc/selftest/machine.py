@@ -253,7 +253,7 @@ def selftest_machine_shell(m: typing.Union[linux.LinuxShell, board.UBootShell]) 
 
             assert content == "Hello World\nLorem ipsum\n", repr(content)
 
-            with m.run("bash", "--norc", "--noprofile") as bs:
+            with m.run("bash", "--norc", "--noprofile", "--noediting") as bs:
                 bs.sendline("exit")
                 bs.terminate0()
 
