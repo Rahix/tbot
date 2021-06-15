@@ -136,7 +136,22 @@ can be used to chain multiple commands or to redirect output.
 
 .. py:class:: RedirBoth(file)
 
-   Redirect both ``stdout`` and ``stderr`` (``2>&1 >...``) to a file.
+   Redirect both ``stdout`` and ``stderr`` (``>... 2>&1``) to a file.
+
+.. py:class:: AppendStdout(file)
+
+   Redirect ``stdout`` (``>>...``) to a file, appending to the file rather
+   than overwriting its contents.
+
+.. py:class:: AppendStderr(file)
+
+   Redirect ``stderr`` (``2>>...``) to a file, appending to the file rather
+   than overwriting its contents.
+
+.. py:class:: AppendBoth(file)
+
+   Redirect both ``stdout`` and ``stderr`` (``>>... 2>&1``) to a file,
+   appending to the file rather than overwriting its contents.
 
 .. py:data:: Background
 

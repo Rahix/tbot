@@ -9,6 +9,9 @@
   directory, a symlink, or a file from a host's filesystem.
 - `Path.mkdir()`: Method to conveniently create a directory on the respective
   machine.
+- New classes `AppendStdout`, `AppendStderr`, and `AppendBoth` in
+  `machine.linux` allow to append command output to files in `exec()` and
+  `exec0()` methods.
 
 ### Changed
 - Warnings emitted due to problems when parsing the SSH config now include

@@ -53,7 +53,7 @@ def test_simple_environment(any_linux_shell: AnyLinuxShell) -> None:
         assert out == value, repr(out)
 
 
-def test_redirection(any_linux_shell: AnyLinuxShell) -> None:
+def test_redirection_stdout(any_linux_shell: AnyLinuxShell) -> None:
     with any_linux_shell() as linux_shell:
         f = linux_shell.workdir / ".redir test.txt"
         if f.exists():
@@ -63,6 +63,141 @@ def test_redirection(any_linux_shell: AnyLinuxShell) -> None:
 
         out = f.read_text()
         assert out == "Some data - And some more\n"
+
+        linux_shell.exec0("echo", "new data", linux.RedirStdout(f))
+
+        out = f.read_text()
+        assert out == "new data\n"
+
+        linux_shell.exec0("echo", "appended data", linux.AppendStdout(f))
+
+        out = f.read_text()
+        assert out == "new data\nappended data\n"
+
+
+def test_redirection_stderr(any_linux_shell: AnyLinuxShell) -> None:
+    with any_linux_shell() as linux_shell:
+        f = linux_shell.workdir / ".redir test.txt"
+        if f.exists():
+            linux_shell.exec0("rm", f)
+
+        linux_shell.exec0(
+            "python3",
+            "-c",
+            "import sys; print('initial error', file=sys.stderr)",
+            linux.RedirStderr(f),
+        )
+
+        out = f.read_text()
+        assert out == "initial error\n"
+
+        linux_shell.exec0(
+            "python3",
+            "-c",
+            "import sys; print('new error', file=sys.stderr)",
+            linux.RedirStderr(f),
+        )
+
+        out = f.read_text()
+        assert out == "new error\n"
+
+        linux_shell.exec0(
+            "python3",
+            "-c",
+            "import sys; print('appended error', file=sys.stderr)",
+            linux.AppendStderr(f),
+        )
+
+        out = f.read_text()
+        assert out == "new error\nappended error\n"
+
+
+def test_redirection_both(any_linux_shell: AnyLinuxShell) -> None:
+    with any_linux_shell() as linux_shell:
+        f = linux_shell.workdir / ".redir test.txt"
+        if f.exists():
+            linux_shell.exec0("rm", f)
+
+        linux_shell.exec0(
+            "python3",
+            "-c",
+            "import sys; print('hello', flush=True); print('error', file=sys.stderr)",
+            linux.RedirBoth(f),
+        )
+
+        out = f.read_text()
+        assert out == "hello\nerror\n"
+
+        linux_shell.exec0(
+            "python3",
+            "-c",
+            "import sys; print('new', flush=True); print('ERROR', file=sys.stderr)",
+            linux.RedirBoth(f),
+        )
+
+        out = f.read_text()
+        assert out == "new\nERROR\n"
+
+        linux_shell.exec0(
+            "python3",
+            "-c",
+            "import sys; print('appended', flush=True); print('problem', file=sys.stderr)",
+            linux.AppendBoth(f),
+        )
+
+        out = f.read_text()
+        assert out == "new\nERROR\nappended\nproblem\n"
+
+
+def test_redirection_mixed(any_linux_shell: AnyLinuxShell) -> None:
+    with any_linux_shell() as linux_shell:
+        f = linux_shell.workdir / ".redir test.txt"
+        if f.exists():
+            linux_shell.exec0("rm", f)
+
+        res = linux_shell.exec0(
+            "python3",
+            "-c",
+            "import sys; print('hello', flush=True); print('error', file=sys.stderr)",
+            linux.RedirStdout(f),
+        )
+        assert res == "error\n"
+
+        out = f.read_text()
+        assert out == "hello\n"
+
+        res = linux_shell.exec0(
+            "python3",
+            "-c",
+            "import sys; print('hello', flush=True); print('error', file=sys.stderr)",
+            linux.RedirStderr(f),
+        )
+        assert res == "hello\n"
+
+        out = f.read_text()
+        assert out == "error\n"
+
+        res = linux_shell.exec0(
+            "python3",
+            "-c",
+            "import sys; print('hello', flush=True); print('error', file=sys.stderr)",
+            linux.AppendStdout(f),
+        )
+        assert res == "error\n"
+
+        out = f.read_text()
+        assert out == "error\nhello\n"
+
+        res = linux_shell.exec0(
+            "python3",
+            "-c",
+            "import sys; print('hello', flush=True); print('error', file=sys.stderr)",
+            linux.AppendStderr(f),
+        )
+        assert res == "hello\n"
+
+        out = f.read_text()
+        assert out == "error\nhello\nerror\n"
 
 
 def test_subshell(any_linux_shell: AnyLinuxShell) -> None:
