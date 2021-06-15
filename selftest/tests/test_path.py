@@ -70,6 +70,10 @@ def test_missing(testdir_builder: "TestDir") -> None:
 
         missing.unlink(missing_ok=True)
 
+        missing.mkdir()
+        assert missing.exists()
+        assert missing.is_dir()
+
 
 def test_regular_file(testdir_builder: "TestDir") -> None:
     with testdir_builder() as testdir:
@@ -86,6 +90,13 @@ def test_regular_file(testdir_builder: "TestDir") -> None:
 
         with pytest.raises(NotADirectoryError):
             regular_file.rmdir()
+
+        with pytest.raises(FileExistsError):
+            regular_file.mkdir()
+
+        with pytest.raises(FileExistsError):
+            # exception is still raised as path is not a directory
+            regular_file.mkdir(exist_ok=True)
 
         regular_file.unlink()
 
@@ -107,6 +118,11 @@ def test_directory(testdir_builder: "TestDir") -> None:
 
         assert directory.exists()
         assert directory.is_dir()
+
+        with pytest.raises(FileExistsError):
+            directory.mkdir()
+
+        directory.mkdir(exist_ok=True)
 
         directory.rmdir()
 
@@ -145,15 +161,31 @@ def test_symlink(testdir_builder: "TestDir") -> None:
         assert symlink.is_symlink()
         assert symlink.exists()
         assert symlink.is_file()
+        assert not symlink.is_dir()
 
         with pytest.raises(NotADirectoryError):
             symlink.rmdir()
+
+        with pytest.raises(FileExistsError):
+            symlink.mkdir()
+
+        with pytest.raises(FileExistsError):
+            # exception is still raised as path is not a directory
+            symlink.mkdir(exist_ok=True)
 
         symlink.unlink()
 
         assert not symlink.exists()
         assert not symlink.is_symlink()
         assert target.exists()
+
+        target.unlink()
+        target.mkdir()
+        testdir.host.exec0("ln", "-s", target, symlink)
+        assert symlink.is_symlink()
+        assert symlink.exists()
+        assert symlink.is_dir()
+        assert not symlink.is_file()
 
 
 def test_fifo(testdir_builder: "TestDir") -> None:
@@ -242,3 +274,21 @@ def test_rmdir_nonempty(testdir_builder: "TestDir") -> None:
 
         with pytest.raises(Exception):
             path.rmdir()
+
+
+def test_mkdir_missing_parent(testdir_builder: "TestDir") -> None:
+    with testdir_builder() as testdir:
+        path = testdir / "missing" / "parent"
+
+        with pytest.raises(FileNotFoundError):
+            path.mkdir()
+
+        with pytest.raises(FileNotFoundError):
+            path.mkdir(exist_ok=True)
+
+        path.mkdir(parents=True)
+
+        with pytest.raises(FileExistsError):
+            path.mkdir(parents=True)
+
+        path.mkdir(parents=True, exist_ok=True)

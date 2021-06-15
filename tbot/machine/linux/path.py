@@ -339,6 +339,34 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
 
         self.host.exec0("rm", self)
 
+    def mkdir(self, parents: bool = False, exist_ok: bool = False) -> None:
+        """
+        Create a directory at the path this object represents.
+
+        If ``parents`` is false (the default), a missing parent causes
+        ``FileNotFoundError`` to be raised. If ``parents`` is true, missing
+        parent directories are created as needed.
+
+        If ``exist_ok`` is false (the default), a ``FileExistsError`` is raised
+        if the path already exists. If ``exist_ok`` is true, a
+        ``FileExistsError`` exception be suppressed if the target path exists
+        and is a directory.
+        """
+        if not self.parent.exists() and not parents:
+            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), str(self))
+
+        if self.exists():
+            if not exist_ok or not self.is_dir():
+                raise FileExistsError(
+                    errno.EEXIST, os.strerror(errno.EEXIST), str(self)
+                )
+            return
+
+        if parents:
+            self.host.exec0("mkdir", "-p", self)
+        else:
+            self.host.exec0("mkdir", self)
+
     def __truediv__(self, key: typing.Any) -> "Path[H]":
         return Path(self._host, super().__truediv__(key))
 
