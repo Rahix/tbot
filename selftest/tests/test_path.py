@@ -144,7 +144,6 @@ def test_symlink(testdir_builder: "TestDir") -> None:
         testdir.host.exec0("touch", target)
         assert symlink.is_symlink()
         assert symlink.exists()
-        # TODO: Is this correct?
         assert symlink.is_file()
 
         with pytest.raises(NotADirectoryError):
