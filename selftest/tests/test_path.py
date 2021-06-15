@@ -71,6 +71,28 @@ def test_missing(testdir_builder: "TestDir") -> None:
         missing.unlink(missing_ok=True)
 
 
+def test_regular_file(testdir_builder: "TestDir") -> None:
+    with testdir_builder() as testdir:
+        regular_file = testdir / "a-regular-file"
+        testdir.host.exec0("touch", regular_file)
+        assert regular_file.exists()
+        assert regular_file.is_file()
+        assert not regular_file.is_dir()
+        assert not regular_file.is_symlink()
+        assert not regular_file.is_block_device()
+        assert not regular_file.is_char_device()
+        assert not regular_file.is_fifo()
+        assert not regular_file.is_socket()
+
+        with pytest.raises(NotADirectoryError):
+            regular_file.rmdir()
+
+        regular_file.unlink()
+
+        assert not regular_file.exists()
+        assert not regular_file.is_file()
+
+
 def test_directory(testdir_builder: "TestDir") -> None:
     with testdir_builder() as testdir:
         directory = testdir / "directory"
