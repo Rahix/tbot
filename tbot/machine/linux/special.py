@@ -45,6 +45,8 @@ class Raw(Special[H]):
 class _Stdio(Special[H]):
     __slots__ = ("file",)
 
+    _both = False
+
     @property
     @abc.abstractmethod
     def _redir_token(self) -> str:
@@ -56,7 +58,17 @@ class _Stdio(Special[H]):
     def _to_string(self, h: H) -> str:
         if self.file.host != h:
             raise tbot.error.WrongHostError(self.file, h)
-        return self._redir_token + shlex.quote(self.file._local_str())
+
+        # The order of the redirects is important!  First, redirect stdout to a
+        # file and then redirect stderr to stdout.  If this is switched around,
+        # stderr will go to old stdout, before it was redirected (that is, the
+        # terminal).
+        result = self._redir_token + shlex.quote(self.file._local_str())
+
+        if self._both:
+            result += " 2>&1"
+
+        return result
 
 
 class RedirStdout(_Stdio[H]):
@@ -67,19 +79,22 @@ class RedirStderr(_Stdio[H]):
     _redir_token = "2>"
 
 
-class RedirBoth(Special[H]):
-    def __init__(self, file: path.Path[H]) -> None:
-        self.file = file
+class RedirBoth(_Stdio[H]):
+    _redir_token = ">"
+    _both = True
 
-    def _to_string(self, h: H) -> str:
-        if self.file.host is not h:
-            raise tbot.error.WrongHostError(self.file, h)
 
-        # The order of the redirects is important!  First, redirect stdout to a
-        # file and then redirect stderr to stdout.  If this is switched around,
-        # stderr will go to old stdout, before it was redirected (that is, the
-        # terminal).
-        return ">" + shlex.quote(self.file._local_str()) + " 2>&1"
+class AppendStdout(_Stdio[H]):
+    _redir_token = ">>"
+
+
+class AppendStderr(_Stdio[H]):
+    _redir_token = "2>>"
+
+
+class AppendBoth(_Stdio[H]):
+    _redir_token = ">>"
+    _both = True
 
 
 class _Background(Special[H]):

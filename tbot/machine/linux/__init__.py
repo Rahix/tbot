@@ -28,6 +28,9 @@ from .special import (
     RedirStderr,
     RedirStdout,
     RedirBoth,
+    AppendStderr,
+    AppendStdout,
+    AppendBoth,
     Then,
 )
 from .workdir import Workdir
@@ -56,6 +59,9 @@ __all__ = (
     "RedirStderr",
     "RedirStdout",
     "RedirBoth",
+    "AppendStderr",
+    "AppendStdout",
+    "AppendBoth",
     "Then",
     "Workdir",
     "RunCommandProxy",
