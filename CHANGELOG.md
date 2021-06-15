@@ -7,6 +7,8 @@
   [`tbot_contrib.locking`][tbot-locking] for details.
 - `Path.rmdir()` and `Path.unlink()`: Methods to conveniently delete an empty
   directory, a symlink, or a file from a host's filesystem.
+- `Path.mkdir()`: Method to conveniently create a directory on the respective
+  machine.
 
 ### Changed
 - Warnings emitted due to problems when parsing the SSH config now include
