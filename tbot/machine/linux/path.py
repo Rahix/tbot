@@ -15,13 +15,17 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import base64
-import os
 import errno
-import typing
-import pathlib
 import itertools
-from .. import linux  # noqa: F401
+import os
+import pathlib
+import typing
+from typing import Any, Iterable, List, Tuple
+
+import tbot.error
+
 from .. import channel  # noqa: F401
+from .. import linux  # noqa: F401
 
 H = typing.TypeVar("H", bound="linux.LinuxShell")
 
@@ -61,19 +65,105 @@ class Path(typing.Generic[H]):
         :param args: :py:class:`pathlib.PurePosixPath` constructor arguments
         """
 
-        argslist = list(args)
-        for i, arg in enumerate(argslist):
-            if isinstance(arg, Path):
-                assert arg.host == host
-                argslist[i] = arg._path
-
         self._host: H = host
-        self._path: pathlib.PurePosixPath = pathlib.PurePosixPath(*argslist)
+        self._path: pathlib.PurePosixPath = pathlib.PurePosixPath(
+            *self._prepare_args_list(args)
+        )
+
+    def _prepare_args_list(self, args: Iterable[Any]) -> List[Any]:
+        ret = list()
+        for arg in args:
+            if isinstance(arg, Path):
+                if arg.host != self.host:
+                    raise tbot.error.WrongHostError(arg, self.host)
+                ret.append(arg._path)
+            else:
+                ret.append(arg)
+        return ret
 
     @property
     def host(self) -> H:
         """Host associated with this path."""
         return self._host
+
+    # PurePosixPath like API {{{
+    # Mimick the API of pathlib's PurePosixPath as much as possible.  This
+    # allows users to use tbot's Path just like the one they know from pathlib.
+    def __eq__(self, other: Any) -> bool:
+        if not isinstance(other, Path):
+            return NotImplemented
+        return self._host == other._host and self._path == other._path
+
+    def __hash__(self) -> int:
+        return hash((self._host, self._path))
+
+    # TODO: __lt__, __le__, __gt__, __ge__
+
+    @property
+    def name(self) -> str:
+        return self._path.name
+
+    @property
+    def suffix(self) -> str:
+        return self._path.suffix
+
+    @property
+    def suffixes(self) -> List[str]:
+        return self._path.suffixes
+
+    @property
+    def stem(self) -> str:
+        return self._path.stem
+
+    def with_name(self, name: str) -> "Path[H]":
+        return Path(self._host, self._path.with_name(name))
+
+    def with_stem(self, stem: str) -> "Path[H]":
+        # Not using `self._path.with_stem()` because this only exists in Python 3.9+.
+        return Path(self._host, self._path.with_name(stem + self._path.suffix))
+
+    def with_suffix(self, suffix: str) -> "Path[H]":
+        return Path(self._host, self._path.with_suffix(suffix))
+
+    def relative_to(self, *other: Any) -> "Path[H]":
+        return Path(self._host, self._path.relative_to(*self._prepare_args_list(other)))
+
+    def is_relative_to(self, *other: Any) -> bool:
+        # Not using `self._path.is_relative_to()` because this only exists in Python 3.9+.
+        try:
+            self.relative_to(*other)
+            return True
+        except ValueError:
+            return False
+
+    @property
+    def parts(self) -> Tuple[str, ...]:
+        return self._path.parts
+
+    def joinpath(self, *args: Any) -> "Path[H]":
+        return Path(self._host, self._path.joinpath(*self._prepare_args_list(args)))
+
+    def __truediv__(self, key: Any) -> "Path[H]":
+        return self.joinpath(key)
+
+    def __rtruediv__(self, key: Any) -> "Path[H]":
+        return Path(self._host, [key] + list(self.parts))
+
+    @property
+    def parent(self) -> "Path[H]":
+        return Path(self._host, self._path.parent)
+
+    @property
+    def parents(self) -> Any:
+        raise NotImplementedError("TODO")
+
+    def is_absolute(self) -> bool:
+        return self._path.is_absolute()
+
+    def match(self, path_pattern: Any) -> bool:
+        return self._path.match(path_pattern)
+
+    # }}}
 
     def stat(self) -> os.stat_result:
         """
@@ -134,11 +224,6 @@ class Path(typing.Generic[H]):
     def is_socket(self) -> bool:
         """Whether this path points to a unix domain-socket."""
         return self.host.test("test", "-S", self)
-
-    @property
-    def parent(self) -> "Path[H]":
-        """Parent of this path."""
-        return Path(self._host, self._path.parent)
 
     def glob(self, pattern: str) -> "typing.Iterator[Path[H]]":
         """
@@ -363,9 +448,6 @@ class Path(typing.Generic[H]):
             self.host.exec0("mkdir", "-p", self)
         else:
             self.host.exec0("mkdir", self)
-
-    def __truediv__(self, key: typing.Any) -> "Path[H]":
-        return Path(self._host, self._path / key)
 
     def _local_str(self) -> str:
         return str(self._path)
