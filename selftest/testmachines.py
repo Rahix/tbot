@@ -121,14 +121,14 @@ class MocksshServer(
             f"""\
 # Host Key
 HostKeyAlgorithms ssh-rsa
-HostKey {keyfile._local_str()}
+HostKey {keyfile.at_host(self)}
 
 # Local Serving
 ListenAddress localhost:18222
 
 # Access
 AuthorizedKeysFile none
-AuthorizedKeysCommand {cat_path} {userkeypub._local_str()}
+AuthorizedKeysCommand {cat_path} {userkeypub.at_host(self)}
 AuthorizedKeysCommandUser {self.env("USER")}
 ChallengeResponseAuthentication no
 UsePAM yes
@@ -173,7 +173,7 @@ class MocksshClient(connector.SSHConnector, linux.Bash, tbot.role.Role):
 
             # Set authenticator
             cls.authenticator = linux.auth.PrivateKeyAuthenticator(
-                srv.userkey._local_str()
+                srv.userkey.at_host(srv)
             )
 
             # Instanciate self

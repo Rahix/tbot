@@ -91,6 +91,19 @@ class Path(typing.Generic[H]):
     def _local_str(self) -> str:
         return str(self._path)
 
+    def at_host(self, host: H) -> str:
+        """
+        Convert this ``Path`` into a string representation assuming it should
+        be valid for the machine ``host``.  An exception is raised if this
+        ``Path`` is for a different machine instead.
+
+        This prevents accidentally using a ``Path`` with the wrong host as much
+        as possible.
+        """
+        if self.host != host:
+            raise tbot.error.WrongHostError(self, host)
+        return str(self._path)
+
     # }}}
 
     # PurePosixPath like API {{{
