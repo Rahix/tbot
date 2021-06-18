@@ -117,7 +117,25 @@ class Path(typing.Generic[H]):
     def __hash__(self) -> int:
         return hash((self._host, self._path))
 
-    # TODO: __lt__, __le__, __gt__, __ge__
+    def __lt__(self, other: Any) -> bool:
+        if not isinstance(other, Path):
+            return NotImplemented
+        return self._path < other._path
+
+    def __le__(self, other: Any) -> bool:
+        if not isinstance(other, Path):
+            return NotImplemented
+        return self._path <= other._path
+
+    def __gt__(self, other: Any) -> bool:
+        if not isinstance(other, Path):
+            return NotImplemented
+        return self._path > other._path
+
+    def __ge__(self, other: Any) -> bool:
+        if not isinstance(other, Path):
+            return NotImplemented
+        return self._path >= other._path
 
     @property
     def name(self) -> str:
