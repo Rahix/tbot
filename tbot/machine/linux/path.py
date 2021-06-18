@@ -30,7 +30,7 @@ class PathWriteDeathStringException(channel.DeathStringException):
     pass
 
 
-class Path(pathlib.PurePosixPath, typing.Generic[H]):
+class Path(typing.Generic[H]):
     """
     A path that is associated with a tbot machine.
 
@@ -51,18 +51,7 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
             raise Exception(f"{p2} must be a normal file!")
     """
 
-    __slots__ = ("_host",)
-
-    def __new__(cls, host: H, *args: typing.Any) -> "Path":
-        """
-        Create a new path instance.
-
-        :param linux.LinuxShell host: Host this path should be associated with
-        :param args: :py:class:`pathlib.PurePosixPath` constructor arguments
-        :rtype: Path
-        :returns: A path associated with host
-        """
-        return super().__new__(cls, *args)
+    __slots__ = ("_host", "_path")
 
     def __init__(self, host: H, *args: typing.Any) -> None:
         """
@@ -71,7 +60,15 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
         :param linux.LinuxShell host: Host this path should be associated with
         :param args: :py:class:`pathlib.PurePosixPath` constructor arguments
         """
-        self._host = host
+
+        argslist = list(args)
+        for i, arg in enumerate(argslist):
+            if isinstance(arg, Path):
+                assert arg.host == host
+                argslist[i] = arg._path
+
+        self._host: H = host
+        self._path: pathlib.PurePosixPath = pathlib.PurePosixPath(*argslist)
 
     @property
     def host(self) -> H:
@@ -141,7 +138,7 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
     @property
     def parent(self) -> "Path[H]":
         """Parent of this path."""
-        return Path(self._host, super().parent)
+        return Path(self._host, self._path.parent)
 
     def glob(self, pattern: str) -> "typing.Iterator[Path[H]]":
         """
@@ -368,17 +365,13 @@ class Path(pathlib.PurePosixPath, typing.Generic[H]):
             self.host.exec0("mkdir", self)
 
     def __truediv__(self, key: typing.Any) -> "Path[H]":
-        return Path(self._host, super().__truediv__(key))
+        return Path(self._host, self._path / key)
 
     def _local_str(self) -> str:
-        return super().__str__()
+        return str(self._path)
 
     def __str__(self) -> str:
-        return f"{self._host.name}:{super().__str__()}"
+        return f"{self._host.name}:{self._path}"
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self._host!r}, {super().__str__()!r})"
-
-    # __fspath__ does not make sense for tbot paths as they don't represent
-    # a path on the local filesystem.
-    __fspath__ = None  # type: ignore
+        return f"{self.__class__.__name__}({self._host!r}, {str(self._path)!r})"

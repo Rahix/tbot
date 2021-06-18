@@ -35,23 +35,6 @@ class ResetMode(enum.Enum):
 class GitRepository(linux.Path[H]):
     """Git repository."""
 
-    def __new__(  # noqa: D102
-        cls,
-        target: linux.Path[H],
-        url: typing.Optional[str] = None,
-        *,
-        clean: bool = True,
-        fetch: bool = True,
-        rev: typing.Optional[str] = None,
-    ) -> "GitRepository[H]":
-        # Casting madness required because parent defines __new__
-        return typing.cast(
-            "GitRepository",
-            super().__new__(
-                typing.cast(typing.Type[linux.Path[H]], cls), target.host, target
-            ),
-        )
-
     def __init__(
         self,
         target: linux.Path[H],
