@@ -81,10 +81,17 @@ class Path(typing.Generic[H]):
                 ret.append(arg)
         return ret
 
+    # tbot specific API {{{
+    # These methods are tbot-specific and do not have an equivalent in pathlib.
     @property
     def host(self) -> H:
         """Host associated with this path."""
         return self._host
+
+    def _local_str(self) -> str:
+        return str(self._path)
+
+    # }}}
 
     # PurePosixPath like API {{{
     # Mimick the API of pathlib's PurePosixPath as much as possible.  This
@@ -164,6 +171,11 @@ class Path(typing.Generic[H]):
         return self._path.match(path_pattern)
 
     # }}}
+
+    # Path like API {{{
+    # Implement some of the methods from pathlib's `Path` class to provide
+    # convenient access to files on the remote host.  All these methods need to
+    # be implemented by using shell commands on the other side.
 
     def stat(self) -> os.stat_result:
         """
@@ -449,8 +461,7 @@ class Path(typing.Generic[H]):
         else:
             self.host.exec0("mkdir", self)
 
-    def _local_str(self) -> str:
-        return str(self._path)
+    # }}}
 
     def __str__(self) -> str:
         return f"{self._host.name}:{self._path}"
