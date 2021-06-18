@@ -36,6 +36,16 @@ def get_blockdev(host: linux.LinuxShell) -> Optional[linux.Path]:
     return blockdev
 
 
+def test_purepath(tbot_context: tbot.Context) -> None:
+    with tbot_context.request(testmachines.Localhost) as lo:
+        p = lo.workdir / "foo" / "bar" / "baz"
+
+        assert p.parent.name == "bar"
+        assert p.parents[0].name == "bar"
+        assert p.parents[1].name == "foo"
+        assert p.parents[2] == lo.workdir
+
+
 def test_integrity(tbot_context: tbot.Context) -> None:
     with tbot_context.request(testmachines.Localhost) as lo:
         p = lo.workdir / "abcdef"

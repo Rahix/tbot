@@ -20,7 +20,7 @@ import itertools
 import os
 import pathlib
 import typing
-from typing import Any, Iterable, List, Tuple
+from typing import Any, Generic, Iterable, List, Sequence, Tuple
 
 import tbot.error
 
@@ -154,8 +154,8 @@ class Path(typing.Generic[H]):
         return Path(self._host, self._path.parent)
 
     @property
-    def parents(self) -> Any:
-        raise NotImplementedError("TODO")
+    def parents(self) -> "_PathParents[H]":
+        return _PathParents(self)
 
     def is_absolute(self) -> bool:
         return self._path.is_absolute()
@@ -457,3 +457,28 @@ class Path(typing.Generic[H]):
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self._host!r}, {str(self._path)!r})"
+
+
+class _PathParents(Sequence[Path[H]], Generic[H]):
+    """
+    This object provides sequence-like access to the logical ancestors
+    of a path.  Don't try to construct it yourself.
+    """
+
+    __slots__ = ("_pathcls", "_host", "_parts")
+
+    def __init__(self, path: Path[H]):
+        self._pathcls = type(path)
+        self._host = path.host
+        self._parts = path.parts
+
+    def __len__(self) -> int:
+        return len(self._parts)
+
+    def __getitem__(self, idx: int) -> Path[H]:  # type: ignore
+        if idx < 0 or idx >= len(self):
+            raise IndexError(idx)
+        return self._pathcls(self._host, *self._parts[: -idx - 1])
+
+    def __repr__(self) -> str:
+        return f"<{self._pathcls.__name__}.parents>"
