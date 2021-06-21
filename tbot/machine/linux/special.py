@@ -134,7 +134,7 @@ class _Background(Special[H]):
                 raise tbot.error.WrongHostError(self.stdout, h)
             return f"2>/dev/null 1>{shlex.quote(self.stdout._local_str())} &"
         else:
-            return "2>&1 1>/dev/null &"
+            return "1>/dev/null 2>&1 &"
 
 
 class _Static(Special):
