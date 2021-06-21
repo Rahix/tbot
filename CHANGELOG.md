@@ -9,6 +9,10 @@
   directory, a symlink, or a file from a host's filesystem.
 - `Path.mkdir()`: Method to conveniently create a directory on the respective
   machine.
+- `Path.at_host(host)`:  A method to safely convert a tbot-path into a plain
+  string.  The `host` parameter is used to check that the `Path` is actually
+  meant for the expected host.  Any uses of the (unofficial) `_local_str()`
+  method should be replaced by `at_host()` as the former will be removed soon.
 - New classes `AppendStdout`, `AppendStderr`, and `AppendBoth` in
   `machine.linux` allow to append command output to files in `exec()` and
   `exec0()` methods.
@@ -16,6 +20,10 @@
 ### Changed
 - Warnings emitted due to problems when parsing the SSH config now include
   hints about the actual problem.
+- `linux.Path` no longer inherits from `pathlib.PurePosixPath`.  This fixes
+  a number of long standing oddities where certain methods would not function
+  correctly.  All API from `PurePosixPath` has been reimplemented in
+  `linux.Path` explictly, now with the proper behavior.
 
 ### Fixed
 - Fixed the `PyserialConnector` not working properly with tbot contexts.
