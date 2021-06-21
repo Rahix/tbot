@@ -95,6 +95,9 @@ class InstanceManager(Generic[M]):
     def is_alive(self) -> bool:
         return self._instance is not None
 
+    def has_users(self) -> bool:
+        return self._current_users != 0
+
 
 class Context(typing.ContextManager):
     """
@@ -360,6 +363,54 @@ class Context(typing.ContextManager):
         """
         type = typing.cast(Type[M], type)
         return typing.cast(Type[M], self._roles[type])
+
+    @contextlib.contextmanager
+    def reconfigure(
+        self,
+        *,
+        keep_alive: Optional[bool] = None,
+        reset_on_error_by_default: Optional[bool] = None,
+    ) -> "Iterator[Context]":
+        """
+        Temporarily reconfigure this context (e.g. ``keep_alive`` flag).
+
+        This method allows you to temporarily change flags for this context and
+        have them restored afterwards.  For example, this can be useful for
+        running a test-suite with the ``keep_alive`` and ``reset_on_error``
+        flags enabled.
+
+        **Example**:
+
+        .. code-block:: python
+
+            with ctx.reconfigure(keep_alive=True):
+                ...
+
+        Once the reconfiguration context-manager exits, the old state will be
+        restored.  This especially means that any machines which were kept
+        alive due to the reconfiguration (but have no active outside users)
+        will be torn down before returning to the old state.
+        """
+        keep_alive_orig = self._keep_alive
+        reset_on_error_orig = self._reset_on_error_default
+        try:
+            if keep_alive is not None:
+                self._keep_alive = keep_alive
+            if reset_on_error_by_default is not None:
+                self._reset_on_error_default = reset_on_error_by_default
+
+            yield self
+        finally:
+            self._keep_alive = keep_alive_orig
+            self._reset_on_error_default = reset_on_error_orig
+
+            # If the previous configuration did not enable keep_alive, we need
+            # to tear down all the machines which are still alive but have no
+            # users.
+            if keep_alive_orig is False and keep_alive is True:
+                for inst in self._instances.values():
+                    if inst.is_alive() and not inst.has_users():
+                        inst.teardown()
 
     @contextlib.contextmanager
     def __call__(self) -> "Iterator[ContextHandle]":

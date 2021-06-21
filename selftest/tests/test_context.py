@@ -71,6 +71,36 @@ def test_keep_alive_context() -> None:
         assert tc_context_simple_usage(ctx, "third") == "second"
 
 
+def test_keep_alive_context_reconfigured() -> None:
+    """
+    Reconfiguring a context should leave it in the expected state after restoring the old config.
+
+    This means any machines that were kept alive need to be torn down.
+    """
+    ctx = tbot.Context(keep_alive=False)
+    testmachines.register_machines(ctx)
+    with ctx:
+        assert tc_context_simple_usage(ctx, "first") == ""
+        assert tc_context_simple_usage(ctx, "second") == ""
+
+        # Here, the machine is _not_ alive, so it also shouldn't be after the reconfig ends.
+        with ctx.reconfigure(keep_alive=True):
+            assert tc_context_simple_usage(ctx, "third") == ""
+            assert tc_context_simple_usage(ctx, "fourth") == "third"
+
+        assert tc_context_simple_usage(ctx, "fifth") == ""
+
+        with ctx.request(tbot.role.LabHost) as _:
+            assert tc_context_simple_usage(ctx, "sixth") == ""
+            assert tc_context_simple_usage(ctx, "seventh") == "sixth"
+
+            # But here, the machine _is_ alive, so it should not be destroyed in this case.
+            with ctx.reconfigure(keep_alive=True):
+                assert tc_context_simple_usage(ctx, "eighth") == "seventh"
+
+            assert tc_context_simple_usage(ctx, "nineth") == "eighth"
+
+
 def test_illegal_keep_alive_context() -> None:
     """
     A keep-alive context **must** have its own context-manager active.
