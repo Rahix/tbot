@@ -98,7 +98,7 @@ index e76351696ad0..fe143c6d4054 100644
 
     class UBootBuilder(uboot.UBootBuilder):
         name = "tbot-selftest"
-        remote = repo._local_str()
+        remote = repo.at_host(h)
         defconfig = "defconfig"
         toolchain = "selftest-toolchain"
 

@@ -106,9 +106,7 @@ class Ash(linux_shell.LinuxShell):
             elif isinstance(arg, linux_shell.Special):
                 string_args.append(arg._to_string(self))
             elif isinstance(arg, path.Path):
-                if arg.host != self:
-                    raise tbot.error.WrongHostError(arg, self)
-                string_args.append(shlex.quote(arg._local_str()))
+                string_args.append(shlex.quote(arg.at_host(self)))
             else:
                 raise TypeError(f"{type(arg)!r} is not a supported argument type!")
 

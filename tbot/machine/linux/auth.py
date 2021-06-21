@@ -73,11 +73,9 @@ class PrivateKeyAuthenticator(AuthenticatorBase):
         elif isinstance(self.key_file, pathlib.PurePath):
             return str(self.key_file)
         elif isinstance(self.key_file, linux.Path):
-            if host is not None:
-                assert (
-                    self.key_file.host is host
-                ), f"Private key is associated with wrong host"
-            return self.key_file._local_str()
+            if host is None:
+                return self.key_file.at_host(self.key_file.host)
+            return self.key_file.at_host(host)
 
 
 class NoneAuthenticator(AuthenticatorBase):

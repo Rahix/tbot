@@ -84,7 +84,7 @@ A second file that will have been added by patching.""",
         tbot.log.message("Resetting repo ...")
         repo.reset("HEAD~1", git.ResetMode.HARD)
 
-        _GIT = p._local_str()
+        _GIT = p.at_host(lab)
         return _GIT
     else:
         return _GIT

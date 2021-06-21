@@ -56,14 +56,11 @@ class _Stdio(Special[H]):
         self.file = file
 
     def _to_string(self, h: H) -> str:
-        if self.file.host != h:
-            raise tbot.error.WrongHostError(self.file, h)
-
         # The order of the redirects is important!  First, redirect stdout to a
         # file and then redirect stderr to stdout.  If this is switched around,
         # stderr will go to old stdout, before it was redirected (that is, the
         # terminal).
-        result = self._redir_token + shlex.quote(self.file._local_str())
+        result = self._redir_token + shlex.quote(self.file.at_host(h))
 
         if self._both:
             result += " 2>&1"
@@ -117,22 +114,14 @@ class _Background(Special[H]):
 
     def _to_string(self, h: H) -> str:
         if self.stdout is not None and self.stderr is not None:
-            if self.stdout.host != h:
-                raise tbot.error.WrongHostError(self.stdout, h)
-            if self.stderr.host != h:
-                raise tbot.error.WrongHostError(self.stderr, h)
             if self.stdout == self.stderr:
-                return f"1>{shlex.quote(self.stdout._local_str())} 2>&1 &"
+                return f"1>{shlex.quote(self.stdout.at_host(h))} 2>&1 &"
             else:
-                return f"1>{shlex.quote(self.stdout._local_str())} 2>{shlex.quote(self.stderr._local_str())} &"
+                return f"1>{shlex.quote(self.stdout.at_host(h))} 2>{shlex.quote(self.stderr.at_host(h))} &"
         elif self.stderr is not None:
-            if self.stderr.host != h:
-                raise tbot.error.WrongHostError(self.stderr, h)
-            return f"1>/dev/null 2>{shlex.quote(self.stderr._local_str())} &"
+            return f"1>/dev/null 2>{shlex.quote(self.stderr.at_host(h))} &"
         elif self.stdout is not None:
-            if self.stdout.host != h:
-                raise tbot.error.WrongHostError(self.stdout, h)
-            return f"2>/dev/null 1>{shlex.quote(self.stdout._local_str())} &"
+            return f"2>/dev/null 1>{shlex.quote(self.stdout.at_host(h))} &"
         else:
             return "2>&1 1>/dev/null &"
 

@@ -219,7 +219,7 @@ class Path(typing.Generic[H]):
         if ec != 0:
             raise OSError(errno.ENOENT, f"Can't stat {self}")
 
-        stat_res = stat_str[len(self._local_str()) + 1 :].split(" ")
+        stat_res = stat_str[len(self.at_host(self.host)) + 1 :].split(" ")
 
         return os.stat_result(
             (
@@ -290,7 +290,7 @@ class Path(typing.Generic[H]):
 
             The glob pattern **must not contain spaces or other special characters**!
         """
-        fullpath = self.host.escape(self._local_str()) + "/" + pattern
+        fullpath = self.host.escape(self.at_host(self.host)) + "/" + pattern
 
         output = self.host.exec0("printf", "%s\\n", linux.Raw(fullpath))
 
