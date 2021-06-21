@@ -109,7 +109,7 @@ def setup_testhooks(
         fifo = hookdir / fifoname
         bh.exec0("rm", "-rf", fifo)
         bh.exec0("mkfifo", fifo)
-        fifos[fifoname] = fifo._local_str()
+        fifos[fifoname] = fifo.at_host(bh)
     # }}}
 
     # Hook Scripts --- {{{
@@ -142,7 +142,7 @@ def setup_testhooks(
 
     tbot.log.message("Adding hooks to $PATH ...")
     oldpath = bh.env("PATH")
-    bh.env("PATH", f"{hookdir._local_str()}:{oldpath}")
+    bh.env("PATH", f"{hookdir.at_host(bh)}:{oldpath}")
 
     tbot.log.message("Open console & command channels ...")
     chan_console = m_console.open_channel(hookdir / "tbot-console")

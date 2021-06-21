@@ -68,12 +68,12 @@ def _scp_copy(
         local_host.exec0(
             *scp_command,
             local_path,
-            f"{username}@{hostname}:{remote_path._local_str()}",
+            f"{username}@{hostname}:{remote_path.at_host(remote_path.host)}",
         )
     else:
         local_host.exec0(
             *scp_command,
-            f"{username}@{hostname}:{remote_path._local_str()}",
+            f"{username}@{hostname}:{remote_path.at_host(remote_path.host)}",
             local_path,
         )
 

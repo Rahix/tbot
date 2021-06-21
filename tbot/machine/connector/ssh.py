@@ -198,7 +198,7 @@ class SSHConnector(connector.Connector):
                 multiplexing += ["-o", "ControlPersist=10m"]
                 multiplexing += [
                     "-o",
-                    f"ControlPath={multiplexing_dir._local_str()}/%C",
+                    f"ControlPath={multiplexing_dir.at_host(self.host)}/%C",
                 ]
 
             cmd_str = h.escape(

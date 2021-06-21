@@ -44,7 +44,7 @@ def posix_environment(
     if value is not None:
         mach.exec0("export", linux.Raw(f"{mach.escape(var)}={mach.escape(value)}"))
         if isinstance(value, linux.Path):
-            return value._local_str()
+            return value.at_host(mach)
         else:
             return value
     else:
