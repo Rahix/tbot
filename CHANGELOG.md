@@ -16,6 +16,9 @@
 - New classes `AppendStdout`, `AppendStderr`, and `AppendBoth` in
   `machine.linux` allow to append command output to files in `exec()` and
   `exec0()` methods.
+- Added a feature to the `Context` to allow reconfiguring a context temporarily
+  (`Context.reconfigure()`).  This is useful to e.g. enable `keep_alive` mode
+  for certain tests.
 
 ### Changed
 - Warnings emitted due to problems when parsing the SSH config now include
@@ -27,6 +30,7 @@
 
 ### Fixed
 - Fixed the `PyserialConnector` not working properly with tbot contexts.
+- Fixed `linux.Background` not properly redirecting stderr output.
 
 [tbot-locking]: https://tbot.tools/contrib/locking.html
 
