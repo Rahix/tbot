@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+
+
+## [0.9.1] - 2021-06-23
 ### Added
 - Added a mechanism for "locking" connections to certain machines.  This can be
   used, for example, to ensure exlusive access to a certain board.  See
@@ -747,7 +750,8 @@ Version **0.6.0** is basically a complete rewrite of TBot.  A rough summary of c
   were loaded later
 - Fix `call_then` not returning the function itself
 
-[Unreleased]: https://github.com/Rahix/tbot/compare/v0.9.0...master
+[Unreleased]: https://github.com/Rahix/tbot/compare/v0.9.1...master
+[0.9.1]: https://github.com/Rahix/tbot/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/Rahix/tbot/compare/v0.8.3...v0.9.0
 [0.8.3]: https://github.com/Rahix/tbot/compare/v0.8.2...v0.8.3
 [0.8.2]: https://github.com/Rahix/tbot/compare/v0.8.1...v0.8.2
