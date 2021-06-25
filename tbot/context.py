@@ -146,6 +146,7 @@ class Context(typing.ContextManager):
         self._open_contexts = 0
         self._keep_alive = keep_alive
         self._reset_on_error_default = reset_on_error_by_default
+        self._teardown_order: List[Type] = []
 
         self._instances: DefaultDict[
             Type[machine.Machine], InstanceManager
@@ -350,6 +351,9 @@ class Context(typing.ContextManager):
         with instance.request(exclusive, self._keep_alive) as m:
             assert isinstance(m, machine_class), f"machine type mismatch"
 
+            if machine_class not in self._teardown_order:
+                self._teardown_order.append(machine_class)
+
             try:
                 yield m
             except BaseException as e:
@@ -408,7 +412,8 @@ class Context(typing.ContextManager):
             # to tear down all the machines which are still alive but have no
             # users.
             if keep_alive_orig is False and keep_alive is True:
-                for inst in self._instances.values():
+                for cls in reversed(self._teardown_order):
+                    inst = self._instances[cls]
                     if inst.is_alive() and not inst.has_users():
                         inst.teardown()
 
@@ -426,7 +431,8 @@ class Context(typing.ContextManager):
         self._open_contexts -= 1
 
         if self._open_contexts == 0:
-            for ty, inst in self._instances.items():
+            for cls in reversed(self._teardown_order):
+                inst = self._instances[cls]
                 if inst.is_alive():
                     if self._keep_alive:
                         # If we kept instances alive, now is a good time to
@@ -435,7 +441,7 @@ class Context(typing.ContextManager):
                         inst.teardown()
                     else:
                         tbot.log.warning(
-                            f"Found dangling {ty!r} instance in this context"
+                            f"Found dangling {cls!r} instance in this context"
                         )
 
 
