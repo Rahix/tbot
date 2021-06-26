@@ -1,6 +1,10 @@
 # Changelog
 
 ## [Unreleased]
+### Fixed
+- Fixed the order of instance teardown in `keep_alive` contexts.  This fixes any
+  kinds of problems due to wrong teardown order of dependent machines (e.g.
+  lab-host torn down before a board machine).
 
 
 ## [0.9.1] - 2021-06-23
