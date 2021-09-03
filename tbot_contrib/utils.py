@@ -44,6 +44,33 @@ def ensure_sd_unit(lnx: linux.LinuxShell, services: typing.List[str]) -> None:
         _SERVICES_CACHE[lnx.name][s] = True
 
 
+# 7-bit C1 ANSI sequences, see https://stackoverflow.com/a/14693789
+ANSI_ESCAPE = re.compile(
+    r"""
+    \x1B  # ESC
+    (?:   # 7-bit C1 Fe (except CSI)
+        [@-Z\\-_]
+    |     # or [ for CSI, followed by a control sequence
+        \[
+        [0-?]*  # Parameter bytes
+        [ -/]*  # Intermediate bytes
+        [@-~]   # Final byte
+    )
+""",
+    re.VERBOSE,
+)
+
+
+def strip_ansi_escapes(s: str) -> str:
+    """
+    Strip all ANSI escape sequences from a string
+
+    This helper can be used when programs have colored output and piping with
+    ``| cat`` doesn't help (e.g. forced color as with ``--color=always``).
+    """
+    return ANSI_ESCAPE.sub("", s)
+
+
 _IP_CACHE: typing.Dict[typing.Tuple[linux.LinuxShell, str], str] = {}
 
 
@@ -80,7 +107,9 @@ def find_ip_address(
 
     if (lnx, route_target) not in _IP_CACHE:
         if shell.check_for_tool(lnx, "ip"):
-            output = lnx.exec0("ip", "route", "get", route_target, linux.Pipe, "cat")
+            output = strip_ansi_escapes(
+                lnx.exec0("ip", "route", "get", route_target, linux.Pipe, "cat")
+            )
             match = re.match(
                 r"\S+ (?:via \S+ )?dev \S+ src (\S+).*", output, re.DOTALL,
             )

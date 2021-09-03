@@ -6,3 +6,4 @@ Various testcases.
 
 .. autofunction:: tbot_contrib.utils.ensure_sd_unit
 .. autofunction:: tbot_contrib.utils.find_ip_address
+.. autofunction:: tbot_contrib.utils.strip_ansi_escapes
