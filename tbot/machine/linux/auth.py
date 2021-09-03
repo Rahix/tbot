@@ -76,6 +76,8 @@ class PrivateKeyAuthenticator(AuthenticatorBase):
             if host is None:
                 return self.key_file.at_host(self.key_file.host)
             return self.key_file.at_host(host)
+        else:
+            raise TypeError(f"`host` has wrong type for get_key_for_host()")
 
 
 class NoneAuthenticator(AuthenticatorBase):
