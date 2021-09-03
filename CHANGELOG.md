@@ -1,10 +1,15 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Added a new `strip_ansi_escapes()` utility in `tbot_contrib.utils` which can
+  be used to remove e.g. color escape codes from command output.
+
 ### Fixed
 - Fixed the order of instance teardown in `keep_alive` contexts.  This fixes any
   kinds of problems due to wrong teardown order of dependent machines (e.g.
   lab-host torn down before a board machine).
+- Fixed selftests failing due to deprecation of `ssh-rsa` algorithm.
 
 
 ## [0.9.1] - 2021-06-23
