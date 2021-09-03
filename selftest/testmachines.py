@@ -120,7 +120,6 @@ class MocksshServer(
         sshd_config.write_text(
             f"""\
 # Host Key
-HostKeyAlgorithms ssh-rsa
 HostKey {keyfile.at_host(self)}
 
 # Local Serving
