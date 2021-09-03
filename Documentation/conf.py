@@ -214,7 +214,8 @@ def patched_make_field(
     return nodes.field("", fieldname, fieldbody)
 
 
-TypedField.make_field = patched_make_field
+if sphinx.version_info < (4, 0, 0):
+    TypedField.make_field = patched_make_field
 # }}}
 
 
