@@ -121,3 +121,35 @@ def find_ip_address(
         _IP_CACHE[(lnx, route_target)] = ip
 
     return _IP_CACHE[(lnx, route_target)]
+
+
+_HASHCMP_TOOLS = [
+    "sha256sum",
+    "sha1sum",
+    "md5sum",
+    "crc32",
+]
+
+
+def hashcmp(a: linux.Path, b: linux.Path) -> bool:
+    """
+    Compare the hashsum of two files on (potentially different hosts).
+
+    ``hashcmp()`` automatically selects a hash-summing tool which is available
+    on both hosts and uses it to compare the checksum of the two files.  It
+    returns ``True`` if they match and ``False`` otherwise.
+    """
+    if not a.exists() or not b.exists():
+        # Short-circuit if one of the files is missing.
+        return False
+
+    for tool in _HASHCMP_TOOLS:
+        if shell.check_for_tool(a.host, tool) and shell.check_for_tool(b.host, tool):
+            break
+    else:
+        raise Exception("No suitable hashing tool found which exists on both hosts!")
+
+    sum_a: str = a.host.exec0(tool, a).split()[0]
+    sum_b: str = b.host.exec0(tool, b).split()[0]
+
+    return sum_a == sum_b
