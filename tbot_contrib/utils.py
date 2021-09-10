@@ -133,11 +133,12 @@ _HASHCMP_TOOLS = [
 
 def hashcmp(a: linux.Path, b: linux.Path) -> bool:
     """
-    Compare the hashsum of two files on (potentially different hosts).
+    Compare the hashsum of two files (potentially from different hosts).
 
     ``hashcmp()`` automatically selects a hash-summing tool which is available
     on both hosts and uses it to compare the checksum of the two files.  It
-    returns ``True`` if they match and ``False`` otherwise.
+    returns ``True`` if they match and ``False`` otherwise.  If one of the
+    files does not exist, ``False`` is returned.
     """
     if not a.exists() or not b.exists():
         # Short-circuit if one of the files is missing.
