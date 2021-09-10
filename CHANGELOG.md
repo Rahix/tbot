@@ -4,12 +4,16 @@
 ### Added
 - Added a new `strip_ansi_escapes()` utility in `tbot_contrib.utils` which can
   be used to remove e.g. color escape codes from command output.
+- Added a `hashcmp()` utility in `tbot_contrib.utils` to compare the hashsum of
+  two files (which may be located on different machines).
 
 ### Fixed
 - Fixed the order of instance teardown in `keep_alive` contexts.  This fixes any
   kinds of problems due to wrong teardown order of dependent machines (e.g.
   lab-host torn down before a board machine).
 - Fixed selftests failing due to deprecation of `ssh-rsa` algorithm.
+- Fixed `find_ip_address()` not working when a local address is passed as the
+  `route_target`.
 
 
 ## [0.9.1] - 2021-06-23
