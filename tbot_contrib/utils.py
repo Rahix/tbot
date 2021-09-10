@@ -45,7 +45,7 @@ def ensure_sd_unit(lnx: linux.LinuxShell, services: typing.List[str]) -> None:
 
 
 # 7-bit C1 ANSI sequences, see https://stackoverflow.com/a/14693789
-ANSI_ESCAPE = re.compile(
+_ANSI_ESCAPE = re.compile(
     r"""
     \x1B  # ESC
     (?:   # 7-bit C1 Fe (except CSI)
@@ -68,7 +68,7 @@ def strip_ansi_escapes(s: str) -> str:
     This helper can be used when programs have colored output and piping with
     ``| cat`` doesn't help (e.g. forced color as with ``--color=always``).
     """
-    return ANSI_ESCAPE.sub("", s)
+    return _ANSI_ESCAPE.sub("", s)
 
 
 _IP_CACHE: typing.Dict[typing.Tuple[linux.LinuxShell, str], str] = {}
