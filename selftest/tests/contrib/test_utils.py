@@ -57,3 +57,7 @@ def test_find_ip_address(tbot_context: tbot.Context) -> None:
     with tbot_context.request(testmachines.Localhost) as lo:
         # Check whether it is able to find a "default" address
         tbot_contrib.utils.find_ip_address(lo)
+
+        # Check whether find_ip_address() works with a local address
+        addr = tbot_contrib.utils.find_ip_address(lo, "127.0.0.1")
+        assert addr == "127.0.0.1"
