@@ -6,6 +6,7 @@
   be used to remove e.g. color escape codes from command output.
 - Added a `hashcmp()` utility in `tbot_contrib.utils` to compare the hashsum of
   two files (which may be located on different machines).
+- Added the `py.typed` marker for type-checkers (see [PEP 561]).
 
 ### Fixed
 - Fixed the order of instance teardown in `keep_alive` contexts.  This fixes any
@@ -14,6 +15,8 @@
 - Fixed selftests failing due to deprecation of `ssh-rsa` algorithm.
 - Fixed `find_ip_address()` not working when a local address is passed as the
   `route_target`.
+
+[PEP 561]: https://www.python.org/dev/peps/pep-0561/
 
 
 ## [0.9.1] - 2021-06-23
