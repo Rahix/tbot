@@ -29,4 +29,8 @@ setup(
     data_files=[
         ("man/man1", ["Documentation/tbot.1"]),
     ],
+    package_data={
+        "tbot": ["py.typed"],
+        "tbot_contrib": ["py.typed"],
+    },
 )
