@@ -30,6 +30,8 @@ def time_testcase(
             ...
 
         duration, ret = timing.time_testcase(foo, "hello", arg2=42)
+
+    .. versionadded:: 0.8.2
     """
     start = time.monotonic()
     result = testcase(*args, **kwargs)
@@ -54,6 +56,8 @@ def time_testcase_statistics(
     :param float sleep: How much time to sleep in between the runs.  Example
         use:  Maybe the board does not discharge quick enough so it can cause
         troubles when the subsecuent testcase run tries to boot again the board
+
+    .. versionadded:: 0.8.2
     """
 
     elapsed_times = []

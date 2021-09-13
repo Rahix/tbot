@@ -63,6 +63,10 @@ class Path(typing.Generic[H]):
 
         :param linux.LinuxShell host: Host this path should be associated with
         :param args: :py:class:`pathlib.PurePosixPath` constructor arguments
+
+        .. versionchanged:: 0.9.1
+
+            ``Path`` no longer inherits from ``pathlib.PurePosixPath``.
         """
 
         self._host: H = host
@@ -99,6 +103,8 @@ class Path(typing.Generic[H]):
 
         This prevents accidentally using a ``Path`` with the wrong host as much
         as possible.
+
+        .. versionadded:: 0.9.1
         """
         if self.host != host:
             raise tbot.error.WrongHostError(self, host)
@@ -440,6 +446,8 @@ class Path(typing.Generic[H]):
         """
         Remove the directory pointed to by this path. The directory must be
         empty.
+
+        .. versionadded:: 0.9.1
         """
         if self.is_symlink() or not self.is_dir():
             raise NotADirectoryError
@@ -454,6 +462,8 @@ class Path(typing.Generic[H]):
 
         If ``missing_ok`` is false (the default), ``FileNotFoundError`` is
         raised if the path does not exist.
+
+        .. versionadded:: 0.9.1
         """
         if not self.exists():
             if not missing_ok:
@@ -476,6 +486,8 @@ class Path(typing.Generic[H]):
         if the path already exists. If ``exist_ok`` is true, a
         ``FileExistsError`` exception be suppressed if the target path exists
         and is a directory.
+
+        .. versionadded:: 0.9.1
         """
         if not self.parent.exists() and not parents:
             raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), str(self))

@@ -54,6 +54,8 @@ class MachineLock(machine.PreConnectInitializer):
     """
     This is the initializer that is inherited by the board machine.  It just
     calls the lab-host's locking implementation.
+
+    .. versionadded:: 0.9.1
     """
 
     lock_expiry: typing.Optional[int] = None
@@ -91,6 +93,8 @@ class MachineLock(machine.PreConnectInitializer):
 class PooledMachineLock(machine.PreConnectInitializer):
     """
     A 'replacement' for `MachineLock` which acquires a lock from a pool.
+
+    .. versionadded:: 0.9.1
     """
 
     lock_expiry: typing.Optional[int] = None
@@ -145,6 +149,8 @@ def flock_file_mutex(path: linux.Path, lock_fd: int) -> typing.Iterator[None]:
 class LockManager(LockManagerBase, machine.PostShellInitializer, linux.LinuxShell):
     """
     Machine locking implementation based on Python, bash and flock(1)
+
+    .. versionadded:: 0.9.1
     """
 
     lock_checkpid: bool = True

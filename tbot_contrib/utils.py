@@ -30,6 +30,8 @@ def ensure_sd_unit(lnx: linux.LinuxShell, services: typing.List[str]) -> None:
 
     :param lnx: linux shell
     :param services: list of systemd services
+
+    .. versionadded:: 0.8.3
     """
     if lnx.name not in _SERVICES_CACHE:
         _SERVICES_CACHE[lnx.name] = {}
@@ -67,6 +69,8 @@ def strip_ansi_escapes(s: str) -> str:
 
     This helper can be used when programs have colored output and piping with
     ``| cat`` doesn't help (e.g. forced color as with ``--color=always``).
+
+    .. versionadded:: 0.9.2
     """
     return _ANSI_ESCAPE.sub("", s)
 
@@ -99,6 +103,12 @@ def find_ip_address(
         changed.
     :rtype: str
     :returns: The IP-address which was found.
+
+    .. versionadded:: 0.8.3
+    .. versionchanged:: 0.9.2
+
+        Fixed ``find_ip_address()`` not working properly when the route target
+        is a local address.
     """
     if route_target is None:
         # 1 equals to 1.0.0.0 which will probably yield a sensible route in
@@ -139,6 +149,8 @@ def hashcmp(a: linux.Path, b: linux.Path) -> bool:
     on both hosts and uses it to compare the checksum of the two files.  It
     returns ``True`` if they match and ``False`` otherwise.  If one of the
     files does not exist, ``False`` is returned.
+
+    .. versionadded:: 0.9.2
     """
     if not a.exists() or not b.exists():
         # Short-circuit if one of the files is missing.

@@ -394,6 +394,8 @@ class Context(typing.ContextManager):
         restored.  This especially means that any machines which were kept
         alive due to the reconfiguration (but have no active outside users)
         will be torn down before returning to the old state.
+
+        .. versionadded:: 0.9.1
         """
         keep_alive_orig = self._keep_alive
         reset_on_error_orig = self._reset_on_error_default

@@ -143,15 +143,21 @@ can be used to chain multiple commands or to redirect output.
    Redirect ``stdout`` (``>>...``) to a file, appending to the file rather
    than overwriting its contents.
 
+   .. versionadded:: 0.9.1
+
 .. py:class:: AppendStderr(file)
 
    Redirect ``stderr`` (``2>>...``) to a file, appending to the file rather
    than overwriting its contents.
 
+   .. versionadded:: 0.9.1
+
 .. py:class:: AppendBoth(file)
 
    Redirect both ``stdout`` and ``stderr`` (``>>... 2>&1``) to a file,
    appending to the file rather than overwriting its contents.
+
+   .. versionadded:: 0.9.1
 
 .. py:data:: Background
 
@@ -190,6 +196,10 @@ can be used to chain multiple commands or to redirect output.
          ...
 
          lh.exec0("kill", pid, linux.Then, "wait", pid)
+
+   .. versionchanged:: 0.9.1
+
+      ``Background`` now always properly redirects stderr as well.
 
 .. py:class:: Raw(str)
 

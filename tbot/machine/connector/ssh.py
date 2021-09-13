@@ -76,6 +76,8 @@ class SSHConnector(connector.Connector):
         `ControlMaster in sshd_config(5)`_ for details.
 
         .. _ControlMaster in sshd_config(5): https://man.openbsd.org/ssh_config.5#ControlMaster
+
+        .. versionadded:: 0.9.0
         """
         return False
 
