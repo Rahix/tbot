@@ -3,6 +3,7 @@ import typing
 
 import tbot
 from tbot.machine import channel, connector, linux, shell
+import tbot_contrib.utils
 
 GDB_PROMPT = b"GDB-ORRG65BNM5SGECQ "
 
@@ -74,6 +75,8 @@ class GDBShell(shell.Shell):
             self.ch.sendline(cmd, read_back=True)
             with self.ch.with_stream(ev, show_prompt=False):
                 out = self.ch.read_until_prompt()
+                # Get rid of bracketed paste and similar escapes
+                out = tbot_contrib.utils.strip_ansi_escapes(out)
             ev.data["stdout"] = out
 
         return out
