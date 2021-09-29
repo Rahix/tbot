@@ -1,5 +1,5 @@
 from .connector import Connector
-from .common import SubprocessConnector, ConsoleConnector
+from .common import SubprocessConnector, ConsoleConnector, NullConnector
 from .ssh import SSHConnector
 
 try:
@@ -14,4 +14,5 @@ __all__ = (
     "ConsoleConnector",
     "ParamikoConnector",
     "SSHConnector",
+    "NullConnector",
 )

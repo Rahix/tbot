@@ -137,3 +137,31 @@ class ConsoleConnector(connector.Connector):
     def clone(self: M) -> M:
         """This machine is **not** cloneable."""
         raise NotImplementedError("can't clone a serial connection")
+
+
+class NullConnector(connector.Connector):
+    """
+    Connector for machine which do not really have a channel.
+
+    This connector returns a pseudo-channel which will raise Exceptions when
+    accessed.  It is meant to be used for machines which do not have a channel,
+    but do provide other means of interaction.  For example, think of a board
+    without a serial console.
+    """
+
+    def __init__(self) -> None:
+        pass
+
+    @classmethod
+    @contextlib.contextmanager
+    def from_context(cls: typing.Type[M], ctx: "tbot.Context") -> typing.Iterator[M]:
+        with cls() as m:
+            yield m
+
+    @contextlib.contextmanager
+    def _connect(self) -> typing.Iterator[channel.Channel]:
+        with channel.NullChannel() as ch:
+            yield ch
+
+    def clone(self: M) -> M:
+        raise NotImplementedError("can't clone a null connection")

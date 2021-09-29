@@ -3,7 +3,7 @@ from typing import Iterator, Match
 import pytest
 
 import tbot
-from tbot.machine import channel
+from tbot.machine import board, channel, connector
 
 
 @pytest.fixture
@@ -100,3 +100,17 @@ def test_taking(ch: channel.Channel) -> None:
 
     with pytest.raises(channel.ChannelTakenException):
         ch.sendline("echo Illegal")
+
+
+def test_nullchannel_machine() -> None:
+    """
+    Ensure that we can instanciate a machine with a null channel properly.
+    """
+
+    class NullChannelMachine(connector.NullConnector, board.Board):
+        pass
+
+    with NullChannelMachine() as m:
+        assert not m.ch.closed
+
+    assert m.ch.closed

@@ -9,6 +9,7 @@ from .channel import (
 )
 
 from .subprocess import SubprocessChannel
+from .null import NullChannel
 
 try:
     from .paramiko import ParamikoChannel
@@ -26,4 +27,5 @@ __all__ = (
     "DeathStringException",
     "ParamikoChannel",
     "SubprocessChannel",
+    "NullChannel",
 )
