@@ -16,10 +16,13 @@
 
 import abc
 import contextlib
+import time
 import typing
+
 import tbot
 import tbot.error
-from .. import machine, shell, connector, channel
+
+from .. import channel, connector, machine, shell
 
 
 class PowerControl(machine.Initializer):
@@ -66,10 +69,36 @@ class PowerControl(machine.Initializer):
         """
         return True
 
+    powercycle_delay: float = 0
+    """
+    Delay between a poweroff and a subsequent poweron.
+
+    This delay is only accounted for when both poweroff and poweron happen in
+    the same tbot process.  If you are calling tbot multiple times really fast,
+    the delay is not performed!
+
+    Using this attribute over, for example, a ``time.sleep()`` call in the
+    ``poweroff()`` implementation has the advantage that the delay is not
+    performed at the end of a tbot run, only for powercycles "in the middle".
+    """
+
     @contextlib.contextmanager
     def _init_machine(self) -> typing.Iterator:
         if not self.power_check():
             raise Exception("Board is already on, someone else might be using it!")
+
+        # If the board was previously powered off, ensure that at least
+        # `self.powercycle_delay` passes before powering on again.
+        if (
+            hasattr(self.__class__, "_last_poweroff_timestamp")
+            and self.powercycle_delay > 0
+        ):
+            passed_time = time.monotonic() - getattr(
+                self.__class__, "_last_poweroff_timestamp"
+            )
+            delay_time = self.powercycle_delay - passed_time
+            if delay_time > 0:
+                time.sleep(delay_time)
 
         try:
             tbot.log.EventIO(
@@ -86,6 +115,10 @@ class PowerControl(machine.Initializer):
                 verbosity=tbot.log.Verbosity.QUIET,
             )
             self.poweroff()
+
+            # Set the timestamp of last poweroff so we can reference it during
+            # next poweron to optionally delay for a short while.
+            setattr(self.__class__, "_last_poweroff_timestamp", time.monotonic())
 
 
 class Board(shell.RawShell):
