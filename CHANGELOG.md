@@ -1,6 +1,13 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Added the `NullConnector` for designing machine classes which do not have a
+  channel.  This is useful, for example, when a board has no serial console.
+- Added the `powercycle_delay` attribute to the `PowerControl` initializer.
+  This can be used to specify a wait time between poweroff and subsequent
+  poweron of a board.  Used to let the poweroff settle to have the board really
+  off before turning it back on.
 
 
 ## [0.9.2] - 2021-09-13
