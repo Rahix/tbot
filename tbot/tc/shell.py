@@ -102,6 +102,21 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
 
     :param linux.Path p1: Exisiting path to be copied
     :param linux.Path p2: Target where ``p1`` should be copied
+
+    .. note::
+
+        You can combine this function with :py:func:`tbot_contrib.utils.hashcmp`
+        to only copy a file when the hashsums of source and destination
+        mismatch:
+
+        .. code-block:: python
+
+            from tbot_contrib import utils
+            from tbot.tc import shell
+
+            ...
+            if not utils.hashcmp(path_a, path_b)
+                shell.copy(path_a, path_b)
     """
     if isinstance(p1.host, p2.host.__class__) or isinstance(p2.host, p1.host.__class__):
         # Both paths are on the same host
