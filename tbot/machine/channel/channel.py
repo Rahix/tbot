@@ -601,6 +601,7 @@ class Channel(typing.ContextManager):
         s: typing.Union[str, bytes],
         read_back: bool = False,
         timeout: typing.Optional[float] = None,
+        _ignore_blacklist: bool = False,
     ) -> None:
         """
         Send data to this channel.
@@ -617,7 +618,7 @@ class Channel(typing.ContextManager):
             return
 
         s = s.encode("utf-8") if isinstance(s, str) else s
-        self.write(s)
+        self.write(s, _ignore_blacklist=_ignore_blacklist)
 
         if read_back:
             # Read back what was just sent.  Assume a well-behaved other side
