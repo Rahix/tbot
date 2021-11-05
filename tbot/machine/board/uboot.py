@@ -114,7 +114,7 @@ class UBootAutobootIntercept(machine.Initializer, UbootStartup):
                     raise TimeoutError(
                         "U-Boot autoboot prompt did not show up in time"
                     ) from None
-                self.ch.send(self.autoboot_keys)
+                self.ch.send(self.autoboot_keys, _ignore_blacklist=True)
 
         yield None
 
