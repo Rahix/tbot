@@ -9,6 +9,10 @@
   poweron of a board.  Used to let the poweroff settle to have the board really
   off before turning it back on.
 
+### Fixed
+- Fixed Linux machines not connecting when a very long `PS1` is used on the
+  remote side.
+
 
 ## [0.9.2] - 2021-09-13
 ### Added
