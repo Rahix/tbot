@@ -19,6 +19,7 @@ import hashlib
 import os
 import select
 import typing
+import time
 
 import tbot
 from tbot.machine import board, channel, linux
@@ -325,6 +326,8 @@ The build() method for the selected lab should not return `self` but instead `se
 
                 if msg[:2] == b"RE":
                     b.poweroff()
+                    if b.powercycle_delay > 0:
+                        time.sleep(b.powercycle_delay)
                     b.poweron()
                 else:
                     raise Exception(f"Got unknown command {msg!r}!")
