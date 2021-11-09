@@ -14,7 +14,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import re
 import typing
 from tbot.machine import channel, linux
 
@@ -28,14 +27,13 @@ def wait_for_shell(ch: channel.Channel) -> None:
     # can return, knowing the shell is now running on the other end.
     #
     # Credit to Pavel for this idea!
-    with ch.with_prompt(re.compile(b"TBOTLOGIN.{0,80}", re.DOTALL)):
-        while True:
-            ch.sendline("echo TBOT''LOGIN")
-            try:
-                ch.read_until_prompt(timeout=0.2)
-                break
-            except TimeoutError:
-                pass
+    while True:
+        ch.sendline("echo TBOT''LOGIN")
+        try:
+            ch.expect("TBOTLOGIN", timeout=0.2)
+            break
+        except TimeoutError:
+            pass
 
 
 def posix_environment(
