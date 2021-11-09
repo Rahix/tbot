@@ -17,7 +17,9 @@ def test_gdb_machine(tbot_context: tbot.Context) -> None:
             pytest.skip("GDB is missing.")
 
         with tbot_contrib.gdb.GDB(lh, program, "hello", "world") as gdb:
-            gdb.exec("break", "getenv")
+            out = gdb.exec("break", "getenv")
+            if "not defined" in out:
+                pytest.skip("Debug symbols missing.")
             gdb.exec("run")
 
             while True:
