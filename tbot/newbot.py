@@ -214,18 +214,15 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
 
     tbot.log_event.tbot_start()
 
-    # Use the tbot.ctx as our default context
-    ctx = tbot.ctx
-
     if args.lab is not None:
-        load_config(args.lab, ctx)
+        load_config(args.lab, tbot.ctx)
     if args.board is not None:
-        load_config(args.board, ctx)
+        load_config(args.board, tbot.ctx)
     for config in args.config:
-        load_config(config, ctx)
+        load_config(config, tbot.ctx)
 
     try:
-        with ctx:
+        with tbot.ctx:
             for testcase in args.testcase:
                 run_testcase(testcase)
     except Exception as e:
