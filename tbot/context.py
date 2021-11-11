@@ -430,21 +430,22 @@ class Context(typing.ContextManager):
         return self
 
     def __exit__(self, *args: Any) -> None:
-        self._open_contexts -= 1
-
-        if self._open_contexts == 0:
-            for cls in reversed(self._teardown_order):
-                inst = self._instances[cls]
-                if inst.is_alive():
-                    if self._keep_alive:
-                        # If we kept instances alive, now is a good time to
-                        # finally tear them down; there won't be any users
-                        # after this point...
-                        inst.teardown()
-                    else:
-                        tbot.log.warning(
-                            f"Found dangling {cls!r} instance in this context"
-                        )
+        try:
+            if self._open_contexts == 1:
+                for cls in reversed(self._teardown_order):
+                    inst = self._instances[cls]
+                    if inst.is_alive():
+                        if self._keep_alive:
+                            # If we kept instances alive, now is a good time to
+                            # finally tear them down; there won't be any users
+                            # after this point...
+                            inst.teardown()
+                        else:
+                            tbot.log.warning(
+                                f"Found dangling {cls!r} instance in this context"
+                            )
+        finally:
+            self._open_contexts -= 1
 
 
 T = TypeVar("T")
