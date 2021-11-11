@@ -157,6 +157,15 @@ def build_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
+        "-k",
+        "--keep-alive",
+        dest="keep_alive",
+        action="store_true",
+        default=False,
+        help="keep machines alive for later tests to reacquire them",
+    )
+
+    parser.add_argument(
         "-v", dest="verbosity", action="count", default=0, help="increase the verbosity"
     )
 
@@ -213,6 +222,9 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
     )
 
     tbot.log_event.tbot_start()
+
+    # Initialize tbot context with our settings
+    tbot.ctx = tbot.Context(add_defaults=True, keep_alive=args.keep_alive)
 
     if args.lab is not None:
         load_config(args.lab, tbot.ctx)
