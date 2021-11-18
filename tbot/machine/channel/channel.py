@@ -287,6 +287,36 @@ class Channel(typing.ContextManager):
         self._log_prompt = True
         self._write_blacklist: typing.List[int] = []
 
+        self.slow_send_delay: typing.Optional[float] = None
+        """
+        There are unfortunately some serial consoles which cannot process large
+        amounts of data at once.  The receive buffer on the other end overflows
+        and characters get dropped.
+
+        To mitigate this, a :py:class:`~tbot.machine.channel.Channel` can be
+        configured to send chunks of data with a delay.  To do this, set the
+        :py:attr:`slow_send_delay` to a (fractional) number of seconds to wait
+        between chunks and :py:attr:`slow_send_chunksize` to the maximum size
+        of each chunk to send.
+
+        **Example**:
+
+        .. code-block:: python
+
+            # Configuration for a machine which needs slow sending
+            class BoardWithSlowSend(connector.ConsoleConnector, board.Board):
+                def connect(self, mach):
+                    ch = mach.open_channel("picocom", "-b", "115200", "-q", "/dev/ttyUSB0")
+                    ch.slow_send_delay = 0.01
+                    ch.slow_send_chunksize = 32
+                    return ch
+        """
+        self.slow_send_chunksize: int = 32
+        """
+        Maximum size of each chunk to send, when :py:attr:`slow_send_delay` is
+        set.  Check its documentation for details.
+        """
+
     # raw byte-level IO {{{
     def write(self, buf: bytes, _ignore_blacklist: bool = False) -> None:
         """
@@ -308,7 +338,14 @@ class Channel(typing.ContextManager):
 
         cursor = 0
         while cursor < len(buf):
-            bytes_written = self._c.write(buf[cursor:])
+            if self.slow_send_delay is None:
+                # write as much as possible
+                bytes_written = self._c.write(buf[cursor:])
+            else:
+                # write at most `slow_send_chunksize` bytes
+                bytes_written = self._c.write(buf[cursor:][: self.slow_send_chunksize])
+                # and then wait for `slow_send_delay` before sending the next chunk
+                time.sleep(self.slow_send_delay)
             cursor += bytes_written
 
     # Size of individual read calls.
