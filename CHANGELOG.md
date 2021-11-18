@@ -8,10 +8,15 @@
   This can be used to specify a wait time between poweroff and subsequent
   poweron of a board.  Used to let the poweroff settle to have the board really
   off before turning it back on.
+- Added an option to slow down transmission of a `Channel` for serial consoles
+  which cannot process incoming data fast enough.  See [`Channel.slow_send_delay`]
+  for details.
 
 ### Fixed
 - Fixed Linux machines not connecting when a very long `PS1` is used on the
   remote side.
+
+[`Channel.slow_send_delay`]: https://tbot.tools/modules/machine_channel.html#tbot.machine.channel.Channel.slow_send_delay
 
 
 ## [0.9.2] - 2021-09-13
