@@ -15,6 +15,7 @@
 ### Fixed
 - Fixed Linux machines not connecting when a very long `PS1` is used on the
   remote side.
+- Fixed an exception during context teardown when `keep_alive` mode is enabled.
 
 [`Channel.slow_send_delay`]: https://tbot.tools/modules/machine_channel.html#tbot.machine.channel.Channel.slow_send_delay
 
