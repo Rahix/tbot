@@ -445,6 +445,13 @@ class Context(typing.ContextManager):
                                 f"Found dangling {cls!r} instance in this context"
                             )
         finally:
+            if self._open_contexts == 1:
+                for cls, inst in self._instances.items():
+                    if inst.is_alive():
+                        tbot.log.warning(
+                            f"Teardown went wrong!  A {cls!r} instance is still alive.\n"
+                            + "Please report this to https://github.com/rahix/tbot/issues!"
+                        )
             self._open_contexts -= 1
 
 
