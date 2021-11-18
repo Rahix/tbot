@@ -15,6 +15,8 @@ class GDBShell(shell.Shell):
     This class implements CLI interaction with GDB.  You will most likely not
     use it directly but instead use a :py:class:`gdb.GDB() <tbot_contrib.gdb.GDB>`
     machine instead.
+
+    .. versionadded:: UNRELEASED
     """
 
     name = "gdb"
@@ -132,6 +134,8 @@ class GDB(connector.Connector, GDBShell):
 
             # Not let the user take over and interact with GDB
             g.interactive()
+
+    .. versionadded:: UNRELEASED
     """
 
     def __init__(

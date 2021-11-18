@@ -147,6 +147,8 @@ class NullConnector(connector.Connector):
     accessed.  It is meant to be used for machines which do not have a channel,
     but do provide other means of interaction.  For example, think of a board
     without a serial console.
+
+    .. versionadded:: UNRELEASED
     """
 
     def __init__(self) -> None:

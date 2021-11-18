@@ -310,11 +310,15 @@ class Channel(typing.ContextManager):
                     ch.slow_send_delay = 0.01
                     ch.slow_send_chunksize = 32
                     return ch
+
+        .. versionadded:: UNRELEASED
         """
         self.slow_send_chunksize: int = 32
         """
         Maximum size of each chunk to send, when :py:attr:`slow_send_delay` is
         set.  Check its documentation for details.
+
+        .. versionadded:: UNRELEASED
         """
 
     # raw byte-level IO {{{

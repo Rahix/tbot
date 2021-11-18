@@ -80,6 +80,8 @@ class PowerControl(machine.Initializer):
     Using this attribute over, for example, a ``time.sleep()`` call in the
     ``poweroff()`` implementation has the advantage that the delay is not
     performed at the end of a tbot run, only for powercycles "in the middle".
+
+    .. versionadded:: UNRELEASED
     """
 
     @contextlib.contextmanager
