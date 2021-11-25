@@ -12,6 +12,7 @@ from typing import (
     List,
     Optional,
     Set,
+    Tuple,
     Type,
     TypeVar,
     Union,
@@ -213,6 +214,22 @@ class Context(typing.ContextManager):
                 self._weak_roles.add(role)
             self._roles[role] = machine
 
+    def _get_class_and_instance(
+        self, type: Callable[..., M]
+    ) -> Tuple[Type[M], InstanceManager]:
+        type = typing.cast(Type[M], type)
+
+        if type in self._roles:
+            machine_class = typing.cast(Type[M], self._roles[type])
+        elif type in self._instances:
+            machine_class = type
+        else:
+            raise IndexError(f"no machine found for {type!r}")
+
+        instance = self._instances[machine_class]
+
+        return (machine_class, instance)
+
     @contextlib.contextmanager
     def request(
         self,
@@ -321,8 +338,6 @@ class Context(typing.ContextManager):
             The default might be ``True`` if the :py:class:`~tbot.Context` was
             instantiated with ``reset_on_error_by_default=True``.
         """
-        type = typing.cast(Type[M], type)
-
         if reset_on_error is None:
             reset_on_error = self._reset_on_error_default
 
@@ -332,14 +347,7 @@ class Context(typing.ContextManager):
                 + "its own context-manager to ensure proper cleanup."
             )
 
-        if type in self._roles:
-            machine_class = typing.cast(Type[M], self._roles[type])
-        elif type in self._instances:
-            machine_class = type
-        else:
-            raise IndexError(f"no machine found for {type!r}")
-
-        instance = self._instances[machine_class]
+        machine_class, instance = self._get_class_and_instance(type)
 
         if instance.is_alive() and reset:
             # Requester wants the machine to be re-initialized if it is already alive.
@@ -367,6 +375,26 @@ class Context(typing.ContextManager):
         """
         type = typing.cast(Type[M], type)
         return typing.cast(Type[M], self._roles[type])
+
+    def teardown_if_alive(self, type: Callable[..., M]) -> bool:
+        """
+        Tear down any existing machine instances for a certain role.
+
+        This is useful, for example, when there might be a ``BoardLinux``
+        instance active and you need to get into ``BoardUBoot``.
+
+        :returns: Boolean whether an instance was alive and torn down
+            (``True``) or whether no instance was alive (``False``).
+
+        .. versionadded:: UNRELEASED
+        """
+        _, instance = self._get_class_and_instance(type)
+
+        if instance.is_alive():
+            instance.teardown()
+            return True
+        else:
+            return False
 
     @contextlib.contextmanager
     def reconfigure(
