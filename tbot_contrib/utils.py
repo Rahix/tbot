@@ -121,7 +121,9 @@ def find_ip_address(
                 lnx.exec0("ip", "route", "get", route_target, linux.Pipe, "cat")
             )
             match = re.match(
-                r"(?:local )?\S+ (?:via \S+ )?dev \S+ src (\S+).*", output, re.DOTALL,
+                r"(?:local\s+)?\S+\s+(?:via\s+\S+\s+)?dev\s+\S+\s+src\s+(\S+).*",
+                output,
+                re.DOTALL,
             )
             assert match is not None, f"Failed to parse `ip route` output ({output!r})!"
             ip = match.group(1)
