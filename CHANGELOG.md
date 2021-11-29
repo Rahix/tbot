@@ -11,11 +11,20 @@
 - Added an option to slow down transmission of a `Channel` for serial consoles
   which cannot process incoming data fast enough.  See [`Channel.slow_send_delay`]
   for details.
+- Added a `Context.teardown_if_alive()` method to ensure no instance of a
+  certain role is active.  This can be useful, for example, when a `BoardLinux`
+  instance is alive but you need to enter U-Boot.  Normally this would fail,
+  because the `BoardLinux` instance is keeping the `Board` instance for itself.
+  With teardown_if_alive() you can first tear down this `BoardLinux` instance
+  and then request the `BoardUBoot` instance as usual.
+
 
 ### Fixed
 - Fixed Linux machines not connecting when a very long `PS1` is used on the
   remote side.
 - Fixed an exception during context teardown when `keep_alive` mode is enabled.
+- Fixed `find_ip_address()` not working with the BusyBox version of the `ip`
+  utility.
 
 [`Channel.slow_send_delay`]: https://tbot.tools/modules/machine_channel.html#tbot.machine.channel.Channel.slow_send_delay
 
