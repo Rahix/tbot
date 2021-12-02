@@ -366,7 +366,15 @@ class Context(typing.ContextManager):
                 yield m
             except BaseException as e:
                 if reset_on_error:
-                    instance.teardown()
+                    if (
+                        e.__class__.__name__ == "Skipped"
+                        and e.__class__.mro()[1].__module__ == "_pytest.outcomes"
+                    ):
+                        tbot.log.warning(
+                            "Ignoring `reset_on_error` because exception was from pytest.skip()"
+                        )
+                    else:
+                        instance.teardown()
                 raise e from None
 
     def get_machine_class(self, type: Callable[..., M]) -> Type[M]:
