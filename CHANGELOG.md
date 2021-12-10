@@ -18,6 +18,11 @@
   With teardown_if_alive() you can first tear down this `BoardLinux` instance
   and then request the `BoardUBoot` instance as usual.
 
+### Changed
+- When a pytest testcase is skipped, `tbot.Context`'s `reset_on_error` flag no
+  longer triggers a board reset.  This means skipping testcases is now just as
+  fast as not executing them where it previosuly would trigger a reset of all
+  machines.
 
 ### Fixed
 - Fixed Linux machines not connecting when a very long `PS1` is used on the
