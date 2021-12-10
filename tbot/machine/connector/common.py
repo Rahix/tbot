@@ -148,7 +148,7 @@ class NullConnector(connector.Connector):
     but do provide other means of interaction.  For example, think of a board
     without a serial console.
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.9.3
     """
 
     def __init__(self) -> None:

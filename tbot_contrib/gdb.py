@@ -16,7 +16,7 @@ class GDBShell(shell.Shell):
     use it directly but instead use a :py:class:`gdb.GDB() <tbot_contrib.gdb.GDB>`
     machine instead.
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.9.3
     """
 
     name = "gdb"
@@ -135,7 +135,7 @@ class GDB(connector.Connector, GDBShell):
             # Not let the user take over and interact with GDB
             g.interactive()
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.9.3
     """
 
     def __init__(

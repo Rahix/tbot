@@ -394,7 +394,7 @@ class Context(typing.ContextManager):
         :returns: Boolean whether an instance was alive and torn down
             (``True``) or whether no instance was alive (``False``).
 
-        .. versionadded:: UNRELEASED
+        .. versionadded:: 0.9.3
         """
         _, instance = self._get_class_and_instance(type)
 

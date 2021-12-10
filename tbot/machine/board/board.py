@@ -81,7 +81,7 @@ class PowerControl(machine.Initializer):
     ``poweroff()`` implementation has the advantage that the delay is not
     performed at the end of a tbot run, only for powercycles "in the middle".
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.9.3
     """
 
     @contextlib.contextmanager
