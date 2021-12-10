@@ -374,7 +374,8 @@ class Context(typing.ContextManager):
                             "Ignoring `reset_on_error` because exception was from pytest.skip()"
                         )
                     else:
-                        instance.teardown()
+                        if instance.is_alive():
+                            instance.teardown()
                 raise e from None
 
     def get_machine_class(self, type: Callable[..., M]) -> Type[M]:
