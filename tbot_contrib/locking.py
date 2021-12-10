@@ -78,7 +78,7 @@ class MachineLock(machine.PreConnectInitializer):
 
     @contextlib.contextmanager
     def _init_pre_connect(self) -> typing.Iterator:
-        with tbot.ctx.request(tbot.role.LabHost) as labhost:
+        with tbot.ctx.request(tbot.role.LabHost, reset_on_error=False) as labhost:
             if not isinstance(labhost, LockManagerBase):
                 raise Exception("selected lab-host is not a lock manager")
             if not labhost.request_machine_lock(
@@ -110,7 +110,7 @@ class PooledMachineLock(machine.PreConnectInitializer):
 
     @contextlib.contextmanager
     def _init_pre_connect(self) -> typing.Iterator:
-        with tbot.ctx.request(tbot.role.LabHost) as labhost:
+        with tbot.ctx.request(tbot.role.LabHost, reset_on_error=False) as labhost:
             if not isinstance(labhost, LockManagerBase):
                 raise Exception("selected lab-host is not a lock manager")
             self.selected_machine = None
