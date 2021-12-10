@@ -1,6 +1,11 @@
 # Changelog
 
 ## [Unreleased]
+### Fixed
+- Fix machine locking (`tbot_contrib.locking`) not quite working when
+  `reset_on_error_by_default` is active in the tbot context.
+- Fix `reset_on_error` raising odd exceptions when nested requests of the same
+  machine are done.
 
 
 ## [0.9.3] - 2021-12-10
