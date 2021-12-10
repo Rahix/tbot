@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+
+
+## [0.9.3] - 2021-12-10
 ### Added
 - Added the `NullConnector` for designing machine classes which do not have a
   channel.  This is useful, for example, when a board has no serial console.
@@ -800,7 +803,8 @@ Version **0.6.0** is basically a complete rewrite of TBot.  A rough summary of c
   were loaded later
 - Fix `call_then` not returning the function itself
 
-[Unreleased]: https://github.com/Rahix/tbot/compare/v0.9.2...master
+[Unreleased]: https://github.com/Rahix/tbot/compare/v0.9.3...master
+[0.9.3]: https://github.com/Rahix/tbot/compare/v0.9.2...v0.9.3
 [0.9.2]: https://github.com/Rahix/tbot/compare/v0.9.1...v0.9.2
 [0.9.1]: https://github.com/Rahix/tbot/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/Rahix/tbot/compare/v0.8.3...v0.9.0
