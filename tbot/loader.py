@@ -121,6 +121,7 @@ def load_module(p: pathlib.Path) -> types.ModuleType:
     :rtype: Module
     """
     import importlib.util
+    import importlib.abc
 
     if not p.is_file():
         raise FileNotFoundError(f"The module {str(p)!r} does not exist")
