@@ -6,6 +6,7 @@
   `reset_on_error_by_default` is active in the tbot context.
 - Fix `reset_on_error` raising odd exceptions when nested requests of the same
   machine are done.
+- Fixed tbot not running with Python 3.10.
 
 
 ## [0.9.3] - 2021-12-10
