@@ -140,6 +140,7 @@ def flock_file_mutex(path: linux.Path, lock_fd: int) -> typing.Iterator[None]:
     try:
         host.exec0("exec", linux.Raw(f"{lock_fd}>"), path)
         host.exec0("flock", str(lock_fd))
+        host.exec0("chmod", "0666", path)
         yield None
     finally:
         host.exec0("flock", "-u", str(lock_fd))
@@ -186,6 +187,7 @@ class LockManager(LockManagerBase, machine.PostShellInitializer, linux.LinuxShel
         else:  # else store the Unix time timestamp of expiry
             time_str = str(int(self.exec0("date", "+%s")) + expiry)
         shell_pid = self.env("$") if self.lock_checkpid else "0"
+        self.exec0("chmod", "0666", tempfile)
         tempfile.write_text(f"{time_str} {shell_pid}\n")
         # Try linking lockfile, hard-linking is atomic
         lock_acquired = self.test("ln", tempfile, lockfile)
