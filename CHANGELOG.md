@@ -7,6 +7,8 @@
 - Fix `reset_on_error` raising odd exceptions when nested requests of the same
   machine are done.
 - Fixed tbot not running with Python 3.10.
+- Fixed `tbot_contrib.locking` locks not working properly on multi-user systems
+  due to bad permissions.
 
 
 ## [0.9.3] - 2021-12-10
