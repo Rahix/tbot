@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+
+
+## [0.9.4] - 2021-12-24
 ### Fixed
 - Fix machine locking (`tbot_contrib.locking`) not quite working when
   `reset_on_error_by_default` is active in the tbot context.
@@ -811,7 +814,8 @@ Version **0.6.0** is basically a complete rewrite of TBot.  A rough summary of c
   were loaded later
 - Fix `call_then` not returning the function itself
 
-[Unreleased]: https://github.com/Rahix/tbot/compare/v0.9.3...master
+[Unreleased]: https://github.com/Rahix/tbot/compare/v0.9.4...master
+[0.9.4]: https://github.com/Rahix/tbot/compare/v0.9.3...v0.9.4
 [0.9.3]: https://github.com/Rahix/tbot/compare/v0.9.2...v0.9.3
 [0.9.2]: https://github.com/Rahix/tbot/compare/v0.9.1...v0.9.2
 [0.9.1]: https://github.com/Rahix/tbot/compare/v0.9.0...v0.9.1
