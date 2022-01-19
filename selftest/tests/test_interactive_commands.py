@@ -1,7 +1,7 @@
 import pytest
+from conftest import AnyLinuxShell
 
 from tbot.machine import linux
-from conftest import AnyLinuxShell
 
 
 def test_run_working(any_linux_shell: AnyLinuxShell) -> None:
@@ -73,3 +73,17 @@ def test_failing_no_terminate(any_linux_shell: AnyLinuxShell) -> None:
         # Necessary to bring machine back into good state
         linux_shell.ch.read_until_prompt()
         linux_shell.exec0("true")
+
+
+def test_run_with_deathstring(any_linux_shell: AnyLinuxShell) -> None:
+    linux_shell: linux.LinuxShell
+    with any_linux_shell() as linux_shell:
+        with linux_shell.ch.with_death_string("FOOBARBAZCAT" * 8):
+            for _ in range(10):
+                linux_shell.exec0("echo", "Lorem Ipsum")
+
+            with linux_shell.run("bash", "--norc", "--noprofile") as bs:
+                bs.sendline("echo Lor''em Ipsum")
+                bs.expect("Lorem Ipsum")
+                bs.sendline("exit")
+                bs.terminate0()

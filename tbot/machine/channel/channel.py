@@ -279,9 +279,10 @@ class Channel(typing.ContextManager):
         self._c = channel_io
         self.prompt: typing.Optional[SearchString] = None
         self.death_strings: typing.List[
-            typing.Tuple[SearchString, typing.Type[DeathStringException]]
+            typing.Tuple[
+                SearchString, typing.Type[DeathStringException], typing.Deque[int]
+            ]
         ] = []
-        self._ringbuf: typing.Deque[int] = collections.deque([], maxlen=2)
         self._streams: typing.List[typing.TextIO] = []
         self._streambuf = bytearray()
         self._log_prompt = True
@@ -578,11 +579,8 @@ class Channel(typing.ContextManager):
         if exception_type is None:
             exception_type = DeathStringException
 
-        previous_length = typing.cast(int, self._ringbuf.maxlen)
-        self.death_strings.insert(0, (string, exception_type))
-        new_length = len(string) * 2
-        if new_length > previous_length:
-            self._ringbuf = collections.deque(self._ringbuf, maxlen=new_length)
+        ringbuf: typing.Deque[int] = collections.deque([], maxlen=len(string) * 2)
+        self.death_strings.insert(0, (string, exception_type, ringbuf))
 
     @contextlib.contextmanager
     def with_death_string(
@@ -595,33 +593,30 @@ class Channel(typing.ContextManager):
         if exception_type is None:
             exception_type = DeathStringException
 
-        previous_length = typing.cast(int, self._ringbuf.maxlen)
-        self.death_strings.insert(0, (string, exception_type))
-        new_length = len(string) * 2
-        if new_length > previous_length:
-            self._ringbuf = collections.deque(self._ringbuf, maxlen=new_length)
+        ringbuf: typing.Deque[int] = collections.deque([], maxlen=len(string) * 2)
+        self.death_strings.insert(0, (string, exception_type, ringbuf))
 
         try:
             yield self
         finally:
-            self.death_strings.remove((string, exception_type))
-            if new_length > previous_length:
-                self._ringbuf = collections.deque(self._ringbuf, maxlen=previous_length)
+            self.death_strings.remove((string, exception_type, ringbuf))
 
     def _check(self, incoming: bytes) -> None:
         if self.death_strings == []:
             return
 
-        # Chunk size is the longest death-string.
-        chunk_size = typing.cast(int, self._ringbuf.maxlen) // 2
+        # Chunk size is the shortest death-string.
+        chunk_size = min(
+            map(lambda t: typing.cast(int, t[2].maxlen), self.death_strings)
+        )
 
         for chunk in (
             incoming[i : i + chunk_size] for i in range(0, len(incoming), chunk_size)
         ):
-            self._ringbuf.extend(chunk)
-            ringbuf_bytes = bytes(self._ringbuf)
+            for string, exception_type, ringbuf in self.death_strings:
+                ringbuf.extend(chunk)
+                ringbuf_bytes = bytes(ringbuf)
 
-            for string, exception_type in self.death_strings:
                 if isinstance(string, bytes):
                     if string in ringbuf_bytes:
                         raise exception_type(string)
