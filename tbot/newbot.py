@@ -240,7 +240,7 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
     except Exception as e:
         import traceback
 
-        trace = traceback.format_exc()
+        trace = traceback.format_exc(limit=-6)
         tbot.log_event.exception(e.__class__.__name__, trace)
         tbot.log_event.tbot_end(False)
         sys.exit(1)
