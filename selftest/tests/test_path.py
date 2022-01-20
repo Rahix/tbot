@@ -123,7 +123,7 @@ def test_directory(testdir_builder: "TestDir") -> None:
         assert not directory.is_file()
         assert not directory.is_symlink()
 
-        with pytest.raises(Exception):
+        with pytest.raises(Exception, match="command .* failed"):
             directory.unlink()
 
         assert directory.exists()
@@ -251,10 +251,10 @@ def test_write_dir_text(testdir_builder: "TestDir") -> None:
         path = testdir / "test-dir"
         testdir.host.exec0("mkdir", "-p", path)
 
-        with pytest.raises(Exception):
+        with pytest.raises(Exception, match="command .* failed"):
             path.write_text("Hello World\n")
 
-        with pytest.raises(Exception):
+        with pytest.raises(Exception, match="command .* failed"):
             path.read_text()
 
 
@@ -263,10 +263,10 @@ def test_write_dir_binary(testdir_builder: "TestDir") -> None:
         path = testdir / "test-dir"
         testdir.host.exec0("mkdir", "-p", path)
 
-        with pytest.raises(Exception):
+        with pytest.raises(Exception, match="command .* failed"):
             path.write_bytes(b"\x01\x02")
 
-        with pytest.raises(Exception):
+        with pytest.raises(Exception, match="command .* failed"):
             path.read_bytes()
 
 
@@ -282,7 +282,7 @@ def test_rmdir_nonempty(testdir_builder: "TestDir") -> None:
         assert subdir.exists()
         assert subdir.is_dir()
 
-        with pytest.raises(Exception):
+        with pytest.raises(Exception, match="command .* failed"):
             path.rmdir()
 
 

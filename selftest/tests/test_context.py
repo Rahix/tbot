@@ -3,6 +3,10 @@ import tbot
 import testmachines
 
 
+class ContextTestException(Exception):
+    pass
+
+
 @tbot.testcase
 def tc_context_simple_usage(ctx: tbot.Context, new: str) -> str:
     with ctx.request(tbot.role.LabHost) as lh:
@@ -177,10 +181,10 @@ def test_reset_on_error_context() -> None:
     testmachines.register_machines(ctx)
     with ctx:
         with ctx.request(tbot.role.LabHost) as outer:
-            with pytest.raises(Exception):
+            with pytest.raises(ContextTestException):
                 with ctx.request(tbot.role.LabHost, reset_on_error=True) as inner1:
                     inner1.env("TBOT_CTX_TESTS", "inner1")
-                    raise Exception()
+                    raise ContextTestException
 
             with ctx.request(tbot.role.LabHost) as inner2:
                 assert inner2.env("TBOT_CTX_TESTS") != "inner1"
@@ -196,10 +200,10 @@ def test_keep_alive_reset_on_error_context() -> None:
     ctx = tbot.Context(keep_alive=True)
     testmachines.register_machines(ctx)
     with ctx:
-        with pytest.raises(Exception):
+        with pytest.raises(ContextTestException):
             with ctx.request(tbot.role.LabHost, reset_on_error=True) as inner1:
                 inner1.env("TBOT_CTX_TESTS", "inner1")
-                raise Exception()
+                raise ContextTestException
 
         with ctx.request(tbot.role.LabHost) as inner2:
             assert inner2.env("TBOT_CTX_TESTS") != "inner1"
@@ -212,10 +216,10 @@ def test_reset_on_error_by_default_context() -> None:
     ctx = tbot.Context(keep_alive=True, reset_on_error_by_default=True)
     testmachines.register_machines(ctx)
     with ctx:
-        with pytest.raises(Exception):
+        with pytest.raises(ContextTestException):
             with ctx.request(tbot.role.LabHost) as inner1:
                 inner1.env("TBOT_CTX_TESTS", "inner1")
-                raise Exception()
+                raise ContextTestException
 
         with ctx.request(tbot.role.LabHost) as inner2:
             assert inner2.env("TBOT_CTX_TESTS") != "inner1"

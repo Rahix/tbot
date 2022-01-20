@@ -36,7 +36,9 @@ def test_failing_use_after_terminate(any_linux_shell: AnyLinuxShell) -> None:
             with pytest.raises(linux.CommandEndedException):
                 cat.sendline("Hello World")
 
-            with pytest.raises(Exception):
+            with pytest.raises(
+                AssertionError, match="Attempting to terminate multiple times"
+            ):
                 cat.terminate0()
 
 
@@ -55,7 +57,7 @@ def test_failing_unexpected_abort(any_linux_shell: AnyLinuxShell) -> None:
 
 def test_failing_bad_retcode(any_linux_shell: AnyLinuxShell) -> None:
     with any_linux_shell() as linux_shell:
-        with pytest.raises(Exception):
+        with pytest.raises(Exception, match="command .* failed"):
             with linux_shell.run("false") as false:
                 false.terminate0()
 
