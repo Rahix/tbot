@@ -360,8 +360,8 @@ class Path(typing.Generic[H]):
                 except PathWriteDeathStringException:
                     pass
 
-                ch.sendcontrol("D")
-                ch.terminate0()
+            ch.sendcontrol("D")
+            ch.terminate0()
 
         return len(byte_data)
 
@@ -422,8 +422,8 @@ class Path(typing.Generic[H]):
                 except PathWriteDeathStringException:
                     pass
 
-                ch.sendcontrol("D")
-                ch.terminate0()
+            ch.sendcontrol("D")
+            ch.terminate0()
 
         return len(data)
 
