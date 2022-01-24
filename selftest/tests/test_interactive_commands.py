@@ -1,7 +1,7 @@
 import pytest
 from conftest import AnyLinuxShell
 
-from tbot.machine import linux
+from tbot.machine import channel, linux
 
 
 def test_run_working(any_linux_shell: AnyLinuxShell) -> None:
@@ -89,3 +89,15 @@ def test_run_with_deathstring(any_linux_shell: AnyLinuxShell) -> None:
                 bs.expect("Lorem Ipsum")
                 bs.sendline("exit")
                 bs.terminate0()
+
+
+def test_channel_is_unavailable(any_linux_shell: AnyLinuxShell) -> None:
+    linux_shell: linux.LinuxShell
+    with any_linux_shell() as linux_shell:
+        with linux_shell.run("bash", "--norc", "--noprofile") as bs:
+            bs.sendline("exit")
+
+            with pytest.raises(channel.ChannelBorrowedException):
+                linux_shell.exec0("echo", "hello world!")
+
+            bs.terminate0()
