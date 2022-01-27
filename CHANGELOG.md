@@ -1,6 +1,11 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Added a new, reworked integration for U-Boot's test/py testsuite as
+  [`tbot_contrib.uboot.testpy`].  Consider using this one in preference of the
+  old `tbot.tc.uboot.testpy`.
+
 ### Fixed
 - Fix a bug when using death-strings on a machine and then calling
   `LinuxShell.run()`.  This fixes spurious messages about the command having
@@ -8,6 +13,8 @@
 - Fix `Path.write_bytes()` and `Path.write_text()` raising an exception of the
   wrong type when an error occurs. This could sometimes even lead to improper
   behavior of follow-up commands.
+
+[`tbot_contrib.uboot.testpy`]: https://tbot.tools/contrib/uboot.html#tbot_contrib.uboot.testpy
 
 
 ## [0.9.4] - 2021-12-24
