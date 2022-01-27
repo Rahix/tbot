@@ -150,6 +150,11 @@ def testpy(
     """
     Run U-Boot's test/py test-framework against a tbot-machine.
 
+    .. note::
+
+        This function supersedes the old :py:func:`tbot.tc.uboot.testpy`
+        testcase.  Please read the docs below carefully on how to use it.
+
     This function is meant to be integrated into a custom testcase for test/py
     which sets up the environment as needed.  A simple example could look like
     this:

@@ -165,6 +165,12 @@ def testpy(
     """
     Run U-Boot's test/py test-framework against the selected board.
 
+    .. warning::
+
+        This testcase has been reworked as
+        :py:func:`tbot_contrib.uboot.testpy`.  If you are writing new code,
+        please consider using that one instead.
+
     This testcase can be called from the command-line as ``uboot_testpy``.
 
     :param tbot.machine.linux.Builder build_host: Optional build-host where
@@ -216,6 +222,10 @@ def testpy(
 
             # Don't forget this!
             build = DHComUBootBuilder()
+
+    .. deprecated:: UNRELEASED
+
+        Use :py:func:`tbot_contrib.uboot.testpy` instead.
     """
     with contextlib.ExitStack() as cx:
         if build_host is not None:
