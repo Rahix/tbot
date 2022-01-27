@@ -147,6 +147,95 @@ def testpy(
     boardenv: Optional[str] = None,
     testpy_args: Optional[List[str]] = None,
 ) -> None:
+    """
+    Run U-Boot's test/py test-framework against a tbot-machine.
+
+    This function is meant to be integrated into a custom testcase for test/py
+    which sets up the environment as needed.  A simple example could look like
+    this:
+
+    .. code-block:: python
+
+        from tbot_contrib import uboot
+
+        BOARDENV = r\"""# Boardenv for xyz board.
+
+        env__net_dhcp_server = True
+        \"""
+
+        @tbot.testcase
+        def run_testpy() -> None:
+            with tbot.ctx.request(tbot.role.BuildHost) as h:
+                # location of the U-Boot sources - these must have been
+                # pre-configured elsewhere (or configured here manually)
+                build_dir = h.workdir / "u-boot-mainline"
+
+                # subshell for the build environment
+                with h.subshell():
+                    # setup toolchain
+                    h.env("CROSS_COMPILE", "arm-linux-")
+
+                    # if needed, you could configure sources here
+                    # h.exec0("make", "xyz_defconfig")
+
+                    uboot.testpy(
+                        build_dir,
+                        boardenv=BOARDENV,
+                        testpy_args=["--maxfail", "6"],
+                    )
+
+    As shown above, the testcase will attempt to instanciate the default board
+    machine from :py:class:`tbot.role.Board` and
+    :py:class:`tbot.role.BoardUBoot`.  If a different board machine should be
+    used, it can be passed in explicitly like this:
+
+    .. code-block:: python
+
+        @tbot.testcase
+        def run_testpy() -> None:
+            with tbot.ctx() as cx:
+                h = cx.request(tbot.role.BuildHost)
+                build_dir = ...
+                ...
+
+                # for demonstration - this is exactly what uboot.testpy()
+                # would do on its own when board and uboot are not passed.
+                b = cx.request(tbot.role.Board)
+                ub = cx.request(tbot.role.BoardUBoot, exclusive=True)
+
+                uboot.testpy(
+                    build_dir,
+                    board=b,
+                    uboot=ub,
+                    boardenv=BOARDENV,
+                )
+
+    It is advisable to request the U-Boot machine with ``exclusive=True`` so no
+    other code will attempt interacting with it while testpy is running. This
+    is not a hard requirement, though.
+
+    :param tbot.machine.linux.Path uboot_sources: Path to the U-Boot sources on
+        the host where test/py should run.  This could, for example, be your
+        build-host.  Importantly, before calling ``testpy()``, you must ensure
+        that these U-Boot sources have been configured appropriately for your
+        board.  ``testpy()`` will make no attempt to do this itself.
+    :param tbot.role.Board board:  Optional board machine if requesting
+        :py:class:`tbot.role.Board` is not enough.  ``uboot`` must also be
+        passed if ``board`` is passed.
+    :param tbot.role.BoardUBoot uboot:  Optional U-Boot machine if requesting
+        :py:class:`tbot.role.BoardUBoot` is not enough.  ``board`` must also be
+        passed if ``uboot`` is passed.
+    :param str boardenv: Optional "boardenv" file contents to configure
+        test/py.  This can, for example, be used to configure where mmc tests
+        can perform test reads.  The individual test implementations in the
+        U-Boot sources document available options.
+    :param list(str) testpy_args: Optional additional args to be passed to the
+        test/py invocation.  For example, you can use ``["-k", "mmc"]`` to
+        filter for mmc tests only.  Or ``["-v"]`` to show the names of all
+        testcases as they are executed (or skipped).
+
+    .. versionadded:: UNRELEASED
+    """
     if board is not None:
         assert uboot is not None, "when passing `board`, `uboot` is also required!"
 

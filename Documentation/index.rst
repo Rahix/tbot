@@ -41,6 +41,7 @@ started with our :ref:`quickstart` guide!
    contrib/locking
    contrib/swupdate
    contrib/timing
+   contrib/uboot
    contrib/utils
 
 .. toctree::
