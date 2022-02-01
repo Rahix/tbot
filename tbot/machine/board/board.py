@@ -134,10 +134,25 @@ class Board(shell.RawShell):
     pass
 
 
+class BoardMachineBase(abc.ABC):
+    """
+    ABC/Protocol Class for any kind of board machines.
+    """
+
+    @property
+    @abc.abstractmethod
+    def board(self) -> Board:
+        """
+        Returns the instance of the underlying board machine on which this
+        machine is "running".
+        """
+        raise tbot.error.AbstractMethodError()
+
+
 M = typing.TypeVar("M", bound=machine.Machine)
 
 
-class Connector(connector.Connector):
+class Connector(connector.Connector, BoardMachineBase):
     def __init__(self, board: typing.Union[Board, channel.Channel]) -> None:
         if not (isinstance(board, Board) or isinstance(board, channel.Channel)):
             raise TypeError(
@@ -164,3 +179,9 @@ class Connector(connector.Connector):
 
     def clone(self) -> typing.NoReturn:
         raise tbot.error.AbstractMethodError()
+
+    @property
+    def board(self) -> Board:
+        if not isinstance(self._board, Board):
+            raise Exception("this machine was not instantiated from a `Board`!")
+        return self._board

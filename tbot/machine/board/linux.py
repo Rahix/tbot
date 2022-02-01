@@ -129,7 +129,7 @@ class LinuxBootLogin(machine.Initializer, LinuxBoot):
 Self = typing.TypeVar("Self", bound="LinuxUbootConnector")
 
 
-class LinuxUbootConnector(connector.Connector, LinuxBootLogin):
+class LinuxUbootConnector(connector.Connector, LinuxBootLogin, board.BoardMachineBase):
     """
     Connector for booting Linux from U-Boot.
 
@@ -212,3 +212,13 @@ class LinuxUbootConnector(connector.Connector, LinuxBootLogin):
     def clone(self: Self) -> Self:
         """This machine cannot be cloned."""
         raise NotImplementedError("can't clone Linux_U-Boot Machine")
+
+    @property
+    def board(self) -> board.Board:
+        if isinstance(self._b, board.Board):
+            return self._b
+        elif isinstance(self._b, board.UBootShell):
+            try:
+                return getattr(self._b, "board")  # type: ignore
+            except AttributeError:
+                raise Exception("U-Boot machine does not reference a board machine!")

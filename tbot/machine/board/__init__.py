@@ -1,14 +1,16 @@
 import typing
+
 import tbot
 
-from .uboot import UBootShell, UBootAutobootIntercept
-from .board import PowerControl, Board, Connector
-from .linux import LinuxUbootConnector, LinuxBootLogin
-from ..linux.special import Then, AndThen, OrElse, Raw
+from .uboot import UBootShell, UBootAutobootIntercept  # isort: skip
+from .board import PowerControl, Board, BoardMachineBase, Connector  # isort: skip
+from .linux import LinuxUbootConnector, LinuxBootLogin  # isort: skip
+from ..linux.special import Then, AndThen, OrElse, Raw  # isort: skip
 
 __all__ = (
     "AndThen",
     "Board",
+    "BoardMachineBase",
     "Connector",
     "LinuxUbootConnector",
     "LinuxBootLogin",
