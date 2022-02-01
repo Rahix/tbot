@@ -6,6 +6,15 @@
   [`tbot_contrib.uboot.testpy`].  Consider using this one in preference of the
   old `tbot.tc.uboot.testpy`.
 
+### Removed
+- Soft-removed the old selftest suite (which was called with `tbot selftest`)
+  in favor of the new pytest based one.  Please selftest tbot with the
+  following command instead:
+  ```bash
+  cd /path/to/tbot-sources
+  python3 -m pytest selftest/
+  ```
+
 ### Fixed
 - Fix a bug when using death-strings on a machine and then calling
   `LinuxShell.run()`.  This fixes spurious messages about the command having
