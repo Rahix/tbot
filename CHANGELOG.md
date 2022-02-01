@@ -5,6 +5,9 @@
 - Added a new, reworked integration for U-Boot's test/py testsuite as
   [`tbot_contrib.uboot.testpy`].  Consider using this one in preference of the
   old `tbot.tc.uboot.testpy`.
+- Added a `.board` property to all machines which were instantiated from a
+  "board" (like a `BoardLinux`, for example).  This property points back to
+  this original board machine.  See issue [#65] for a usecase of this.
 
 ### Removed
 - Soft-removed the old selftest suite (which was called with `tbot selftest`)
@@ -23,6 +26,7 @@
   wrong type when an error occurs. This could sometimes even lead to improper
   behavior of follow-up commands.
 
+[#65]: https://github.com/Rahix/tbot/issues/65
 [`tbot_contrib.uboot.testpy`]: https://tbot.tools/contrib/uboot.html#tbot_contrib.uboot.testpy
 
 
