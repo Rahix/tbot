@@ -76,6 +76,22 @@ def selftest_skipping(lab: typing.Optional[SelftestHost] = None) -> None:
 @tbot.testcase  # type: ignore
 def selftest(lab: None = None) -> None:
     """Run all selftests."""
+
+    if "really-run-old-selftests" not in tbot.flags:
+        tbot.log.warning(
+            """\
+You just tried invoking the old selftest suite for tbot.  This is deprecated!
+
+Instead, please run tbot's new selftests like this:
+
+    cd /path/to/tbot-sources
+    python3 -m pytest selftest/
+
+If you really want to run the old (unsupported) selftest suite,
+pass `-f really-run-old-selftests` on the command line. """
+        )
+        raise NotImplementedError
+
     with SelftestHost() as lh:
         tc.testsuite(
             selftest_failing,
