@@ -2,8 +2,8 @@ import contextlib
 import typing
 
 import tbot
-from tbot.machine import channel, connector, linux, shell
 import tbot_contrib.utils
+from tbot.machine import channel, connector, linux, shell
 
 GDB_PROMPT = b"GDB-ORRG65BNM5SGECQ "
 
@@ -25,7 +25,18 @@ class GDBShell(shell.Shell):
     def _init_shell(self) -> typing.Iterator:
         with self.ch.with_prompt(GDB_PROMPT):
             try:
-                self.ch.read_until_prompt("(gdb) ")
+                for i in range(4):
+                    res = self.ch.expect(
+                        ["(gdb) ", "Enable debuginfod for this session?"], timeout=5
+                    )
+                    if res.i == 0:
+                        # We hit the prompt, nice!
+                        break
+                    elif res.i == 1:
+                        # Say no to debuginfod
+                        self.ch.sendline("n")
+                else:
+                    raise Exception("could not reach gdb prompt")
 
                 streams_orig = self.ch._streams
                 self.ch._streams = []
