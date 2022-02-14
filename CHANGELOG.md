@@ -19,12 +19,14 @@
   ```
 
 ### Fixed
-- Fix a bug when using death-strings on a machine and then calling
+- Fixed a bug when using death-strings on a machine and then calling
   `LinuxShell.run()`.  This fixes spurious messages about the command having
   ended prematurely when it really hasn't.
-- Fix `Path.write_bytes()` and `Path.write_text()` raising an exception of the
+- Fixed `Path.write_bytes()` and `Path.write_text()` raising an exception of the
   wrong type when an error occurs. This could sometimes even lead to improper
   behavior of follow-up commands.
+- Fixed the `GDBShell` for versions of `gdb` which ask about enabling
+  `debuginfod`.
 
 [#65]: https://github.com/Rahix/tbot/issues/65
 [`tbot_contrib.uboot.testpy`]: https://tbot.tools/contrib/uboot.html#tbot_contrib.uboot.testpy
