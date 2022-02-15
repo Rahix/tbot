@@ -235,6 +235,17 @@ def test_text_io(testdir_builder: "TestDir") -> None:
         assert output == content
 
 
+def test_text_io_singleline(testdir_builder: "TestDir") -> None:
+    with testdir_builder() as testdir:
+        f = testdir / "test-file-singleline.txt"
+        content = "This is a singleline text"
+
+        f.write_text(content)
+        output = f.read_text()
+
+        assert output == content
+
+
 def test_binary_io(testdir_builder: "TestDir") -> None:
     with testdir_builder() as testdir:
         f = testdir / "test-file.bin"
