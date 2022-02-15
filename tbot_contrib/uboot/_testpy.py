@@ -239,7 +239,7 @@ def testpy(
         filter for mmc tests only.  Or ``["-v"]`` to show the names of all
         testcases as they are executed (or skipped).
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.9.5
     """
     if board is not None:
         assert uboot is not None, "when passing `board`, `uboot` is also required!"

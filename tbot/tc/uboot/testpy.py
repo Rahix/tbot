@@ -223,7 +223,7 @@ def testpy(
             # Don't forget this!
             build = DHComUBootBuilder()
 
-    .. deprecated:: UNRELEASED
+    .. deprecated:: 0.9.5
 
         Use :py:func:`tbot_contrib.uboot.testpy` instead.
     """

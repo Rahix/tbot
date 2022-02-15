@@ -23,7 +23,7 @@ Most info about *tbot* can be found in its documentation at <https://tbot.tools>
 
 ## Installation
 ```bash
-pip3 install --user -U git+https://github.com/rahix/tbot@v0.9.4
+pip3 install --user -U git+https://github.com/rahix/tbot@v0.9.5
 ```
 
 If you haven't done it already, you need to add ``~/.local/bin`` to your ``$PATH``.
