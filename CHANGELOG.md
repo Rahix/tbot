@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Fixed
+- Fixed some problems with some busybox versions when using `Path.write_text()`
+  for device property files in `/sys`.
 
 
 ## [0.9.5] - 2022-02-14
