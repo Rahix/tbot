@@ -4,6 +4,8 @@
 ### Fixed
 - Fixed some problems with some busybox versions when using `Path.write_text()`
   for device property files in `/sys`.
+- Fixed `linux.Workdir` sometimes returning a different workdir (when same "key" is
+  used for multiple workdirs on the same host).
 
 
 ## [0.9.5] - 2022-02-14

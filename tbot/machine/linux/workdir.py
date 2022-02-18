@@ -22,7 +22,7 @@ from .path import H
 
 
 class Workdir(path.Path[H]):
-    _workdirs: "typing.Dict[typing.Tuple[linux_shell.LinuxShell, str], Workdir]" = {}
+    _workdirs: "typing.Dict[typing.Tuple[linux_shell.LinuxShell, str, str], Workdir]" = {}
 
     def __init__(self) -> None:  # noqa: D107
         raise NotImplementedError(
@@ -41,7 +41,7 @@ class Workdir(path.Path[H]):
             with tbot.acquire_lab() as lh:
                 workdir = linux.Workdir.static(lh, "/tmp/tbot-my-workdir")
         """
-        key = (host, pathstr)
+        key = (host, "static", pathstr)
         try:
             return typing.cast(Workdir, path.Path(host, Workdir._workdirs[key]))
         except KeyError:
@@ -66,7 +66,7 @@ class Workdir(path.Path[H]):
         tbot will query the ``$HOME`` environment variable for the location of
         the current users home directory.
         """
-        key = (host, subdir)
+        key = (host, "athome", subdir)
         try:
             return typing.cast(Workdir, path.Path(host, Workdir._workdirs[key]))
         except KeyError:
@@ -89,7 +89,7 @@ class Workdir(path.Path[H]):
                 # Use ~/.local/share/tbot/foo-dir
                 workdir = linux.Workdir.xdg_data(lh, "foo-dir")
         """
-        key = (host, subdir)
+        key = (host, "xdg_data", subdir)
         try:
             return typing.cast(Workdir, path.Path(host, Workdir._workdirs[key]))
         except KeyError:
@@ -128,7 +128,7 @@ class Workdir(path.Path[H]):
 
         .. _XDG Base Directory Specification: https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
         """
-        key = (host, subdir)
+        key = (host, "xdg_runtime", subdir)
         try:
             return typing.cast(Workdir, path.Path(host, Workdir._workdirs[key]))
         except KeyError:
