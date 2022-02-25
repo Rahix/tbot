@@ -33,7 +33,7 @@ If you haven't done it already, you need to add ``~/.local/bin`` to your ``$PATH
 *tbot* supports command line completions.  Install them with the following commands:
 
 ```bash
-curl --create-dirs -L -o .local/lib/tbot/completions.sh https://github.com/Rahix/tbot/raw/master/completions.sh
+curl --create-dirs -L -o ~/.local/lib/tbot/completions.sh https://github.com/Rahix/tbot/raw/master/completions.sh
 echo "source ~/.local/lib/tbot/completions.sh" >>~/.bashrc
 ```
 
