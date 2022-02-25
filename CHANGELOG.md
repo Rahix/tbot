@@ -1,6 +1,11 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Added the `linux.Path.resolve()` method to turn relative paths absolute and
+  to resolve all symlinked components of a path.  This is essentially
+  `realpath(1)`.
+
 ### Fixed
 - Fixed some problems with some busybox versions when using `Path.write_text()`
   for device property files in `/sys`.

@@ -166,12 +166,24 @@ def test_symlink(testdir_builder: "TestDir") -> None:
         assert not symlink.exists()
         assert not symlink.is_file()
 
+        # Try resolving a deadlink
+        target_resolved = target.resolve(strict=False)
+        symlink_resolved = symlink.resolve()
+        assert target_resolved == symlink_resolved
+
+        with pytest.raises(FileNotFoundError):
+            symlink.resolve(strict=True)
+
         # Create the target
         testdir.host.exec0("touch", target)
         assert symlink.is_symlink()
         assert symlink.exists()
         assert symlink.is_file()
         assert not symlink.is_dir()
+
+        # Try resolving the link
+        symlink_resolved = symlink.resolve(True)
+        assert target_resolved == symlink_resolved
 
         with pytest.raises(NotADirectoryError):
             symlink.rmdir()

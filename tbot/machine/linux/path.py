@@ -303,6 +303,23 @@ class Path(typing.Generic[H]):
         for line in output[:-1].split("\n"):
             yield Path(self._host, line)
 
+    def resolve(self, strict: bool = False) -> "Path[H]":
+        """
+        Make the path absolute, resolving any symlinks.  A new path object is returned.
+
+        If the path doesn’t exist and ``strict`` is ``True``,
+        :py:class:`FileNotFoundError` is raised. If ``strict`` is ``False``,
+        the last component may not exist.  The ``False`` behavior slightly
+        differs from the one in Python's :py:mod:`pathlib`.
+
+        .. versionadded:: UNRELEASED
+        """
+        resolved = self.host.exec0("realpath", self).strip("\n")
+        resolved_path = Path(self.host, resolved)
+        if strict and not resolved_path.exists():
+            raise FileNotFoundError(resolved_path)
+        return resolved_path
+
     def write_text(
         self,
         data: str,
