@@ -170,6 +170,8 @@ def test_symlink(testdir_builder: "TestDir") -> None:
         target_resolved = target.resolve(strict=False)
         symlink_resolved = symlink.resolve()
         assert target_resolved == symlink_resolved
+        symlink_readlinked = symlink.readlink()
+        assert target == symlink_readlinked
 
         with pytest.raises(FileNotFoundError):
             symlink.resolve(strict=True)

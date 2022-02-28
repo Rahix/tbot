@@ -320,6 +320,15 @@ class Path(typing.Generic[H]):
             raise FileNotFoundError(resolved_path)
         return resolved_path
 
+    def readlink(self) -> "Path[H]":
+        """
+        Return the path to which the symbolic link points.
+
+        .. versionadded:: UNRELEASED
+        """
+        result = self.host.exec0("readlink", self).strip("\n")
+        return Path(self.host, result)
+
     def write_text(
         self,
         data: str,

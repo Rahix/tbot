@@ -5,6 +5,7 @@
 - Added the `linux.Path.resolve()` method to turn relative paths absolute and
   to resolve all symlinked components of a path.  This is essentially
   `realpath(1)`.
+- Added `linux.Path.readlink()`.
 
 ### Fixed
 - Fixed some problems with some busybox versions when using `Path.write_text()`
