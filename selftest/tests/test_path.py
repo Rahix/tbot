@@ -345,6 +345,47 @@ def create_glob_testfiles(testdir: linux.Path) -> linux.Path:
     return testfiles
 
 
+def test_glob(testdir_builder: "TestDir") -> None:
+    testdir: linux.Path
+    with testdir_builder() as testdir:
+        testfiles = create_glob_testfiles(testdir)
+
+        result = testfiles.glob("*.txt")
+        names = [f.name for f in result]
+        assert len(names) == 2
+        assert set(names) == {"file1.txt", "file2.txt"}
+
+        result = testfiles.glob("file?*")
+        names = [f.name for f in result]
+        assert len(names) == 3
+        assert set(names) == {"file1.txt", "file2.txt", "file5"}
+
+        result = testfiles.glob("subdir/file*")
+        names = [f.name for f in result]
+        assert len(names) == 2
+        assert set(names) == {"file3.txt", "file4"}
+
+        result = testfiles.glob("sub*/file*")
+        names = [f.name for f in result]
+        assert len(names) == 2
+        assert set(names) == {"file3.txt", "file4"}
+
+
+@pytest.mark.xfail(  # type: ignore
+    raises=AssertionError,
+    reason="The glob implementation is still a bit buggy :/",
+    strict=True,
+)
+def test_glob_error(testdir_builder: "TestDir") -> None:
+    testdir: linux.Path
+    with testdir_builder() as testdir:
+        testfiles = create_glob_testfiles(testdir)
+
+        result = testfiles.glob("*.missing")
+        names = [f.name for f in result]
+        assert len(names) == 0
+
+
 def test_rglob(testdir_builder: "TestDir") -> None:
     testdir: linux.Path
     with testdir_builder() as testdir:
