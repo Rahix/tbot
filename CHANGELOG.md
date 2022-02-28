@@ -8,6 +8,8 @@
 - Added `linux.Path.readlink()`.
 - Added `linux.Path.symlink_to()`.  This is a more ergonomic wrapper around
   calling `ln(1)` manually.
+- Added `linux.Path.rglob()`.  This method can be used to recursively find all
+  files matching a glob beneath a certain path.
 
 ### Fixed
 - Fixed some problems with some busybox versions when using `Path.write_text()`

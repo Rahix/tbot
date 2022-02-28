@@ -303,6 +303,35 @@ class Path(typing.Generic[H]):
         for line in output[:-1].split("\n"):
             yield Path(self._host, line)
 
+    def rglob(self, pattern: str) -> "typing.Iterator[Path[H]]":
+        """
+        Recursively match all files beneath this path against ``pattern``.
+
+        This is essentially equivalent to ``find <self> -path '*/<pattern>'``.
+        Note that this path itself will always be excluded from the results.
+
+        This method returns an iterator over matching paths.
+
+        .. versionadded:: UNRELEASED
+        """
+        output = self.host.exec(
+            "find",
+            self,
+            "-path",
+            f"*/{pattern}",
+            linux.RedirStderr(Path(self.host, "/dev/null")),
+        )[1]
+
+        for match in output[:-1].split("\n"):
+            # when no paths matched, we would produce an empty path without
+            # this short-circuit here:
+            if match == "":
+                continue
+
+            # filter out this path itself to match `pathlib` behavior
+            if match != self.at_host(self.host):
+                yield Path(self.host, match)
+
     def resolve(self, strict: bool = False) -> "Path[H]":
         """
         Make the path absolute, resolving any symlinks.  A new path object is returned.

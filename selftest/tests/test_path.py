@@ -3,9 +3,10 @@ import typing
 from typing import Callable, ContextManager, Iterator, Optional
 
 import pytest
-import tbot
 import testmachines
 from conftest import AnyLinuxShell
+
+import tbot
 from tbot.machine import linux
 
 if typing.TYPE_CHECKING:
@@ -327,3 +328,65 @@ def test_mkdir_missing_parent(testdir_builder: "TestDir") -> None:
             path.mkdir(parents=True)
 
         path.mkdir(parents=True, exist_ok=True)
+
+
+def create_glob_testfiles(testdir: linux.Path) -> linux.Path:
+    testfiles = testdir / "glob-test"
+    testfiles.mkdir(exist_ok=True)
+    paths = [
+        testfiles / "file1.txt",
+        testfiles / "file2.txt",
+        testfiles / "subdir" / "file3.txt",
+        testfiles / "subdir" / "file4",
+        testfiles / "file5",
+    ]
+    for path in paths:
+        testdir.host.exec0("install", "-D", "/dev/null", path)
+    return testfiles
+
+
+def test_rglob(testdir_builder: "TestDir") -> None:
+    testdir: linux.Path
+    with testdir_builder() as testdir:
+        testfiles = create_glob_testfiles(testdir)
+
+        result = testfiles.rglob("*.txt")
+        names = [f.name for f in result]
+        assert len(names) == 3
+        assert set(names) == {"file1.txt", "file2.txt", "file3.txt"}
+
+        result = testfiles.rglob("file[0-9]")
+        names = [f.name for f in result]
+        assert len(names) == 2
+        assert set(names) == {"file4", "file5"}
+
+        result = testfiles.rglob("subdir/*")
+        names = [f.name for f in result]
+        assert len(names) == 2
+        assert set(names) == {"file3.txt", "file4"}
+
+        result = testfiles.rglob("*")
+        names = [f.name for f in result]
+        assert len(names) == 6
+        assert set(names) == {
+            "file1.txt",
+            "file2.txt",
+            "file3.txt",
+            "subdir",
+            "file4",
+            "file5",
+        }
+
+        result = testfiles.rglob("empty-result")
+        assert len(list(result)) == 0
+
+
+def test_rglob_error(testdir_builder: "TestDir") -> None:
+    testdir: linux.Path
+    with testdir_builder() as testdir:
+        path = testdir / "/sys"
+        result = list(path.rglob("cpu"))
+        assert len(result) > 3
+
+        result = list(path.rglob("this-will-never-be-in-sysfs"))
+        assert len(result) == 0
