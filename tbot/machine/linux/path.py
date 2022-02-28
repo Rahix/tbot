@@ -329,6 +329,20 @@ class Path(typing.Generic[H]):
         result = self.host.exec0("readlink", self).strip("\n")
         return Path(self.host, result)
 
+    def symlink_to(self, target: "Path[H]") -> None:
+        """
+        Make this path a symbolic link to ``target``.  **Example**:
+
+        .. code-block:: python
+
+            link = host.workdir / "link-name"
+            target = host.fsroot / "etc" / "os-release"
+            link.symlink_to(target)
+
+        .. versionadded:: UNRELEASED
+        """
+        self.host.exec0("ln", "-snf", target, self)
+
     def write_text(
         self,
         data: str,

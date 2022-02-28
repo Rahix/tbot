@@ -159,7 +159,7 @@ def test_symlink(testdir_builder: "TestDir") -> None:
     with testdir_builder() as testdir:
         target = testdir / "symlink-target"
         symlink = testdir / "symlink"
-        testdir.host.exec0("ln", "-s", target, symlink)
+        symlink.symlink_to(target)
 
         # Deadlink right now
         assert symlink.is_symlink()

@@ -6,6 +6,8 @@
   to resolve all symlinked components of a path.  This is essentially
   `realpath(1)`.
 - Added `linux.Path.readlink()`.
+- Added `linux.Path.symlink_to()`.  This is a more ergonomic wrapper around
+  calling `ln(1)` manually.
 
 ### Fixed
 - Fixed some problems with some busybox versions when using `Path.write_text()`
