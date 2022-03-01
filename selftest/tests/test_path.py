@@ -1,6 +1,6 @@
 import contextlib
 import typing
-from typing import Callable, ContextManager, Iterator, Optional
+from typing import Callable, ContextManager, Iterator, Optional, Set, Tuple
 
 import pytest
 import testmachines
@@ -345,30 +345,25 @@ def create_glob_testfiles(testdir: linux.Path) -> linux.Path:
     return testfiles
 
 
-def test_glob(testdir_builder: "TestDir") -> None:
+@pytest.mark.parametrize(  # type: ignore
+    "args",
+    [
+        ("*.txt", 2, {"file1.txt", "file2.txt"}),
+        ("file?*", 3, {"file1.txt", "file2.txt", "file5"}),
+        ("subdir/file*", 2, {"file3.txt", "file4"}),
+        ("sub*/file*", 2, {"file3.txt", "file4"}),
+    ],
+    ids=lambda args: repr(args[0]),
+)
+def test_glob(testdir_builder: "TestDir", args: Tuple[str, int, Set[str]]) -> None:
     testdir: linux.Path
     with testdir_builder() as testdir:
         testfiles = create_glob_testfiles(testdir)
 
-        result = testfiles.glob("*.txt")
+        result = testfiles.glob(args[0])
         names = [f.name for f in result]
-        assert len(names) == 2
-        assert set(names) == {"file1.txt", "file2.txt"}
-
-        result = testfiles.glob("file?*")
-        names = [f.name for f in result]
-        assert len(names) == 3
-        assert set(names) == {"file1.txt", "file2.txt", "file5"}
-
-        result = testfiles.glob("subdir/file*")
-        names = [f.name for f in result]
-        assert len(names) == 2
-        assert set(names) == {"file3.txt", "file4"}
-
-        result = testfiles.glob("sub*/file*")
-        names = [f.name for f in result]
-        assert len(names) == 2
-        assert set(names) == {"file3.txt", "file4"}
+        assert len(names) == args[1]
+        assert set(names) == args[2]
 
 
 @pytest.mark.xfail(  # type: ignore
@@ -386,40 +381,26 @@ def test_glob_error(testdir_builder: "TestDir") -> None:
         assert len(names) == 0
 
 
-def test_rglob(testdir_builder: "TestDir") -> None:
+@pytest.mark.parametrize(  # type: ignore
+    "args",
+    [
+        ("*.txt", 3, {"file1.txt", "file2.txt", "file3.txt"}),
+        ("file[0-9]", 2, {"file4", "file5"}),
+        ("subdir/*", 2, {"file3.txt", "file4"}),
+        ("*", 6, {"file1.txt", "file2.txt", "file3.txt", "subdir", "file4", "file5"}),
+        ("empty-result", 0, set()),
+    ],
+    ids=lambda args: repr(args[0]),
+)
+def test_rglob(testdir_builder: "TestDir", args: Tuple[str, int, Set[str]]) -> None:
     testdir: linux.Path
     with testdir_builder() as testdir:
         testfiles = create_glob_testfiles(testdir)
 
-        result = testfiles.rglob("*.txt")
+        result = testfiles.rglob(args[0])
         names = [f.name for f in result]
-        assert len(names) == 3
-        assert set(names) == {"file1.txt", "file2.txt", "file3.txt"}
-
-        result = testfiles.rglob("file[0-9]")
-        names = [f.name for f in result]
-        assert len(names) == 2
-        assert set(names) == {"file4", "file5"}
-
-        result = testfiles.rglob("subdir/*")
-        names = [f.name for f in result]
-        assert len(names) == 2
-        assert set(names) == {"file3.txt", "file4"}
-
-        result = testfiles.rglob("*")
-        names = [f.name for f in result]
-        assert len(names) == 6
-        assert set(names) == {
-            "file1.txt",
-            "file2.txt",
-            "file3.txt",
-            "subdir",
-            "file4",
-            "file5",
-        }
-
-        result = testfiles.rglob("empty-result")
-        assert len(list(result)) == 0
+        assert len(names) == args[1]
+        assert set(names) == args[2]
 
 
 def test_rglob_error(testdir_builder: "TestDir") -> None:
