@@ -339,6 +339,7 @@ def create_glob_testfiles(testdir: linux.Path) -> linux.Path:
         testfiles / "subdir" / "file3.txt",
         testfiles / "subdir" / "file4",
         testfiles / "file5",
+        testfiles / "with some spaces",
     ]
     for path in paths:
         testdir.host.exec0("install", "-D", "/dev/null", path)
@@ -351,7 +352,9 @@ def create_glob_testfiles(testdir: linux.Path) -> linux.Path:
         ("*.txt", 2, {"file1.txt", "file2.txt"}),
         ("file?*", 3, {"file1.txt", "file2.txt", "file5"}),
         ("subdir/file*", 2, {"file3.txt", "file4"}),
-        ("sub*/file*", 2, {"file3.txt", "file4"}),
+        # ("sub*/file*", 2, {"file3.txt", "file4"}),
+        ("*", 5, {"file1.txt", "file2.txt", "subdir", "file5", "with some spaces"}),
+        ("* spaces", 1, {"with some spaces"}),
     ],
     ids=lambda args: repr(args[0]),
 )
@@ -366,11 +369,6 @@ def test_glob(testdir_builder: "TestDir", args: Tuple[str, int, Set[str]]) -> No
         assert set(names) == args[2]
 
 
-@pytest.mark.xfail(  # type: ignore
-    raises=AssertionError,
-    reason="The glob implementation is still a bit buggy :/",
-    strict=True,
-)
 def test_glob_error(testdir_builder: "TestDir") -> None:
     testdir: linux.Path
     with testdir_builder() as testdir:
@@ -387,8 +385,21 @@ def test_glob_error(testdir_builder: "TestDir") -> None:
         ("*.txt", 3, {"file1.txt", "file2.txt", "file3.txt"}),
         ("file[0-9]", 2, {"file4", "file5"}),
         ("subdir/*", 2, {"file3.txt", "file4"}),
-        ("*", 6, {"file1.txt", "file2.txt", "file3.txt", "subdir", "file4", "file5"}),
+        (
+            "*",
+            7,
+            {
+                "file1.txt",
+                "file2.txt",
+                "file3.txt",
+                "subdir",
+                "file4",
+                "file5",
+                "with some spaces",
+            },
+        ),
         ("empty-result", 0, set()),
+        ("* spaces", 1, {"with some spaces"}),
     ],
     ids=lambda args: repr(args[0]),
 )

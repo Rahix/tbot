@@ -274,6 +274,23 @@ class Path(typing.Generic[H]):
         """Whether this path points to a unix domain-socket."""
         return self.host.test("test", "-S", self)
 
+    def _glob_inner(
+        self, path: "Path[H]", *find_args: str
+    ) -> "typing.Iterator[Path[H]]":
+        output = self.host.exec(
+            "find", path, *find_args, linux.RedirStderr(Path(self.host, "/dev/null")),
+        )[1]
+
+        for match in output[:-1].split("\n"):
+            # when no paths matched, we would produce an empty path without
+            # this short-circuit here:
+            if match == "":
+                continue
+
+            # filter out this path itself to match `pathlib` behavior
+            if match != self.at_host(self.host):
+                yield Path(self.host, match)
+
     def glob(self, pattern: str) -> "typing.Iterator[Path[H]]":
         """
         Iterate over this subtree and yield all existing files (of any
@@ -292,16 +309,28 @@ class Path(typing.Generic[H]):
             # To use the globs in another commandline (note the `*`!):
             lh.exec0("ls", "-l", *ubootdir.glob("common/*.c"))
 
-        .. warning::
+        .. note::
 
-            The glob pattern **must not contain spaces or other special characters**!
+            tbot ``Path.glob()``'s behavior is not quite identical to
+            :py:meth:`pathlib.Path.glob()`.  There are two key differences:
+
+            1. Only the last path component of the pattern may include globs.
+               Any globbing in parent components is ignored.  Thus, the
+               following pattern **does not work**: ``co*/*.c``
+            2. The ``**`` sequence is not supported.  In most cases, you can
+               use :py:meth:`Path.rglob()` instead.
+
+        .. versionchanged:: UNRELEASED
+
+            ``Path.glob()`` now properly escapes the pattern so even paths with
+            spaces are safe.  However, globbing is now only supported in the
+            last component of the path.
         """
-        fullpath = self.host.escape(self.at_host(self.host)) + "/" + pattern
-
-        output = self.host.exec0("printf", "%s\\n", linux.Raw(fullpath))
-
-        for line in output[:-1].split("\n"):
-            yield Path(self._host, line)
+        # strip path prefix from pattern and "attach" it to the path we're searching
+        pattern_path = self / pattern
+        yield from self._glob_inner(
+            pattern_path.parent, "-maxdepth", "1", "-name", pattern_path.name
+        )
 
     def rglob(self, pattern: str) -> "typing.Iterator[Path[H]]":
         """
@@ -314,23 +343,7 @@ class Path(typing.Generic[H]):
 
         .. versionadded:: UNRELEASED
         """
-        output = self.host.exec(
-            "find",
-            self,
-            "-path",
-            f"*/{pattern}",
-            linux.RedirStderr(Path(self.host, "/dev/null")),
-        )[1]
-
-        for match in output[:-1].split("\n"):
-            # when no paths matched, we would produce an empty path without
-            # this short-circuit here:
-            if match == "":
-                continue
-
-            # filter out this path itself to match `pathlib` behavior
-            if match != self.at_host(self.host):
-                yield Path(self.host, match)
+        yield from self._glob_inner(self, "-path", f"*/{pattern}")
 
     def resolve(self, strict: bool = False) -> "Path[H]":
         """
