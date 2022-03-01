@@ -11,11 +11,17 @@
 - Added `linux.Path.rglob()`.  This method can be used to recursively find all
   files matching a glob beneath a certain path.
 
+### Changed
+- `linux.Path.glob()` now only allows globbing in the the last component of the
+  pattern path.  This means `common/*.c` works fine, but `co*/*.c` does _not._
+
 ### Fixed
 - Fixed some problems with some busybox versions when using `Path.write_text()`
   for device property files in `/sys`.
 - Fixed `linux.Workdir` sometimes returning a different workdir (when same "key" is
   used for multiple workdirs on the same host).
+- Fixed `linux.Path.glob()` not dealing properly with odd characters in the
+  glob pattern (most notably spaces).
 
 
 ## [0.9.5] - 2022-02-14
