@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+
+
+## [0.9.6] - 2022-03-02
 ### Added
 - Added the `linux.Path.resolve()` method to turn relative paths absolute and
   to resolve all symlinked components of a path.  This is essentially
@@ -867,7 +870,8 @@ Version **0.6.0** is basically a complete rewrite of TBot.  A rough summary of c
   were loaded later
 - Fix `call_then` not returning the function itself
 
-[Unreleased]: https://github.com/Rahix/tbot/compare/v0.9.5...master
+[Unreleased]: https://github.com/Rahix/tbot/compare/v0.9.6...master
+[0.9.6]: https://github.com/Rahix/tbot/compare/v0.9.5...v0.9.6
 [0.9.5]: https://github.com/Rahix/tbot/compare/v0.9.4...v0.9.5
 [0.9.4]: https://github.com/Rahix/tbot/compare/v0.9.3...v0.9.4
 [0.9.3]: https://github.com/Rahix/tbot/compare/v0.9.2...v0.9.3
