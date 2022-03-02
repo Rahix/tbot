@@ -20,7 +20,13 @@ import pathlib
 import argparse
 import inspect
 import typing
-from tbot import __about__
+
+try:
+    from tbot import _version  # type: ignore
+except ImportError:
+
+    class _version:  # type: ignore
+        version = "unknown"
 
 
 # Highlighter {{{
@@ -56,8 +62,8 @@ def main() -> None:  # noqa: C901
 
     # ArgumentParser {{{
     parser = argparse.ArgumentParser(
-        prog=__about__.__title__,
-        description=__about__.__summary__,
+        prog="tbot",
+        description="Test and development automation tool, tailored for embedded",
         fromfile_prefix_chars="@",
     )
 
@@ -119,7 +125,7 @@ def main() -> None:  # noqa: C901
     )
 
     parser.add_argument(
-        "--version", action="version", version=f"%(prog)s {__about__.__version__}"
+        "--version", action="version", version=f"%(prog)s {_version.version}"
     )
 
     parser.add_argument(

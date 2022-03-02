@@ -8,3 +8,4 @@ dist/
 .doctrees
 /Documentation/output*/
 .hypothesis/
+/tbot/_version.py

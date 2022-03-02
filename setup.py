@@ -1,36 +1,11 @@
-import typing
-import pathlib
-from setuptools import setup, find_packages
-import fastentrypoints  # noqa: F401
+import site
+import sys
+from setuptools import setup
 
-tbot_dir = pathlib.Path(__file__).parent / "tbot"
+# This hack is necessary for --editable installs to work.
+#
+# Upstream Issue: https://github.com/pypa/pip/issues/7953
+site.ENABLE_USER_SITE = "--user" in sys.argv[1:]
 
-about: typing.Dict[str, str] = {}
-with open(tbot_dir / "__about__.py") as f:
-    exec(f.read(), about)
-
-setup(
-    name=about["__title__"],
-    version=about["__version__"],
-    license="GPL-3.0-or-later",
-    description=about["__summary__"],
-    author=about["__author__"],
-    author_email=about["__email__"],
-    packages=find_packages(
-        include=("tbot", "tbot.*", "tbot_contrib", "tbot_contrib.*")
-    ),
-    install_requires=["termcolor2"],
-    extras_require={
-        "paramiko": ["paramiko"],
-    },
-    entry_points={
-        "console_scripts": ["tbot = tbot.main:main"]
-    },
-    data_files=[
-        ("man/man1", ["Documentation/tbot.1"]),
-    ],
-    package_data={
-        "tbot": ["py.typed"],
-        "tbot_contrib": ["py.typed"],
-    },
-)
+if __name__ == "__main__":
+    setup()
