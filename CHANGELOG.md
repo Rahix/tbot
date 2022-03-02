@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- Upgraded the python package metadata to newer standards.  Ideally this should
+  not have any visible effects to users.
 
 
 ## [0.9.6] - 2022-03-02
