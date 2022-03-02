@@ -62,7 +62,6 @@ def blink(lnx, pin: int = 18) -> None:
 ```
 
 ## Credits
-* [fast-entry_points](https://github.com/ninjaaron/fast-entry_points)
 * [paramiko](https://www.paramiko.org/)
 * [termcolor2](https://pypi.org/project/termcolor2/)
 
