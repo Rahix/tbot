@@ -320,7 +320,7 @@ class Path(typing.Generic[H]):
             2. The ``**`` sequence is not supported.  In most cases, you can
                use :py:meth:`Path.rglob()` instead.
 
-        .. versionchanged:: UNRELEASED
+        .. versionchanged:: 0.9.6
 
             ``Path.glob()`` now properly escapes the pattern so even paths with
             spaces are safe.  However, globbing is now only supported in the
@@ -341,7 +341,7 @@ class Path(typing.Generic[H]):
 
         This method returns an iterator over matching paths.
 
-        .. versionadded:: UNRELEASED
+        .. versionadded:: 0.9.6
         """
         yield from self._glob_inner(self, "-path", f"*/{pattern}")
 
@@ -354,7 +354,7 @@ class Path(typing.Generic[H]):
         the last component may not exist.  The ``False`` behavior slightly
         differs from the one in Python's :py:mod:`pathlib`.
 
-        .. versionadded:: UNRELEASED
+        .. versionadded:: 0.9.6
         """
         resolved = self.host.exec0("realpath", self).strip("\n")
         resolved_path = Path(self.host, resolved)
@@ -366,7 +366,7 @@ class Path(typing.Generic[H]):
         """
         Return the path to which the symbolic link points.
 
-        .. versionadded:: UNRELEASED
+        .. versionadded:: 0.9.6
         """
         result = self.host.exec0("readlink", self).strip("\n")
         return Path(self.host, result)
@@ -381,7 +381,7 @@ class Path(typing.Generic[H]):
             target = host.fsroot / "etc" / "os-release"
             link.symlink_to(target)
 
-        .. versionadded:: UNRELEASED
+        .. versionadded:: 0.9.6
         """
         self.host.exec0("ln", "-snf", target, self)
 
