@@ -16,11 +16,13 @@
 
 import abc
 import contextlib
+import time
 import typing
 
 import tbot
 import tbot.error
-from .. import machine, board, channel, connector
+
+from .. import board, channel, connector, machine
 
 
 class LinuxStartupEvent(tbot.log.EventIO):
@@ -85,6 +87,17 @@ class LinuxBootLogin(machine.Initializer, LinuxBoot):
     log-messages during the first few seconds after boot.
     """
 
+    boot_timeout: typing.Optional[float] = None
+    """
+    Maximum time for Linux to reach the login prompt.
+
+    The timer starts after initiation of the boot. This may either be power-on
+    if booting into Linux directly or the point where the boot process is
+    initiated from the bootloader (when using :py:class:`LinuxUbootConnector`).
+    """
+
+    _boot_start: float
+
     bootlog: str
     """Log of kernel-messages which were output during boot."""
 
@@ -100,27 +113,52 @@ class LinuxBootLogin(machine.Initializer, LinuxBoot):
         """Password to login with.  Set to ``None`` if no password is needed."""
         pass
 
+    def _timeout_remaining(self) -> typing.Optional[float]:
+        if self.boot_timeout is None:
+            return None
+        remaining = self.boot_timeout - (time.monotonic() - self._boot_start)
+        if remaining <= 0:
+            raise TimeoutError
+        else:
+            return remaining
+
     @contextlib.contextmanager
     def _init_machine(self) -> typing.Iterator:
         with contextlib.ExitStack() as cx:
             ev = cx.enter_context(self._linux_boot_event())
             cx.enter_context(self.ch.with_stream(ev))
 
-            self.ch.read_until_prompt(prompt=self.login_prompt)
+            self._boot_start = time.monotonic()
+
+            self.ch.read_until_prompt(
+                prompt=self.login_prompt, timeout=self.boot_timeout
+            )
 
             # On purpose do not login immediately as we may get some
             # console flooding from upper SW layers (and tbot's console
             # setup may get broken)
             if self.login_delay != 0:
+                remaining = self._timeout_remaining()
+                if remaining is not None and self.login_delay > remaining:
+                    # we know that we will hit the timeout by waiting for
+                    # login_delay so why not raise the TimeoutError now...
+                    raise TimeoutError(
+                        "login_delay would exceed boot_timeout, aborting."
+                    )
+
                 # Read everything while waiting for timeout to expire
                 self.ch.read_until_timeout(self.login_delay)
 
                 self.ch.sendline("")
-                self.ch.read_until_prompt(prompt=self.login_prompt)
+                self.ch.read_until_prompt(
+                    prompt=self.login_prompt, timeout=self._timeout_remaining()
+                )
 
             self.ch.sendline(self.username)
             if self.password is not None:
-                self.ch.read_until_prompt(prompt="assword: ")
+                self.ch.read_until_prompt(
+                    prompt="assword: ", timeout=self._timeout_remaining()
+                )
                 self.ch.sendline(self.password)
 
         yield None

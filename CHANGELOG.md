@@ -1,6 +1,10 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Added a `boot_timeout` setting to `LinuxBootLogin` which will raise a
+  `TimeoutException` if the login-prompt is not reached in the given time.
+
 ### Changed
 - Upgraded the python package metadata to newer standards.  Ideally this should
   not have any visible effects to users.
