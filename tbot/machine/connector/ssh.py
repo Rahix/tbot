@@ -160,7 +160,7 @@ class SSHConnector(connector.Connector):
             if isinstance(cls, ctx.get_machine_class(tbot.role.LabHost)):
                 lh = cx.enter_context(ctx.request(tbot.role.LabHost))
             m = cx.enter_context(cls(lh))  # type: ignore
-            yield m
+            yield typing.cast(Self, m)
 
     @contextlib.contextmanager
     def _connect(self) -> typing.Iterator[channel.Channel]:

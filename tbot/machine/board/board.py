@@ -167,7 +167,7 @@ class Connector(connector.Connector, BoardMachineBase):
         with contextlib.ExitStack() as cx:
             b = cx.enter_context(ctx.request(tbot.role.Board, exclusive=True))
             m = cx.enter_context(cls(b))  # type: ignore
-            yield m
+            yield typing.cast(M, m)
 
     @contextlib.contextmanager
     def _connect(self) -> typing.Iterator[channel.Channel]:

@@ -231,7 +231,7 @@ class LinuxUbootConnector(connector.Connector, LinuxBootLogin, board.BoardMachin
         with contextlib.ExitStack() as cx:
             ub = cx.enter_context(ctx.request(tbot.role.BoardUBoot, exclusive=True))
             m = cx.enter_context(cls(ub))  # type: ignore
-            yield m
+            yield typing.cast(Self, m)
 
     @contextlib.contextmanager
     def _connect(self) -> typing.Iterator[channel.Channel]:

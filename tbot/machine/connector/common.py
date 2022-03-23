@@ -126,7 +126,7 @@ class ConsoleConnector(connector.Connector):
         with contextlib.ExitStack() as cx:
             lh = cx.enter_context(ctx.request(tbot.role.LabHost))
             m = cx.enter_context(cls(lh))  # type: ignore
-            yield m
+            yield typing.cast(M, m)
 
     @contextlib.contextmanager
     def _connect(self) -> typing.Iterator[channel.Channel]:
