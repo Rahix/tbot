@@ -5,6 +5,10 @@
 - Upgraded the python package metadata to newer standards.  Ideally this should
   not have any visible effects to users.
 
+### Fixed
+- Fixed `tbot_contrib.locking` sometimes failing with `chmod` related error
+  messages while checking lock expiry.
+
 
 ## [0.9.6] - 2022-03-02
 ### Added

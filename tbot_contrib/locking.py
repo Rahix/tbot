@@ -140,7 +140,7 @@ def flock_file_mutex(path: linux.Path, lock_fd: int) -> typing.Iterator[None]:
     try:
         host.exec0("exec", linux.Raw(f"{lock_fd}>"), path)
         host.exec0("flock", str(lock_fd))
-        host.exec0("chmod", "0666", path)
+        host.exec("chmod", "0666", path)
         yield None
     finally:
         host.exec0("flock", "-u", str(lock_fd))
