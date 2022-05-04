@@ -93,6 +93,8 @@ class PyserialConnector(connector.Connector):
 
     .. code-block:: python
 
+        from tbot_contrib.connector import pyserial
+
         class MyBoard(pyserial.PyserialConnector, board.Board):
             serial_port = "/dev/ttyUSB0"
             baudrate = 57600
