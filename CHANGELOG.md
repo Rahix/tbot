@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 ### Added
+- The `newbot` CLI interface as a completely new and improved tool for calling
+  tbot scripts.  The documentation has been updated, you can familiarize
+  yourself with the new tool in the new [Quickstart Guide] and learn about
+  migrating to it in [Migrating to `newbot`].  The `tbot` tool will not be
+  removed for the time being but it will not be the place for new development
+  from now on.
 - Added a `boot_timeout` setting to `LinuxBootLogin` which will raise a
   `TimeoutException` if the login-prompt is not reached in the given time.
 
@@ -12,6 +18,9 @@
 ### Fixed
 - Fixed `tbot_contrib.locking` sometimes failing with `chmod` related error
   messages while checking lock expiry.
+
+[Quickstart Guide]: https://tbot.tools/quickstart.html
+[Migrating to `newbot`]: https://tbot.tools/cli.html#migrating-to-newbot
 
 
 ## [0.9.6] - 2022-03-02
