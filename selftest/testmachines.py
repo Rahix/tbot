@@ -132,6 +132,7 @@ AuthorizedKeysCommandUser {self.env("USER")}
 ChallengeResponseAuthentication no
 UsePAM yes
 PasswordAuthentication no
+MaxAuthTries 1024
 
 # Environment
 AcceptEnv=XDG_RUNTIME_DIR"""
@@ -259,7 +260,11 @@ function boot() {
 
     def connect(self, mach: linux.LinuxShell) -> channel.Channel:
         return mach.open_channel(
-            "bash", "--noprofile", "--init-file", self._mockhw_script, "-i",
+            "bash",
+            "--noprofile",
+            "--init-file",
+            self._mockhw_script,
+            "-i",
         )
 
 
