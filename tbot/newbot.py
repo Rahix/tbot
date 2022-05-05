@@ -109,7 +109,7 @@ def complete_testcase(cur: str) -> Iterable[str]:
 
 def get_version() -> str:
     try:
-        from importlib import metadata
+        from importlib import metadata  # type: ignore
 
         try:
             return metadata.version("tbot")  # type: ignore
@@ -119,9 +119,9 @@ def get_version() -> str:
         pass
 
     try:
-        from tbot import _version
+        from tbot import _version  # type: ignore
 
-        return _version.version
+        return _version.version  # type: ignore
     except ImportError:
         pass
 
