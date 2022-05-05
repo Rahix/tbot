@@ -19,7 +19,6 @@ class TestCase:
         group: typing.Optional[str] = None,
         url: typing.Optional[str] = None,
     ) -> None: ...
-
     def add_error_info(
         self,
         message: typing.Optional[str] = None,
@@ -43,7 +42,6 @@ class TestSuite:
         stdout: typing.Optional[str] = None,
         stderr: typing.Optional[str] = None,
     ) -> None: ...
-
     @staticmethod
     def to_xml_string(
         test_suites: typing.List[TestSuite],

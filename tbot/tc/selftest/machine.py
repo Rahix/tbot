@@ -337,7 +337,9 @@ def selftest_machine_shell(m: typing.Union[linux.LinuxShell, board.UBootShell]) 
 
 
 @tbot.testcase
-def selftest_machine_channel(lab: typing.Optional[linux.Lab] = None,) -> None:
+def selftest_machine_channel(
+    lab: typing.Optional[linux.Lab] = None,
+) -> None:
     with channel.SubprocessChannel() as ch:
         ch.read()
         # Test a simple command

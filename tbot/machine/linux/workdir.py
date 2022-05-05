@@ -22,7 +22,9 @@ from .path import H
 
 
 class Workdir(path.Path[H]):
-    _workdirs: "typing.Dict[typing.Tuple[linux_shell.LinuxShell, str, str], Workdir]" = {}
+    _workdirs: "typing.Dict[typing.Tuple[linux_shell.LinuxShell, str, str], Workdir]" = (
+        {}
+    )
 
     def __init__(self) -> None:  # noqa: D107
         raise NotImplementedError(

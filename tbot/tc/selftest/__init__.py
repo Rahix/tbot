@@ -26,14 +26,18 @@ from .testcase import *  # noqa: F403, F401, E402
 
 
 @tbot.testcase
-def selftest_uname(lab: typing.Optional[SelftestHost] = None,) -> None:
+def selftest_uname(
+    lab: typing.Optional[SelftestHost] = None,
+) -> None:
     """Test lab-host shell basics."""
     with lab or SelftestHost() as lh:
         lh.exec0("uname", "-a")
 
 
 @tbot.testcase
-def selftest_user(lab: typing.Optional[SelftestHost] = None,) -> None:
+def selftest_user(
+    lab: typing.Optional[SelftestHost] = None,
+) -> None:
     """Test lab-host variable expansion."""
     with lab or SelftestHost() as lh:
         lh.exec0("echo", lh.env("USER"))

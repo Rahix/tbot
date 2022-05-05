@@ -278,7 +278,10 @@ class Path(typing.Generic[H]):
         self, path: "Path[H]", *find_args: str
     ) -> "typing.Iterator[Path[H]]":
         output = self.host.exec(
-            "find", path, *find_args, linux.RedirStderr(Path(self.host, "/dev/null")),
+            "find",
+            path,
+            *find_args,
+            linux.RedirStderr(Path(self.host, "/dev/null")),
         )[1]
 
         for match in output[:-1].split("\n"):

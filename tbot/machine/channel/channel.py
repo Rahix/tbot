@@ -210,7 +210,7 @@ class BoundedPattern:
         elif isinstance(width, tuple):
             self._length = width[1]
 
-        if self._length == getattr(sre_parse, "MAXREPEAT", 2 ** 32 - 1):
+        if self._length == getattr(sre_parse, "MAXREPEAT", 2**32 - 1):
             raise Exception(f"Expression {self.pattern.pattern!r} is not bounded")
 
     def __len__(self) -> int:

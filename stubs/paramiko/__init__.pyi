@@ -30,7 +30,6 @@ class Channel:
     def fileno(self) -> int: ...
     def exit_status_ready(self) -> bool: ...
 
-
 class Transport:
     def open_session(
         self,
@@ -39,10 +38,11 @@ class Transport:
         timeout: typing.Optional[float] = None,
     ) -> Channel: ...
 
-
 class SSHClient:
     def load_system_host_keys(self) -> None: ...
-    def set_missing_host_key_policy(self, policy: client.MissingHostKeyPolicy) -> None: ...
+    def set_missing_host_key_policy(
+        self, policy: client.MissingHostKeyPolicy
+    ) -> None: ...
     def connect(
         self,
         hostname: str,
@@ -52,7 +52,6 @@ class SSHClient:
         passphrase: typing.Optional[str] = None,
         # pkey: typing.Optional[typing.Any] = None,
         key_filename: typing.Optional[str] = None,
-
         timeout: typing.Optional[float] = None,
         allow_agent: bool = True,
         look_for_keys: bool = True,

@@ -95,7 +95,7 @@ class SubprocessChannelIO(channel.ChannelIO):
                 != 0
             ):
                 break
-            time.sleep(2 ** t / 100)
+            time.sleep(2**t / 100)
         else:
             raise tbot.error.TbotException("some subprocess(es) did not stop")
 

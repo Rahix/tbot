@@ -185,7 +185,7 @@ def patched_make_field(
             # inconsistencies later when references are resolved
             fieldtype = types.pop(fieldarg)
             if len(fieldtype) == 1 and isinstance(fieldtype[0], nodes.Text):
-                typename = u"".join(n.astext() for n in fieldtype)
+                typename = "".join(n.astext() for n in fieldtype)
                 par.extend(
                     self.make_xrefs(
                         self.typerolename,

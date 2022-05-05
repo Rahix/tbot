@@ -62,6 +62,7 @@ def fixture(
 ) -> FixtureFunctionMarker: ...
 
 _E = TypeVar("_E", bound=BaseException)
+
 @overload
 def raises(
     expected_exception: Union[Type[_E], Tuple[Type[_E], ...]],

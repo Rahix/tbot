@@ -55,7 +55,8 @@ def main() -> None:
     print("Start uploading image...")
     try:
         response = requests.post(
-            url_upload.format(args.ip), files={"file": open(args.path, "rb")},
+            url_upload.format(args.ip),
+            files={"file": open(args.path, "rb")},
         )
 
         if response.status_code != 200:
