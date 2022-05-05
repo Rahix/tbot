@@ -128,7 +128,7 @@ class PyserialConnector(connector.Connector):
     ) -> typing.Iterator[M]:
         with context() as ctx:
             lh = ctx.request(tbot.role.LabHost)
-            m = ctx.enter_context(cls(lh))  # type: ignore
+            m: M = ctx.enter_context(cls(lh))  # type: ignore
             yield m
 
     def _connect(self) -> channel.Channel:
