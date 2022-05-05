@@ -2,34 +2,32 @@
 
 Installation
 ============
-Install tbot using
 
-.. code-block:: shell-session
+Prerequisites
+-------------
+tbot supports running on Linux only.  Other UNIXes might work but are not tested.
 
-   $ pip3 install -U --user git+https://github.com/rahix/tbot@v0.9.0
+tbot requires at least **Python 3.6**.  Any version older than that **will not
+work**.
 
-Also, if you haven't done this already, you need to add ``~/.local/bin``
-to your ``$PATH``.
+Installation
+------------
+1. Install tbot using
 
-.. note::
+   .. code-block:: shell-session
 
-    *tbot* requires at least **Python 3.6**.  Any version older than that
-    **will not work**.
+      $ pip3 install -U --user git+https://github.com/rahix/tbot@v0.9.0
 
-You can install tbot's man-page using
+2. If you haven't done this already, you need to add ``~/.local/bin`` to your
+   ``$PATH``.
 
-.. code-block:: shell-session
+3. tbot supports command line completions.  Install them with the following
+   commands:
 
-   $ sudo python3 setup.py install_data
+   .. code-block:: shell-session
 
-Completions
------------
-tbot supports command line completions.  Install them with the following commands:
-
-.. code-block:: bash
-
-   curl --create-dirs -L -o .local/lib/tbot/completions.sh https://github.com/Rahix/tbot/raw/master/completions.sh
-   echo "source ~/.local/lib/tbot/completions.sh" >>~/.bashrc
+      $ curl --create-dirs -L -o ~/.local/lib/tbot/completions.sh https://github.com/Rahix/tbot/raw/master/completions.sh
+      $ echo "source ~/.local/lib/tbot/completions.sh" >>~/.bashrc
 
 Troubleshooting
 ---------------
@@ -59,6 +57,8 @@ arguments), try forcing a clean reinstallation:
 
 Paramiko
 ^^^^^^^^
+Note that paramiko is no longer a required dependency.
+
 If the installation does not work, most likely it is an error when
 installing paramiko. I recommend installing paramiko through your distros
 package manager (eg. ``python3-paramiko`` for Fedora). If your distros
