@@ -114,6 +114,17 @@ F_lab = typing.Callable[
 
 def with_lab(tc: F_lh) -> F_lab:
     """
+    .. warning::
+
+       This decorator is deprecated!  Use :py:data:`tbot.ctx` instead:
+
+       .. code-block:: python
+
+          @tbot.testcase
+          def testcase_with_lab() -> None:
+              with tbot.ctx.request(tbot.role.LabHost) as lh:
+                  lh.exec0("uname", "-a")
+
     Decorate a function to automatically supply the lab-host as an argument.
 
     The idea is that when using this decorator and calling the testcase
@@ -145,6 +156,11 @@ def with_lab(tc: F_lh) -> F_lab:
         While making your life a lot easier, this decorator unfortunately has
         a drawback:  It will erase the type signature of your testcase, so you
         can no longer rely on type-checking when using the testcase downstream.
+
+    .. versionchanged:: UNRELEASED
+
+       This decorator is now officially deprecated in favor of the
+       :ref:`context` mechanism.
     """
 
     @functools.wraps(tc)
@@ -176,6 +192,17 @@ F_uboot = typing.Callable[
 
 def with_uboot(tc: F_ub) -> F_uboot:
     """
+    .. warning::
+
+       This decorator is deprecated!  Use :py:data:`tbot.ctx` instead:
+
+       .. code-block:: python
+
+          @tbot.testcase
+          def testcase_with_uboot() -> None:
+              with tbot.ctx.request(tbot.role.BoardUBoot) as ub:
+                  ub.exec0("version")
+
     Decorate a function to automatically supply a U-Boot machine as an argument.
 
     The idea is that when using this decorator and calling the testcase
@@ -225,6 +252,11 @@ def with_uboot(tc: F_ub) -> F_uboot:
         While making your life a lot easier, this decorator unfortunately has
         a drawback:  It will erase the type signature of your testcase, so you
         can no longer rely on type-checking when using the testcase downstream.
+
+    .. versionchanged:: UNRELEASED
+
+       This decorator is now officially deprecated in favor of the
+       :ref:`context` mechanism.
     """
 
     @functools.wraps(tc)
@@ -278,6 +310,17 @@ F_linux = typing.Callable[
 
 def with_linux(tc: F_lnx) -> F_linux:
     """
+    .. warning::
+
+       This decorator is deprecated!  Use :py:data:`tbot.ctx` instead:
+
+       .. code-block:: python
+
+          @tbot.testcase
+          def testcase_with_linux() -> None:
+              with tbot.ctx.request(tbot.role.BoardLinux) as lnx:
+                  lnx.exec0("uname", "-a")
+
     Decorate a function to automatically supply a board Linux machine as an argument.
 
     The idea is that when using this decorator and calling the testcase
@@ -297,6 +340,11 @@ def with_linux(tc: F_lnx) -> F_linux:
         While making your life a lot easier, this decorator unfortunately has
         a drawback:  It will erase the type signature of your testcase, so you
         can no longer rely on type-checking when using the testcase downstream.
+
+    .. versionchanged:: UNRELEASED
+
+       This decorator is now officially deprecated in favor of the
+       :ref:`context` mechanism.
     """
 
     @functools.wraps(tc)

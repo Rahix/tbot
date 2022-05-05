@@ -61,6 +61,17 @@ def _inject_into_context(
 
 def acquire_lab() -> LabHost:
     """
+    .. warning::
+
+       This function is deprecated!  Use :py:data:`tbot.ctx` instead:
+
+       .. code-block:: python
+
+          @tbot.testcase
+          def testcase_with_lab() -> None:
+              with tbot.ctx.request(tbot.role.LabHost) as lh:
+                  lh.exec0("uname", "-a")
+
     Acquire a new connection to the LabHost.
 
     If your lab-host is using a :class:`~tbot.machine.connector.ParamikoConnector`
@@ -84,6 +95,11 @@ def acquire_lab() -> LabHost:
                 ...
 
     :rtype: tbot.selectable.LabHost
+
+    .. versionchanged:: UNRELEASED
+
+       This function is now officially deprecated in favor of the
+       :ref:`context` mechanism.
     """
     if hasattr(LabHost, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a lab?")
@@ -98,6 +114,17 @@ def acquire_lab() -> LabHost:
 
 def acquire_local() -> LocalLabHost:
     """
+    .. warning::
+
+       This function is deprecated!  Use :py:data:`tbot.ctx` instead:
+
+       .. code-block:: python
+
+          @tbot.testcase
+          def testcase_with_local() -> None:
+              with tbot.ctx.request(tbot.role.LocalHost) as lo:
+                  lo.exec0("uname", "-a")
+
     Acquire a machine for the local host.
 
     Localhost machines are very cheap so they do not need to be shared
@@ -116,6 +143,11 @@ def acquire_local() -> LocalLabHost:
                 lo.exec0("id", "-un")
                 # On local machines you can access tbot's working directory:
                 tbot.log.message(f"CWD: {lo.workdir}")
+
+    .. versionchanged:: UNRELEASED
+
+       This function is now officially deprecated in favor of the
+       :ref:`context` mechanism.
     """
 
     @contextlib.contextmanager
@@ -137,6 +169,17 @@ class Board(board.Board):
 
 def acquire_board(lh: LabHost) -> Board:
     """
+    .. warning::
+
+       This function is deprecated!  Use :py:data:`tbot.ctx` instead:
+
+       .. code-block:: python
+
+          @tbot.testcase
+          def testcase_with_board() -> None:
+              with tbot.ctx.request(tbot.role.Board) as b:
+                  b.interactive()
+
     Acquire the selected board.
 
     If configured properly, :py:func:`tbot.acquire_board` will power on the
@@ -153,6 +196,11 @@ def acquire_board(lh: LabHost) -> Board:
             lh.exec0("echo", "Foo")
             with tbot.acquire_board(lh) as b, tbot.acquire_uboot(b) as ub:
                 ub.exec0("version")
+
+    .. versionchanged:: UNRELEASED
+
+       This function is now officially deprecated in favor of the
+       :ref:`context` mechanism.
     """
     if hasattr(Board, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a board?")
@@ -177,6 +225,17 @@ class UBootMachine(board.UBootShell, typing.ContextManager):
 
 def acquire_uboot(board: Board, *args: typing.Any) -> UBootMachine:
     """
+    .. warning::
+
+       This function is deprecated!  Use :py:data:`tbot.ctx` instead:
+
+       .. code-block:: python
+
+          @tbot.testcase
+          def testcase_with_uboot() -> None:
+              with tbot.ctx.request(tbot.role.BoardUBoot) as ub:
+                  ub.exec0("version")
+
     Acquire the selected board's U-Boot shell.
 
     As there can only be one instance of the selected board's :class:`UBootShell` at a time,
@@ -207,6 +266,11 @@ def acquire_uboot(board: Board, *args: typing.Any) -> UBootMachine:
                 ...
 
     :rtype: tbot.selectable.UBootMachine
+
+    .. versionchanged:: UNRELEASED
+
+       This function is now officially deprecated in favor of the
+       :ref:`context` mechanism.
     """
     if hasattr(UBootMachine, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a board?")
@@ -233,6 +297,17 @@ def acquire_linux(
     b: typing.Union[Board, UBootMachine], *args: typing.Any
 ) -> LinuxMachine:
     """
+    .. warning::
+
+       This function is deprecated!  Use :py:data:`tbot.ctx` instead:
+
+       .. code-block:: python
+
+          @tbot.testcase
+          def testcase_with_linux() -> None:
+              with tbot.ctx.request(tbot.role.BoardLinux) as lnx:
+                  lnx.exec0("cat", "/etc/os-release")
+
     Acquire the board's Linux shell.
 
     Can either boot from a previously created U-Boot (if the implementation
@@ -263,6 +338,11 @@ def acquire_linux(
                 ...
 
     :rtype: tbot.machine.linux.LinuxShell
+
+    .. versionchanged:: UNRELEASED
+
+       This function is now officially deprecated in favor of the
+       :ref:`context` mechanism.
     """
     if hasattr(LinuxMachine, "_unselected"):
         raise NotImplementedError("Maybe you haven't set a board?")
