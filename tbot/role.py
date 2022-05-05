@@ -70,12 +70,11 @@ class Board(board.Board, Role):
     """
     Role for the DUT (device under test, "the board") hardware.
 
-    As described in :ref:`config-board`, in tbot, the board is represented by
-    one machine for the "physical device" and separate machines for the
-    software running on it.  This role defines the physical hardware and e.g.
-    manages turning on and off board power.
+    In tbot, the board is represented by one machine for the "physical device"
+    and separate machines for the software running on it.  This role defines
+    the physical hardware and e.g. manages turning on and off board power.
 
-    See :ref:`config-board-hardware` for more.
+    See :ref:`config-board` for more.
     """
 
     pass
@@ -96,8 +95,7 @@ class BoardLinux(linux.LinuxShell, Role):
     Role for a Linux OS running on the :py:class:`tbot.role.Board`.
 
     There's multiple ways to configure such a machine.  See
-    :ref:`config-board-linux-standalone` or :ref:`config-board-linux-uboot`,
-    depending on what you need.
+    :ref:`config-board-linux`.
     """
 
     pass

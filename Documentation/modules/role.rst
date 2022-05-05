@@ -2,7 +2,8 @@
 
 ``tbot.role``
 =============
-Machine-roles as introduced in :ref:`tbot_role`.
+Machine-roles as introduced in :ref:`tbot_role`.  You can also read more about
+this in :ref:`configuration`.
 
 .. autoclass:: tbot.role.Role
 
