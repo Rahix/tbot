@@ -94,6 +94,8 @@ class LinuxBootLogin(machine.Initializer, LinuxBoot):
     The timer starts after initiation of the boot. This may either be power-on
     if booting into Linux directly or the point where the boot process is
     initiated from the bootloader (when using :py:class:`LinuxUbootConnector`).
+
+    .. versionadded:: UNRELEASED
     """
 
     _boot_start: float
