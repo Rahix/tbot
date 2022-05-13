@@ -96,7 +96,7 @@ def acquire_lab() -> LabHost:
 
     :rtype: tbot.selectable.LabHost
 
-    .. versionchanged:: UNRELEASED
+    .. versionchanged:: 0.10.0
 
        This function is now officially deprecated in favor of the
        :ref:`context` mechanism.
@@ -144,7 +144,7 @@ def acquire_local() -> LocalLabHost:
                 # On local machines you can access tbot's working directory:
                 tbot.log.message(f"CWD: {lo.workdir}")
 
-    .. versionchanged:: UNRELEASED
+    .. versionchanged:: 0.10.0
 
        This function is now officially deprecated in favor of the
        :ref:`context` mechanism.
@@ -197,7 +197,7 @@ def acquire_board(lh: LabHost) -> Board:
             with tbot.acquire_board(lh) as b, tbot.acquire_uboot(b) as ub:
                 ub.exec0("version")
 
-    .. versionchanged:: UNRELEASED
+    .. versionchanged:: 0.10.0
 
        This function is now officially deprecated in favor of the
        :ref:`context` mechanism.
@@ -267,7 +267,7 @@ def acquire_uboot(board: Board, *args: typing.Any) -> UBootMachine:
 
     :rtype: tbot.selectable.UBootMachine
 
-    .. versionchanged:: UNRELEASED
+    .. versionchanged:: 0.10.0
 
        This function is now officially deprecated in favor of the
        :ref:`context` mechanism.
@@ -339,7 +339,7 @@ def acquire_linux(
 
     :rtype: tbot.machine.linux.LinuxShell
 
-    .. versionchanged:: UNRELEASED
+    .. versionchanged:: 0.10.0
 
        This function is now officially deprecated in favor of the
        :ref:`context` mechanism.

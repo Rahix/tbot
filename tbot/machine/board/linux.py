@@ -95,7 +95,7 @@ class LinuxBootLogin(machine.Initializer, LinuxBoot):
     if booting into Linux directly or the point where the boot process is
     initiated from the bootloader (when using :py:class:`LinuxUbootConnector`).
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.10.0
     """
 
     _boot_start: float

@@ -157,7 +157,7 @@ def with_lab(tc: F_lh) -> F_lab:
         a drawback:  It will erase the type signature of your testcase, so you
         can no longer rely on type-checking when using the testcase downstream.
 
-    .. versionchanged:: UNRELEASED
+    .. versionchanged:: 0.10.0
 
        This decorator is now officially deprecated in favor of the
        :ref:`context` mechanism.
@@ -253,7 +253,7 @@ def with_uboot(tc: F_ub) -> F_uboot:
         a drawback:  It will erase the type signature of your testcase, so you
         can no longer rely on type-checking when using the testcase downstream.
 
-    .. versionchanged:: UNRELEASED
+    .. versionchanged:: 0.10.0
 
        This decorator is now officially deprecated in favor of the
        :ref:`context` mechanism.
@@ -341,7 +341,7 @@ def with_linux(tc: F_lnx) -> F_linux:
         a drawback:  It will erase the type signature of your testcase, so you
         can no longer rely on type-checking when using the testcase downstream.
 
-    .. versionchanged:: UNRELEASED
+    .. versionchanged:: 0.10.0
 
        This decorator is now officially deprecated in favor of the
        :ref:`context` mechanism.
