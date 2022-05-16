@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- Updated the `tbot_contrib.swupdate` testcases to newer tbot APIs.
 
 
 ## [0.10.0] - 2022-05-13

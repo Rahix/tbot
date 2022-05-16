@@ -1,22 +1,21 @@
+import argparse
 import asyncio
 import json
+
 import requests
 import websockets  # type: ignore
-import argparse
 
-url_upload = "http://{}:8080/upload"
-url_status = "ws://{}:8080/ws"
+URL_UPLOAD = "http://{}:8080/upload"
+URL_STATUS = "ws://{}:8080/ws"
 
 
 async def wait_update_finished(
     swu_file: str, target_ip: str, timeout: int = 300
-) -> None:
-
-    print("Wait update finished")
+) -> bool:
+    print("Waiting for installation to finish...")
 
     async def get_finish_messages() -> int:
-        async with websockets.connect(url_status.format(target_ip)) as websocket:
-
+        async with websockets.connect(URL_STATUS.format(target_ip)) as websocket:
             while True:
                 message = await websocket.recv()
                 try:
@@ -24,25 +23,28 @@ async def wait_update_finished(
                 except ValueError:
                     data = {"type": "UNKNOWN"}
 
+                # TODO: Parse messages and show a nicer representation.
+                print(repr(data))
+
                 if data["type"] == "status":
                     if data["status"] == "START":
                         continue
                     if data["status"] == "RUN":
-                        print("Updating starts")
+                        print("Update started.")
                         continue
                     if data["status"] == "UNKNOWN":
                         continue
                     if data["status"] == "SUCCESS":
-                        print("SWUPDATE successful !")
-                        return 0
+                        print("SWUPDATE successful!")
+                        return True
                     if data["status"] == "FAILURE":
-                        print("SWUPDATE failed !")
-                        return 1
+                        print("SWUPDATE failed!")
+                        return False
                 if data["type"] == "info":
                     print("info")
                     continue
 
-    await asyncio.wait_for(get_finish_messages(), timeout=timeout)
+    return await asyncio.wait_for(get_finish_messages(), timeout=timeout)
 
 
 def main() -> None:
@@ -52,28 +54,22 @@ def main() -> None:
     parser.add_argument("timeout", type=int)
     args = parser.parse_args()
 
-    print("Start uploading image...")
+    print("Uploading image...")
     try:
         response = requests.post(
-            url_upload.format(args.ip),
+            URL_UPLOAD.format(args.ip),
             files={"file": open(args.path, "rb")},
         )
 
         if response.status_code != 200:
-            raise Exception(
-                "Cannot upload software image: {}".format(response.status_code)
-            )
+            raise Exception(f"Cannot upload software image: {response.status_code}")
 
-        print(
-            "Software image uploaded successfully. Wait for installation to be finished...\n"
-        )
-        asyncio.sleep(1)
-        asyncio.get_event_loop().run_until_complete(
-            wait_update_finished(args.path, args.ip, timeout=args.timeout)
-        )
-
+        print("Image uploaded successfully.")
     except ValueError:
         print("No connection to host, exit")
+
+    if not asyncio.run(wait_update_finished(args.path, args.ip, timeout=args.timeout)):
+        raise Exception("Error during update.")
 
 
 if __name__ == "__main__":
