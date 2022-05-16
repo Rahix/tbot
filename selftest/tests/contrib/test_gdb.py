@@ -16,11 +16,11 @@ def test_gdb_machine(tbot_context: tbot.Context) -> None:
         if not lh.test("which", "gdb"):
             pytest.skip("GDB is missing.")
 
-        with tbot_contrib.gdb.GDB(lh, program, "hello", "world") as gdb:
+        with tbot_contrib.gdb.GDB(lh, program) as gdb:
             out = gdb.exec("break", "getenv")
-            if "not defined" in out:
+            if "not defined" in out or "No symbol table" in out:
                 pytest.skip("Debug symbols missing.")
-            gdb.exec("run")
+            gdb.exec("run", "hello", "world")
 
             while True:
                 # First argument is in RDI
