@@ -252,17 +252,18 @@ work "well enough":
        commands on the board console in hopes that one of them sticks.  It is
        not reliable at all but can be useful as an 80% kind of solution...
        """
+       import time
        time.sleep(0.1)
        # try stopping any running program on the board's shell
-       ch.sendcontrol("C")
+       self.ch.sendcontrol("C")
        time.sleep(0.1)
        # try rebooting from Linux
-       ch.sendline("reboot")
+       self.ch.sendline("reboot")
        # ... or if you also use U-Boot, try resetting from there.  the `cat` is
        # used to ensure we don't send the `reset` to Linux as that messes with
        # the terminal...
-       ch.sendline("cat")
-       ch.sendline("reset")
+       self.ch.sendline("cat")
+       self.ch.sendline("reset")
 
 .. _config-board-linux:
 
