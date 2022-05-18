@@ -246,6 +246,8 @@ work "well enough":
            lo.exec0("notify-send", "Powercycle", "Powercycle foo board please!")
            tbot.log.message("Powercycle now!")
 
+.. code-block:: python
+
    def poweron(self):
        """
        This alternative tries to trigger a soft-reset by spamming various
