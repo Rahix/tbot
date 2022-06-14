@@ -138,6 +138,10 @@ can be used to chain multiple commands or to redirect output.
 
    Redirect both ``stdout`` and ``stderr`` (``>... 2>&1``) to a file.
 
+.. py:class:: RedirStdin(file)
+
+   Redirect to ``stdin`` (``<...``) from a file.
+
 .. py:class:: AppendStdout(file)
 
    Redirect ``stdout`` (``>>...``) to a file, appending to the file rather

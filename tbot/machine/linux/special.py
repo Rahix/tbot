@@ -81,6 +81,10 @@ class RedirBoth(_Stdio[H]):
     _both = True
 
 
+class RedirStdin(_Stdio[H]):
+    _redir_token = "<"
+
+
 class AppendStdout(_Stdio[H]):
     _redir_token = ">>"
 
