@@ -1,8 +1,13 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Added `linux.RedirStdin` to feed file contents to stdin of a command ([#69]).
+
 ### Changed
 - Updated the `tbot_contrib.swupdate` testcases to newer tbot APIs.
+
+[#69]: https://github.com/Rahix/tbot/pull/69
 
 
 ## [0.10.0] - 2022-05-13
