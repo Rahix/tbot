@@ -149,6 +149,17 @@ def test_redirection_both(any_linux_shell: AnyLinuxShell) -> None:
         assert out == "new\nERROR\nappended\nproblem\n"
 
 
+def test_redirection_stdin(any_linux_shell: AnyLinuxShell) -> None:
+    with any_linux_shell() as linux_shell:
+        f = linux_shell.workdir / ".redir stdin test.txt"
+        CONTENT = "Hello\nThis is an\ninput!"
+        f.write_text(CONTENT)
+
+        output = linux_shell.exec0("cat", linux.RedirStdin(f))
+
+        assert CONTENT == output
+
+
 def test_redirection_mixed(any_linux_shell: AnyLinuxShell) -> None:
     with any_linux_shell() as linux_shell:
         f = linux_shell.workdir / ".redir test.txt"
