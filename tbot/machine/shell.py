@@ -108,7 +108,5 @@ class RawShell(machine.Machine):
         Connect tbot's stdio to this machine's channel.  This will allow
         interactive access to the machine.
         """
-        tbot.log.message(
-            f"Entering interactive shell ({tbot.log.c('CTRL+D to exit').bold}) ..."
-        )
+        tbot.log.message(f"Entering interactive shell...")
         self.ch.attach_interactive()

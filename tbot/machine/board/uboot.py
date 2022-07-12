@@ -380,9 +380,7 @@ class UBootShell(shell.Shell, UbootStartup):
         can interactively run commands.  This method is used by the
         ``interactive_uboot`` testcase.
         """
-        tbot.log.message(
-            f"Entering interactive shell ({tbot.log.c('CTRL+D to exit').bold}) ..."
-        )
+        tbot.log.message(f"Entering interactive shell...")
 
         # It is important to send a space before the newline.  Otherwise U-Boot
         # will reexecute the last command which we definitely do not want here.
