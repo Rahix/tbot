@@ -1010,7 +1010,7 @@ class Channel(typing.ContextManager):
 
     # interactive {{{
     def attach_interactive(
-        self, end_magic: typing.Union[str, bytes, None] = None
+        self, end_magic: typing.Union[str, bytes, None] = None, ctrld_exit: bool = False
     ) -> None:
         """
         Connect tbot's terminal to this channel.
@@ -1018,9 +1018,21 @@ class Channel(typing.ContextManager):
         Allows the user to interact directly with whatever this channel is
         connected to.
 
-        :param str, bytes end_magic: String that, when detected, should end the
-            interactive session.  If no ``end_magic`` is given, pressing
-            ``CTRL-D`` will terminate the session.
+        The interactive session can be exited at any point by **pressing**
+        ``CTRL+]`` **three times within 1 second**.
+
+        :param str, bytes end_magic: The ``end_magic`` parameter may be used to
+            define an automatic exit condition (sequence sent from the remote
+            side to trigger the end).
+        :param bool ctrld_exit:  If ``True``, pressing ``CTRL-D`` will also
+            terminate the session immediately.
+
+        .. versionchanged:: UNRELEASED
+
+           - The escape sequence is now "Press ``CTRL-]`` three times within 1
+             second".
+           - The ``ctrld_exit`` parameter was added to restore the old
+             "``CTRL-D`` to exit" behavior.
         """
         end_magic_bytes = (
             end_magic.encode("utf-8") if isinstance(end_magic, str) else end_magic
@@ -1034,7 +1046,13 @@ class Channel(typing.ContextManager):
         old_blacklist = self._write_blacklist
         self._write_blacklist = []
 
+        escape_timestamp = None
         previous: typing.Deque[int] = collections.deque(maxlen=3)
+
+        if not ctrld_exit:
+            tbot.log.message(
+                tbot.log.c("Press CTRL+] three times within 1 second to exit.").bold
+            )
 
         oldtty = termios.tcgetattr(sys.stdin)
         try:
@@ -1067,13 +1085,22 @@ class Channel(typing.ContextManager):
                 if sys.stdin in r:
                     data = sys.stdin.buffer.read(4096)
                     previous.extend(data)
-                    if end_magic is None and data == b"\x04":
+
+                    # Old ^D to exit behavior
+                    if ctrld_exit and data == b"\x04":
                         break
-                    for a, b in itertools.zip_longest(previous, b"\r~."):
-                        if a != b:
-                            break
-                    else:
-                        break
+
+                    # Detect whether ^] was pressed 3 times in 1 second
+                    now = time.monotonic()
+                    if escape_timestamp is None and 0x1D in previous:
+                        escape_timestamp = now
+                    elif escape_timestamp is not None:
+                        if now < escape_timestamp + 1:
+                            if previous.count(0x1D) >= 3:
+                                break
+                        else:
+                            escape_timestamp = None
+
                     self.send(data)
 
             sys.stdout.write("\r\n")
