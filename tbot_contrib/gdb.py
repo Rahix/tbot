@@ -103,7 +103,7 @@ class GDBShell(shell.Shell):
         tbot.log.message(
             f"Entering interactive GDB shell ({tbot.log.c('CTRL+D to exit').bold}) ..."
         )
-        self.ch.attach_interactive()
+        self.ch.attach_interactive(ctrld_exit=True)
 
         self.ch.sendcontrol("C")
         self.ch.read_until_prompt("(gdb) ")
