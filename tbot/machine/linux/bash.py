@@ -276,6 +276,11 @@ class Bash(linux_shell.LinuxShell):
 
         try:
             self.ch.sendline("exit")
-            self.ch.read_until_prompt(timeout=0.5)
+            try:
+                self.ch.read_until_prompt(timeout=0.5)
+            except TimeoutError:
+                # we might still be in the inner shell so let's try exiting again
+                self.ch.sendline("exit")
+                self.ch.read_until_prompt(timeout=0.5)
         except TimeoutError:
             raise Exception("Failed to reacquire shell after interactive session!")
