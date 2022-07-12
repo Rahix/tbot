@@ -6,8 +6,13 @@
 
 ### Changed
 - Updated the `tbot_contrib.swupdate` testcases to newer tbot APIs.
+- Changed the escape sequence for exiting interactive sessions.  You can now
+  **press `CTRL-]` three times within 1 second** to exit any interactive
+  session at any time.  Pressing `CTRL-D` is no longer supported in any but the
+  interactive linux-shell sessions ([#70]).
 
 [#69]: https://github.com/Rahix/tbot/pull/69
+[#70]: https://github.com/Rahix/tbot/pull/70
 
 
 ## [0.10.0] - 2022-05-13
