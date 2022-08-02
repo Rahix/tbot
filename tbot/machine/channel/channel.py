@@ -195,6 +195,7 @@ class ChannelTaken(ChannelBorrowed):
 
 class BoundedPattern:
     __slots__ = ("pattern", "_length")
+    _length: int
 
     def __init__(self, pattern: typing.Pattern[bytes]) -> None:
         self.pattern = pattern
