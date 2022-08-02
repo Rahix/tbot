@@ -4,6 +4,11 @@
 ### Added
 - Added `linux.RedirStdin` to feed file contents to stdin of a command ([#69]).
 
+### Fixed
+- Fixed `Channel.send()` behavior when called with large amounts of data.
+- Fixed invalid non-blocking I/O handling in the `SubprocessChannel`
+  implementation.
+
 ### Changed
 - Updated the `tbot_contrib.swupdate` testcases to newer tbot APIs.
 - Changed the escape sequence for exiting interactive sessions.  You can now
