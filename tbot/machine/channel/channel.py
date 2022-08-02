@@ -654,14 +654,22 @@ class Channel(typing.ContextManager):
             return
 
         s = s.encode("utf-8") if isinstance(s, str) else s
-        self.write(s, _ignore_blacklist=_ignore_blacklist)
 
-        if read_back:
-            # Read back what was just sent.  Assume a well-behaved other side
-            # and read two characters for every '\r' or '\n' sent.  This might
-            # be flawed in some cases, though ...
-            length = len(s) + s.count(b"\r") + s.count(b"\n")
-            self.read(n=length, timeout=timeout)
+        # Let's not overwhelm the channel-io by sending too much at once...
+        s_iter = iter(s)
+        while True:
+            chunk = bytes(itertools.islice(s_iter, 512))
+            if chunk == b"":
+                break
+
+            self.write(chunk, _ignore_blacklist=_ignore_blacklist)
+
+            if read_back:
+                # Read back what was just sent.  Assume a well-behaved other side
+                # and read two characters for every '\r' or '\n' sent.  This might
+                # be flawed in some cases, though ...
+                length = len(chunk) + chunk.count(b"\r") + chunk.count(b"\n")
+                self.read(n=length, timeout=timeout)
 
     def sendline(
         self,
