@@ -53,6 +53,11 @@ class SubprocessChannelIO(channel.ChannelIO):
             raise channel.ChannelClosedException()
 
         channel._debug_log(self, buf, True)
+
+        _, w, _ = select.select([], [self.pty_master], [], 10.0)
+        if self.pty_master not in w:
+            raise TimeoutError("write timeout exceeded")
+
         bytes_written = os.write(self.pty_master, buf)
         if bytes_written == 0:
             raise channel.ChannelClosedException
