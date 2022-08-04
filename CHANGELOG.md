@@ -15,6 +15,8 @@
   **press `CTRL-]` three times within 1 second** to exit any interactive
   session at any time.  Pressing `CTRL-D` is no longer supported in any but the
   interactive linux-shell sessions ([#70]).
+- For all who didn't get the memo that Python 3.6 is EOL: tbot now requires 3.7
+  as the minimum supported Python version.
 
 [#69]: https://github.com/Rahix/tbot/pull/69
 [#70]: https://github.com/Rahix/tbot/pull/70
