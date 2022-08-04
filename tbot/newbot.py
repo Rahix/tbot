@@ -145,7 +145,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     parser.add_argument("-b", "--board", help="alias for `-c`")
     parser.add_argument("-l", "--lab", help="alias for `-c`")
-    parser.add_argument("-c", "--config", nargs=1, action="extend", default=[])
+    parser.add_argument("-c", "--config", action="append", default=[])
 
     parser.add_argument(
         "-f",
