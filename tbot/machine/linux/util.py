@@ -27,13 +27,17 @@ def wait_for_shell(ch: channel.Channel) -> None:
     # can return, knowing the shell is now running on the other end.
     #
     # Credit to Pavel for this idea!
+    timeout = 0.2
     while True:
         ch.sendline("echo TBOT''LOGIN")
         try:
-            ch.expect("TBOTLOGIN", timeout=0.2)
+            ch.expect("TBOTLOGIN", timeout=timeout)
             break
         except TimeoutError:
-            pass
+            # Increase the timeout after the first try because the remote might
+            # just be a bit slow to get ready.  If we spam it too much, we will
+            # actually slow down the shell initialization...
+            timeout = 3.0
 
 
 def posix_environment(
