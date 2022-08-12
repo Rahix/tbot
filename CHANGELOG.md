@@ -3,11 +3,15 @@
 ## [Unreleased]
 ### Added
 - Added `linux.RedirStdin` to feed file contents to stdin of a command ([#69]).
+- Added a mechanism which allows tbot to skip entering the password if the
+  remote system never asks for one ([`61800b63461b`]).  See
+  ``no_password_timeout`` for details.
 
 ### Fixed
 - Fixed `Channel.send()` behavior when called with large amounts of data.
 - Fixed invalid non-blocking I/O handling in the `SubprocessChannel`
   implementation.
+- Fixed a few more escape sequences that clobber tbot's output.
 
 ### Changed
 - Updated the `tbot_contrib.swupdate` testcases to newer tbot APIs.
@@ -20,6 +24,7 @@
 
 [#69]: https://github.com/Rahix/tbot/pull/69
 [#70]: https://github.com/Rahix/tbot/pull/70
+[`61800b63461b`]: https://github.com/Rahix/tbot/commit/61800b63461bfe954776dd134000af0c57a62846
 
 
 ## [0.10.0] - 2022-05-13
