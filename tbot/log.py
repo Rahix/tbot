@@ -23,8 +23,8 @@ import re
 import sys
 import time
 import typing
-import termcolor2
 
+import termcolor2
 
 IS_UNICODE = sys.stdout.encoding.upper() == "UTF-8"
 IS_COLOR = False
@@ -170,9 +170,12 @@ class EventIO(io.StringIO):
 
         s = (
             s.replace("\x1B[H", "")
+            .replace("\x1B[999;999H", "")
+            .replace("\x1B[6n", "")
             .replace("\x1B[2J", "")
             .replace("\x1B[r", "")
             .replace("\x1B[u", "")
+            .replace("\x1B7", "")
             .replace("\r\n", "\n")
             .replace("\n\r", "\n")
         )
