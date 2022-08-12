@@ -115,6 +115,14 @@ class LinuxBootLogin(machine.Initializer, LinuxBoot):
         """Password to login with.  Set to ``None`` if no password is needed."""
         pass
 
+    no_password_timeout: typing.Optional[float] = 5.0
+    """
+    Timeout after which login without a password should be attempted.  Set to
+    ``None`` to disable this mechanism.
+
+    .. versionadded:: UNRELEASED
+    """
+
     def _timeout_remaining(self) -> typing.Optional[float]:
         if self.boot_timeout is None:
             return None
@@ -158,10 +166,28 @@ class LinuxBootLogin(machine.Initializer, LinuxBoot):
 
             self.ch.sendline(self.username)
             if self.password is not None:
-                self.ch.read_until_prompt(
-                    prompt="assword: ", timeout=self._timeout_remaining()
-                )
-                self.ch.sendline(self.password)
+                timeout = self._timeout_remaining()
+                if self.no_password_timeout is not None:
+                    if timeout is None:
+                        timeout = self.no_password_timeout
+                    else:
+                        timeout = min(timeout, self.no_password_timeout)
+
+                try:
+                    self.ch.read_until_prompt(prompt="assword: ", timeout=timeout)
+                except TimeoutError:
+                    # Call _timeout_remaining() to abort if the boot-timeout was reached
+                    self._timeout_remaining()
+
+                    # If we get here, the no_password_timeout expired and we
+                    # should attempt continuing without a password.
+                    tbot.log.warning(
+                        "Didn't get asked for a password."
+                        + "  Optimistically continuing without one..."
+                    )
+                else:
+                    # No timeout exception means we're at the password prompt.
+                    self.ch.sendline(self.password)
 
         yield None
 
