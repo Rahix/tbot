@@ -456,6 +456,29 @@ class Context(typing.ContextManager):
                     if inst.is_alive() and not inst.has_users():
                         inst.teardown()
 
+    def is_active(self) -> bool:
+        """
+        Check whether this context was already "activated" by entering it.
+
+        For the :py:class:`tbot.Context` to work properly, it should be entered
+        as a context-manager at least once (but it is okay to do it multiple
+        times):
+
+        .. code-block:: python
+
+            with tbot.ctx:
+                ...
+
+        ``is_active()`` can be used to check if this has already happened.
+        This can be used as an indication whether the context was already
+        initialized or not.  If it wasn't, you probably need to register
+        machines for this context first (for example by loading configuration
+        modules).
+
+        .. versionadded:: UNRELEASED
+        """
+        return self._open_contexts != 0
+
     @contextlib.contextmanager
     def __call__(self) -> "Iterator[ContextHandle]":
         with contextlib.ExitStack() as exitstack:
