@@ -11,6 +11,8 @@ or manually, if the existing ones are not covering your case.
 
 Helpers
 -------
+.. autofunction:: tbot.log.with_verbosity
+
 .. py:attribute:: IS_UNICODE
 
     Boolean that is set if stdout supports unicode.

@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import contextlib
 import enum
 import io
 import itertools
@@ -83,6 +84,43 @@ LOGFILE: typing.Optional[typing.TextIO] = None
 START_TIME = time.monotonic()
 
 _SPLIT_PATTERN = re.compile("(\r|\n)")
+
+
+@contextlib.contextmanager
+def with_verbosity(
+    verbosity: Verbosity, *, nesting: typing.Optional[int] = None
+) -> typing.Iterator[None]:
+    """
+    Temporarily change the verbosity to a different level.
+
+    **Example**:
+
+    .. code-block:: python
+
+        # This command produces a lot of uninteresting output so let's reduce
+        # verbosity while running it:
+        with tbot.log.with_verbosity(tbot.log.Verbosity.COMMAND):
+            kernel_log = lnx.exec0("dmesg")
+
+    .. versionadded:: UNRELEASED
+    """
+
+    global VERBOSITY
+    global NESTING
+
+    old_verbosity = VERBOSITY
+    old_nesting = NESTING
+
+    try:
+        VERBOSITY = verbosity
+        if nesting is not None:
+            NESTING = nesting
+
+        yield None
+    finally:
+        VERBOSITY = old_verbosity
+        if nesting is not None:
+            NESTING = old_nesting
 
 
 class EventIO(io.StringIO):
