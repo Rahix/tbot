@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+
+
+## [0.10.1] - 2022-08-18
 ### Added
 - Added `linux.RedirStdin` to feed file contents to stdin of a command ([#69]).
 - Added a mechanism which allows tbot to skip entering the password if the
@@ -922,7 +925,8 @@ Version **0.6.0** is basically a complete rewrite of TBot.  A rough summary of c
   were loaded later
 - Fix `call_then` not returning the function itself
 
-[Unreleased]: https://github.com/Rahix/tbot/compare/v0.10.0...master
+[Unreleased]: https://github.com/Rahix/tbot/compare/v0.10.1...master
+[0.10.1]: https://github.com/Rahix/tbot/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/Rahix/tbot/compare/v0.9.6...v0.10.0
 [0.9.6]: https://github.com/Rahix/tbot/compare/v0.9.5...v0.9.6
 [0.9.5]: https://github.com/Rahix/tbot/compare/v0.9.4...v0.9.5
