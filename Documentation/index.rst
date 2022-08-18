@@ -89,6 +89,7 @@ To show what tbot can help you with, here are a few simple example usecases:
    recipes
    logging
    context
+   pytest
    migration
 
 .. toctree::
