@@ -1036,7 +1036,7 @@ class Channel(typing.ContextManager):
         :param bool ctrld_exit:  If ``True``, pressing ``CTRL-D`` will also
             terminate the session immediately.
 
-        .. versionchanged:: UNRELEASED
+        .. versionchanged:: 0.10.1
 
            - The escape sequence is now "Press ``CTRL-]`` three times within 1
              second".

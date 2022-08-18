@@ -102,7 +102,7 @@ def with_verbosity(
         with tbot.log.with_verbosity(tbot.log.Verbosity.COMMAND):
             kernel_log = lnx.exec0("dmesg")
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.10.1
     """
 
     global VERBOSITY

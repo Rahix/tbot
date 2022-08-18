@@ -475,7 +475,7 @@ class Context(typing.ContextManager):
         machines for this context first (for example by loading configuration
         modules).
 
-        .. versionadded:: UNRELEASED
+        .. versionadded:: 0.10.1
         """
         return self._open_contexts != 0
 

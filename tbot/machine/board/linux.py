@@ -120,7 +120,7 @@ class LinuxBootLogin(machine.Initializer, LinuxBoot):
     Timeout after which login without a password should be attempted.  Set to
     ``None`` to disable this mechanism.
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.10.1
     """
 
     def _timeout_remaining(self) -> typing.Optional[float]:
