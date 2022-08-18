@@ -6,6 +6,10 @@
 - Added a mechanism which allows tbot to skip entering the password if the
   remote system never asks for one ([`61800b63461b`]).  See
   ``no_password_timeout`` for details.
+- Added the `tbot.log.with_verbosity()` helper which can be used to temporarily
+  change the verbosity level of tbot.
+- Added some documentation on how to integrate tbot with pytest: [pytest
+  Integration]
 
 ### Fixed
 - Fixed `Channel.send()` behavior when called with large amounts of data.
@@ -22,6 +26,7 @@
 - For all who didn't get the memo that Python 3.6 is EOL: tbot now requires 3.7
   as the minimum supported Python version.
 
+[pytest Integration]: https://tbot.tools/pytest.html
 [#69]: https://github.com/Rahix/tbot/pull/69
 [#70]: https://github.com/Rahix/tbot/pull/70
 [`61800b63461b`]: https://github.com/Rahix/tbot/commit/61800b63461bfe954776dd134000af0c57a62846
