@@ -103,6 +103,12 @@ def test_taking(ch: channel.Channel) -> None:
         ch.sendline("echo Illegal")
 
 
+def test_termination(ch: channel.Channel) -> None:
+    ch.sendline("exit")
+    with pytest.raises(channel.ChannelClosedException):
+        ch.read_until_timeout(5)
+
+
 def test_nullchannel_machine() -> None:
     """
     Ensure that we can instanciate a machine with a null channel properly.
