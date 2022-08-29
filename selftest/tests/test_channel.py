@@ -8,15 +8,16 @@ from tbot.machine import board, channel, connector
 
 @pytest.fixture
 def ch() -> Iterator[channel.Channel]:
-    with channel.SubprocessChannel() as ch:
-        ch.read()
+    with tbot.log.with_verbosity(tbot.log.Verbosity.CHANNEL):
+        with channel.SubprocessChannel() as ch:
+            ch.read()
 
-        # We must ensure that nothing enters the history from the commands sent
-        # in the following tests.
-        ch.sendline("unset HISTFILE", read_back=True)
-        ch.read()
+            # We must ensure that nothing enters the history from the commands sent
+            # in the following tests.
+            ch.sendline("unset HISTFILE", read_back=True)
+            ch.read()
 
-        yield ch
+            yield ch
 
 
 def test_simple_command(ch: channel.Channel) -> None:
