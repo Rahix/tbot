@@ -25,9 +25,11 @@ import time
 import typing
 
 import tbot.error
+
 from . import channel
 
 READ_CHUNK_SIZE = 4096
+MIN_READ_WAIT = 0.3
 
 
 class SubprocessChannelIO(channel.ChannelIO):
@@ -65,11 +67,29 @@ class SubprocessChannelIO(channel.ChannelIO):
 
     def read(self, n: int, timeout: typing.Optional[float] = None) -> bytes:
         if not self.closed:
-            # If the process is still running, wait
-            # for one byte or the timeout to arrive
-            r, _, _ = select.select([self.pty_master], [], [], timeout)
-            if self.pty_master not in r:
-                raise TimeoutError()
+            # If the process is still running, wait for one byte or the timeout
+            # to arrive.  We run select(2) in a loop to periodically (each
+            # second) monitor whether the subprocess is still running.
+
+            end_time = None if timeout is None else time.monotonic() + timeout
+            while True:
+                if end_time is None:
+                    select_timeout = MIN_READ_WAIT
+                else:
+                    select_timeout = min(MIN_READ_WAIT, end_time - time.monotonic())
+                    if select_timeout <= 0:
+                        raise TimeoutError()
+
+                r, _, _ = select.select([self.pty_master], [], [], select_timeout)
+
+                if self.pty_master in r:
+                    # There is something to read, proceed to reading it.
+                    break
+                elif self.closed:
+                    # Nothing to read and channel is closed.  We're done for good.
+                    raise channel.ChannelClosedException()
+
+                # Loop back around and try again until timeout expires.
 
         try:
             return channel._debug_log(self, os.read(self.pty_master, n))
