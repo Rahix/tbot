@@ -560,7 +560,8 @@ class Channel(typing.ContextManager):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:  # type: ignore
-        self.close()
+        if not self.closed:
+            self.close()
 
     # }}}
 
