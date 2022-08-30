@@ -1,6 +1,12 @@
 # Changelog
 
 ## [Unreleased]
+### Fixed
+- Fixed tbot hanging when the remote side closes a channel while tbot is
+  reading from it ([#74]).
+- Fixed a double exception in the context manager for a channel ([#74]).
+
+[#74]: https://github.com/Rahix/tbot/pull/74
 
 
 ## [0.10.1] - 2022-08-18
