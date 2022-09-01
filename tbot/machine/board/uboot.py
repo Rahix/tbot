@@ -74,6 +74,8 @@ class UBootAutobootIntercept(machine.Initializer, UbootStartup):
 
     .. code-block:: python
 
+        import re
+
         class MyUBoot(
             board.Connector,
             board.UBootAutobootIntercept,
