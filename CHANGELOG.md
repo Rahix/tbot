@@ -5,6 +5,7 @@
 - Fixed tbot hanging when the remote side closes a channel while tbot is
   reading from it ([#74]).
 - Fixed a double exception in the context manager for a channel ([#74]).
+- Fixed the U-Boot shell not initializing correctly on very slow serial lines.
 
 [#74]: https://github.com/Rahix/tbot/pull/74
 
