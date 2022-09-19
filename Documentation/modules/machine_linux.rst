@@ -237,6 +237,10 @@ Workdir
    .. automethod:: tbot.machine.linux.Workdir.xdg_data
    .. automethod:: tbot.machine.linux.Workdir.xdg_runtime
 
+``copy()``
+~~~~~~~~~~
+.. autofunction:: tbot.machine.linux.copy
+
 Lab-Host
 --------
 .. autoclass:: tbot.machine.linux.Lab

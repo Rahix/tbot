@@ -42,6 +42,7 @@ from .build import Builder
 from .lab import Lab
 from .util import RunCommandProxy, CommandEndedException
 from . import auth
+from .copy import copy
 
 __all__ = (
     "Ash",
@@ -68,6 +69,7 @@ __all__ = (
     "Workdir",
     "RunCommandProxy",
     "CommandEndedException",
+    "copy",
 )
 
 
