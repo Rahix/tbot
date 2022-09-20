@@ -19,7 +19,6 @@ import typing
 from tbot.machine import linux
 from tbot.tc import shell
 
-
 _SERVICES_CACHE: typing.Dict[str, typing.Dict[str, bool]] = {}
 
 
@@ -168,3 +167,142 @@ def hashcmp(a: linux.Path, b: linux.Path) -> bool:
     sum_b: str = b.host.exec0(tool, b).split()[0]
 
     return sum_a == sum_b
+
+
+# alias for later functions which have a shadowing argument
+_hashcmp = hashcmp
+
+
+H1 = typing.TypeVar("H1", bound=linux.LinuxShell)
+H2 = typing.TypeVar("H2", bound=linux.LinuxShell)
+
+
+@typing.overload
+def copy_to_dir(
+    sources: linux.Path[H1],
+    dest_dir: linux.Path[H2],
+    *,
+    hashcmp: bool = False,
+) -> linux.Path[H2]:
+    pass
+
+
+@typing.overload
+def copy_to_dir(
+    sources: typing.Iterable[linux.Path[H1]],
+    dest_dir: linux.Path[H2],
+    *,
+    hashcmp: bool = False,
+) -> typing.List[linux.Path[H2]]:
+    pass
+
+
+def copy_to_dir(
+    sources: typing.Union[linux.Path[H1], typing.Iterable[linux.Path[H1]]],
+    dest_dir: linux.Path[H2],
+    *,
+    hashcmp: bool = False,
+) -> typing.Union[linux.Path[H2], typing.List[linux.Path[H2]]]:
+    """
+    Copy one or more files to a directory
+
+    This function will copy each file from ``sources`` into a new file in
+    ``dest_dir`` which has the same name as the original one.
+
+    This function uses :py:func:`linux.copy() <tbot.machine.linux.copy>` under
+    the hood so ``sources`` and ``dest_dir`` need not be on the same host.  See
+    that function for details.
+
+    :param sources: The file(s) to copy.  This may be a single
+        :py:class:`~tbot.machine.linux.Path` or an iterable which yields zero
+        or more :py:class:`~tbot.machine.linux.Path` objects.
+
+    :param linux.Path dest_dir: The target directory where the files should be
+        copied to.  It does not need to be on the same host as ``sources``.
+
+    :param bool hashcmp: This optional named argument can be set to true to
+        make the function verify checksums of each file before performing the
+        copy. This is very useful to skip superfluous copying operations.
+
+    :returns: If a single ``sources`` path was passed, a single path is
+        returned which points to the newly created copy.  If multiple
+        ``sources`` were passed (as an iterable), a list of paths for each
+        copied file is returned.
+
+    **Example**: Copy a file from lab-host to a tftp-server for serving it to a
+    target device.
+
+    .. code-block:: python
+
+        from tbot_contrib import utils
+
+        linux_sources = lh.workdir / "linux"
+
+        tftp_zimage = utils.copy_to_dir(
+            linux_sources / "arch/arm/boot/zImage",
+            tftp_server.tftp_dir,
+            hashcmp=True,
+        )
+
+        tftp_filename = tftp_zimage.name
+
+        u_boot.exec0("tftp", "0x10000000", f"{tftp_server.addr}:{tftp_filename}")
+
+    **Example**: Copy many files from lab-host to a tftp-server for serving
+    them to a target device.
+
+    .. code-block:: python
+
+        from tbot_contrib import utils
+
+        linux_sources = lh.workdir / "linux"
+
+        utils.copy_to_dir(
+            [
+                linux_sources / "arch/arm/boot/zImage",
+                linux_sources / "arch/arm/boot/dts/mydevice.dtb",
+            ],
+            tftp_server.tftp_dir,
+            hashcmp=True,
+        )
+
+    **Example**: Copy all config files to a new directory and then run a
+    replacement command on each one.
+
+    .. code-block:: python
+
+        from tbot_contrib import utils
+
+        config_dir = lnx.fsroot / "etc" / "myapp"
+        newconfig_dir = lnx.workdir / "newconfig"
+        lnx.exec0("rm", "-rf", newconfig_dir)
+        lnx.exec0("mkdir", newconfig_dir)
+
+        new_cfg_files = utils.copy_to_dir(
+            config_dir.glob("*.conf"),
+            newconfig_dir,
+        )
+
+        for cfg_file in new_cfg_files:
+            lnx.exec0("sed", "-i", "s/eth0/wlan0/g", cfg_file)
+    """
+    if isinstance(sources, linux.Path):
+        source_iter: typing.Iterable[linux.Path[H1]] = (sources,)
+    else:
+        source_iter = sources
+
+    dest_list = []
+    for source in source_iter:
+        dest = dest_dir / source.name
+        dest_list.append(dest)
+
+        if hashcmp:
+            if not _hashcmp(source, dest):
+                linux.copy(source, dest)
+        else:
+            linux.copy(source, dest)
+
+    if isinstance(sources, linux.Path):
+        return dest_list[0]
+    else:
+        return dest_list
