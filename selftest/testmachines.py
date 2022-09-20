@@ -2,6 +2,7 @@ import contextlib
 from typing import Iterator, Union
 
 import pytest
+
 import tbot
 from tbot import machine
 from tbot.machine import board, channel, connector, linux
@@ -80,6 +81,16 @@ class LocalhostAsh(connector.ConsoleConnector, linux.Ash, tbot.role.Role):
         )
 
 
+# Different distros like to store this binary in different locations.  Thus we
+# need to adapt to the system where tests are running to find the correct
+# one...
+SFTP_LOCATIONS = [
+    "/usr/lib/ssh/sftp-server",
+    "/usr/lib/openssh/sftp-server",
+    "/usr/libexec/openssh/sftp-server",
+]
+
+
 class MocksshServer(
     connector.SubprocessConnector,
     linux.Bash,
@@ -116,6 +127,17 @@ class MocksshServer(
 
         cat_path = self.exec0("which", "cat").strip()
 
+        def path_exists(loc: str) -> bool:
+            return linux.Path(self, loc).exists()
+
+        sftp_location = next(filter(path_exists, SFTP_LOCATIONS), None)
+        if sftp_location is not None:
+            self._has_sftp = True
+            sftp_config = f"# Make scp work\nSubsystem sftp {sftp_location}"
+        else:
+            self._has_sftp = False
+            sftp_config = "# No sftp/scp available on this host."
+
         sshd_config = self.workdir / "sshd_config"
         sshd_config.write_text(
             f"""\
@@ -135,7 +157,10 @@ PasswordAuthentication no
 MaxAuthTries 1024
 
 # Environment
-AcceptEnv=XDG_RUNTIME_DIR"""
+AcceptEnv=XDG_RUNTIME_DIR
+
+{sftp_config}
+"""
         )
 
         sshd_path = self.exec0("which", "sshd").strip()
@@ -161,6 +186,7 @@ class MocksshClient(connector.SSHConnector, linux.Bash, tbot.role.Role):
     ssh_config = ["UserKnownHostsFile=/dev/null", "SendEnv=XDG_RUNTIME_DIR"]
     # will be overridden later:
     authenticator = linux.auth.PrivateKeyAuthenticator("/dev/null")
+    _srv: MocksshServer
 
     @classmethod
     @contextlib.contextmanager
@@ -178,11 +204,16 @@ class MocksshClient(connector.SSHConnector, linux.Bash, tbot.role.Role):
 
             # Instanciate self
             m = cx.enter_context(cls(lo))
+            m._srv = srv
             yield m
 
     @property
     def workdir(self) -> linux.Path:
         return linux.Workdir.xdg_runtime(self, "selftest-data-ssh-client")
+
+    @property
+    def has_sftp(self) -> bool:
+        return getattr(self._srv, "_has_sftp", False)
 
     def init(self) -> None:
         self.exec0("rm", "-rf", self.workdir)
