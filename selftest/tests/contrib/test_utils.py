@@ -61,3 +61,46 @@ def test_find_ip_address(tbot_context: tbot.Context) -> None:
         # Check whether find_ip_address() works with a local address
         addr = tbot_contrib.utils.find_ip_address(lo, "127.0.0.1")
         assert addr == "127.0.0.1"
+
+
+def test_copy_to_dir_single(tbot_context: tbot.Context) -> None:
+    with tbot_context.request(testmachines.Localhost) as lo:
+        testdir = lo.workdir / "selftest-copy-dir1"
+        lo.exec0("rm", "-rf", testdir)
+        lo.exec0("mkdir", testdir)
+
+        source = testdir / "file.txt"
+        source.write_text("Hello and welcome to the copy_to_dir() test!\n")
+
+        target = testdir / "target"
+        lo.exec0("mkdir", target)
+
+        dest = tbot_contrib.utils.copy_to_dir(source, target)
+
+        assert dest == target / "file.txt"
+
+        content = dest.read_text()
+        assert content == "Hello and welcome to the copy_to_dir() test!\n"
+
+
+def test_copy_to_dir_multi(tbot_context: tbot.Context) -> None:
+    with tbot_context.request(testmachines.Localhost) as lo:
+        testdir = lo.workdir / "selftest-copy-dir"
+        lo.exec0("rm", "-rf", testdir)
+        lo.exec0("mkdir", testdir)
+
+        for i in range(1, 6):
+            (testdir / f"file{i}.txt").write_text(f"File {i}\n")
+
+        target = testdir / "target"
+        lo.exec0("mkdir", target)
+
+        # Use glob() to find the test-files so that function also gets some
+        # more test coverage.
+        target_files = tbot_contrib.utils.copy_to_dir(testdir.glob("*.txt"), target)
+
+        for i in range(1, 6):
+            file = target / f"file{i}.txt"
+            assert file in target_files
+            content = file.read_text()
+            assert content == f"File {i}\n"
