@@ -18,6 +18,7 @@ def _scp_copy(
     port: int,
     ssh_config: typing.List[str],
     authenticator: auth.Authenticator,
+    use_multiplexing: bool,
 ) -> None:
     local_host = local_path.host
 
@@ -29,6 +30,15 @@ def _scp_copy(
         *hk_disable,
         *[arg for opt in ssh_config for arg in ["-o", opt]],
     ]
+
+    if use_multiplexing:
+        multiplexing_dir = local_host.workdir / ".ssh-multi"
+        scp_command += ["-o", "ControlMaster=auto"]
+        scp_command += ["-o", "ControlPersist=10m"]
+        scp_command += [
+            "-o",
+            f"ControlPath={multiplexing_dir.at_host(local_host)}/%C",
+        ]
 
     if isinstance(authenticator, auth.NoneAuthenticator):
         scp_command += ["-o", "BatchMode=yes"]
@@ -116,6 +126,7 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
             port=p1.host.port,
             ssh_config=p1.host.ssh_config,
             authenticator=p1.host.authenticator,
+            use_multiplexing=p1.host.use_multiplexing,
         )
     elif isinstance(p2.host, connector.SSHConnector) and p2.host.host is p1.host:
         # Copy to an SSH machine
@@ -129,6 +140,7 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
             port=p2.host.port,
             ssh_config=p2.host.ssh_config,
             authenticator=p2.host.authenticator,
+            use_multiplexing=p2.host.use_multiplexing,
         )
     elif isinstance(p1.host, connector.SubprocessConnector) and (
         isinstance(p2.host, connector.ParamikoConnector)
@@ -145,6 +157,7 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
             port=p2.host.port,
             ssh_config=getattr(p2.host, "ssh_config", []),
             authenticator=p2.host.authenticator,
+            use_multiplexing=p2.host.use_multiplexing,
         )
     elif isinstance(p2.host, connector.SubprocessConnector) and (
         isinstance(p1.host, connector.ParamikoConnector)
@@ -161,6 +174,7 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
             port=p1.host.port,
             ssh_config=getattr(p2.host, "ssh_config", []),
             authenticator=p1.host.authenticator,
+            use_multiplexing=p1.host.use_multiplexing,
         )
     else:
         raise NotImplementedError(f"Can't copy from {p1.host} to {p2.host}!")
