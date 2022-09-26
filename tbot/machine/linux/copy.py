@@ -108,6 +108,8 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
             ...
             if not utils.hashcmp(path_a, path_b)
                 shell.copy(path_a, path_b)
+
+    .. versionadded:: UNRELEASED
     """
     if isinstance(p1.host, p2.host.__class__) or isinstance(p2.host, p1.host.__class__):
         # Both paths are on the same host

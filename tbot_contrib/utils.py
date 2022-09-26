@@ -229,6 +229,8 @@ def copy_to_dir(
         ``sources`` were passed (as an iterable), a list of paths for each
         copied file is returned.
 
+    .. versionadded:: UNRELEASED
+
     **Example**: Copy a file from lab-host to a tftp-server for serving it to a
     target device.
 
