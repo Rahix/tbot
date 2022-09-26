@@ -166,6 +166,10 @@ def build_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
+        "--log", metavar="LOGFILE", help="write a log to the specified file"
+    )
+
+    parser.add_argument(
         "-v", dest="verbosity", action="count", default=0, help="increase the verbosity"
     )
 
@@ -216,6 +220,9 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
 
     for flag in args.flags:
         tbot.flags.add(flag)
+
+    if args.log:
+        tbot.log.LOGFILE = open(args.log, "w")
 
     tbot.log.VERBOSITY = tbot.log.Verbosity(
         tbot.log.Verbosity.STDOUT + args.verbosity - args.quiet
