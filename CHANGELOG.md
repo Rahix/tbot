@@ -1,13 +1,26 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Added a `tbot_contrib.utils.copy_to_dir()` helper which copies multiple files
+  to a directory.  It is a more ergonomic wrapper around the existing `copy()`
+  function.  Check its documentation for more details:
+  [`copy_to_dir()`][copy_to_dir-docs] ([#77]).
+
+### Changed
+- Moved `tbot.tc.shell.copy()` to `tbot.machine.linux.copy()` as it is a core
+  part of tbot.  The old name still exists for compatibility ([#77]).
+
 ### Fixed
 - Fixed tbot hanging when the remote side closes a channel while tbot is
   reading from it ([#74]).
 - Fixed a double exception in the context manager for a channel ([#74]).
 - Fixed the U-Boot shell not initializing correctly on very slow serial lines.
+- Fixed `copy()` not honoring the `use_multiplexing` setting ([#77]).
 
 [#74]: https://github.com/Rahix/tbot/pull/74
+[#77]: https://github.com/Rahix/tbot/pull/77
+[copy_to_dir-docs]: https://tbot.tools/contrib/utils.html#tbot_contrib.utils.copy_to_dir
 
 
 ## [0.10.1] - 2022-08-18
