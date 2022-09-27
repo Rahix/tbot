@@ -15,6 +15,10 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import typing
+from typing import Any
+
+import tbot.error
+from tbot import machine
 from tbot.machine import channel, linux
 
 M = typing.TypeVar("M", bound="linux.LinuxShell")
@@ -122,14 +126,18 @@ class RunCommandProxy(channel.Channel):
 
     @staticmethod
     def _ctx(
-        orig_chan: channel.Channel, cmd_context: CMD_CONTEXT
+        *,
+        channel: channel.Channel,
+        context: CMD_CONTEXT,
+        host: "machine.Machine",
+        args: Any,
     ) -> "typing.Iterator[RunCommandProxy]":
         """
         Helper function for LinuxShell.run() implementations.  See the comment
         near the CMD_CONTEXT definition in this file for more details.
         """
-        with orig_chan.borrow() as ch:
-            proxy = RunCommandProxy(ch, cmd_context)
+        with channel.borrow() as ch:
+            proxy = RunCommandProxy(ch, context, host, args)
 
             try:
                 yield proxy
@@ -138,16 +146,28 @@ class RunCommandProxy(channel.Channel):
             proxy._assert_end()
 
     def __new__(
-        cls, chan: channel.Channel, cmd_context: CMD_CONTEXT
+        cls,
+        chan: channel.Channel,
+        cmd_context: CMD_CONTEXT,
+        host: "machine.Machine",
+        args: Any,
     ) -> "RunCommandProxy":
         chan.__class__ = cls
         return typing.cast(RunCommandProxy, chan)
 
-    def __init__(self, chan: channel.Channel, cmd_context: CMD_CONTEXT) -> None:
+    def __init__(
+        self,
+        chan: channel.Channel,
+        cmd_context: CMD_CONTEXT,
+        host: "machine.Machine",
+        args: Any,
+    ) -> None:
         self._proxy_alive = True
         self._cmd_context = cmd_context(self)
         self._cmd = next(self._cmd_context)
         self._c2 = self._c
+        self._exc_host = host
+        self._exc_args = args
 
     def terminate0(self) -> str:
         """
@@ -161,7 +181,9 @@ class RunCommandProxy(channel.Channel):
         """
         retcode, output = self.terminate()
         if retcode != 0:
-            raise Exception(f"command {self._cmd!r} failed!")
+            raise tbot.error.CommandFailure(
+                self._exc_host, self._exc_args, repr=self._cmd
+            )
         return output
 
     def terminate(self) -> typing.Tuple[int, str]:

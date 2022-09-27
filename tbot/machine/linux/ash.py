@@ -197,7 +197,9 @@ class Ash(linux_shell.LinuxShell):
 
             return (retcode, output)
 
-        yield from util.RunCommandProxy._ctx(self.ch, cmd_context)
+        yield from util.RunCommandProxy._ctx(
+            channel=self.ch, context=cmd_context, host=self, args=args
+        )
 
     def open_channel(
         self: Self, *args: typing.Union[str, special.Special[Self], path.Path[Self]]

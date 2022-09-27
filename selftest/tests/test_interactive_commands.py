@@ -1,6 +1,7 @@
 import pytest
 from conftest import AnyLinuxShell
 
+import tbot
 from tbot.machine import channel, linux
 
 
@@ -57,7 +58,7 @@ def test_failing_unexpected_abort(any_linux_shell: AnyLinuxShell) -> None:
 
 def test_failing_bad_retcode(any_linux_shell: AnyLinuxShell) -> None:
     with any_linux_shell() as linux_shell:
-        with pytest.raises(Exception, match="command .* failed"):
+        with pytest.raises(tbot.error.CommandFailure):
             with linux_shell.run("false") as false:
                 false.terminate0()
 

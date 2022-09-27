@@ -277,7 +277,7 @@ def test_write_dir_text(testdir_builder: "TestDir") -> None:
         path = testdir / "test-dir"
         testdir.host.exec0("mkdir", "-p", path)
 
-        with pytest.raises(Exception, match="command .* failed"):
+        with pytest.raises(tbot.error.CommandFailure):
             path.write_text("Hello World\n")
 
         with pytest.raises(tbot.error.CommandFailure):
@@ -289,7 +289,7 @@ def test_write_dir_binary(testdir_builder: "TestDir") -> None:
         path = testdir / "test-dir"
         testdir.host.exec0("mkdir", "-p", path)
 
-        with pytest.raises(Exception, match="command .* failed"):
+        with pytest.raises(tbot.error.CommandFailure):
             path.write_bytes(b"\x01\x02")
 
         with pytest.raises(tbot.error.CommandFailure):
