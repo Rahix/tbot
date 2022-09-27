@@ -299,8 +299,7 @@ class UBootShell(shell.Shell, UbootStartup):
         """
         retcode, out = self.exec(*args)
         if retcode != 0:
-            cmd = self.escape(*args)
-            raise Exception(f"command {cmd!r} failed")
+            raise tbot.error.CommandFailure(self, args, repr=self.escape(*args))
         return out
 
     def test(self, *args: ArgTypes) -> bool:
@@ -395,7 +394,9 @@ class UBootShell(shell.Shell, UbootStartup):
         try:
             self.ch.read_until_prompt(timeout=0.5)
         except TimeoutError:
-            raise Exception("Failed to reacquire U-Boot after interactive session!")
+            raise tbot.error.MachineError(
+                "Failed to reacquire U-Boot after interactive session!"
+            )
 
         tbot.log.message("Exiting interactive shell ...")
 
@@ -425,7 +426,7 @@ class UBootShell(shell.Shell, UbootStartup):
             out = self.exec0("bdinfo")
             match = re.search(r"^-> start\s+= (0x[\dA-Fa-f]+)$", out, re.MULTILINE)
             if match is None:
-                raise Exception("RAM base not found in bdinfo output!")
+                raise tbot.error.MachineError("RAM base not found in bdinfo output!")
             self._ram_base = int(match.group(1), 16)
             return self._ram_base
 
