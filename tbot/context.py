@@ -220,7 +220,8 @@ class Context(typing.ContextManager):
         type = typing.cast(Type[M], type)
 
         if type in self._roles:
-            machine_class = typing.cast(Type[M], self._roles[type])
+            role = typing.cast(Type[tbot.role.Role], type)
+            machine_class = typing.cast(Type[M], self._roles[role])
         elif type in self._instances:
             machine_class = type
         else:
@@ -382,8 +383,8 @@ class Context(typing.ContextManager):
         """
         Return the registered machine class for a :py:class:`~tbot.role.Role`.
         """
-        type = typing.cast(Type[M], type)
-        return typing.cast(Type[M], self._roles[type])
+        role = typing.cast(Type[tbot.role.Role], type)
+        return typing.cast(Type[M], self._roles[role])
 
     def teardown_if_alive(self, type: Callable[..., M]) -> bool:
         """
