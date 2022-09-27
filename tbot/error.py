@@ -56,7 +56,7 @@ class MachineError(TbotException):
     """
 
 
-class AbstractMethodError(TbotException, NotImplementedError):
+class AbstractMethodError(ApiViolationError, NotImplementedError):
     """
     A method which needs to be overwritten was called from code.  This
     shouldn't ever really happen in practice hopefully ...
@@ -75,7 +75,7 @@ class AbstractMethodError(TbotException, NotImplementedError):
         )
 
 
-class WrongHostError(TbotException, ValueError):
+class WrongHostError(ApiViolationError, ValueError):
     """
     A method was called with arguments that reference a different host.
     """
@@ -87,7 +87,7 @@ class WrongHostError(TbotException, ValueError):
         super().__init__(f"{arg!r} references a host/machine that is not {host!r}")
 
 
-class ContextError(TbotException, RuntimeError):
+class ContextError(ApiViolationError, RuntimeError):
     """
     A forbidden or wrong kind of interaction with tbot's context was attempted.
 
