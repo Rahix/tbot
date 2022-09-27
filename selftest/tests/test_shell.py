@@ -1,7 +1,9 @@
 import pytest
+from conftest import AnyLinuxShell
+
 from tbot.machine import linux
 from tbot.tc import shell
-from conftest import AnyLinuxShell
+import tbot
 
 
 def test_simple_output(any_linux_shell: AnyLinuxShell) -> None:
@@ -11,6 +13,12 @@ def test_simple_output(any_linux_shell: AnyLinuxShell) -> None:
 
         out = linux_shell.exec0("echo", "$?", "!#")
         assert out == "$? !#\n"
+
+
+def test_failing_command(any_linux_shell: AnyLinuxShell) -> None:
+    with any_linux_shell() as linux_shell:
+        with pytest.raises(tbot.error.CommandFailure):
+            linux_shell.exec0("false")
 
 
 def test_simple_printf(any_linux_shell: AnyLinuxShell) -> None:

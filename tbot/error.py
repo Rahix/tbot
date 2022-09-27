@@ -97,3 +97,50 @@ class ContextError(ApiViolationError, RuntimeError):
 
     .. versionadded:: UNRELEASED
     """
+
+
+_repr = repr
+
+
+class CommandFailure(MachineError):
+    """
+    A command exited with non-zero exit code.
+
+    This exception is raised by ``exec0()`` methods to indicate command failures.
+
+    .. versionadded:: UNRELEASED
+    """
+
+    host: "machine.Machine"
+    """
+    The host where the failed command was executed.
+
+    This host may or may not be available at the time of catching the exception,
+    depending on how far the exception was bubbled up.
+    """
+
+    cmd: Any
+    """
+    The original form of the command, usually a list of arguments.
+
+    For a readable and displayable version, use the ``repr`` field instead.
+    """
+
+    repr: str
+    """
+    String representation of the command which failed.
+
+    Should only be used for diagnostic purposes.
+    """
+
+    def __init__(
+        self, host: "machine.Machine", cmd: Any, *, repr: Optional[str] = None
+    ) -> None:
+        self.host = host
+        self.cmd = cmd
+        if repr is not None:
+            self.cmd_repr = repr
+        else:
+            self.cmd_repr = _repr(self.cmd)
+
+        super().__init__(f"command failed: [{self.host.name}] {self.cmd_repr}")

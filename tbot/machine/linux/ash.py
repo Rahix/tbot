@@ -133,8 +133,7 @@ class Ash(linux_shell.LinuxShell):
     ) -> str:
         retcode, out = self.exec(*args)
         if retcode != 0:
-            cmd = self.escape(*args)
-            raise Exception(f"command {cmd!r} failed")
+            raise tbot.error.CommandFailure(self, args, repr=self.escape(*args))
         return out
 
     def test(
