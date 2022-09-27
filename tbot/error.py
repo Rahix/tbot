@@ -58,3 +58,15 @@ class WrongHostError(TbotException, ValueError):
         self.host = host
 
         super().__init__(f"{arg!r} references a host/machine that is not {host!r}")
+
+
+class ContextError(TbotException, RuntimeError):
+    """
+    A forbidden or wrong kind of interaction with tbot's context was attempted.
+
+    The exception message will include more details.  As an example, this
+    exception is raised when requesting an instance that is currently
+    exclusively requested elsewhere.
+
+    .. versionadded:: UNRELEASED
+    """

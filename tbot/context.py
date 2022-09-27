@@ -40,7 +40,7 @@ class InstanceManager(Generic[M]):
         instance: Optional[M] = None,
     ) -> None:
         if self._instance is not None:
-            raise Exception("trying to re-initialize a live instance")
+            raise tbot.error.ContextError("trying to re-initialize a live instance")
 
         self._cx = contextlib.ExitStack()
         self._available = True
@@ -56,7 +56,7 @@ class InstanceManager(Generic[M]):
 
     def teardown(self) -> None:
         if self._instance is None:
-            raise Exception("trying to de-init a closed instance")
+            raise tbot.error.ContextError("trying to de-init a closed instance")
 
         # Necessary to ensure any open contexts for this machine do not
         # prevent it from running its deinitialization code:
@@ -68,10 +68,12 @@ class InstanceManager(Generic[M]):
     @contextlib.contextmanager
     def request(self, exclusive: bool = False, keep_alive: bool = False) -> Iterator[M]:
         if self._instance is None:
-            raise Exception("trying to access a closed instance")
+            raise tbot.error.ContextError("trying to access a closed instance")
 
         if not self._available:
-            raise Exception("trying to access instance which is not available")
+            raise tbot.error.ContextError(
+                "trying to access instance which is not available"
+            )
 
         try:
             self._current_users += 1
@@ -343,7 +345,7 @@ class Context(typing.ContextManager):
             reset_on_error = self._reset_on_error_default
 
         if self._keep_alive and self._open_contexts == 0:
-            raise tbot.error.TbotException(
+            raise tbot.error.ContextError(
                 "When a context is marked with `keep_alive` you **must** enter "
                 + "its own context-manager to ensure proper cleanup."
             )
