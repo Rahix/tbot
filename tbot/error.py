@@ -26,7 +26,34 @@ class TbotException(Exception):
     Base-class for all exceptions which are specific to tbot.
     """
 
-    pass
+
+class ApiViolationError(TbotException, RuntimeError):
+    """
+    Base-class for all exceptions that are raised due to wrong use of tbot's API.
+
+    Seeing this exception means that the calling code has a bug and needs to be
+    fixed. This is in contrast to :py:class:`tbot.error.MachineError` which is
+    the base-class for exceptions raised due to unexpected occurrences on the
+    remote side during a test-run.
+
+    The subclasses of ``ApiViolationError`` should detail in their
+    documentation how to fix them.
+
+    .. versionadded:: UNRELEASED
+    """
+
+
+class MachineError(TbotException):
+    """
+    Base-class for exceptions raised due to remote machine errors.
+
+    Usually, this indicates something is wrong with the remote systems that
+    tbot was interacting with.  This is in contrast to
+    :py:class:`tbot.error.ApiViolationError` which is raised when downstream
+    code has a bug and/or misuses the tbot API.
+
+    .. versionadded:: UNRELEASED
+    """
 
 
 class AbstractMethodError(TbotException, NotImplementedError):
