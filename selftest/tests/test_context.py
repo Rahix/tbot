@@ -1,6 +1,7 @@
 import pytest
-import tbot
 import testmachines
+
+import tbot
 
 
 class ContextTestException(Exception):
@@ -21,7 +22,7 @@ def tc_context_exclusive_usage(ctx: tbot.Context, new: str) -> str:
         value = lh.env("TBOT_CTX_TESTS")
         lh.env("TBOT_CTX_TESTS", new)
 
-        with pytest.raises(Exception, match=".*not available.*"):
+        with pytest.raises(tbot.error.ContextError, match=".*not available.*"):
             with ctx.request(tbot.role.LabHost):
                 pass
 
@@ -110,7 +111,9 @@ def test_illegal_keep_alive_context() -> None:
     A keep-alive context **must** have its own context-manager active.
     """
     ctx = tbot.Context(keep_alive=True)
-    with pytest.raises(tbot.error.TbotException):
+    with pytest.raises(
+        tbot.error.ContextError, match=r"\*\*must\*\* enter its own context-manager"
+    ):
         with ctx.request(tbot.role.LabHost):
             pass
 
