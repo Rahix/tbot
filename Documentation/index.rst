@@ -104,6 +104,7 @@ To show what tbot can help you with, here are a few simple example usecases:
    modules/machine_connector
    modules/machine_shell
    modules/machine_channel
+   modules/error
    modules/role
    modules/selectable
 
