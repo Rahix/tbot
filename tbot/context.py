@@ -227,7 +227,7 @@ class Context(typing.ContextManager):
         elif type in self._instances:
             machine_class = type
         else:
-            raise IndexError(f"no machine found for {type!r}")
+            raise tbot.error.MachineNotFoundError(f"no machine found for {type!r}")
 
         instance = self._instances[machine_class]
 

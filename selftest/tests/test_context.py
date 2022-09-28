@@ -48,6 +48,17 @@ def test_simple_context() -> None:
         assert tc_context_simple_usage(ctx, "second") == ""
 
 
+def test_request_missing_role() -> None:
+    """
+    Check that requesting a non-registered role leads to an exception.
+    """
+    ctx = tbot.Context()
+    with ctx:
+        with pytest.raises(tbot.error.MachineNotFoundError):
+            with ctx.request(tbot.role.Board):
+                pass
+
+
 def test_nested_context() -> None:
     """
     In a nested scenario, the instance should be kept alive and reused for

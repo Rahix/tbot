@@ -99,6 +99,17 @@ class ContextError(ApiViolationError, RuntimeError):
     """
 
 
+class MachineNotFoundError(ApiViolationError, IndexError):
+    """
+    The requested machine was not found in the tbot context.
+
+    The most likely cause for this is that the selected configuration did not
+    register a machine for the requested role.
+
+    .. versionadded:: UNRELEASED
+    """
+
+
 _repr = repr
 
 
