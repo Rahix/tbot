@@ -28,12 +28,15 @@ import tty
 import typing
 
 import tbot
+import tbot.error
 
 ChanIO = typing.TypeVar("ChanIO", bound="ChannelIO")
 
 
-class ChannelClosedException(Exception):
-    pass
+# compatibility aliases
+ChannelClosedException = tbot.error.ChannelClosedError
+ChannelBorrowedException = tbot.error.ChannelBorrowedError
+ChannelTakenException = tbot.error.ChannelTakenError
 
 
 class ChannelIO(typing.ContextManager):
@@ -149,18 +152,8 @@ def _debug_log(chan: ChannelIO, data: bytes, is_out: bool = False) -> bytes:
     return data
 
 
-class ChannelBorrowedException(Exception):
-    def __str__(self) -> str:
-        return "This channel is currently borrowed by another machine."
-
-
-class ChannelTakenException(Exception):
-    def __str__(self) -> str:
-        return "Another machine has taken this channel.  It can no longer be accessed from here."
-
-
 class ChannelBorrowed(ChannelIO):
-    exception: typing.Type[Exception] = ChannelBorrowedException
+    exception: typing.Type[Exception] = tbot.error.ChannelBorrowedError
 
     def write(self, buf: bytes) -> int:
         raise self.exception()
@@ -183,7 +176,7 @@ class ChannelBorrowed(ChannelIO):
 
 
 class ChannelTaken(ChannelBorrowed):
-    exception: typing.Type[Exception] = ChannelTakenException
+    exception: typing.Type[Exception] = tbot.error.ChannelTakenError
 
     def close(self) -> None:
         pass
@@ -338,8 +331,8 @@ class Channel(typing.ContextManager):
         if not _ignore_blacklist:
             for blacklisted in self._write_blacklist:
                 if blacklisted in buf:
-                    raise Exception(
-                        f"Attempting to write a forbidden byte ({chr(blacklisted)!r})!"
+                    raise tbot.error.IllegalDataException(
+                        f"attempted to write a forbidden byte ({chr(blacklisted)!r})"
                     )
 
         cursor = 0

@@ -2,7 +2,7 @@ import pytest
 from conftest import AnyLinuxShell
 
 import tbot
-from tbot.machine import channel, linux
+from tbot.machine import linux
 
 
 def test_run_working(any_linux_shell: AnyLinuxShell) -> None:
@@ -98,7 +98,7 @@ def test_channel_is_unavailable(any_linux_shell: AnyLinuxShell) -> None:
         with linux_shell.run("bash", "--norc", "--noprofile") as bs:
             bs.sendline("exit")
 
-            with pytest.raises(channel.ChannelBorrowedException):
+            with pytest.raises(tbot.error.ChannelBorrowedError):
                 linux_shell.exec0("echo", "hello world!")
 
             bs.terminate0()

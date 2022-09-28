@@ -155,3 +155,69 @@ class CommandFailure(MachineError):
             self.cmd_repr = _repr(self.cmd)
 
         super().__init__(f"command failed: [{self.host.name}] {self.cmd_repr}")
+
+
+class ChannelClosedError(MachineError):
+    """
+    Error type for exceptions when a channel was closed unexpectedly.
+
+    This error is raised when interaction with a channel is attemped which was
+    either closed explicitly beforehand or which was closed unexpectedly by the
+    remote end.
+
+    .. versionadded:: UNRELEASED
+    """
+
+
+class ChannelBorrowedError(ApiViolationError):
+    """
+    Error type for exceptions when accessing a channel which is currently borrowed.
+
+    This error will be raised when an attempt is made to interact with a
+    channel which is currently borrowed.  As an example, when an interactive
+    command is started with :py:meth:`LinuxShell.run`, while this command is
+    running, the channel of the ``LinuxShell`` is borrowed and cannot be used.
+    So a call to, for example, ``exec0()`` during this time would raise
+    ``ChannelBorrowedError``.
+
+    .. versionadded:: UNRELEASED
+    """
+
+    def __init__(self) -> None:
+        super().__init__("channel is currently borrowed by another machine")
+
+
+class ChannelTakenError(ApiViolationError):
+    """
+    Error type for exceptions when accessing a channel which was "taken".
+
+    This error will be raised when an attempt is made to interact with a
+    channel which is was "taken".  The channel docs contain more details about
+    this concept.  Essentially, a different machine now uses the channel so it
+    can no longer be accessed from its previous "owner".
+
+    .. versionadded:: UNRELEASED
+    """
+
+    def __init__(self) -> None:
+        super().__init__(
+            "channel was taken by another machine."
+            + " it can no longer be accessed from here"
+        )
+
+
+class IllegalDataException(ApiViolationError):
+    """
+    Raised when attempting to write illegal data to a channel.
+
+    Some channels cannot deal with all byte sequences.  For example, certain
+    escape sequences will mess up the connection.  If an attempt is made to
+    send such data, this exception is raised.  The exact set of illegal
+    sequences depends on the specific machine configuration.
+
+    In most situations, the shell implementation will escape such data
+    correctly.  This error should only become relevant when directly
+    interacting with a channel.
+
+    .. versionadded:: UNRELEASED
+    """

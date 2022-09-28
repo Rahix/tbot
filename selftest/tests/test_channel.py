@@ -85,7 +85,7 @@ def test_borrowing(ch: channel.Channel) -> None:
         raised = False
         try:
             ch.sendline("echo Illegal")
-        except channel.ChannelBorrowedException:
+        except tbot.error.ChannelBorrowedError:
             raised = True
 
         assert raised, "Borrow was unsuccessful"
@@ -99,13 +99,13 @@ def test_taking(ch: channel.Channel) -> None:
     ch2 = ch.take()
     ch2.sendline("echo World")
 
-    with pytest.raises(channel.ChannelTakenException):
+    with pytest.raises(tbot.error.ChannelTakenError):
         ch.sendline("echo Illegal")
 
 
 def test_termination(ch: channel.Channel) -> None:
     ch.sendline("exit")
-    with pytest.raises(channel.ChannelClosedException):
+    with pytest.raises(tbot.error.ChannelClosedError):
         ch.read_until_timeout(5)
 
 

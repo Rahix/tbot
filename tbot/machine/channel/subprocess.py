@@ -52,7 +52,7 @@ class SubprocessChannelIO(channel.ChannelIO):
 
     def write(self, buf: bytes) -> int:
         if self.closed:
-            raise channel.ChannelClosedException()
+            raise tbot.error.ChannelClosedError
 
         channel._debug_log(self, buf, True)
 
@@ -62,7 +62,7 @@ class SubprocessChannelIO(channel.ChannelIO):
 
         bytes_written = os.write(self.pty_master, buf)
         if bytes_written == 0:
-            raise channel.ChannelClosedException
+            raise tbot.error.ChannelClosedError
         return bytes_written
 
     def read(self, n: int, timeout: typing.Optional[float] = None) -> bytes:
@@ -87,18 +87,18 @@ class SubprocessChannelIO(channel.ChannelIO):
                     break
                 elif self.closed:
                     # Nothing to read and channel is closed.  We're done for good.
-                    raise channel.ChannelClosedException()
+                    raise tbot.error.ChannelClosedError
 
                 # Loop back around and try again until timeout expires.
 
         try:
             return channel._debug_log(self, os.read(self.pty_master, n))
         except (BlockingIOError, OSError):
-            raise channel.ChannelClosedException
+            raise tbot.error.ChannelClosedError
 
     def close(self) -> None:
         if self.closed:
-            raise channel.ChannelClosedException()
+            raise tbot.error.ChannelClosedError
 
         sid = os.getsid(self.p.pid)
         self.p.terminate()

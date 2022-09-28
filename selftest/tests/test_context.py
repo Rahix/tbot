@@ -140,7 +140,7 @@ def test_exclusive_context() -> None:
             assert tc_context_simple_usage(ctx, "first") == ""
             outer.exec0("true")
             assert tc_context_exclusive_usage(ctx, "second") == "first"
-            with pytest.raises(tbot.machine.channel.ChannelClosedException):
+            with pytest.raises(tbot.error.ChannelClosedError):
                 outer.exec0("true")
             assert tc_context_simple_usage(ctx, "third") == ""
 
@@ -156,7 +156,7 @@ def test_resetting_context() -> None:
             assert tc_context_simple_usage(ctx, "first") == ""
             outer.exec0("true")
             tc_context_resetting_usage(ctx, "second")
-            with pytest.raises(tbot.machine.channel.ChannelClosedException):
+            with pytest.raises(tbot.error.ChannelClosedError):
                 outer.exec0("true")
             assert tc_context_simple_usage(ctx, "third") == "second"
             tc_context_resetting_usage(ctx, "fourth")
@@ -203,7 +203,7 @@ def test_reset_on_error_context() -> None:
             with ctx.request(tbot.role.LabHost) as inner2:
                 assert inner2.env("TBOT_CTX_TESTS") != "inner1"
 
-            with pytest.raises(tbot.machine.channel.ChannelClosedException):
+            with pytest.raises(tbot.error.ChannelClosedError):
                 outer.exec0("true")
 
 
