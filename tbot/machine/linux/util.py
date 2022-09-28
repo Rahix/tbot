@@ -21,17 +21,14 @@ M = typing.TypeVar("M", bound="linux.LinuxShell")
 
 
 def wait_for_shell(ch: channel.Channel) -> None:
-    # Repeatedly sends `echo TBOT''LOGIN\r`.  At some point, the shell
-    # interprets this command and prints out `TBOTLOGIN` because of the
-    # quotation-marks being removed.  Once we detect this, this function
-    # can return, knowing the shell is now running on the other end.
-    #
-    # Credit to Pavel for this idea!
+    # Repeatedly attempt to run the expression.  At some point, the shell
+    # evaluates this expression and prints out `42`.  Once we detect this,
+    # this function can return, knowing the shell is now running on the other end.
     timeout = 0.2
     while True:
-        ch.sendline("echo TBOT''LOGIN")
+        ch.sendline("expr 41 + 1")
         try:
-            ch.expect("TBOTLOGIN", timeout=timeout)
+            ch.expect("42", timeout=timeout)
             break
         except TimeoutError:
             # Increase the timeout after the first try because the remote might
