@@ -82,13 +82,8 @@ def test_borrowing(ch: channel.Channel) -> None:
     with ch.borrow() as ch2:
         ch2.sendline("echo World")
 
-        raised = False
-        try:
+        with pytest.raises(tbot.error.ChannelBorrowedError):
             ch.sendline("echo Illegal")
-        except tbot.error.ChannelBorrowedError:
-            raised = True
-
-        assert raised, "Borrow was unsuccessful"
 
     ch.sendline("echo back again")
 
