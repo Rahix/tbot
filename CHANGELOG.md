@@ -6,6 +6,9 @@
   to a directory.  It is a more ergonomic wrapper around the existing `copy()`
   function.  Check its documentation for more details:
   [`copy_to_dir()`][copy_to_dir-docs] ([#77]).
+- Lot's of custom exception types in the [`tbot.error`] module so test-code can
+  differentiate between them.  This is ongoing work and will continue in future
+  releases ([#79]).
 
 ### Changed
 - Moved `tbot.tc.shell.copy()` to `tbot.machine.linux.copy()` as it is a core
@@ -20,7 +23,9 @@
 
 [#74]: https://github.com/Rahix/tbot/pull/74
 [#77]: https://github.com/Rahix/tbot/pull/77
+[#79]: https://github.com/Rahix/tbot/pull/79
 [copy_to_dir-docs]: https://tbot.tools/contrib/utils.html#tbot_contrib.utils.copy_to_dir
+[`tbot.error`]: https://tbot.tools/modules/error.html
 
 
 ## [0.10.1] - 2022-08-18
