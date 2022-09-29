@@ -166,7 +166,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
-        "--log", metavar="LOGFILE", help="write a log to the specified file"
+        "--json-log-stream", metavar="LOGFILE", help="write a log to the specified file"
     )
 
     parser.add_argument(
@@ -221,8 +221,8 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
     for flag in args.flags:
         tbot.flags.add(flag)
 
-    if args.log:
-        tbot.log.LOGFILE = open(args.log, "w")
+    if args.json_log_stream:
+        tbot.log.LOGFILE = open(args.json_log_stream, "w")
 
     tbot.log.VERBOSITY = tbot.log.Verbosity(
         tbot.log.Verbosity.STDOUT + args.verbosity - args.quiet
