@@ -6,9 +6,13 @@
   to a directory.  It is a more ergonomic wrapper around the existing `copy()`
   function.  Check its documentation for more details:
   [`copy_to_dir()`][copy_to_dir-docs] ([#77]).
-- Lot's of custom exception types in the [`tbot.error`] module so test-code can
-  differentiate between them.  This is ongoing work and will continue in future
-  releases ([#79]).
+- Lots of custom exception types in the [`tbot.error`] module so test-code can
+  differentiate between different kinds of errors.  This is ongoing work and
+  will continue in future releases ([#79]).
+- Added a `--json-log-stream` CLI option to `newbot` which can be used to
+  reactivate the existing old json-stream logging infrastructure.  A new
+  logging mechansim will be added for newbot at some point in the future
+  ([#78]).
 
 ### Changed
 - Moved `tbot.tc.shell.copy()` to `tbot.machine.linux.copy()` as it is a core
@@ -23,6 +27,7 @@
 
 [#74]: https://github.com/Rahix/tbot/pull/74
 [#77]: https://github.com/Rahix/tbot/pull/77
+[#78]: https://github.com/Rahix/tbot/pull/78
 [#79]: https://github.com/Rahix/tbot/pull/79
 [copy_to_dir-docs]: https://tbot.tools/contrib/utils.html#tbot_contrib.utils.copy_to_dir
 [`tbot.error`]: https://tbot.tools/modules/error.html
