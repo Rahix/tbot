@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+
+
+## [0.10.2] - 2022-10-13
 ### Added
 - Added a `tbot_contrib.utils.copy_to_dir()` helper which copies multiple files
   to a directory.  It is a more ergonomic wrapper around the existing `copy()`
@@ -955,7 +958,8 @@ Version **0.6.0** is basically a complete rewrite of TBot.  A rough summary of c
   were loaded later
 - Fix `call_then` not returning the function itself
 
-[Unreleased]: https://github.com/Rahix/tbot/compare/v0.10.1...master
+[Unreleased]: https://github.com/Rahix/tbot/compare/v0.10.2...master
+[0.10.2]: https://github.com/Rahix/tbot/compare/v0.10.1...v0.10.2
 [0.10.1]: https://github.com/Rahix/tbot/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/Rahix/tbot/compare/v0.9.6...v0.10.0
 [0.9.6]: https://github.com/Rahix/tbot/compare/v0.9.5...v0.9.6

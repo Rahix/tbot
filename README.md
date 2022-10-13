@@ -28,7 +28,7 @@ Most info about *tbot* can be found in its documentation at
 
 ## Installation
 ```bash
-pip3 install --user -U git+https://github.com/rahix/tbot@v0.10.1
+pip3 install --user -U git+https://github.com/rahix/tbot@v0.10.2
 ```
 
 If you haven't done it already, you need to add ``~/.local/bin`` to your ``$PATH``.
