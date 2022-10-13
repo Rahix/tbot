@@ -39,7 +39,7 @@ class ApiViolationError(TbotException, RuntimeError):
     The subclasses of ``ApiViolationError`` should detail in their
     documentation how to fix them.
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.10.2
     """
 
 
@@ -52,7 +52,7 @@ class MachineError(TbotException):
     :py:class:`tbot.error.ApiViolationError` which is raised when downstream
     code has a bug and/or misuses the tbot API.
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.10.2
     """
 
 
@@ -95,7 +95,7 @@ class ContextError(ApiViolationError, RuntimeError):
     exception is raised when requesting an instance that is currently
     exclusively requested elsewhere.
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.10.2
     """
 
 
@@ -106,7 +106,7 @@ class MachineNotFoundError(ApiViolationError, IndexError):
     The most likely cause for this is that the selected configuration did not
     register a machine for the requested role.
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.10.2
     """
 
 
@@ -119,7 +119,7 @@ class CommandFailure(MachineError):
 
     This exception is raised by ``exec0()`` methods to indicate command failures.
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.10.2
     """
 
     host: "machine.Machine"
@@ -165,7 +165,7 @@ class ChannelClosedError(MachineError):
     either closed explicitly beforehand or which was closed unexpectedly by the
     remote end.
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.10.2
     """
 
 
@@ -180,7 +180,7 @@ class ChannelBorrowedError(ApiViolationError):
     So a call to, for example, ``exec0()`` during this time would raise
     ``ChannelBorrowedError``.
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.10.2
     """
 
     def __init__(self) -> None:
@@ -196,7 +196,7 @@ class ChannelTakenError(ApiViolationError):
     this concept.  Essentially, a different machine now uses the channel so it
     can no longer be accessed from its previous "owner".
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.10.2
     """
 
     def __init__(self) -> None:
@@ -219,5 +219,5 @@ class IllegalDataException(ApiViolationError):
     correctly.  This error should only become relevant when directly
     interacting with a channel.
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.10.2
     """

@@ -30,7 +30,7 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
     """
     Copy a file, possibly from one host to another.
 
-    .. versionchanged:: UNRELEASED
+    .. versionchanged:: 0.10.2
 
         This function has been moved to :py:func:`tbot.machine.linux.copy`.
         Please read its documentation for more details.  The old name here is a
