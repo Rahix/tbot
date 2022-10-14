@@ -42,7 +42,7 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
 _TOOL_CACHE: typing.Dict[linux.LinuxShell, typing.Dict[str, bool]] = {}
 
 
-def check_for_tool(host: linux.LinuxShell, tool: str) -> bool:
+def check_for_tool(host: linux.LinuxShell, tool: str, force: bool = False) -> bool:
     """
     Check whether a certain tool/program is installed on a host.
 
@@ -61,13 +61,14 @@ def check_for_tool(host: linux.LinuxShell, tool: str) -> bool:
 
     :param linux.LinuxShell host: The host to ceck on.
     :param str tool: Name of the binary to check for.
+    :param bool force: Forces the check by not using the cache, default value is ``False``.
     :rtype: bool
     :returns: ``True`` if the tool was found and ``False`` otherwise.
     """
     if host not in _TOOL_CACHE:
         _TOOL_CACHE[host] = {}
 
-    if tool not in _TOOL_CACHE[host]:
+    if force or tool not in _TOOL_CACHE[host]:
         with tbot.testcase("check_for_tool"):
             has_tool = host.test("which", tool)
             _TOOL_CACHE[host][tool] = has_tool
