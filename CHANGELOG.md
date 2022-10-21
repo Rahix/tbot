@@ -1,6 +1,11 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Added a `force` parameter to `tbot.tc.check_for_tool()` which forces the
+  check even if a result was already cached for this tool ([#83]).
+
+[#83]: https://github.com/Rahix/tbot/pull/83
 
 
 ## [0.10.2] - 2022-10-13

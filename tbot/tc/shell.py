@@ -64,6 +64,10 @@ def check_for_tool(host: linux.LinuxShell, tool: str, force: bool = False) -> bo
     :param bool force: Forces the check by not using the cache, default value is ``False``.
     :rtype: bool
     :returns: ``True`` if the tool was found and ``False`` otherwise.
+
+    .. versionchanged:: UNRELEASED
+
+        Added the ``force`` parameter.
     """
     if host not in _TOOL_CACHE:
         _TOOL_CACHE[host] = {}
