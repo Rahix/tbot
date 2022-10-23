@@ -102,6 +102,10 @@ def with_verbosity(
         with tbot.log.with_verbosity(tbot.log.Verbosity.COMMAND):
             kernel_log = lnx.exec0("dmesg")
 
+    :param verbosity: The new verbosity while this context-manager is active.
+    :param nesting: The (optional) nesting level while this context-manager is active.
+        If not passed, the previous nesting level is retained.
+
     .. versionadded:: 0.10.1
     """
 
