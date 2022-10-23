@@ -55,7 +55,7 @@ templates_path = ["sphinx-templates"]
 
 todo_include_todos = True
 
-language = None
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
