@@ -4,6 +4,7 @@
 ### Added
 - Added a `force` parameter to `tbot.tc.check_for_tool()` which forces the
   check even if a result was already cached for this tool ([#83]).
+- Added an `only_decrease` parameter to `tbot.log.with_verbosity()`.
 
 [#83]: https://github.com/Rahix/tbot/pull/83
 
