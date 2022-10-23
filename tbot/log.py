@@ -88,7 +88,10 @@ _SPLIT_PATTERN = re.compile("(\r|\n)")
 
 @contextlib.contextmanager
 def with_verbosity(
-    verbosity: Verbosity, *, nesting: typing.Optional[int] = None
+    verbosity: Verbosity,
+    *,
+    nesting: typing.Optional[int] = None,
+    only_decrease: bool = False,
 ) -> typing.Iterator[None]:
     """
     Temporarily change the verbosity to a different level.
@@ -105,8 +108,14 @@ def with_verbosity(
     :param verbosity: The new verbosity while this context-manager is active.
     :param nesting: The (optional) nesting level while this context-manager is active.
         If not passed, the previous nesting level is retained.
+    :param only_decrease: Only allow decreasing the verbosity.  If a higher verbosity
+        than what is currently active is passed, it will be ignored.  ``only_decrease``
+        defaults to ``False`` which means any verbosity is accepted.
 
     .. versionadded:: 0.10.1
+    .. versionchanged:: UNRELEASED
+
+        Added the ``only_decrease`` parameter.
     """
 
     global VERBOSITY
@@ -116,7 +125,9 @@ def with_verbosity(
     old_nesting = NESTING
 
     try:
-        VERBOSITY = verbosity
+        if not only_decrease or verbosity < VERBOSITY:
+            VERBOSITY = verbosity
+
         if nesting is not None:
             NESTING = nesting
 
