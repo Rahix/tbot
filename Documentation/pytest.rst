@@ -1,3 +1,5 @@
+.. _pytest-integration:
+
 pytest Integration
 ==================
 For building a large testsuite, it makes sense to leverage existing frameworks

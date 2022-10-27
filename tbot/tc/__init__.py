@@ -8,6 +8,15 @@ def testsuite(*args: typing.Callable, **kwargs: typing.Any) -> None:
     """
     Run a number of tests and report how many of them succeeded.
 
+    .. note::
+
+        If your goal is implementing a large testsuite using
+        tbot, you may want to look at integrating tbot with
+        `pytest <https://pytest.org/>`_ instead of using this
+        function.
+
+        Check the :ref:`pytest-integration` guide for more info.
+
     :param args: Testcases
     :param kwargs: Named-Arguments that should be given to each testcase.
         Be aware that this requires all testcases to have compatible
