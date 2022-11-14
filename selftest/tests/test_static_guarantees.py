@@ -15,7 +15,7 @@ def do_static_test(source: str, expected: str) -> None:
         stdout, stderr, retcode = mypy_api.run(["--no-incremental", f.name])
         assert stderr == ""
         assert retcode == 1
-        messages = stdout.replace(f.name, "##FILE##")
+        messages = stdout.replace(f.name, "##FILE##").replace("  [arg-type]", "")
         assert messages == expected
 
 
