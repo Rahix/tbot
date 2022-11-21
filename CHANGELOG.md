@@ -5,8 +5,11 @@
 - Added a `force` parameter to `tbot.tc.check_for_tool()` which forces the
   check even if a result was already cached for this tool ([#83]).
 - Added an `only_decrease` parameter to `tbot.log.with_verbosity()`.
+- Added an [`AutoConsoleConnector`] to `tbot_contrib` which automatically selects
+  the best available tool for connecting to a serial console.
 
 [#83]: https://github.com/Rahix/tbot/pull/83
+[`AutoConsoleConnector`]: https://github.com/Rahix/tbot/blob/master/tbot_contrib/connector/auto.py
 
 
 ## [0.10.2] - 2022-10-13
