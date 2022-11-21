@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+
+
+## [0.10.3] - 2022-11-21
 ### Added
 - Added a `force` parameter to `tbot.tc.check_for_tool()` which forces the
   check even if a result was already cached for this tool ([#83]).
@@ -967,7 +970,8 @@ Version **0.6.0** is basically a complete rewrite of TBot.  A rough summary of c
   were loaded later
 - Fix `call_then` not returning the function itself
 
-[Unreleased]: https://github.com/Rahix/tbot/compare/v0.10.2...master
+[Unreleased]: https://github.com/Rahix/tbot/compare/v0.10.3...master
+[0.10.3]: https://github.com/Rahix/tbot/compare/v0.10.2...v0.10.3
 [0.10.2]: https://github.com/Rahix/tbot/compare/v0.10.1...v0.10.2
 [0.10.1]: https://github.com/Rahix/tbot/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/Rahix/tbot/compare/v0.9.6...v0.10.0
