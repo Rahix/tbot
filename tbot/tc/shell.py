@@ -65,7 +65,7 @@ def check_for_tool(host: linux.LinuxShell, tool: str, force: bool = False) -> bo
     :rtype: bool
     :returns: ``True`` if the tool was found and ``False`` otherwise.
 
-    .. versionchanged:: UNRELEASED
+    .. versionchanged:: 0.10.3
 
         Added the ``force`` parameter.
     """

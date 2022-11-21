@@ -113,7 +113,7 @@ def with_verbosity(
         defaults to ``False`` which means any verbosity is accepted.
 
     .. versionadded:: 0.10.1
-    .. versionchanged:: UNRELEASED
+    .. versionchanged:: 0.10.3
 
         Added the ``only_decrease`` parameter.
     """
