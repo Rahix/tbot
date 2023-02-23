@@ -115,6 +115,7 @@ To show what tbot can help you with, here are a few simple example usecases:
    modules/tc
    contrib/connector
    contrib/gdb
+   contrib/linux
    contrib/locking
    contrib/swupdate
    contrib/timing
