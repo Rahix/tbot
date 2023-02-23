@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Added a `tbot_contrib.linux.meminfo()` helper for extracting info from
+  `/proc/meminfo`.
 
 
 ## [0.10.3] - 2022-11-21
