@@ -46,7 +46,7 @@ Testcase with U-Boot
        # board if it was previously in Linux.
        tbot.ctx.teardown_if_alive(tbot.role.BoardLinux)
 
-       with tbot.ctx.request(tbot.role.BoardUBoot) as lh:
+       with tbot.ctx.request(tbot.role.BoardUBoot) as ub:
            ub.exec0("version")
 
 .. _recipe-linux:
