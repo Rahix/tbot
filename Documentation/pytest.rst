@@ -29,7 +29,10 @@ that.  You will see how it works below:
 ``conftest.py`` is pytest's configuration file.  We need to define a fixture
 for tbot's context here.  We also need to provide a mechanism to allow
 selecting the tbot configuration.  This can be done by adding custom
-command-line parameters.  All in all, this is a good skeleton to start from:
+command-line parameters and loading the configuration when pytest runs its
+`configuration hook
+<https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_configure>`_.
+All in all, this is a good skeleton to start from:
 
 .. code-block:: python
 
@@ -41,18 +44,18 @@ command-line parameters.  All in all, this is a good skeleton to start from:
        parser.addoption("--tbot-config", action="append", default=[], dest="tbot_configs")
        parser.addoption("--tbot-flag", action="append", default=[], dest="tbot_flags")
 
-   @pytest.fixture(scope="session", autouse=True)
-   def tbot_ctx(pytestconfig):
+   def pytest_configure(config):
        # Only register configuration when nobody else did so already.
        if not tbot.ctx.is_active():
            # Register flags
-           for flag in pytestconfig.option.tbot_flags:
-               tbot.flags.add(flag)
+           for tbot_flag in config.option.tbot_flags:
+               tbot.flags.add(tbot_flag)
+           # Register configurations
+           for tbot_config in config.option.tbot_configs:
+               newbot.load_config(tbot_config, tbot.ctx)
 
-           # Register configuration
-           for config in pytestconfig.option.tbot_configs:
-               newbot.load_config(config, tbot.ctx)
-
+   @pytest.fixture(scope="session", autouse=True)
+   def tbot_ctx(pytestconfig):
        with tbot.ctx:
            # Configure the context for keep_alive (so machines can be reused
            # between tests).  reset_on_error_by_default will make sure test
