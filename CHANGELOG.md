@@ -5,6 +5,31 @@
 - Added a `tbot_contrib.linux.meminfo()` helper for extracting info from
   `/proc/meminfo`.
 
+### Changed
+- Updated the best-practice example for pytest integration ([pytest
+  Integration]).  It now properly allows accessing the configured machines
+  before tests are run ([#86]).  An example, where this may be useful, is
+  parameterizing a test depending on a configured machine:
+  ```python
+  # board config
+  class MyBoard(......):
+      interfaces = ["eth0", "usb0"]
+
+  # testcase module
+  import pytest
+  import tbot
+
+  def _interfaces():
+      with tbot.ctx.request(tbot.role.Board) as b:
+          return b.interfaces
+
+  @pytest.mark.parametrize("interface", _interfaces())
+  def test_interface(interface):
+      tbot.log.message(f"Testing interface {interface}")
+  ```
+
+[#86]: https://github.com/Rahix/tbot/pull/86
+
 
 ## [0.10.3] - 2022-11-21
 ### Added
