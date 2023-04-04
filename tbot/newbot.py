@@ -5,9 +5,10 @@ import importlib
 import itertools
 import os
 import pathlib
+import string
 import sys
 import typing
-from typing import Iterable, Optional, Sequence
+from typing import Iterable, List, Optional, Sequence
 
 if typing.TYPE_CHECKING:
     import tbot
@@ -129,7 +130,7 @@ def get_version() -> str:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
+    parser = TbotArgumentParser(
         prog="tbot",
         description="Test and development automation tool, tailored for embedded"
         + " (experimental new CLI)",
@@ -184,6 +185,21 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("testcase", nargs="*", help="testcase that should be run.")
 
     return parser
+
+
+class TbotArgumentParser(argparse.ArgumentParser):
+    def convert_arg_line_to_args(self, arg_line: str) -> List[str]:
+        """
+        Make it possible to use shell variables also in argumentsfiles.
+        """
+        try:
+            arg_line_expanded = string.Template(arg_line).substitute(os.environ)
+        except KeyError as e:
+            raise tbot.error.TbotException(
+                f"Could not find environment variable: {e.args[0]!r}"
+            ) from None
+
+        return [arg_line_expanded]
 
 
 def main(argv: Optional[Sequence[str]] = None) -> None:

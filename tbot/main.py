@@ -14,12 +14,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import string
 import sys
 import os
 import pathlib
 import argparse
 import inspect
+import tbot.error
 import typing
+from typing import List
 
 try:
     from tbot import _version  # type: ignore
@@ -57,11 +60,26 @@ def _import_hightlighter() -> typing.Callable[[str], str]:
 # }}}
 
 
+class TbotArgumentParser(argparse.ArgumentParser):
+    def convert_arg_line_to_args(self, arg_line: str) -> List[str]:
+        """
+        Make it possible to use shell variables also in argumentsfiles.
+        """
+        try:
+            arg_line_expanded = string.Template(arg_line).substitute(os.environ)
+        except KeyError as e:
+            raise tbot.error.TbotException(
+                f"Could not find environment variable: {e.args[0]!r}"
+            ) from None
+
+        return [arg_line_expanded]
+
+
 def main() -> None:  # noqa: C901
     """Tbot main entry point."""
 
     # ArgumentParser {{{
-    parser = argparse.ArgumentParser(
+    parser = TbotArgumentParser(
         prog="tbot",
         description="Test and development automation tool, tailored for embedded",
         fromfile_prefix_chars="@",
