@@ -36,13 +36,13 @@ class SubprocessChannelIO(channel.ChannelIO):
     __slots__ = ("pty_master", "p")
 
     def __init__(self) -> None:
-        self.pty_master, pty_slave = pty.openpty()
+        self.pty_master, self.pty_slave = pty.openpty()
 
         self.p = subprocess.Popen(
             ["bash", "--norc", "--noprofile", "--noediting", "-i"],
-            stdin=pty_slave,
-            stdout=pty_slave,
-            stderr=pty_slave,
+            stdin=self.pty_slave,
+            stdout=self.pty_slave,
+            stderr=self.pty_slave,
             start_new_session=True,
         )
 
@@ -102,6 +102,7 @@ class SubprocessChannelIO(channel.ChannelIO):
 
         sid = os.getsid(self.p.pid)
         self.p.terminate()
+        os.close(self.pty_slave)
         os.close(self.pty_master)
         self.p.wait()
 
