@@ -39,7 +39,7 @@
 - Fixed channels not being closed by `SSHConnector` ([#91]).  Channels stayed
   open until tbot exited, which is again problematic for long running tests.
 - Fixed `SSHConnector` not using the lab-host to connect to remote hosts
-  ([#92]).  This was the behavior in the past and got broken in tbot [0.9.6].
+  ([#92]).  This was the behavior in the past and got broken in tbot [0.9.0].
 - Fixed a couple of robustness issues in `tbot_contrib.gdb` where tbot would
   hang or throw the wrong type of exception when encountering unexpected
   situations.
