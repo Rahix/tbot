@@ -28,7 +28,20 @@
       tbot.log.message(f"Testing interface {interface}")
   ```
 
+### Fixed
+- Fixed a file descriptor leak in the `SubprocessConnector` ([#88]).  This
+  would lead to an ever increasing number of open files in long test runs.  On
+  systems with a low file descriptor limit, tbot would then crash with
+  `OSError: [Errno 24] Too many open files`.
+- Fixed channels not being closed by `SSHConnector` ([#91]).  Channels stayed
+  open until tbot exited, which is again problematic for long running tests.
+- Fixed `SSHConnector` not using the lab-host to connect to remote hosts.  This
+  was the behavior in the past and got broken in tbot [0.9.6].
+
 [#86]: https://github.com/Rahix/tbot/pull/86
+[#88]: https://github.com/Rahix/tbot/pull/88
+[#91]: https://github.com/Rahix/tbot/pull/91
+[#92]: https://github.com/Rahix/tbot/pull/92
 
 
 ## [0.10.3] - 2022-11-21
