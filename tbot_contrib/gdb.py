@@ -31,7 +31,12 @@ class GDBShell(shell.Shell):
             try:
                 for i in range(4):
                     res = self.ch.expect(
-                        ["(gdb) ", "Enable debuginfod for this session?"], timeout=5
+                        [
+                            "(gdb) ",
+                            "Enable debuginfod for this session?",
+                            "--Type <RET> for more, q to quit, c to continue without paging--",
+                        ],
+                        timeout=5,
                     )
                     if res.i == 0:
                         # We hit the prompt, nice!
@@ -39,6 +44,9 @@ class GDBShell(shell.Shell):
                     elif res.i == 1:
                         # Say no to debuginfod
                         self.ch.sendline("n")
+                    elif res.i == 2:
+                        # When pagination comes up during startup, don't paginate
+                        self.ch.sendline("c")
                 else:
                     raise Exception("could not reach gdb prompt")
 
