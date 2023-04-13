@@ -21,6 +21,8 @@ class GDBShell(shell.Shell):
 
     name = "gdb"
 
+    _gdb_at_prompt = False
+
     @contextlib.contextmanager
     def _init_shell(self) -> typing.Iterator:
         with self.ch.with_prompt(GDB_PROMPT):
@@ -54,6 +56,8 @@ class GDBShell(shell.Shell):
                 # Disable styling so output is not clobbered with escape sequences
                 self.ch.sendline("set style enabled off")
                 self.ch.read_until_prompt()
+
+                self._gdb_at_prompt = True
 
                 yield None
             finally:
@@ -176,9 +180,21 @@ class GDB(connector.Connector, GDBShell):
                 raise
             finally:
                 if not ch.closed:
-                    tbot.log_event.command(self.name, "quit")
-                    ch.sendline("quit")
-                    ch.terminate0()
+                    if self._gdb_at_prompt:
+                        tbot.log_event.command(self.name, "quit")
+                        ch.sendline("quit")
+                        ch.terminate0()
+                    else:
+                        tbot.log.warning("Trying to abort GDB with ^C + `quit`...")
+                        ch.sendcontrol("C")
+                        try:
+                            ch.read_until_timeout(5)
+                        except linux.CommandEndedException:
+                            ch.terminate()
+                        else:
+                            tbot.log_event.command(self.name, "quit")
+                            ch.sendline("quit")
+                            ch.terminate()
 
     def clone(self) -> typing.NoReturn:
         raise NotImplementedError("cannot clone a GDB machine")
