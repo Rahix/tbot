@@ -20,7 +20,7 @@ def meminfo(lnx: linux.LinuxShell) -> Dict[str, int]:
         # At least 1 GiB of memory available
         assert meminfo["MemAvailable"] >= 0x40000000
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.10.4
     """
     meminfo_str = (lnx.fsroot / "proc" / "meminfo").read_text()
     meminfo = {}
