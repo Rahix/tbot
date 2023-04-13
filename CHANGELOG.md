@@ -37,6 +37,9 @@
   open until tbot exited, which is again problematic for long running tests.
 - Fixed `SSHConnector` not using the lab-host to connect to remote hosts
   ([#92]).  This was the behavior in the past and got broken in tbot [0.9.6].
+- Fixed a couple of robustness issues in `tbot_contrib.gdb` where tbot would
+  hang or throw the wrong type of exception when encountering unexpected
+  situations.
 
 [#86]: https://github.com/Rahix/tbot/pull/86
 [#88]: https://github.com/Rahix/tbot/pull/88
