@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+
+
+## [0.10.4] - 2023-04-13
 ### Added
 - Added a `tbot_contrib.linux.meminfo()` helper for extracting info from
   `/proc/meminfo`.
@@ -1014,7 +1017,8 @@ Version **0.6.0** is basically a complete rewrite of TBot.  A rough summary of c
   were loaded later
 - Fix `call_then` not returning the function itself
 
-[Unreleased]: https://github.com/Rahix/tbot/compare/v0.10.3...master
+[Unreleased]: https://github.com/Rahix/tbot/compare/v0.10.4...master
+[0.10.4]: https://github.com/Rahix/tbot/compare/v0.10.3...v0.10.4
 [0.10.3]: https://github.com/Rahix/tbot/compare/v0.10.2...v0.10.3
 [0.10.2]: https://github.com/Rahix/tbot/compare/v0.10.1...v0.10.2
 [0.10.1]: https://github.com/Rahix/tbot/compare/v0.10.0...v0.10.1
