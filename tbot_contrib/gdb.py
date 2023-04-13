@@ -24,6 +24,8 @@ class GDBShell(shell.Shell):
     @contextlib.contextmanager
     def _init_shell(self) -> typing.Iterator:
         with self.ch.with_prompt(GDB_PROMPT):
+            streams_orig = self.ch._streams
+
             try:
                 for i in range(4):
                     res = self.ch.expect(
@@ -38,7 +40,6 @@ class GDBShell(shell.Shell):
                 else:
                     raise Exception("could not reach gdb prompt")
 
-                streams_orig = self.ch._streams
                 self.ch._streams = []
 
                 self.ch.sendline(b"set prompt " + GDB_PROMPT, True)
@@ -170,10 +171,14 @@ class GDB(connector.Connector, GDBShell):
         with self._host.run(self._gdb, "-nh", "-nx", *self._args) as ch:
             try:
                 yield ch
-            finally:
-                tbot.log_event.command(self.name, "quit")
-                ch.sendline("quit")
+            except linux.CommandEndedException:
                 ch.terminate0()
+                raise
+            finally:
+                if not ch.closed:
+                    tbot.log_event.command(self.name, "quit")
+                    ch.sendline("quit")
+                    ch.terminate0()
 
     def clone(self) -> typing.NoReturn:
         raise NotImplementedError("cannot clone a GDB machine")
