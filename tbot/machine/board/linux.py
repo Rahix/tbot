@@ -87,6 +87,9 @@ class LinuxBootLogin(machine.Initializer, LinuxBoot):
     log-messages during the first few seconds after boot.
     """
 
+    password_prompt: channel.channel.ConvenientSearchString = "assword: "
+    """Prompt that indicates tbot should send the password."""
+
     boot_timeout: typing.Optional[float] = None
     """
     Maximum time for Linux to reach the login prompt.
@@ -174,7 +177,9 @@ class LinuxBootLogin(machine.Initializer, LinuxBoot):
                         timeout = min(timeout, self.no_password_timeout)
 
                 try:
-                    self.ch.read_until_prompt(prompt="assword: ", timeout=timeout)
+                    self.ch.read_until_prompt(
+                        prompt=self.password_prompt, timeout=timeout
+                    )
                 except TimeoutError:
                     # Call _timeout_remaining() to abort if the boot-timeout was reached
                     self._timeout_remaining()
