@@ -5,6 +5,8 @@
 - Added a `password_prompt` configuration to `LinuxBootLogin` which allows
   customizing what password prompt to wait for.  This helps when the system is
   localized in a different language ([#93]).
+- Added a `tbot_contrib.utils.find_block_partitions()` helper for finding all
+  partitions of a particular block device.
 
 [#93]: https://github.com/Rahix/tbot/pull/93
 
