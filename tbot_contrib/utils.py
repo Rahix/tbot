@@ -19,6 +19,7 @@ import typing
 from tbot.machine import linux
 from tbot.tc import shell
 
+H = typing.TypeVar("H", bound=linux.LinuxShell)
 _SERVICES_CACHE: typing.Dict[str, typing.Dict[str, bool]] = {}
 
 
@@ -308,3 +309,42 @@ def copy_to_dir(
         return dest_list[0]
     else:
         return dest_list
+
+
+def find_block_partitions(
+    dev: linux.Path[H], *, include_self: bool = False
+) -> typing.Iterator[linux.Path[H]]:
+    """
+    Find all partitions of a given block device.
+
+    :param linux.Path dev: The block device whose partitions should be found.
+
+    :param bool include_self: Whether to include the block device itself in the
+        partition list as well.  Defaults to ``False``.
+
+    :returns: An iterator over path objects for all partitions of the block device.
+
+    .. versionadded:: UNRELEASED
+
+    **Example**: Unmount all partitions before writing a new image
+    to the device.
+
+    .. code-block:: python
+
+        from tbot_contrib import utils
+
+        blkdev = lnx.fsroot / "dev" / "sdb"
+        for part in utils.find_block_partitions(blkdev):
+            # Ignore errors...
+            lnx.exec("umount", part)
+    """
+    assert dev.is_block_device()
+    if not shell.check_for_tool(dev.host, "lsblk"):
+        raise Exception("Need `lsblk` for block_partitions()")
+
+    output = dev.host.exec0("lsblk", "--paths", "--noheadings", "-o", "KNAME", dev)
+    for line in output.strip("\n").split("\n"):
+        if not include_self and line == dev.at_host(dev.host):
+            # Skip the device itself
+            continue
+        yield linux.Path(dev.host, line)
