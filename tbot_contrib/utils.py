@@ -324,7 +324,7 @@ def find_block_partitions(
 
     :returns: An iterator over path objects for all partitions of the block device.
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.10.5
 
     **Example**: Unmount all partitions before writing a new image
     to the device.
