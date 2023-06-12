@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+
+
+## [0.10.5] - 2023-06-12
 ### Added
 - Added a `password_prompt` configuration to `LinuxBootLogin` which allows
   customizing what password prompt to wait for.  This helps when the system is
@@ -1025,7 +1028,8 @@ Version **0.6.0** is basically a complete rewrite of TBot.  A rough summary of c
   were loaded later
 - Fix `call_then` not returning the function itself
 
-[Unreleased]: https://github.com/Rahix/tbot/compare/v0.10.4...master
+[Unreleased]: https://github.com/Rahix/tbot/compare/v0.10.5...master
+[0.10.5]: https://github.com/Rahix/tbot/compare/v0.10.4...v0.10.5
 [0.10.4]: https://github.com/Rahix/tbot/compare/v0.10.3...v0.10.4
 [0.10.3]: https://github.com/Rahix/tbot/compare/v0.10.2...v0.10.3
 [0.10.2]: https://github.com/Rahix/tbot/compare/v0.10.1...v0.10.2
