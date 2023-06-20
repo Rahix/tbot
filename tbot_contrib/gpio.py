@@ -100,7 +100,7 @@ class Gpio:
             raise Exception("Can't get a value from a GPIO which is not an input")
         return (self._gpio_path / "value").read_text().strip() != "0"
 
-    def toggle(self, delay: float) -> None:
+    def toggle_value(self, delay: float) -> None:
         """Toggle GPIO
 
         Toggles GPIO Pin between ``HIGH`` and ``LOW``
