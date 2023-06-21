@@ -38,8 +38,8 @@
   import tbot
 
   def _interfaces():
-      with tbot.ctx.request(tbot.role.Board) as b:
-          return b.interfaces
+      board_cls = tbot.ctx.get_machine_class(tbot.role.Board)
+      return board_cls.interfaces
 
   @pytest.mark.parametrize("interface", _interfaces())
   def test_interface(interface):
