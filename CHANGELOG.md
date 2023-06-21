@@ -1,6 +1,10 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- `Gpio.pulse()` method in `tbot_contrib` for pulsing a GPIO pin ([#95]).
+
+[#95]: https://github.com/Rahix/tbot/pull/95
 
 
 ## [0.10.5] - 2023-06-12
