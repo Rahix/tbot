@@ -1,5 +1,6 @@
 import time
 from tbot.machine import linux
+from typing import Optional
 
 
 class Gpio:
@@ -8,9 +9,8 @@ class Gpio:
 
         Raspberry Pi Model 2 and above use as gpio_number their BCM GPIO Numbers
 
-        Args:
-            host (linux.LinuxShell):    Linux Shell
-            gpio_number (int):          GPIO Number
+        :param linux.LinuxShell host: Linux Shell
+        :param int gpio_number: GPIO Number
         """
 
         self.host = host
@@ -30,8 +30,7 @@ class Gpio:
 
         Sets direction to ``in`` or ``out``
 
-        Args:
-            direction (str): Direction to set
+        :param str direction: Direction to set
         """
         assert direction in ["in", "out"], f"Unsupported GPIO direction: {direction!r}"
         if self._direction == direction:
@@ -45,8 +44,7 @@ class Gpio:
 
         When Active Low is ``True``, the GPIO triggers on a ``LOW`` singnal, else on a ``HIGH`` signal
 
-        Args:
-            value (bool): Value
+        :param bool value: Value
         """
         (self._gpio_path / "active_low").write_text("1" if value else "0")
 
@@ -55,8 +53,8 @@ class Gpio:
 
         Reads value and returns direction ``in`` or ``out``
 
-        Returns:
-            bool: Value
+        :rtype: bool
+        :returns: Value
         """
         return (self._gpio_path / "active_low").read_text().strip() != "0"
 
@@ -65,8 +63,8 @@ class Gpio:
 
         Reads direction and returns direction ``in`` or ``out``
 
-        Returns:
-            str: Direction
+        :rtype: str
+        :returns: Value
         """
         return (self._gpio_path / "direction").read_text().strip()
 
@@ -75,11 +73,7 @@ class Gpio:
 
         Sets value to ``HIGH`` and ``LOW``
 
-        Args:
-            value (bool): Value to set
-
-        Raises:
-            Exception: Direction
+        :param bool value: Value to set
         """
         if self._direction == "in":
             raise Exception("Can't set a GPIO which is not an output")
@@ -90,28 +84,26 @@ class Gpio:
 
         Reads value and returns value ``True`` or ``False``
 
-        Raises:
-            Exception: Direction
-
-        Returns:
-            bool: Value
+        :rtype: bool
+        :returns: Value
         """
         if not (self._direction == "in"):
             raise Exception("Can't get a value from a GPIO which is not an input")
         return (self._gpio_path / "value").read_text().strip() != "0"
 
-    def toggle_value(self, delay: float) -> None:
+    def pulse(self, on_time: float, off_time: Optional[float] = None) -> None:
         """Toggle GPIO
 
         Toggles GPIO Pin between ``HIGH`` and ``LOW``
 
-        Args:
-            delay (float): Delay in s
-
-        Raises:
-            Exception: Direction
+        :param float on_time: Time GPIO is ``HIGH``
+        :param float off_time: Time GPIO is ``LOW``. Defaults to ``on_time``
         """
+
+        if off_time is None:
+            off_time = on_time
+
         self.set_value(True)
-        time.sleep(delay)
+        time.sleep(on_time)
         self.set_value(False)
-        time.sleep(delay)
+        time.sleep(off_time)
