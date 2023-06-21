@@ -98,6 +98,8 @@ class Gpio:
 
         :param float on_time: Time GPIO is ``HIGH``
         :param float off_time: Time GPIO is ``LOW``. Defaults to ``on_time``
+
+        .. versionadded:: UNRELEASED
         """
 
         if off_time is None:
