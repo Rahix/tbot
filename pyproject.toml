@@ -43,3 +43,15 @@ ignore_errors = true
 
 [tool.coverage.run]
 omit = ["tbot/tc/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    # We don't need to test code that isn't implemented...
+    "raise NotImplementedError",
+    # Don't complain about abstract methods, they aren't run.
+    "@(abc\\.)?abstractmethod",
+    # Ignore typing related statements.
+    "@typing\\.overload",
+    "if (typing\\.)?TYPE_CHECKING:",
+]
