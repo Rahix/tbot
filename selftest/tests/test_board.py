@@ -5,6 +5,21 @@ import tbot
 from tbot.machine import board
 
 
+def test_board_power(tbot_context: tbot.Context) -> None:
+    with tbot_context.request(tbot.role.LabHost) as lh:
+        tbot_context.teardown_if_alive(testmachines.MockhwBoardLinux)
+        tbot_context.teardown_if_alive(testmachines.MockhwBoardUBoot)
+        tbot_context.teardown_if_alive(testmachines.MockhwBoard)
+
+        power_path = lh.workdir / "mockhw-power-status"
+        assert not power_path.exists()
+
+        with tbot_context.request(testmachines.MockhwBoard, exclusive=True):
+            assert power_path.read_text() == "on"
+
+        assert not power_path.exists()
+
+
 def test_uboot_simple_commands(tbot_context: tbot.Context) -> None:
     with tbot_context.request(testmachines.MockhwBoardUBoot) as ub:
         ub.exec0("version")
