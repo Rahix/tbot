@@ -40,3 +40,6 @@ module = [
     "tbot.loader",
 ]
 ignore_errors = true
+
+[tool.coverage.run]
+omit = ["tbot/tc/*"]
