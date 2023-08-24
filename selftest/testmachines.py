@@ -223,6 +223,7 @@ class MocksshClient(connector.SSHConnector, linux.Bash, tbot.role.Role):
 class MockhwBoard(
     connector.ConsoleConnector,
     machine.PreConnectInitializer,
+    board.PowerControl,
     board.Board,
     tbot.role.Role,
 ):
@@ -289,6 +290,12 @@ function boot() {
         )
         self.host.exec0("chmod", "+x", self._mockhw_script)
         yield None
+
+    def poweron(self) -> None:
+        (self.host.workdir / "mockhw-power-status").write_text("on")
+
+    def poweroff(self) -> None:
+        (self.host.workdir / "mockhw-power-status").unlink(missing_ok=True)
 
     def connect(self, mach: linux.LinuxShell) -> channel.Channel:
         return mach.open_channel(
