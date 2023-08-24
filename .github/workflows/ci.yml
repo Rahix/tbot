@@ -31,7 +31,7 @@ jobs:
       - name: Run tbot selftests
         run: |
           export COLUMNS=160
-          python -m pytest --cov=tbot -v --color=yes selftest/
+          python -m pytest --cov=tbot --cov=tbot_contrib -v --color=yes selftest/
       - name: Run tbot extended selftests
         run: |
           export CLICOLOR_FORCE=1
