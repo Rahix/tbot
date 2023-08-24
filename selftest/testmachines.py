@@ -307,6 +307,20 @@ class MockhwBoardUBoot(
     prompt = "=> "
 
 
+class MockhwBoardLinux(
+    board.LinuxUbootConnector,
+    board.LinuxBootLogin,
+    linux.Bash,
+    tbot.role.Role,
+):
+    name = "mockhw-linux"
+
+    uboot = MockhwBoardUBoot
+
+    username = "root"
+    password = "hunter2"
+
+
 def register_machines(ctx: tbot.Context) -> None:
     ctx.register(Localhost, [Localhost, tbot.role.LabHost, tbot.role.LocalHost])
     ctx.register(LocalhostBash, [LocalhostBash])
@@ -316,3 +330,4 @@ def register_machines(ctx: tbot.Context) -> None:
     ctx.register(MocksshClient, [MocksshClient])
     ctx.register(MockhwBoard, [MockhwBoard, tbot.role.Board])
     ctx.register(MockhwBoardUBoot, [MockhwBoardUBoot, tbot.role.BoardUBoot])
+    ctx.register(MockhwBoardLinux, [MockhwBoardLinux, tbot.role.BoardLinux])

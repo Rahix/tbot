@@ -1,4 +1,6 @@
+import pytest
 import testmachines
+
 import tbot
 from tbot.machine import board
 
@@ -40,3 +42,15 @@ def test_uboot_simple_control(tbot_context: tbot.Context) -> None:
             "true", board.AndThen, "echo", "FOO", board.OrElse, "echo", "BAR"
         ).strip()
         assert out == "FOO"
+
+
+def test_linux_boot(tbot_context: tbot.Context) -> None:
+    with tbot_context.request(testmachines.MockhwBoardLinux) as lnx:
+        out = lnx.exec0("echo", "Hello World")
+        assert out == "Hello World\n"
+
+        out = lnx.exec0("echo", "$?", "!#")
+        assert out == "$? !#\n"
+
+        with pytest.raises(tbot.error.CommandFailure):
+            lnx.exec0("false")
