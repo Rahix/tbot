@@ -6,8 +6,11 @@
 - Added coverage tracking for tests.  Feel free to help improving coverage,
   especially of obscure features that will easily break when we don't ensure
   their functionality with tests.
+- Added an `AskfirstInitializer` which can be used to deal with boards where
+  the console is configured with `askfirst` ([#98]).
 
 [#95]: https://github.com/Rahix/tbot/pull/95
+[#98]: https://github.com/Rahix/tbot/pull/98
 
 
 ## [0.10.5] - 2023-06-12
