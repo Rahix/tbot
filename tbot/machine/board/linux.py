@@ -202,8 +202,41 @@ class LinuxBootLogin(machine.Initializer, LinuxBoot):
 
 
 class AskfirstInitializer(machine.Initializer, LinuxBoot):
-    askfirst_prompt = "Please press Enter to activate this console."
+    """
+    Initializer to deal with ``askfirst`` TTYs.
 
+    On some boards, the console is configured with ``askfirst`` which means that
+    the getty for logging in is only spawned after an initial ENTER is sent.
+    This initializer takes care of that by first waiting for the ``askfirst``
+    prompt and then sending ENTER.
+
+    The ``askfirst`` prompt can be customized with the ``askfirst_prompt`` attribute.
+
+    **Example**:
+
+    .. code-block:: python
+
+        from tbot.machine import board, linux
+
+        class StandaloneLinux(
+            board.Connector,
+            board.AskfirstInitializer,
+            board.LinuxBootLogin,
+            linux.Bash,
+        ):
+            # board.LinuxBootLogin config:
+            username = "root"
+            password = "hunter2"
+
+    .. versionadded:: UNRELEASED
+    """
+
+    askfirst_prompt = "Please press Enter to activate this console."
+    """
+    Prompt that indicates the board is waiting for ``askfirst`` confirmation.
+    """
+
+    # For proper integration with LinuxBootLogin
     boot_timeout: typing.Optional[float] = None
     _boot_start: typing.Optional[float] = None
     bootlog: str

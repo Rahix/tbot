@@ -205,3 +205,6 @@ and login.
 
 .. autoclass:: tbot.machine.board.LinuxBootLogin
    :members:
+
+.. autoclass:: tbot.machine.board.AskfirstInitializer
+   :members:
