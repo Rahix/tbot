@@ -4,9 +4,11 @@ from typing import Callable, ContextManager, Iterator
 
 import pytest
 import testmachines
+from tests.test_path import get_blockdev
 
 import tbot
 import tbot_contrib.utils
+from tbot.tc import shell
 
 if typing.TYPE_CHECKING:
     TestDir = Callable[[], ContextManager[tbot.machine.linux.Path]]
@@ -104,3 +106,15 @@ def test_copy_to_dir_multi(tbot_context: tbot.Context) -> None:
             assert file in target_files
             content = file.read_text()
             assert content == f"File {i}\n"
+
+
+def test_find_block_partitions(tbot_context: tbot.Context) -> None:
+    with tbot_context.request(testmachines.Localhost) as lo:
+        blockdev = get_blockdev(lo)
+        if blockdev is None:
+            pytest.skip("Could not find any blockdevices on this host.")
+        if not shell.check_for_tool(lo, "lsblk"):
+            pytest.skip("Skipping due to missing `lsblk`.")
+
+        parts = tbot_contrib.utils.find_block_partitions(blockdev, include_self=True)
+        assert len(list(parts)) >= 1
