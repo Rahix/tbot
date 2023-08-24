@@ -13,7 +13,7 @@ from .null import NullChannel
 
 try:
     from .paramiko import ParamikoChannel
-except ImportError:
+except ImportError:  # pragma: no cover
     # allow this to fail if paramiko is not installed
     pass
 

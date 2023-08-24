@@ -152,7 +152,7 @@ def _debug_log(chan: ChannelIO, data: bytes, is_out: bool = False) -> bytes:
     return data
 
 
-class ChannelBorrowed(ChannelIO):
+class ChannelBorrowed(ChannelIO):  # pragma: no cover
     exception: typing.Type[Exception] = tbot.error.ChannelBorrowedError
 
     def write(self, buf: bytes) -> int:
@@ -175,7 +175,7 @@ class ChannelBorrowed(ChannelIO):
         raise self.exception()
 
 
-class ChannelTaken(ChannelBorrowed):
+class ChannelTaken(ChannelBorrowed):  # pragma: no cover
     exception: typing.Type[Exception] = tbot.error.ChannelTakenError
 
     def close(self) -> None:
@@ -927,7 +927,7 @@ class Channel(typing.ContextManager):
                             .replace("\n\r", "\n")
                         )
 
-        raise RuntimeError("unreachable")
+        raise RuntimeError("unreachable")  # pragma: no cover
 
     # }}}
 
