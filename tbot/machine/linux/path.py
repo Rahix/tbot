@@ -427,14 +427,15 @@ class Path(typing.Generic[H]):
             :py:func:`tbot.tc.shell.copy` or (for small files)
             :py:meth:`Path.write_bytes() <tbot.machine.linux.Path.write_bytes>`.
         """
+        if not isinstance(data, str):
+            raise TypeError(f"data must be str, not {data.__class__.__name__}")
+
         # fast path for single line text.  `encoding` and `errors` are ignored
         # in this case for now because `bytes` is not a supported argument type.
         if "\n" not in data and "\r" not in data:
             self.host.exec0("printf", "%s", data, linux.RedirStdout(self))
             return len(data)
 
-        if not isinstance(data, str):
-            raise TypeError(f"data must be str, not {data.__class__.__name__}")
         byte_data = data.encode(encoding or "utf-8", errors or "strict")
 
         with self.host.run(
