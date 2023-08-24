@@ -39,12 +39,30 @@ def get_blockdev(host: linux.LinuxShell) -> Optional[linux.Path]:
 
 def test_purepath(tbot_context: tbot.Context) -> None:
     with tbot_context.request(testmachines.Localhost) as lo:
-        p = lo.workdir / "foo" / "bar" / "baz"
+        p = lo.workdir / "foo" / "bar" / "baz.log.txt"
+
+        assert p.is_relative_to(lo.workdir)
+        assert not p.is_relative_to(lo.workdir / "not-foo")
+        assert p.relative_to(lo.workdir).at_host(lo) == "foo/bar/baz.log.txt"
+
+        assert p.with_name("pog.txt").name == "pog.txt"
+        assert p.with_stem("qux").name == "qux.txt"
+        assert p.with_suffix(".gz").name == "baz.log.gz"
+
+        assert p.name == "baz.log.txt"
+        assert p.stem == "baz.log"
+        assert p.suffix == ".txt"
+        assert p.suffixes == [".log", ".txt"]
 
         assert p.parent.name == "bar"
         assert p.parents[0].name == "bar"
         assert p.parents[1].name == "foo"
         assert p.parents[2] == lo.workdir
+
+        tbot.log.message("Parents object: " + repr(p.parents))
+
+        with pytest.raises(IndexError):
+            p.parents[1337]
 
 
 def test_integrity(tbot_context: tbot.Context) -> None:
@@ -238,6 +256,10 @@ def test_stat(any_linux_shell: AnyLinuxShell) -> None:
         for p, check in stat_list:
             assert check(p.stat().st_mode)
 
+        missing = linux.Path(linux_shell, "/this-path-does-not-exist")
+        with pytest.raises(FileNotFoundError):
+            missing.stat()
+
 
 def test_text_io(testdir_builder: "TestDir") -> None:
     with testdir_builder() as testdir:
@@ -248,6 +270,20 @@ def test_text_io(testdir_builder: "TestDir") -> None:
         output = f.read_text()
 
         assert output == content
+
+
+def test_text_io_illegal(testdir_builder: "TestDir") -> None:
+    with testdir_builder() as testdir:
+        f = testdir / "test-file-illegal.txt"
+
+        with pytest.raises(TypeError):
+            f.write_text(b"Try writing binary instead of text")  # type: ignore
+
+        assert not f.exists()
+
+        missing = testdir / "missing-subdir" / "may-not-exist.txt"
+        with pytest.raises(tbot.error.CommandFailure):
+            missing.write_text("We can't do this!")
 
 
 def test_text_io_singleline(testdir_builder: "TestDir") -> None:
@@ -270,6 +306,18 @@ def test_binary_io(testdir_builder: "TestDir") -> None:
         output = f.read_bytes()
 
         assert output == content
+
+
+def test_binary_io_illegal(testdir_builder: "TestDir") -> None:
+    with testdir_builder() as testdir:
+        f = testdir / "test-file-illegal.bin"
+
+        with pytest.raises(TypeError):
+            f.write_bytes("Writing a string instead of binary?!")  # type: ignore
+
+        missing = testdir / "missing-subdir" / "may-not-exist.bin"
+        with pytest.raises(tbot.error.CommandFailure):
+            missing.write_bytes(b"We can't do this!")
 
 
 def test_write_dir_text(testdir_builder: "TestDir") -> None:
@@ -423,3 +471,19 @@ def test_rglob_error(testdir_builder: "TestDir") -> None:
 
         result = list(path.rglob("this-will-never-be-in-sysfs"))
         assert len(result) == 0
+
+
+def test_path_comparisons(testdir_builder: "TestDir") -> None:
+    testdir: linux.Path
+    with testdir_builder() as testdir:
+        p1 = testdir / "AAA"
+        p2 = testdir / "AAB"
+
+        assert p1 < p2
+        assert p1 <= p2
+        assert p1 <= p1
+        assert p2 > p1
+        assert p2 >= p1
+        assert p2 >= p2
+
+        assert hash(p1) != hash(p2)
