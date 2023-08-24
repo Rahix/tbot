@@ -3,6 +3,9 @@
 ## [Unreleased]
 ### Added
 - `Gpio.pulse()` method in `tbot_contrib` for pulsing a GPIO pin ([#95]).
+- Added coverage tracking for tests.  Feel free to help improving coverage,
+  especially of obscure features that will easily break when we don't ensure
+  their functionality with tests.
 
 [#95]: https://github.com/Rahix/tbot/pull/95
 
