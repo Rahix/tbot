@@ -237,3 +237,12 @@ def test_reset_on_error_by_default_context() -> None:
 
         with ctx.request(tbot.role.LabHost) as inner2:
             assert inner2.env("TBOT_CTX_TESTS") != "inner1"
+
+
+def test_my_rolemodel() -> None:
+    assert tbot.role.isrole(tbot.role.BoardLinux)
+    assert not tbot.role.isrole(tbot.machine.Machine)
+    assert tbot.role.rolename(tbot.role.BoardLinux) == "<tbot.role.BoardLinux>"
+    assert (
+        tbot.role.rolename(testmachines.MocksshServer) == "<testmachines.MocksshServer>"
+    )
