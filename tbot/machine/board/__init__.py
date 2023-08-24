@@ -5,10 +5,12 @@ import tbot
 from .uboot import UBootShell, UBootAutobootIntercept  # isort: skip
 from .board import PowerControl, Board, BoardMachineBase, Connector  # isort: skip
 from .linux import LinuxUbootConnector, LinuxBootLogin  # isort: skip
+from .linux import AskfirstInitializer  # isort: skip
 from ..linux.special import Then, AndThen, OrElse, Raw  # isort: skip
 
 __all__ = (
     "AndThen",
+    "AskfirstInitializer",
     "Board",
     "BoardMachineBase",
     "Connector",

@@ -101,7 +101,8 @@ class LinuxBootLogin(machine.Initializer, LinuxBoot):
     .. versionadded:: 0.10.0
     """
 
-    _boot_start: float
+    # Used for timeout tracking
+    _boot_start: typing.Optional[float] = None
 
     bootlog: str
     """Log of kernel-messages which were output during boot."""
@@ -129,6 +130,8 @@ class LinuxBootLogin(machine.Initializer, LinuxBoot):
     def _timeout_remaining(self) -> typing.Optional[float]:
         if self.boot_timeout is None:
             return None
+        if self._boot_start is None:
+            self._boot_start = time.monotonic()
         remaining = self.boot_timeout - (time.monotonic() - self._boot_start)
         if remaining <= 0:
             raise TimeoutError
@@ -141,7 +144,8 @@ class LinuxBootLogin(machine.Initializer, LinuxBoot):
             ev = cx.enter_context(self._linux_boot_event())
             cx.enter_context(self.ch.with_stream(ev))
 
-            self._boot_start = time.monotonic()
+            if self._boot_start is None:
+                self._boot_start = time.monotonic()
 
             self.ch.read_until_prompt(
                 prompt=self.login_prompt, timeout=self.boot_timeout
@@ -193,6 +197,35 @@ class LinuxBootLogin(machine.Initializer, LinuxBoot):
                 else:
                     # No timeout exception means we're at the password prompt.
                     self.ch.sendline(self.password)
+
+        yield None
+
+
+class AskfirstInitializer(machine.Initializer, LinuxBoot):
+    askfirst_prompt = "Please press Enter to activate this console."
+
+    boot_timeout: typing.Optional[float] = None
+    _boot_start: typing.Optional[float] = None
+    bootlog: str
+
+    @contextlib.contextmanager
+    def _init_machine(self) -> typing.Iterator:
+        # This ExitStack holds the boot event until we successfully reached the
+        # askfirst prompt.  Then it releases the boot event such that further
+        # initializers like LinuxBootLogin can continue using it.
+        with contextlib.ExitStack() as cx:
+            ev = cx.enter_context(self._linux_boot_event())
+
+            with self.ch.with_stream(ev):
+                if self._boot_start is None:
+                    self._boot_start = time.monotonic()
+
+                # Using expect() instead of read_until_prompt() so we are not
+                # confused by garbage following the prompt.
+                self.ch.expect(self.askfirst_prompt, timeout=self.boot_timeout)
+                self.ch.sendline("")
+
+            cx.pop_all()
 
         yield None
 
