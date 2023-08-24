@@ -275,6 +275,7 @@ function boot() {
     echo "Pretending to boot Linux..."
     echo ""
     echo "[0.0000] Welcome to the simulation."
+    read -p "Please press Enter to activate this console. GARBLE GARBLE"
     read -p "login: "
     read -s -p "password: "
     echo ""
@@ -309,6 +310,7 @@ class MockhwBoardUBoot(
 
 class MockhwBoardLinux(
     board.LinuxUbootConnector,
+    board.AskfirstInitializer,
     board.LinuxBootLogin,
     linux.Bash,
     tbot.role.Role,
