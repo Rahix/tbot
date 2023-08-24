@@ -104,6 +104,50 @@ def test_termination(ch: channel.Channel) -> None:
         ch.read_until_timeout(5)
 
 
+def test_unbounded_pattern(ch: channel.Channel) -> None:
+    """
+    Check that an unbounded pattern is detected properly.
+    """
+    ub_pat = tbot.Re("unbounded$ .*")
+    with pytest.raises(Exception, match="not bounded"):
+        ch.read_until_prompt(prompt=ub_pat, timeout=1)
+
+
+def test_blacklist(ch: channel.Channel) -> None:
+    """
+    Test whether blacklisted characters are properly caught.
+    """
+    ch._write_blacklist = [
+        0x03,  # ETX  | End of Text / Interrupt
+        0x04,  # EOT  | End of Transmission
+        0x11,  # DC1  | Device Control One (XON)
+        0x12,  # DC2  | Device Control Two
+        0x13,  # DC3  | Device Control Three (XOFF)
+        0x14,  # DC4  | Device Control Four
+        0x15,  # NAK  | Negative Acknowledge
+        0x16,  # SYN  | Synchronous Idle
+        0x17,  # ETB  | End of Transmission Block
+        0x1A,  # SUB  | Substitute / Suspend Process
+        0x1C,  # FS   | File Separator
+        0x7F,  # DEL  | Delete
+        0x20,  # For test purposes: Space is illegal
+    ]
+    with pytest.raises(tbot.error.IllegalDataException):
+        ch.sendline(" ")
+
+
+def test_slowsend_channel(ch: channel.Channel) -> None:
+    ch.slow_send_delay = 0.1
+    ch.slow_send_chunksize = 2
+
+    # from test_simple_expect3
+    ch.sendline("echo Lo1337rem")
+    res = ch.expect(["Dolor", "roloD", tbot.Re(r"Lo(\d{1,20})"), "rem"])
+    assert res.i == 2
+    assert isinstance(res.match, Match), "Not a match object"
+    assert res.match.group(1) == b"1337"
+
+
 def test_nullchannel_machine() -> None:
     """
     Ensure that we can instanciate a machine with a null channel properly.
