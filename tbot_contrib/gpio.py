@@ -1,21 +1,36 @@
 import time
-from tbot.machine import linux
 from typing import Optional
+
+from tbot.machine import linux
 
 
 class Gpio:
-    def __init__(self, host: linux.LinuxShell, gpio_number: int):
+    def __init__(
+        self,
+        host: linux.LinuxShell,
+        gpio_number: int,
+        *,
+        sys_path: Optional[linux.Path] = None,
+    ):
         """Initialize GPIO
 
         Raspberry Pi Model 2 and above use as gpio_number their BCM GPIO Numbers
 
         :param linux.LinuxShell host: Linux Shell
         :param int gpio_number: GPIO Number
+        :param linux.Path sys_path: Path to the ``/sys/`` mountpoint if it differs
+            from the default.
+
+        .. versionchanged:: UNRELEASED
+
+            Added the ``sys_path`` parameter.
         """
 
         self.host = host
         self.gpio_number = gpio_number
-        self._gpio_sysclass_path = self.host.fsroot / "sys/class/gpio"
+        if sys_path is None:
+            sys_path = self.host.fsroot / "sys"
+        self._gpio_sysclass_path = sys_path / "class" / "gpio"
         self._gpio_path = self._gpio_sysclass_path / f"gpio{self.gpio_number}"
         self._export()
         self._direction = self.get_direction()
