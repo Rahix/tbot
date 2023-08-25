@@ -3,7 +3,9 @@
   <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.7-blue.svg" alt="Python 3.7" /></a>
   <a href="http://mypy-lang.org/"><img src="http://www.mypy-lang.org/static/mypy_badge.svg" alt="Checked with mypy" /></a>
   <a href="https://github.com/ambv/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black" /></a>
-  <a href="https://github.com/Rahix/tbot/actions"><img src="https://github.com/Rahix/tbot/workflows/tbot%20selftest%20CI/badge.svg" alt="tbot selftest CI" /></a><br />
+  <a href="https://github.com/Rahix/tbot/actions"><img src="https://github.com/Rahix/tbot/workflows/tbot%20selftest%20CI/badge.svg" alt="tbot selftest CI" /></a>
+  <a href="https://codecov.io/gh/Rahix/tbot"><img src="https://codecov.io/gh/Rahix/tbot/graph/badge.svg?token=JkCGa8W3vM" /></a>
+  <br />
   Embedded Test &amp; Automation Tool
 </p>
 
