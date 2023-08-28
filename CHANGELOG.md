@@ -8,8 +8,11 @@
   their functionality with tests.
 - Added an `AskfirstInitializer` which can be used to deal with boards where
   the console is configured with `askfirst` ([#98]).
+- Added the ability to use environment variables in `@<filename>` argument
+  files ([#96]).
 
 [#95]: https://github.com/Rahix/tbot/pull/95
+[#96]: https://github.com/Rahix/tbot/pull/96
 [#98]: https://github.com/Rahix/tbot/pull/98
 
 
