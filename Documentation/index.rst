@@ -1,3 +1,19 @@
+.. meta::
+   :description: tbot - Automation/Testing tool for Embedded Linux Development
+
+   :property="og:url": https://tbot.tools/
+   :property="og:type": website
+   :property="og:title": tbot
+   :property="og:description": Automation/Testing tool for Embedded Linux Development
+   :property="og:image": https://repository-images.githubusercontent.com/157848261/a4d63a80-ffd9-11e9-8463-d794926a4049
+
+   :name="twitter:card": summary_large_image
+   :property="twitter:domain": tbot.tools
+   :property="twitter:url": https://tbot/tools/
+   :name="twitter:title": tbot
+   :name="twitter:description": Automation/Testing tool for Embedded Linux Development
+   :name="twitter:image": https://repository-images.githubusercontent.com/157848261/a4d63a80-ffd9-11e9-8463-d794926a4049
+
 tbot Documentation
 ==================
 Welcome to *tbot*!  *tbot* automates the development workflow for embedded
