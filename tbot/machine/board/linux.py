@@ -228,7 +228,7 @@ class AskfirstInitializer(machine.Initializer, LinuxBoot):
             username = "root"
             password = "hunter2"
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.10.6
     """
 
     askfirst_prompt = "Please press Enter to activate this console."

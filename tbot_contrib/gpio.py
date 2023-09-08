@@ -21,7 +21,7 @@ class Gpio:
         :param linux.Path sys_path: Path to the ``/sys/`` mountpoint if it differs
             from the default.
 
-        .. versionchanged:: UNRELEASED
+        .. versionchanged:: 0.10.6
 
             Added the ``sys_path`` parameter.
         """
@@ -114,7 +114,7 @@ class Gpio:
         :param float on_time: Time GPIO is ``HIGH``
         :param float off_time: Time GPIO is ``LOW``. Defaults to ``on_time``
 
-        .. versionadded:: UNRELEASED
+        .. versionadded:: 0.10.6
         """
 
         if off_time is None:
