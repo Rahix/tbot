@@ -100,7 +100,7 @@
   will continue in future releases ([#79]).
 - Added a `--json-log-stream` CLI option to `newbot` which can be used to
   reactivate the existing old json-stream logging infrastructure.  A new
-  logging mechansim will be added for newbot at some point in the future
+  logging mechanism will be added for newbot at some point in the future
   ([#78]).
 
 ### Changed
@@ -265,7 +265,7 @@
 ### Changed
 - When a pytest testcase is skipped, `tbot.Context`'s `reset_on_error` flag no
   longer triggers a board reset.  This means skipping testcases is now just as
-  fast as not executing them where it previosuly would trigger a reset of all
+  fast as not executing them where it previously would trigger a reset of all
   machines.
 
 ### Fixed
@@ -300,7 +300,7 @@
 ## [0.9.1] - 2021-06-23
 ### Added
 - Added a mechanism for "locking" connections to certain machines.  This can be
-  used, for example, to ensure exlusive access to a certain board.  See
+  used, for example, to ensure exclusive access to a certain board.  See
   [`tbot_contrib.locking`][tbot-locking] for details.
 - `Path.rmdir()` and `Path.unlink()`: Methods to conveniently delete an empty
   directory, a symlink, or a file from a host's filesystem.
@@ -323,7 +323,7 @@
 - `linux.Path` no longer inherits from `pathlib.PurePosixPath`.  This fixes
   a number of long standing oddities where certain methods would not function
   correctly.  All API from `PurePosixPath` has been reimplemented in
-  `linux.Path` explictly, now with the proper behavior.
+  `linux.Path` explicitly, now with the proper behavior.
 
 ### Fixed
 - Fixed the `PyserialConnector` not working properly with tbot contexts.
@@ -457,7 +457,7 @@ _Update_: Development now happens on the `master` branch instead of `development
 - A ``boot_timeout`` parameter was added to U-Boot machines to limit the maximum
   time, U-Boot is allowed to take during boot.
 - Testcases for interacting with GPIOs (`tbot_contrib.gpio`).
-- ``tbot.Re``: A convenience wrapper around ``re.compile``.  Whereever
+- ``tbot.Re``: A convenience wrapper around ``re.compile``.  Wherever
   regex-patterns are needed (e.g. in channel-interaction), you can now use
   `tbot.Re` instead of `re.compile("...".encode())`.
 - A `Channel.readline()` and a `Channel.expect()` method to mimic pexpect.
