@@ -218,7 +218,7 @@ class ParamikoConnector(connector.Connector):
         """
         Clone this machine.
 
-        Note that an ssh-session cannot hold an umlimited number of channels so
+        Note that an ssh-session cannot hold an unlimited number of channels so
         cloning too much might lead to issues.  The exact limit is dependent on
         the server configuration.
         """

@@ -60,7 +60,7 @@ class ChannelIO(typing.ContextManager):
     @abc.abstractmethod
     def read(self, n: int, timeout: typing.Optional[float] = None) -> bytes:
         """
-        Receive somy bytes from this channel.
+        Receive some bytes from this channel.
 
         Return at most ``n`` bytes, but at least 1 (if ``n`` is not ``0``).  Raise an
         exception if ``timeout`` is not ``None`` and expires before data was received.
@@ -110,7 +110,7 @@ class ChannelIO(typing.ContextManager):
 
         Channels lacking this functionality should silently ignore this call.
 
-        :param int colums: The new width of the pty.
+        :param int columns: The new width of the pty.
         :param int lines: The new height of the pty.
         """
         pass
@@ -352,7 +352,7 @@ class Channel(typing.ContextManager):
 
     def read(self, n: int = -1, timeout: typing.Optional[float] = None) -> bytes:
         """
-        Receive somy bytes from this channel.
+        Receive some bytes from this channel.
 
         If ``n`` is ``-1``, ``read()`` will wait until at least one byte is available
         and will then return all available bytes.  Otherwise it will wait until exactly
@@ -435,7 +435,7 @@ class Channel(typing.ContextManager):
         self, stream: typing.TextIO, show_prompt: bool = True
     ) -> "typing.Iterator[Channel]":
         """
-        Attatch a stream to this channel.
+        Attach a stream to this channel.
 
         All data read from the channel will also be sent to the stream.  This
         can be used, for example, to capture the entire boot-log of a board.
@@ -774,7 +774,7 @@ class Channel(typing.ContextManager):
         expires.  It might read further than the given pattern, if the input
         contains follow-up bytes in the same chunk of data.
 
-        Different to `pexpect`_, the results are availble as an
+        Different to `pexpect`_, the results are available as an
         :ref:`channel_expect_result` (:py:class:`~tbot.machine.channel.channel.ExpectResult`)
         which is returned on match.
 
@@ -891,7 +891,7 @@ class Channel(typing.ContextManager):
             types can be passed for this parameter.
         :param float timeout: Optional timeout.  If ``timeout`` is set and
             expires before the prompt was detected, ``read_until_prompt``
-            raises an execption.
+            raises an exception.
         :rtype: str
         :returns: UTF-8 decoded string of all bytes read up to the prompt.
         """
@@ -999,7 +999,7 @@ class Channel(typing.ContextManager):
         Move ownership of this channel.
 
         All existing references to this channel will no longer be accessible
-        after callin ``take()``.  Use this to mark transitions of a channel
+        after calling ``take()``.  Use this to mark transitions of a channel
         into a new (irreversible) context.  For example, when a board boots
         from U-Boot to Linux, U-Boot is no longer accessible.
         """

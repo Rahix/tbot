@@ -70,13 +70,13 @@ class Connector(machine.Machine):
         Create this machine from a tbot context.
 
         This method defines how tbot can automatically attempt creating this
-        machine from a given context.  It is usually defined by the connector
+        machine from a given context. It is usually defined by the connector
         but might be overridden by board config in certain more complex
         scenarios.
 
-        This method must return a context-manager that, upen entering, yields a
-        **fully initialized** machine.  In practical terms this means, the
-        implementation must enter the "machine's context" as well.  As an
+        This method must return a context-manager that, upon entering, yields a
+        **fully initialized** machine. In practical terms this means, the
+        implementation must enter the "machine's context" as well. As an
         example, the most basic implementation would look like this:
 
         .. code-block:: python

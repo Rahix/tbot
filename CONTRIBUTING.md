@@ -26,7 +26,7 @@ Examples:
 ```text
 board.uboot: Fix bootlog missing if not autobooting
 doc: Add flags documentation
-loader: Show traceback of errrors
+loader: Show traceback of errors
 Fix a few spelling mistakes
 ```
 
@@ -73,7 +73,7 @@ def foo() -> Channel:
     ...
 ```
 
-There might be some exceptions where the latter is definitely perferable, but
+There might be some exceptions where the latter is definitely preferable, but
 in most cases it isn't.
 
 ## Design
