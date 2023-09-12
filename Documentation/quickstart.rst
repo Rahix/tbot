@@ -338,7 +338,7 @@ come in many flavors: :py:class:`~tbot.machine.PreConnectInitializer`,
 ----------------
 One such initializer would be :py:class:`board.PowerControl
 <tbot.machine.board.PowerControl>`.  It allows controlling board power
-automatically.  If you have a switchable socket or relais connected to your
+automatically.  If you have a switchable socket or relay connected to your
 board's power, you can integrate it like this:
 
 .. code-block:: python
