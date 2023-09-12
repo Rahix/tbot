@@ -356,7 +356,7 @@ class UBootShell(shell.Shell, UbootStartup):
 
         This method will run the given command and expects it to start booting
         a payload.  ``ub.boot()`` will then return the channel so a new machine
-        can be built ontop of it for the booted payload.
+        can be built on top of it for the booted payload.
 
         **Example**:
 

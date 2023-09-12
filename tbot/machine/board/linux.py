@@ -81,7 +81,7 @@ class LinuxBootLogin(machine.Initializer, LinuxBoot):
 
     login_delay = 0
     """
-    The delay between first occurence of login_prompt and actual login.
+    The delay between first occurrence of login_prompt and actual login.
 
     This delay might be necessary if your system clutters the login prompt with
     log-messages during the first few seconds after boot.
@@ -291,7 +291,7 @@ class LinuxUbootConnector(connector.Connector, LinuxBootLogin, board.BoardMachin
 
         An implementation of this method should use the U-Boot machine given as
         ``ub`` to kick off the Linux boot.  It should return the channel to the
-        now booting Linux.  This will in almost all cases be archieved by using
+        now booting Linux.  This will in almost all cases be achieved by using
         the :py:meth:`tbot.machine.board.UBootShell.boot` method.
 
         **Example**:

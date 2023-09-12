@@ -116,7 +116,7 @@ class ConsoleConnector(connector.Connector):
             :py:class:`ConsoleConnector` will try to clone this machine's
             connection and use that to connect to the board.  This means that
             you have to make sure you give the correct lab-host for your
-            respecitive board to the constructor here.
+            respective board to the constructor here.
         """
         self.host = mach
 
