@@ -104,7 +104,11 @@ class SubprocessChannelIO(channel.ChannelIO):
         self.p.terminate()
         os.close(self.pty_slave)
         os.close(self.pty_master)
-        self.p.wait()
+        try:
+            outs, errs = self.p.communicate(timeout=10)
+        except subprocess.TimeoutExpired:
+            self.p.kill()
+            outs, errs = self.p.communicate()
 
         # Wait for all processes in the session to end.  Most of the time
         # this will return immediately, but in some cases (eg. a serial session
