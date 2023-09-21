@@ -1,6 +1,10 @@
 # Changelog
 
 ## [Unreleased]
+### Fixed
+- Fixed tbot hanging when an unresponsive subprocess does not terminate by itself ([#104]).
+
+[#104]: https://github.com/Rahix/tbot/pull/104
 
 
 ## [0.10.6] - 2023-09-08
