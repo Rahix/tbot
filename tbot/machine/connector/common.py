@@ -50,8 +50,6 @@ class SubprocessConnector(connector.Connector):
             localhost.exec0("echo", "Hello!")
     """
 
-    __slots__ = ()
-
     @classmethod
     @contextlib.contextmanager
     def from_context(cls: typing.Type[M], ctx: "tbot.Context") -> typing.Iterator[M]:

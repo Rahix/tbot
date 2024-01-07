@@ -37,8 +37,6 @@ class Machine(abc.ABC):
     :py:class:`~tbot.machine.shell.Shell` both inherit from it.
     """
 
-    __slots__ = ("_cx", "_rc", "ch")
-
     ch: channel.Channel
     """
     Channel to communicate with this machine.

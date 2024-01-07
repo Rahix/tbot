@@ -29,8 +29,6 @@ class Connector(machine.Machine):
     Base-class for machine connectors.
     """
 
-    __slots__ = ()
-
     @abc.abstractmethod
     def _connect(self) -> typing.ContextManager[channel.Channel]:
         """
