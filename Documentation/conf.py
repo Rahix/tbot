@@ -163,6 +163,7 @@ class HtmlConsoleDirective(rst.Directive):
 
 # }}}
 
+
 # -- Fix instance variables being cross-referenced --------------------------- {{{
 def patched_make_field(
     self,  # type: TypedField
