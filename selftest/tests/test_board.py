@@ -59,6 +59,14 @@ def test_uboot_simple_control(tbot_context: tbot.Context) -> None:
         assert out == "FOO"
 
 
+def test_uboot_crc32_workaround(tbot_context: tbot.Context) -> None:
+    with tbot_context.request(testmachines.MockhwBoardUBoot) as ub:
+        if ub.prompt != "=> ":
+            pytest.skip("Wrong U-Boot prompt for crc32 workaround test.")
+        ub.exec0("crc32", "0x10000008", "0x42")
+        assert ub.exec0("echo", "Hello World") == "Hello World\n"
+
+
 def test_linux_boot(tbot_context: tbot.Context) -> None:
     with tbot_context.request(testmachines.MockhwBoardLinux) as lnx:
         out = lnx.exec0("echo", "Hello World")
