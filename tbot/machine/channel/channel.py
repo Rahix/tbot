@@ -204,7 +204,11 @@ class BoundedPattern:
         elif isinstance(width, tuple):
             self._length = width[1]
 
-        if self._length == getattr(sre_parse, "MAXREPEAT", 2**32 - 1):
+        # It seems that when MAXREPEAT is not defined, the values 2**32-1 or
+        # 2**64-1 are used.  Let's be portable by just interpreting any value
+        # above 2**16-1 as an unbounded length.  Surely nobody wants to
+        # intentionally match 64 kiB patterns.......
+        if self._length >= getattr(sre_parse, "MAXREPEAT", 2**16 - 1):
             raise Exception(f"Expression {self.pattern.pattern!r} is not bounded")
 
     def __len__(self) -> int:
