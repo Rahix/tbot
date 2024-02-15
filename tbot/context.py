@@ -151,9 +151,9 @@ class Context(typing.ContextManager):
         self._reset_on_error_default = reset_on_error_by_default
         self._teardown_order: List[Type] = []
 
-        self._instances: DefaultDict[
-            Type[machine.Machine], InstanceManager
-        ] = collections.defaultdict(InstanceManager)
+        self._instances: DefaultDict[Type[machine.Machine], InstanceManager] = (
+            collections.defaultdict(InstanceManager)
+        )
 
         if add_defaults:
             tbot.role._register_default_machines(self)

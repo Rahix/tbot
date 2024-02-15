@@ -85,9 +85,9 @@ class UBootAutobootIntercept(machine.Initializer, UbootStartup):
             autoboot_keys = "\\x7f\\x7f\\x7f\\x7f"
     """
 
-    autoboot_prompt: typing.Optional[
-        channel.channel.ConvenientSearchString
-    ] = re.compile(b"autoboot:\\s{0,5}\\d{0,3}\\s{0,3}.{0,80}")
+    autoboot_prompt: typing.Optional[channel.channel.ConvenientSearchString] = (
+        re.compile(b"autoboot:\\s{0,5}\\d{0,3}\\s{0,3}.{0,80}")
+    )
     """
     Autoboot prompt to wait for.
     """
