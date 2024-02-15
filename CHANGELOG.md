@@ -1,8 +1,12 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- Dropped official support for Python 3.7 - tbot now expects at least Python 3.8.
+
 ### Fixed
 - Fixed tbot hanging when an unresponsive subprocess does not terminate by itself ([#104]).
+- Fixed tbot no longer detecting unbounded regex patterns on recent Python versions.
 
 [#104]: https://github.com/Rahix/tbot/pull/104
 
