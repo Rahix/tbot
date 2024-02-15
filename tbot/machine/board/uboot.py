@@ -269,10 +269,29 @@ class UBootShell(shell.Shell, UbootStartup):
         """
         cmd = self.escape(*args)
 
+        # There is an ugly ugly problem with no great solution: The `crc32`
+        # command in U-Boot prints the string `=> ` as part of its output.
+        # This is a commonly used prompt string which means that tbot gets
+        # completely thrown off by this situation.  As a stopgap solution,
+        # let's special case this here to make people's lives a bit easier...
+        if args[0] == "crc32" and self.ch.prompt in ("=> ", b"=> "):
+            tbot.log.warning(
+                "Applying workaround for `crc32` command in U-Boot!\n"
+                + "  See https://github.com/rahix/tbot/issues/111 for details."
+            )
+            override_prompt = "\n=> "
+        else:
+            override_prompt = None
+
         with tbot.log_event.command(self.name, cmd) as ev:
             self.ch.sendline(cmd, read_back=True)
-            with self.ch.with_stream(ev, show_prompt=False):
-                out = self.ch.read_until_prompt()
+            with self.ch.with_prompt(override_prompt):
+                with self.ch.with_stream(ev, show_prompt=False):
+                    out = self.ch.read_until_prompt(prompt=override_prompt)
+                    if override_prompt == "\n=> ":
+                        # The overridden prompt ate the trailing '\n'
+                        ev.write("\n")
+                        out += "\n"
             ev.data["stdout"] = out
 
             self.ch.sendline("echo $?", read_back=True)
