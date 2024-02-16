@@ -276,9 +276,13 @@ class UBootShell(shell.Shell, UbootStartup):
             ev.data["stdout"] = out
 
             self.ch.sendline("echo $?", read_back=True)
-            retcode = self.ch.read_until_prompt()
+            retcode_str = self.ch.read_until_prompt()
+            try:
+                retcode = int(retcode_str)
+            except ValueError:
+                raise tbot.error.InvalidRetcodeError(self, retcode_str) from None
 
-        return (int(retcode), out)
+        return (retcode, out)
 
     def exec0(self, *args: ArgTypes) -> str:
         """
