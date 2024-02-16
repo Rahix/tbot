@@ -44,6 +44,15 @@ def wait_for_shell(ch: channel.Channel) -> None:
             timeout = 3.0
 
 
+def posix_fetch_return_code(ch: channel.Channel, mach: M) -> int:
+    ch.sendline("echo $?", read_back=True)
+    retcode_str = ch.read_until_prompt()
+    try:
+        return int(retcode_str)
+    except ValueError:
+        raise tbot.error.InvalidRetcodeError(mach, retcode_str) from None
+
+
 def posix_environment(
     mach: M, var: str, value: "typing.Union[str, linux.Path[M], None]" = None
 ) -> str:

@@ -130,10 +130,9 @@ class Bash(linux_shell.LinuxShell):
                 out = self.ch.read_until_prompt()
             ev.data["stdout"] = out
 
-            self.ch.sendline("echo $?", read_back=True)
-            retcode = self.ch.read_until_prompt()
+            retcode = util.posix_fetch_return_code(self.ch, self)
 
-        return (int(retcode), out)
+        return (retcode, out)
 
     def exec0(
         self: Self, *args: typing.Union[str, special.Special[Self], path.Path[Self]]
@@ -199,8 +198,7 @@ class Bash(linux_shell.LinuxShell):
                     output = proxy_ch.read_until_prompt()
                 ev.data["stdout"] = ev.getvalue()
 
-            proxy_ch.sendline("echo $?", read_back=True)
-            retcode = int(proxy_ch.read_until_prompt())
+            retcode = util.posix_fetch_return_code(proxy_ch, self)
 
             return (retcode, output)
 

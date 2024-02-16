@@ -169,6 +169,29 @@ class ChannelClosedError(MachineError):
     """
 
 
+class InvalidRetcodeError(MachineError):
+    """
+    While trying to fetch the return code of a command, unexpected output was received.
+
+    This error usually indicates some deeper issue with the machine connection.
+    For example, there could be kernel log messages being printed in between
+    command output.
+
+    .. versionadded:: UNRELEASED
+    """
+
+    def __init__(
+        self,
+        host: "machine.Machine",
+        retcode_str: str,
+    ) -> None:
+        self.host = host
+        self.retcode_str = retcode_str
+        super().__init__(
+            f"received string {retcode_str!r} instead of a return code integer"
+        )
+
+
 class ChannelBorrowedError(ApiViolationError):
     """
     Error type for exceptions when accessing a channel which is currently borrowed.
