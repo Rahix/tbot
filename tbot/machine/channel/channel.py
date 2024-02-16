@@ -841,7 +841,7 @@ class Channel(typing.ContextManager):
     # prompt handling {{{
     @contextlib.contextmanager
     def with_prompt(
-        self, prompt_in: ConvenientSearchString
+        self, prompt_in: typing.Optional[ConvenientSearchString]
     ) -> "typing.Iterator[Channel]":
         """
         Set the prompt for this channel during a context.
@@ -859,22 +859,27 @@ class Channel(typing.ContextManager):
         :param ConvenientSearchString prompt: The new prompt pattern/string.
             See :ref:`channel_search_string` for more info.
         """
-        prompt = _convert_search_string(prompt_in)
-
-        # If the prompt is a pattern, we need to recompile it with an additional $ in the
-        # end to ensure that it only matches the end of the stream
-        if isinstance(prompt, BoundedPattern):
-            new_pattern = re.compile(
-                prompt.pattern.pattern + b"$", prompt.pattern.flags
-            )
-            prompt = BoundedPattern(new_pattern)
-
-        previous = self.prompt
-        self.prompt = prompt
-        try:
+        if prompt_in is None:
+            # Ignore when no prompt was given. This makes conditional prompt
+            # overrides easier to implement.
             yield self
-        finally:
-            self.prompt = previous
+        else:
+            prompt = _convert_search_string(prompt_in)
+
+            # If the prompt is a pattern, we need to recompile it with an additional $ in the
+            # end to ensure that it only matches the end of the stream
+            if isinstance(prompt, BoundedPattern):
+                new_pattern = re.compile(
+                    prompt.pattern.pattern + b"$", prompt.pattern.flags
+                )
+                prompt = BoundedPattern(new_pattern)
+
+            previous = self.prompt
+            self.prompt = prompt
+            try:
+                yield self
+            finally:
+                self.prompt = previous
 
     def read_until_prompt(
         self,
