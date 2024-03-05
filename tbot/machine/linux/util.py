@@ -33,7 +33,7 @@ def wait_for_shell(ch: channel.Channel) -> None:
     # Credit to Pavel for this idea!
     timeout = 0.2
     while True:
-        ch.sendline("echo TBOT''LOGIN")
+        ch.sendline("echo TBOT\\LOGIN")
         try:
             ch.expect("TBOTLOGIN", timeout=timeout)
             break
