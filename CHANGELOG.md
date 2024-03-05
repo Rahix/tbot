@@ -6,6 +6,7 @@
   Python 3.8.
 - Improved exception message when parsing of a command's return code fails (for
   example due to console clutter).
+- Made the shell detection mechanism a bit more robust (`wait_for_shell()`).
 
 ### Fixed
 - Fixed tbot hanging when an unresponsive subprocess does not terminate by
