@@ -177,7 +177,7 @@ class InvalidRetcodeError(MachineError):
     For example, there could be kernel log messages being printed in between
     command output.
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.10.7
     """
 
     def __init__(
