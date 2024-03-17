@@ -17,7 +17,7 @@ fi
 
 # First, update versionadded, etc. directives
 # -------------------------------------------
-candidates="$(rg --files-with-matches ":: UNRELEASED")"
+candidates="$(rg --files-with-matches ":: UNRELEASED" -g '!do-release.sh')"
 sed -i "s/:: UNRELEASED/:: $newrel/g" $candidates
 git commit -s -m "docs: Update version references" -- $candidates
 
