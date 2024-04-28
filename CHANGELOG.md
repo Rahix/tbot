@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- A specific (and documented) error type for situations where a bounded regex
+  pattern is required but an unbounded pattern was supplied.
 
 
 ## [0.10.7] - 2024-03-17
