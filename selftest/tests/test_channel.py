@@ -109,7 +109,7 @@ def test_unbounded_pattern(ch: channel.Channel) -> None:
     Check that an unbounded pattern is detected properly.
     """
     ub_pat = tbot.Re("unbounded$ .*")
-    with pytest.raises(Exception, match="not bounded"):
+    with pytest.raises(tbot.error.UnboundedPatternError):
         ch.read_until_prompt(prompt=ub_pat, timeout=1)
 
 

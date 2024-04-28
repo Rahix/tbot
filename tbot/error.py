@@ -244,3 +244,22 @@ class IllegalDataException(ApiViolationError):
 
     .. versionadded:: 0.10.2
     """
+
+
+class UnboundedPatternError(ApiViolationError, ValueError):
+    """
+    Raised when a regex pattern is used which does not have a bounded length.
+
+    tbot requires the use of patterns with a bounded length to keep track of
+    incoming data efficiently.  A bounded pattern is one which does not use any
+    infinitely repeating expressions.
+
+    For example, ``r".*"`` is unbounded, but ``r".{0,80}"`` is.
+
+    .. versionadded:: UNRELEASED
+    """
+
+    def __init__(self, pattern: bytes) -> None:
+        self.pattern = pattern
+
+        super().__init__(f"Regex expression {pattern!r} is not bounded")

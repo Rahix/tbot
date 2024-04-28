@@ -209,7 +209,7 @@ class BoundedPattern:
         # above 2**16-1 as an unbounded length.  Surely nobody wants to
         # intentionally match 64 kiB patterns.......
         if self._length >= getattr(sre_parse, "MAXREPEAT", 2**16 - 1):
-            raise Exception(f"Expression {self.pattern.pattern!r} is not bounded")
+            raise tbot.error.UnboundedPatternError(self.pattern.pattern)
 
     def __len__(self) -> int:
         return self._length
