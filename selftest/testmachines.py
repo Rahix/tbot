@@ -298,13 +298,10 @@ function boot() {
         (self.host.workdir / "mockhw-power-status").unlink(missing_ok=True)
 
     def connect(self, mach: linux.LinuxShell) -> channel.Channel:
-        return mach.open_channel(
-            "bash",
-            "--noprofile",
-            "--init-file",
-            self._mockhw_script,
-            "-i",
-        )
+        ch = mach.open_channel("bash", "--norc", "--noprofile", "--noediting", "-i")
+        tbot.machine.linux.util.wait_for_shell(ch)
+        ch.sendline(mach.escape("source", self._mockhw_script))
+        return ch
 
 
 class MockhwBoardUBoot(
