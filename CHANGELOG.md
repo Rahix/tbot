@@ -5,6 +5,9 @@
 - A specific (and documented) error type for situations where a bounded regex
   pattern is required but an unbounded pattern was supplied.
 
+### Fixed
+- Fixed U-Boot selftests failing on some systems due to an unclean environment.
+
 
 ## [0.10.7] - 2024-03-17
 ### Changed
