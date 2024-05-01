@@ -92,6 +92,10 @@ class Ash(linux_shell.LinuxShell):
             self.ch.sendline("PS2=''")
             self.ch.read_until_prompt()
 
+            # Do a sanity check to assert that shell interaction is working
+            # exactly as expected
+            util.shell_sanity_check(self)
+
             yield None
         finally:
             pass

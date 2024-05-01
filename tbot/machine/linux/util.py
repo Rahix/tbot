@@ -72,6 +72,13 @@ def posix_environment(
         return mach.exec0("echo", linux.Raw(f'" ${{{var}}}"'))[1:-1]
 
 
+def shell_sanity_check(mach: M) -> None:
+    mach.ch.sendline("echo TBOT-SANITY-CHECK", read_back=True)
+    output = mach.ch.read_until_prompt()
+    if output != "TBOT-SANITY-CHECK\n":
+        raise tbot.error.UncleanShellError(mach)
+
+
 # Type alias for the command context function/generator.  This function needs
 # to be provided by the shell and contains the actual implementation of
 # spawning an interactive command (and cleaning up / checking the return code

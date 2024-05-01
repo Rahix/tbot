@@ -169,6 +169,31 @@ class ChannelClosedError(MachineError):
     """
 
 
+class UncleanShellError(MachineError):
+    """
+    While trying to prepare the remote shell, tbot detected unexpected behavior.
+
+    This error means that the shell responded with unexpected output during
+    setup.  tbot cannot proceed to interact, as it cannot be certain about the
+    state of the remote shell.
+
+    If you encounter this error, enable verbose channel logging to see what
+    unexpected output was received.  You need to ensure that the remote system
+    does not send this additional output.
+
+    .. versionadded:: UNRELEASED
+    """
+
+    def __init__(
+        self,
+        host: "machine.Machine",
+    ) -> None:
+        self.host = host
+        super().__init__(
+            f"detected unclean shell for {host.name!r}, cannot interact safely"
+        )
+
+
 class InvalidRetcodeError(MachineError):
     """
     While trying to fetch the return code of a command, unexpected output was received.
