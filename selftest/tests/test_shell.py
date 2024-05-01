@@ -1,5 +1,6 @@
 import pytest
 from conftest import AnyLinuxShell
+import testmachines
 
 from tbot.machine import linux
 from tbot.tc import shell
@@ -287,3 +288,16 @@ def test_background_jobs(any_linux_shell: AnyLinuxShell) -> None:
         assert out == "foo"
         out = f2.read_text().strip()
         assert out == "bar"
+
+
+def test_unclean_shell(tbot_context: tbot.Context) -> None:
+    # This test only works on the "slow" bash because otherwise we jump over
+    # the intermediate prompt that we want to use to confuse tbot...
+    with tbot_context.request(testmachines.LocalhostSlowBash) as lnx:
+        with lnx.subshell():
+            # By exporting PS1, the subshell will immediately start using
+            # tbot's prompt which confuses the shell setup code.
+            lnx.exec0("export", "PS1")
+            with pytest.raises(tbot.error.UncleanShellError):
+                with lnx.subshell():
+                    lnx.exec0("uname")
