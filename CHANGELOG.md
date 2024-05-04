@@ -4,9 +4,14 @@
 ### Added
 - A specific (and documented) error type for situations where a bounded regex
   pattern is required but an unbounded pattern was supplied.
+- Added a sanity check to Linux shell initialization which should catch
+  situations where things went wrong.  This should provided a more clear error
+  message in the future ([#115]).
 
 ### Fixed
 - Fixed U-Boot selftests failing on some systems due to an unclean environment.
+
+[#115]: https://github.com/Rahix/tbot/pull/115
 
 
 ## [0.10.7] - 2024-03-17
