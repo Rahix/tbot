@@ -16,6 +16,7 @@
 import re
 import typing
 
+import tbot.error
 from tbot.machine import linux
 from tbot.tc import shell
 
@@ -162,7 +163,11 @@ def hashcmp(a: linux.Path, b: linux.Path) -> bool:
         if shell.check_for_tool(a.host, tool) and shell.check_for_tool(b.host, tool):
             break
     else:
-        raise Exception("No suitable hashing tool found which exists on both hosts!")
+        raise tbot.error.MissingToolError(
+            a.host,
+            _HASHCMP_TOOLS,
+            "No suitable hashing tool found which exists on both hosts!",
+        )
 
     sum_a: str = a.host.exec0(tool, a).split()[0]
     sum_b: str = b.host.exec0(tool, b).split()[0]
@@ -340,7 +345,9 @@ def find_block_partitions(
     """
     assert dev.is_block_device()
     if not shell.check_for_tool(dev.host, "lsblk"):
-        raise Exception("Need `lsblk` for block_partitions()")
+        raise tbot.error.MissingToolError(
+            dev.host, ["lsblk"], "Need `lsblk` for block_partitions()"
+        )
 
     output = dev.host.exec0("lsblk", "--paths", "--noheadings", "-o", "KNAME", dev)
     for line in output.strip("\n").split("\n"):
