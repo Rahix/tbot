@@ -217,6 +217,31 @@ class InvalidRetcodeError(MachineError):
         )
 
 
+class MissingToolError(MachineError):
+    """
+    A tool that is needed for a testcase is not installed on the respective machine.
+
+    The usual solution is to install one of the listed tools.
+
+    .. versionadded:: UNRELEASED
+    """
+
+    def __init__(
+        self,
+        host: "machine.Machine",
+        need_one_of: typing.List[str],
+        message: typing.Optional[str] = None,
+    ):
+        self.host = host
+        self.message = message
+        self.need_one_of = need_one_of
+        tools_list = ", ".join(f"`{t}`" for t in self.need_one_of)
+        msg = message + "\n" if message is not None else ""
+        super().__init__(
+            f"{msg}one of the following tools is needed on {host.name!r}: {tools_list}"
+        )
+
+
 class ChannelBorrowedError(ApiViolationError):
     """
     Error type for exceptions when accessing a channel which is currently borrowed.
