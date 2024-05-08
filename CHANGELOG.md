@@ -2,11 +2,13 @@
 
 ## [Unreleased]
 ### Added
-- A specific (and documented) error type for situations where a bounded regex
-  pattern is required but an unbounded pattern was supplied.
 - Added a sanity check to Linux shell initialization which should catch
   situations where things went wrong.  This should provided a more clear error
   message in the future ([#115]).
+- A specific (and documented) error type for situations where a bounded regex
+  pattern is required but an unbounded pattern was supplied.
+- A specific error type for situations where a tool is missing on a host which
+  would be required by some testcase.
 
 ### Fixed
 - Fixed U-Boot selftests failing on some systems due to an unclean environment.
