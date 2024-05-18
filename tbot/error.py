@@ -181,7 +181,7 @@ class UncleanShellError(MachineError):
     unexpected output was received.  You need to ensure that the remote system
     does not send this additional output.
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.10.8
     """
 
     def __init__(
@@ -223,7 +223,7 @@ class MissingToolError(MachineError):
 
     The usual solution is to install one of the listed tools.
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.10.8
     """
 
     def __init__(
@@ -306,7 +306,7 @@ class UnboundedPatternError(ApiViolationError, ValueError):
 
     For example, ``r".*"`` is unbounded, but ``r".{0,80}"`` is.
 
-    .. versionadded:: UNRELEASED
+    .. versionadded:: 0.10.8
     """
 
     def __init__(self, pattern: bytes) -> None:
