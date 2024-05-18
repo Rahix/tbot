@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+
+
+## [0.10.8] - 2024-05-18
 ### Added
 - Added a sanity check to Linux shell initialization which should catch
   situations where things went wrong.  This should provided a more clear error
@@ -1074,7 +1077,8 @@ Version **0.6.0** is basically a complete rewrite of TBot.  A rough summary of c
   were loaded later
 - Fix `call_then` not returning the function itself
 
-[Unreleased]: https://github.com/Rahix/tbot/compare/v0.10.7...master
+[Unreleased]: https://github.com/Rahix/tbot/compare/v0.10.8...master
+[0.10.8]: https://github.com/Rahix/tbot/compare/v0.10.7...v0.10.8
 [0.10.7]: https://github.com/Rahix/tbot/compare/v0.10.6...v0.10.7
 [0.10.6]: https://github.com/Rahix/tbot/compare/v0.10.5...v0.10.6
 [0.10.5]: https://github.com/Rahix/tbot/compare/v0.10.4...v0.10.5
