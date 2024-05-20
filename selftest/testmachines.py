@@ -272,6 +272,11 @@ function setenv() {
     shift
     eval "$var=\\"$*\\""
 }
+function crc32() {
+    printf "crc32 for %s ... %s ==> " "$1" "$1"
+    sleep 0.2
+    echo "deadb33f"
+}
 function boot() {
     echo "Pretending to boot Linux..."
     echo ""
