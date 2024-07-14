@@ -914,9 +914,10 @@ class Channel(typing.ContextManager):
                 buf += new
 
                 if isinstance(self.prompt, bytes):
-                    if buf.endswith(self.prompt):
+                    index = buf.find(self.prompt)
+                    if index > -1:
                         return (
-                            buf[: -len(self.prompt)]
+                            buf[:index]
                             .decode("utf-8", errors="replace")
                             .replace("\r\n", "\n")
                             .replace("\n\r", "\n")
