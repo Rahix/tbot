@@ -110,12 +110,14 @@ class SubprocessChannelIO(channel.ChannelIO):
             self.p.kill()
             self.p.communicate()
 
-        # Wait for all processes in the session to end.  Most of the time
-        # this will return immediately, but in some cases (eg. a serial session
-        # with picocom) we have to wait a bit until we can continue.  To be as
-        # quick as possible this is implemented as exponential backoff and will
-        # give up after 1 second (1.27 to be exact) and emit a warning.
-        for t in range(7):
+        # Wait for all processes in the session to end.  Most of the time this
+        # will return immediately, but in some cases (eg. a serial session with
+        # picocom) we have to wait a bit until we can continue.  To be as quick
+        # as possible this is implemented as exponential backoff.  When a
+        # subprocess takes longer than 1.27s to terminate, a warning is
+        # emitted.  After 10.2s, we give up and error out.
+        wait_total = 0.0
+        for t in range(10):
             if (
                 subprocess.call(
                     ["ps", "-s", str(sid)],
@@ -125,7 +127,34 @@ class SubprocessChannelIO(channel.ChannelIO):
                 != 0
             ):
                 break
-            time.sleep(2**t / 100)
+
+            wait_time = 2**t / 100
+
+            if t >= 7:
+                offending = (
+                    subprocess.run(
+                        ["ps", "-s", str(sid), "ho", "args"],
+                        stdout=subprocess.PIPE,
+                        encoding="utf-8",
+                    )
+                    .stdout.strip()
+                    .split("\n")
+                )
+                offending_str = "\n".join(f" - {args!r}" for args in offending)
+                tbot.log.warning(
+                    f"""\
+Some subprocesses have not stopped after {wait_total:.1f} s:
+
+{offending_str}
+
+You should probably consider to explicitly terminate the offending processes in
+your connector configuration.
+
+Waiting for {wait_time:.1f} more seconds..."""
+                )
+
+            time.sleep(wait_time)
+            wait_total += wait_time
         else:
             raise tbot.error.TbotException("some subprocess(es) did not stop")
 
