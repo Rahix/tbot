@@ -65,6 +65,24 @@ class Picocom(TerminalEmulator):
 
 
 class AutoConsoleConnector(connector.ConsoleConnector):
+    """
+    Console connector that automatically chooses an available terminal emulator
+    to connect to a local console device.
+
+    **Example**:
+
+    .. code-block:: python
+
+        from tbot_contrib.connector.auto import AutoConsoleConnector
+        from tbot.machine import board
+
+        class FooBoard(AutoConsoleConnector, board.Board):
+            serial_port = "/dev/ttyUSB0"
+            baudrate = 115200
+
+    .. versionadded:: 0.10.3
+    """
+
     @property
     @abc.abstractmethod
     def serial_port(self) -> Union[str, linux.Path]:
@@ -79,6 +97,9 @@ class AutoConsoleConnector(connector.ConsoleConnector):
     tools = [Tio, Picocom]
     """
     List of terminal emulators which may be used to connect.
+
+    It is best the leave this list complete so tbot can automatically figure
+    out which tool is available and use that one.
     """
 
     @contextlib.contextmanager
