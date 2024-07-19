@@ -241,7 +241,7 @@ def git_increment_commits(repo: git.GitRepository) -> str:
     counter = repo / "counter.txt"
 
     for i in range(0, 24):
-        tbot.log.message(f"Create commit ({i+1:2}/24) ...")
+        tbot.log.message(f"Create commit ({i + 1:2}/24) ...")
 
         repo.host.exec0("echo", str(i), linux.RedirStdout(counter))
         repo.add(counter)
