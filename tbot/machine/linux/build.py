@@ -21,16 +21,16 @@ import typing
 from . import linux_shell, path
 
 
-class Toolchain(abc.ABC):
+H = typing.TypeVar("H", bound="Builder")
+
+
+class Toolchain(abc.ABC, typing.Generic[H]):
     """Generic toolchain type."""
 
     @abc.abstractmethod
-    def enable(self, host: "Builder") -> None:
+    def enable(self, host: H) -> None:
         """Enable this toolchain on the given ``host``."""
         pass
-
-
-H = typing.TypeVar("H", bound="Builder")
 
 
 class EnvScriptToolchain(Toolchain):
