@@ -2,9 +2,9 @@
 
 ## [Unreleased]
 ### Changed
-- Increased to grace period for subprocesses to terminate from 1.3 seconds to
-  10.2 seconds.  A warning is emitted after 1.3 seconds to let the user know
-  why tbot is waiting ([#120]).
+- Increased grace period for subprocesses to terminate from 1 to 10 seconds.  A
+  warning is emitted after 1 seconds anyway, to let the user know why tbot is
+  waiting ([#120]).
 
   [#120]: https://github.com/rahix/tbot/pull/120
 
