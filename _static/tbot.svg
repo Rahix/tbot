@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="220mm"
+   height="155mm"
+   enable-background="new"
+   viewBox="0 0 220 155"
+   version="1.1"
+   id="svg135"
+   sodipodi:docname="tbot.svg"
+   inkscape:version="0.92.4 (unknown)">
+  <metadata
+     id="metadata139">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="2560"
+     inkscape:window-height="1389"
+     id="namedview137"
+     showgrid="false"
+     inkscape:zoom="1.6113978"
+     inkscape:cx="532.75715"
+     inkscape:cy="367.32052"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg135" />
+  <defs
+     id="defs5">
+    <filter
+       id="a"
+       color-interpolation-filters="sRGB">
+      <feBlend
+         in2="BackgroundImage"
+         mode="saturation"
+         id="feBlend2" />
+    </filter>
+  </defs>
+  <text
+     x="61.97"
+     y="49.77"
+     fill="#fff"
+     filter="url(#a)"
+     font-family="sans-serif"
+     font-size="21.33"
+     font-weight="400"
+     letter-spacing="0"
+     text-anchor="middle"
+     transform="translate(141.53 78.92) scale(.26458)"
+     word-spacing="0"
+     style="line-height:1.25;text-align:center"
+     id="text9">
+    <tspan
+       style="-inkscape-font-specification:Roboto;text-align:center"
+       x="61.97"
+       y="49.77"
+       font-family="Roboto"
+       id="tspan7">Serial</tspan>
+  </text>
+  <path
+     fill="#d8bb05"
+     d="M140.53 110.53v40h-135v-40z"
+     id="path13" />
+  <path
+     fill="#2c3079"
+     d="M175.53 58.55h40V72.7h-40z"
+     id="path15" />
+  <path
+     fill="#308480"
+     d="M175.53 75.53h40v30h-40zm0-70h40v30h-40z"
+     id="path17" />
+  <path
+     fill="#2c3079"
+     d="M175.53 38.45h40v14.16h-40z"
+     id="path19" />
+  <path
+     fill="#18713a"
+     d="M90.53 5.53h50v100h-50z"
+     id="path21" />
+  <path
+     fill="#1e914a"
+     d="M90 5h50v100H90z"
+     id="path23" />
+  <path
+     fill="#e72900"
+     fill-opacity=".99"
+     d="M5.53 5.53h50v100h-50z"
+     id="path25" />
+  <path
+     fill="#393e9c"
+     d="M175 58.02h40v14.15h-40z"
+     id="path27" />
+  <path
+     fill="#ff4c25"
+     d="M5 5h50v100H5z"
+     id="path29" />
+  <path
+     fill="#399c99"
+     d="M175 75h40v30h-40zm0-70h40v30h-40z"
+     id="path31" />
+  <path
+     fill="#393e9c"
+     d="M175 37.92h40v14.16h-40z"
+     id="path33" />
+  <path
+     fill="#bad53a"
+     stroke="#94ac24"
+     stroke-opacity=".93"
+     stroke-width=".79"
+     d="M56.69 55l8.73-10v5h14.56v-5l8.73 10-8.73 10v-5H65.42v5z"
+     id="path35" />
+  <path
+     fill="#ff4040"
+     stroke="#df0c0c"
+     stroke-width=".8"
+     d="M141.74 20l8.6-10v5h14.33v-5l8.6 10-8.6 10v-5h-14.33v5z"
+     id="path37" />
+  <path
+     fill="#0fde90"
+     stroke="#0ec97f"
+     stroke-width=".76"
+     d="M142.55 65l8.15-5v2.5h13.6V60l8.15 5-8.16 5v-2.5H150.7V70zm0-20l8.15-5v2.5h13.6V40l8.15 5-8.16 5v-2.5H150.7V50z"
+     id="path39" />
+  <text
+     x="114.98"
+     y="202.79"
+     fill="#fff"
+     stroke-width=".27"
+     font-family="Roboto Slab"
+     font-size="10.58"
+     font-weight="700"
+     letter-spacing="0"
+     transform="translate(0 -187)"
+     word-spacing="0"
+     style="line-height:1.25;-inkscape-font-specification:'Roboto Slab Bold'"
+     id="text43">
+    <tspan
+       style="-inkscape-font-specification:'Roboto Slab Bold';text-align:center"
+       x="114.98"
+       y="202.79"
+       font-size="9.17"
+       text-anchor="middle"
+       id="tspan41">Lab Host</tspan>
+  </text>
+  <text
+     style="line-height:1.25"
+     x="179.43"
+     y="210.18"
+     fill="#fff"
+     stroke-width=".27"
+     font-family="sans-serif"
+     font-size="8.47"
+     font-weight="400"
+     letter-spacing="0"
+     transform="translate(0 -187)"
+     word-spacing="0"
+     id="text47">
+    <tspan
+       x="179.43"
+       y="210.18"
+       font-family="Roboto Slab"
+       style="-inkscape-font-specification:'Roboto Slab'"
+       id="tspan45">Board 1</tspan>
+  </text>
+  <text
+     x="178.28"
+     y="231.19"
+     fill="#fff"
+     stroke-width=".27"
+     font-family="sans-serif"
+     font-size="4.23"
+     font-weight="400"
+     letter-spacing="0"
+     transform="translate(0 -187)"
+     word-spacing="0"
+     style="line-height:1.10000002"
+     id="text53">
+    <tspan
+       style="line-height:1.10000002;-inkscape-font-specification:'Roboto Slab'"
+       x="178.28"
+       y="231.19"
+       font-family="Roboto Slab"
+       id="tspan49">Board 1</tspan>
+    <tspan
+       style="line-height:1.10000002;-inkscape-font-specification:'Roboto Slab'"
+       x="178.28"
+       y="235.99"
+       font-family="Roboto Slab"
+       id="tspan51">Power Switch</tspan>
+  </text>
+  <text
+     x="157.6"
+     y="209.09"
+     fill="#fff"
+     stroke-width=".27"
+     font-family="sans-serif"
+     font-size="5.64"
+     font-weight="400"
+     letter-spacing="0"
+     text-anchor="middle"
+     transform="translate(0 -187)"
+     word-spacing="0"
+     style="line-height:1.25;text-align:center"
+     id="text57">
+    <tspan
+       style="-inkscape-font-specification:Roboto;text-align:center"
+       x="157.6"
+       y="209.09"
+       font-family="Roboto"
+       id="tspan55">Serial</tspan>
+  </text>
+  <text
+     style="line-height:1.04999995;text-align:start"
+     x="9.43"
+     y="214.02"
+     fill="#fff"
+     stroke-width=".27"
+     font-family="sans-serif"
+     font-size="7.06"
+     font-weight="400"
+     letter-spacing="0"
+     transform="translate(0 -187)"
+     word-spacing="0"
+     id="text75">
+    <tspan
+       x="9.43"
+       y="214.02"
+       font-family="Roboto"
+       font-size="6"
+       style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start"
+       id="tspan59">This is the</tspan>
+    <tspan
+       x="9.43"
+       y="221.43"
+       font-family="Roboto"
+       font-size="6"
+       style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start"
+       id="tspan61">computer</tspan>
+    <tspan
+       x="9.43"
+       y="228.83"
+       font-family="Roboto"
+       font-size="6"
+       style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start"
+       id="tspan63">that tbot</tspan>
+    <tspan
+       x="9.43"
+       y="236.24"
+       font-family="Roboto"
+       font-size="6"
+       style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start"
+       id="tspan65">runs on.</tspan>
+    <tspan
+       x="9.43"
+       y="243.65"
+       font-family="Roboto"
+       font-size="6"
+       style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start"
+       id="tspan67">It has the test-</tspan>
+    <tspan
+       x="9.43"
+       y="251.06"
+       font-family="Roboto"
+       font-size="6"
+       style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start"
+       id="tspan69">cases and</tspan>
+    <tspan
+       x="9.43"
+       y="258.47"
+       font-family="Roboto"
+       font-size="6"
+       style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start"
+       id="tspan71">configuration</tspan>
+    <tspan
+       x="9.43"
+       y="265.88"
+       font-family="Roboto"
+       font-size="6"
+       style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start"
+       id="tspan73">stored.</tspan>
+  </text>
+  <text
+     style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:center"
+     x="95.26"
+     y="212.81"
+     fill="#f6f6f6"
+     stroke-width=".27"
+     font-family="Roboto"
+     font-size="7.06"
+     font-weight="400"
+     letter-spacing="0"
+     text-anchor="middle"
+     transform="translate(0 -187)"
+     word-spacing="0"
+     id="text95">
+    <tspan
+       x="95.26"
+       y="212.81"
+       font-size="6"
+       text-anchor="start"
+       style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start"
+       id="tspan77">This PC is</tspan>
+    <tspan
+       x="95.26"
+       y="220.22"
+       font-size="6"
+       text-anchor="start"
+       style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start"
+       id="tspan79">located in the</tspan>
+    <tspan
+       x="95.26"
+       y="227.63"
+       font-size="6"
+       text-anchor="start"
+       style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start"
+       id="tspan81">lab and has</tspan>
+    <tspan
+       x="95.26"
+       y="235.03"
+       font-size="6"
+       text-anchor="start"
+       style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start"
+       id="tspan83">access to a</tspan>
+    <tspan
+       x="95.26"
+       y="242.44"
+       font-size="6"
+       text-anchor="start"
+       style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start"
+       id="tspan85">serial con-</tspan>
+    <tspan
+       x="95.26"
+       y="249.85"
+       font-size="6"
+       text-anchor="start"
+       style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start"
+       id="tspan87">nection to the</tspan>
+    <tspan
+       x="95.26"
+       y="257.26"
+       font-size="6"
+       text-anchor="start"
+       style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start"
+       id="tspan89">boards. It can</tspan>
+    <tspan
+       x="95.26"
+       y="264.67"
+       font-size="6"
+       text-anchor="start"
+       style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start"
+       id="tspan91">also toggle</tspan>
+    <tspan
+       x="95.26"
+       y="272.08"
+       font-size="6"
+       text-anchor="start"
+       style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start"
+       id="tspan93">their power.</tspan>
+  </text>
+  <path
+     fill="#bad53a"
+     stroke="#94ad24"
+     stroke-opacity=".92"
+     stroke-width=".8"
+     d="M80 74.04v5H67.5V99h-5l10 9 10-9h-5v-9.96H80v5l9-10-9-10z"
+     id="path97" />
+  <text
+     x="76.14"
+     y="273.06"
+     fill="#596817"
+     stroke-width=".27"
+     font-family="sans-serif"
+     font-size="5.64"
+     font-weight="400"
+     letter-spacing="0"
+     text-anchor="middle"
+     transform="translate(0 -187)"
+     word-spacing="0"
+     style="text-align:center"
+     id="text101">
+    <tspan
+       style="-inkscape-font-specification:Roboto;text-align:center"
+       x="76.14"
+       y="273.06"
+       dy="0"
+       font-family="Roboto"
+       id="tspan99">SSH</tspan>
+  </text>
+  <path
+     fill="#fadd27"
+     d="M140 110v40H5v-40z"
+     id="path103" />
+  <text
+     x="72.48"
+     y="306.86"
+     stroke-width=".27"
+     font-family="Roboto"
+     font-size="9.17"
+     font-weight="700"
+     letter-spacing="0"
+     text-anchor="middle"
+     transform="translate(0 -187)"
+     word-spacing="0"
+     style="-inkscape-font-specification:'Roboto Bold';text-align:center"
+     id="text107">
+    <tspan
+       style="-inkscape-font-specification:'Roboto Slab Bold';text-align:center"
+       x="72.48"
+       y="306.86"
+       font-family="Roboto Slab"
+       id="tspan105">Buildhost</tspan>
+  </text>
+  <text
+     x="10.68"
+     y="315.17"
+     stroke-width=".27"
+     font-family="sans-serif"
+     font-size="7.06"
+     font-weight="400"
+     letter-spacing="0"
+     text-anchor="middle"
+     transform="translate(0 -187)"
+     word-spacing="0"
+     style="line-height:1.04999995;text-align:center"
+     id="text115">
+    <tspan
+       style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start"
+       x="10.68"
+       y="315.17"
+       font-family="Roboto"
+       font-size="6"
+       text-anchor="start"
+       id="tspan109">A separate machine that is used to</tspan>
+    <tspan
+       style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start"
+       x="10.68"
+       y="322.58"
+       font-family="Roboto"
+       font-size="6"
+       text-anchor="start"
+       id="tspan111">compile your software automatically</tspan>
+    <tspan
+       style="line-height:1.04999995;-inkscape-font-specification:Roboto;text-align:start"
+       x="10.68"
+       y="329.99"
+       font-family="Roboto"
+       font-size="6"
+       text-anchor="start"
+       id="tspan113">(eg. U-Boot or Linux)</tspan>
+  </text>
+  <text
+     x="178.28"
+     y="251.28"
+     fill="#fff"
+     stroke-width=".27"
+     font-family="sans-serif"
+     font-size="4.23"
+     font-weight="400"
+     letter-spacing="0"
+     opacity=".93"
+     transform="translate(0 -187)"
+     word-spacing="0"
+     style="line-height:1.10000002"
+     id="text121">
+    <tspan
+       style="line-height:1.10000002;-inkscape-font-specification:'Roboto Slab'"
+       x="178.28"
+       y="251.28"
+       font-family="Roboto Slab"
+       id="tspan117">Board 2</tspan>
+    <tspan
+       style="line-height:1.10000002;-inkscape-font-specification:'Roboto Slab'"
+       x="178.28"
+       y="256.09"
+       font-family="Roboto Slab"
+       id="tspan119">Power Switch</tspan>
+  </text>
+  <text
+     style="line-height:1.25"
+     x="179.43"
+     y="280.18"
+     fill="#fff"
+     stroke-width=".27"
+     font-family="sans-serif"
+     font-size="8.47"
+     font-weight="400"
+     letter-spacing="0"
+     opacity=".93"
+     transform="translate(0 -187)"
+     word-spacing="0"
+     id="text125">
+    <tspan
+       x="179.43"
+       y="280.18"
+       font-family="Roboto Slab"
+       style="-inkscape-font-specification:'Roboto Slab'"
+       id="tspan123">Board 2</tspan>
+  </text>
+  <text
+     x="72.83"
+     y="244.01"
+     fill="#434f10"
+     fill-opacity=".87"
+     stroke-width=".27"
+     font-family="sans-serif"
+     font-size="5.64"
+     font-weight="400"
+     letter-spacing="0"
+     opacity=".93"
+     text-anchor="middle"
+     transform="translate(0 -187)"
+     word-spacing="0"
+     style="text-align:center"
+     id="text129">
+    <tspan
+       style="-inkscape-font-specification:Roboto;text-align:center"
+       x="72.83"
+       y="244.01"
+       dy="0"
+       font-family="Roboto"
+       id="tspan127">SSH</tspan>
+  </text>
+  <text
+     style="line-height:1.25;-inkscape-font-specification:'Roboto Slab Bold'"
+     x="29.78"
+     y="15.79"
+     fill="#fff"
+     stroke-width=".26"
+     font-family="Roboto Slab"
+     font-size="10.58"
+     font-weight="700"
+     letter-spacing="0"
+     word-spacing="0"
+     id="text133">
+    <tspan
+       x="29.78"
+       y="15.79"
+       font-size="9.17"
+       text-anchor="middle"
+       style="-inkscape-font-specification:'Roboto Slab Bold';text-align:center"
+       id="tspan131">tbot Host</tspan>
+  </text>
+  <path
+     id="path948"
+     d="m 141.74,90.022354 8.6,-10 v 5 h 14.33 v -5 l 8.6,10 -8.6,9.999996 v -4.999996 h -14.33 v 4.999996 z"
+     inkscape:connector-curvature="0"
+     style="fill:#ff4040;stroke:#df0c0c;stroke-width:0.80000001" />
+  <text
+     id="text952"
+     style="font-weight:400;font-size:5.63999987px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0;word-spacing:0;text-anchor:middle;fill:#ffffff;stroke-width:0.27000001"
+     word-spacing="0"
+     letter-spacing="0"
+     font-weight="400"
+     font-size="5.64"
+     y="92.109818"
+     x="157.60001">
+    <tspan
+       id="tspan950"
+       y="92.109818"
+       x="157.60001"
+       style="font-family:Roboto;-inkscape-font-specification:Roboto;text-align:center">Serial</tspan>
+  </text>
+</svg>
