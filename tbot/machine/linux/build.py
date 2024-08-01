@@ -30,9 +30,6 @@ class Toolchain(abc.ABC):
         pass
 
 
-H = typing.TypeVar("H", bound="Builder")
-
-
 class EnvScriptToolchain(Toolchain):
     """
     Toolchain that is initialized using an env script (e.g. yocto toolchain).
@@ -52,7 +49,7 @@ class EnvScriptToolchain(Toolchain):
             }
     """
 
-    def __init__(self, path: path.Path[H]) -> None:
+    def __init__(self, path: "path.Path[Builder]") -> None:
         """
         Create a new EnvScriptToolchain.
 
@@ -60,7 +57,7 @@ class EnvScriptToolchain(Toolchain):
         """
         self.env_script = path
 
-    def enable(self, host: H) -> None:
+    def enable(self, host: "Builder") -> None:
         host.exec0("unset", "LD_LIBRARY_PATH")
         host.exec0("source", self.env_script)
 
@@ -85,7 +82,7 @@ class DistroToolchain(Toolchain):
         self.arch = arch
         self.prefix = prefix
 
-    def enable(self, host: H) -> None:
+    def enable(self, host: "Builder") -> None:
         host.env("ARCH", self.arch)
         host.env("CROSS_COMPILE", self.prefix)
 
