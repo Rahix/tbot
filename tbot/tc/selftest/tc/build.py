@@ -30,7 +30,7 @@ class LocalDummyBuildhost(connector.SubprocessConnector, linux.Bash, linux.Build
         """Return toolchains available on this host."""
         return {
             "selftest-toolchain": linux.build.EnvScriptToolchain(
-                self.workdir / ".selftest-toolchain.sh"
+                self.workdir / ".selftest-toolchain.sh"  # type: ignore
             )
         }
 
