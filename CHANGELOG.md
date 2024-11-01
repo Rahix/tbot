@@ -6,7 +6,12 @@
   warning is emitted after 1 seconds anyway, to let the user know why tbot is
   waiting ([#120]).
 
-  [#120]: https://github.com/rahix/tbot/pull/120
+### Fixed
+- Added a workaround for the `crc32` command in U-Boot which can collide with
+  the U-Boot prompt in some cases ([#112]).
+
+[#112]: https://github.com/rahix/tbot/pull/112
+[#120]: https://github.com/rahix/tbot/pull/120
 
 
 ## [0.10.8] - 2024-05-18
