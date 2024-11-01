@@ -83,17 +83,19 @@ class GitRepository(linux.Path[H]):
             elif fetch:
                 self.git0("fetch")
 
-            if clean and already_cloned:
+            if already_cloned:
                 # Try resetting the branch to upstream, if the branch has an upstream
-                if rev and self.git("rev-parse", f"{rev}@{{u}}")[0] == 0:
-                    self.reset(f"{rev}@{{u}}", ResetMode.HARD)
+                if rev:
+                    self.reset(rev, ResetMode.HARD)
                 elif self.git("rev-parse", "@{u}")[0] == 0:
                     self.reset("@{u}", ResetMode.HARD)
                 else:
                     self.reset("HEAD", ResetMode.HARD)
-                self.clean(untracked=True, noignore=True)
+                if clean:
+                    self.clean(untracked=True, noignore=True)
 
-            if clean or not already_cloned:
+
+            else:
                 if rev:
                     self.checkout(rev)
         else:
@@ -104,8 +106,8 @@ class GitRepository(linux.Path[H]):
                 self.reset("HEAD", ResetMode.HARD)
                 self.clean(untracked=True, noignore=True)
 
-                if rev:
-                    self.checkout(rev)
+            if rev:
+                self.checkout(rev)
 
     def git(
         self, *args: typing.Union[str, linux.Path[H], linux.special.Special]
