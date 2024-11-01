@@ -17,9 +17,11 @@ fi
 
 # First, update versionadded, etc. directives
 # -------------------------------------------
-candidates="$(rg --files-with-matches ":: UNRELEASED" -g '!do-release.sh')"
-sed -i "s/:: UNRELEASED/:: $newrel/g" $candidates
-git commit -s -m "docs: Update version references" -- $candidates
+candidates="$(rg --files-with-matches ":: UNRELEASED" -g '!do-release.sh')" || true
+if [ -n "$candidates" ]; then
+    sed -i "s/:: UNRELEASED/:: $newrel/g" $candidates
+    git commit -s -m "docs: Update version references" -- $candidates
+fi
 
 # Update CHANGELOG.md, __about__.py, and README.md
 # ------------------------------------------------
