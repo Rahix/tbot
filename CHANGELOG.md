@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+
+
+## [0.10.9] - 2024-11-01
 ### Changed
 - Increased grace period for subprocesses to terminate from 1 to 10 seconds.  A
   warning is emitted after 1 seconds anyway, to let the user know why tbot is
@@ -1088,7 +1091,8 @@ Version **0.6.0** is basically a complete rewrite of TBot.  A rough summary of c
   were loaded later
 - Fix `call_then` not returning the function itself
 
-[Unreleased]: https://github.com/Rahix/tbot/compare/v0.10.8...master
+[Unreleased]: https://github.com/Rahix/tbot/compare/v0.10.9...master
+[0.10.9]: https://github.com/Rahix/tbot/compare/v0.10.8...v0.10.9
 [0.10.8]: https://github.com/Rahix/tbot/compare/v0.10.7...v0.10.8
 [0.10.7]: https://github.com/Rahix/tbot/compare/v0.10.6...v0.10.7
 [0.10.6]: https://github.com/Rahix/tbot/compare/v0.10.5...v0.10.6
