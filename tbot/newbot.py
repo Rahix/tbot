@@ -216,6 +216,11 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
     # Make sure the directory we're running from is available
     sys.path.insert(1, os.getcwd())
 
+    import tbot
+
+    for flag in args.flags:
+        tbot.flags.add(flag)
+
     try:
         if args.complete_module is not None:
             for compl in complete_module(args.complete_module):
@@ -230,12 +235,8 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
         # Silently drop these exceptions to not disturb commandline completion
         sys.exit(1)
 
-    import tbot
     import tbot.log
     import tbot.log_event
-
-    for flag in args.flags:
-        tbot.flags.add(flag)
 
     if args.json_log_stream:
         tbot.log.LOGFILE = open(args.json_log_stream, "w")
