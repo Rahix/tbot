@@ -1,6 +1,13 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- Dropped official support for Python 3.8 - tbot now expects at least
+  Python 3.9.
+
+### Fixed
+- Fixed an error about incorrect slots in `SubprocessChannelIO` on more recent
+  Python versions.
 
 
 ## [0.10.9] - 2024-11-01
