@@ -13,9 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: 3.9
       - name: Install dependencies, linters, doc-tools
@@ -23,7 +23,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest mypy paramiko termcolor2 pyserial coverage pytest-cov
       - name: Run pre-commit hooks for all files
-        uses: pre-commit/action@v2.0.0
+        uses: pre-commit/action@v3.0.1
         with:
           extra_args: --all-files --verbose
         env:
