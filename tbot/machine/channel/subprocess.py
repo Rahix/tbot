@@ -33,7 +33,7 @@ MIN_READ_WAIT = 0.3
 
 
 class SubprocessChannelIO(channel.ChannelIO):
-    __slots__ = ("pty_master", "p")
+    __slots__ = ("pty_master", "pty_slave", "p")
 
     def __init__(self) -> None:
         self.pty_master, self.pty_slave = pty.openpty()
