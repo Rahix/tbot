@@ -13,7 +13,7 @@ write_to = "tbot/_version.py"
 profile = "black"
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.9"
 mypy_path = "stubs/:./"
 warn_incomplete_stub = true
 warn_redundant_casts = true

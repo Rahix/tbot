@@ -7,7 +7,7 @@ Prerequisites
 -------------
 tbot supports running on Linux only.  Other UNIXes might work but are not tested.
 
-tbot requires at least **Python 3.8**.  Any version older than that **will not
+tbot requires at least **Python 3.9**.  Any version older than that **will not
 work**.
 
 Installation
