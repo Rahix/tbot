@@ -1,3 +1,4 @@
+import time
 import contextlib
 from typing import Iterator, Union
 
@@ -167,6 +168,9 @@ AcceptEnv=XDG_RUNTIME_DIR
 
         self.exec0(sshd_path, "-D", "-f", sshd_config, linux.Background)
         sshd_pid = self.env("!")
+
+        # Give the SSH server some time to get ready.
+        time.sleep(0.5)
 
         try:
             yield None
