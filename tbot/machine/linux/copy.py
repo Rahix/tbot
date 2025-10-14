@@ -31,6 +31,10 @@ def _scp_copy(
         *[arg for opt in ssh_config for arg in ["-o", opt]],
     ]
 
+    use_legacy_protocol = getattr(remote_path.host, "requires_legacy_scp", False)
+    if use_legacy_protocol:
+        scp_command += ["-O"]
+
     if use_multiplexing:
         multiplexing_dir = local_host.workdir / ".ssh-multi"
         scp_command += ["-o", "ControlMaster=auto"]
