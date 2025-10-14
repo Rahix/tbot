@@ -66,6 +66,16 @@ class SSHConnector(connector.Connector):
         return False
 
     @property
+    def requires_legacy_scp(self) -> bool:
+        """
+        Use the legacy SCP protocol for file transfers instead of the SFTP protocol.
+
+        Forcing the use of the SCP protocol may be necessary for servers that do not
+        implement SFTP, for backwards compatibility.
+        """
+        return False
+
+    @property
     def use_multiplexing(self) -> bool:
         """
         Whether tbot should attempt to enable connection multiplexing.
