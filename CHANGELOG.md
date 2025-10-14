@@ -1,6 +1,12 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Added a `requires_legacy_scp` setting for SSH-based machines to make
+  `linux.copy()` and similar functions use the legacy SCP protocol instead of
+  SFTP ([#123]).  This may be useful for some old systems where no SFTP is
+  available.
+
 ### Changed
 - Dropped official support for Python 3.8 - tbot now expects at least
   Python 3.9.
@@ -8,6 +14,8 @@
 ### Fixed
 - Fixed an error about incorrect slots in `SubprocessChannelIO` on more recent
   Python versions.
+
+[#123]: https://github.com/rahix/tbot/pull/123
 
 
 ## [0.10.9] - 2024-11-01
