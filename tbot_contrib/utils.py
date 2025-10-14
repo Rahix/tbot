@@ -189,7 +189,6 @@ def copy_to_dir(
     dest_dir: linux.Path[H2],
     *,
     hashcmp: bool = False,
-    use_legacy_protocol: bool=False,
 ) -> linux.Path[H2]:
     pass
 
@@ -200,7 +199,6 @@ def copy_to_dir(
     dest_dir: linux.Path[H2],
     *,
     hashcmp: bool = False,
-    use_legacy_protocol: bool=False,
 ) -> typing.List[linux.Path[H2]]:
     pass
 
@@ -210,7 +208,6 @@ def copy_to_dir(
     dest_dir: linux.Path[H2],
     *,
     hashcmp: bool = False,
-    use_legacy_protocol: bool=False,
 ) -> typing.Union[linux.Path[H2], typing.List[linux.Path[H2]]]:
     """
     Copy one or more files to a directory
@@ -232,9 +229,6 @@ def copy_to_dir(
     :param bool hashcmp: This optional named argument can be set to true to
         make the function verify checksums of each file before performing the
         copy. This is very useful to skip superfluous copying operations.
-
-    :param bool use_legacy_protocol: Use the legacy SCP protocol for file transfers 
-        instead of the  SFTP  protocol (use -O option)
 
     :returns: If a single ``sources`` path was passed, a single path is
         returned which points to the newly created copy.  If multiple
@@ -312,9 +306,9 @@ def copy_to_dir(
 
         if hashcmp:
             if not _hashcmp(source, dest):
-                linux.copy(source, dest, use_legacy_protocol)
+                linux.copy(source, dest)
         else:
-            linux.copy(source, dest, use_legacy_protocol)
+            linux.copy(source, dest)
 
     if isinstance(sources, linux.Path):
         return dest_list[0]

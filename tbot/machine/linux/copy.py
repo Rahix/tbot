@@ -19,7 +19,6 @@ def _scp_copy(
     ssh_config: typing.List[str],
     authenticator: auth.Authenticator,
     use_multiplexing: bool,
-    use_legacy_protocol: bool
 ) -> None:
     local_host = local_path.host
 
@@ -40,9 +39,6 @@ def _scp_copy(
             "-o",
             f"ControlPath={multiplexing_dir.at_host(local_host)}/%C",
         ]
-    
-    if use_legacy_protocol:
-        scp_command += ["-O"]
 
     if isinstance(authenticator, auth.NoneAuthenticator):
         scp_command += ["-o", "BatchMode=yes"]
@@ -74,7 +70,7 @@ def _scp_copy(
         )
 
 
-def copy(p1: linux.Path[H1], p2: linux.Path[H2], use_legacy_protocol: bool=False) -> None:
+def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
     """
     Copy a file, possibly from one host to another.
 
@@ -97,8 +93,6 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2], use_legacy_protocol: bool=False
 
     :param linux.Path p1: Exisiting path to be copied
     :param linux.Path p2: Target where ``p1`` should be copied
-    :param bool use_legacy_protocol: Use the legacy SCP protocol for file transfers 
-        instead of the  SFTP  protocol (use -O option)
 
     .. note::
 
@@ -135,7 +129,6 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2], use_legacy_protocol: bool=False
             ssh_config=p1.host.ssh_config,
             authenticator=p1.host.authenticator,
             use_multiplexing=p1.host.use_multiplexing,
-            use_legacy_protocol=use_legacy_protocol,
         )
     elif isinstance(p2.host, connector.SSHConnector) and p2.host.host is p1.host:
         # Copy to an SSH machine
@@ -150,7 +143,6 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2], use_legacy_protocol: bool=False
             ssh_config=p2.host.ssh_config,
             authenticator=p2.host.authenticator,
             use_multiplexing=p2.host.use_multiplexing,
-            use_legacy_protocol=use_legacy_protocol,
         )
     elif isinstance(p1.host, connector.SubprocessConnector) and (
         isinstance(p2.host, connector.ParamikoConnector)
@@ -168,7 +160,6 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2], use_legacy_protocol: bool=False
             ssh_config=getattr(p2.host, "ssh_config", []),
             authenticator=p2.host.authenticator,
             use_multiplexing=p2.host.use_multiplexing,
-            use_legacy_protocol=use_legacy_protocol,
         )
     elif isinstance(p2.host, connector.SubprocessConnector) and (
         isinstance(p1.host, connector.ParamikoConnector)
@@ -186,7 +177,6 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2], use_legacy_protocol: bool=False
             ssh_config=getattr(p2.host, "ssh_config", []),
             authenticator=p1.host.authenticator,
             use_multiplexing=p1.host.use_multiplexing,
-            use_legacy_protocol=use_legacy_protocol,
         )
     else:
         raise NotImplementedError(f"Can't copy from {p1.host} to {p2.host}!")
