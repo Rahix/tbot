@@ -72,6 +72,8 @@ class SSHConnector(connector.Connector):
 
         Forcing the use of the SCP protocol may be necessary for servers that do not
         implement SFTP, for backwards compatibility.
+
+        .. versionadded:: UNRELEASED
         """
         return False
 
