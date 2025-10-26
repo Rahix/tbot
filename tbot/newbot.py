@@ -235,7 +235,14 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
     import tbot.log_event
 
     for flag in args.flags:
-        tbot.flags.add(flag)
+        if "=" in flag:
+            (flag_name, value) = flag.split("=", 1)
+        else:
+            flag_name = flag
+            value = True
+        tbot.flags[flag_name] = value
+
+    tbot.log.message(f"flags: {tbot.flags}")
 
     if args.json_log_stream:
         tbot.log.LOGFILE = open(args.json_log_stream, "w")
