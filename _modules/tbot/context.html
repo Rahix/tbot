@@ -1,0 +1,715 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tbot.context &mdash; tbot 0.10.10-0-g1853255 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5349f25f" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/documentation_options.js?v=e1796f6e"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/tbot-logo-white.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli.html">tbot CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../recipes.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../context.html">Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pytest.html">pytest Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating from tbot 0.7.1</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/main.html"><code class="docutils literal notranslate"><span class="pre">tbot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/log.html"><code class="docutils literal notranslate"><span class="pre">tbot.log</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/machine.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/machine_linux.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.linux</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/machine_board.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.board</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/machine_connector.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.connector</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/machine_shell.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.shell</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/machine_channel.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.channel</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/error.html"><code class="docutils literal notranslate"><span class="pre">tbot.error</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/role.html"><code class="docutils literal notranslate"><span class="pre">tbot.role</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/selectable.html"><code class="docutils literal notranslate"><span class="pre">tbot.selectable</span></code></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Testcase Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/tc.html"><code class="docutils literal notranslate"><span class="pre">tbot.tc</span></code> - Builtin Testcases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contrib/connector.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.connector</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contrib/gdb.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.gdb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contrib/gpio.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.gpio</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contrib/linux.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.linux</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contrib/locking.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.locking</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contrib/swupdate.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.swupdate</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contrib/timing.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.timing</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contrib/uboot.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.uboot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contrib/utils.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.utils</span></code></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing to tbot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../LICENSE.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">tbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../tbot.html">tbot</a></li>
+      <li class="breadcrumb-item active">tbot.context</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tbot.context</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">typing</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Any</span><span class="p">,</span>
+    <span class="n">Callable</span><span class="p">,</span>
+    <span class="n">ContextManager</span><span class="p">,</span>
+    <span class="n">DefaultDict</span><span class="p">,</span>
+    <span class="n">Dict</span><span class="p">,</span>
+    <span class="n">Generic</span><span class="p">,</span>
+    <span class="n">Iterator</span><span class="p">,</span>
+    <span class="n">List</span><span class="p">,</span>
+    <span class="n">Optional</span><span class="p">,</span>
+    <span class="n">Set</span><span class="p">,</span>
+    <span class="n">Tuple</span><span class="p">,</span>
+    <span class="n">Type</span><span class="p">,</span>
+    <span class="n">TypeVar</span><span class="p">,</span>
+    <span class="n">Union</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">tbot</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tbot.error</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tbot.role</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tbot</span><span class="w"> </span><span class="kn">import</span> <span class="n">machine</span>
+
+<span class="n">M</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">machine</span><span class="o">.</span><span class="n">Machine</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">InstanceManager</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">M</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cx</span> <span class="o">=</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">ExitStack</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_users</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instance</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">M</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_available</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">context</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ContextManager</span><span class="p">[</span><span class="n">M</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">instance</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">M</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">tbot</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">ContextError</span><span class="p">(</span><span class="s2">&quot;trying to re-initialize a live instance&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cx</span> <span class="o">=</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">ExitStack</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_available</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">instance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cannot have both `context` and `instance` arguments&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">instance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_instance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cx</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="k">elif</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_instance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cx</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;needs either `context` or `instance` argument&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">teardown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">tbot</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">ContextError</span><span class="p">(</span><span class="s2">&quot;trying to de-init a closed instance&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Necessary to ensure any open contexts for this machine do not</span>
+        <span class="c1"># prevent it from running its deinitialization code:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instance</span><span class="o">.</span><span class="n">_rc</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cx</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instance</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">keep_alive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">M</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">tbot</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">ContextError</span><span class="p">(</span><span class="s2">&quot;trying to access a closed instance&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_available</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">tbot</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">ContextError</span><span class="p">(</span>
+                <span class="s2">&quot;trying to access instance which is not available&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_current_users</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="n">exclusive</span><span class="p">:</span>
+                <span class="c1"># Mark the instance as exclusively used so no future request()</span>
+                <span class="c1"># will succeed.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_available</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance</span> <span class="k">as</span> <span class="n">m</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">m</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_current_users</span> <span class="o">-=</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="n">exclusive</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">keep_alive</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_users</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="c1"># If we were the last user or the request() was an exclusive</span>
+                <span class="c1"># one, tear down this instance now.  Future requests will then</span>
+                <span class="c1"># need to re-initilize it.</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">teardown</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_alive</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_users</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_users</span> <span class="o">!=</span> <span class="mi">0</span>
+
+
+<div class="viewcode-block" id="Context">
+<a class="viewcode-back" href="../../modules/main.html#tbot.Context">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Context</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">ContextManager</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A context which machines can be registered in and where instances can be retrieved from.</span>
+
+<span class="sd">    You will usually access the global context :py:data:`tbot.ctx` which is an</span>
+<span class="sd">    instance of this class instead of instantiating :py:class:`tbot.Context`</span>
+<span class="sd">    yourself.  See the :ref:`context` guide for a detailed introduction.</span>
+
+<span class="sd">    In case you do need to construct a context yourself, there are a few</span>
+<span class="sd">    customization possibilities:</span>
+
+<span class="sd">    :param bool keep_alive: Whether machines should be immediately</span>
+<span class="sd">        de-initialized once their context-manager is exited or whether they</span>
+<span class="sd">        should be &quot;kept alive&quot; for a future request to immediately re-access</span>
+<span class="sd">        them.</span>
+
+<span class="sd">        .. warning::</span>
+
+<span class="sd">            Keeping instances alive can have unintended side-effects:  If, for</span>
+<span class="sd">            example, a test brings a machine into an unusable state and then</span>
+<span class="sd">            fails, a followup testcase could gain access to the same broken</span>
+<span class="sd">            instance without reinitialization.</span>
+
+<span class="sd">            To avoid such problems, always write testcase to leave the instance</span>
+<span class="sd">            in a clean state.  If a testcase can&#39;t guarantee this, it should</span>
+<span class="sd">            request the instance with ``reset_on_error=True`` or even</span>
+<span class="sd">            ``exclusive=True``.</span>
+<span class="sd">    :param bool add_defaults: Add default machines for some roles from</span>
+<span class="sd">        :py:mod:`tbot.role`, for example for :py:class:`tbot.role.LocalHost`.</span>
+<span class="sd">        Defaults to ``False``.</span>
+<span class="sd">    :param bool reset_on_error_by_default: Set ``reset_on_error=True`` for all</span>
+<span class="sd">        ``request()`` s which do not explicitly overwrite it.  It is a good idea</span>
+<span class="sd">        to set this in conjunction with ``keep_alive=True``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">keep_alive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">add_defaults</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">reset_on_error_by_default</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_roles</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">Role</span><span class="p">],</span> <span class="n">Type</span><span class="p">[</span><span class="n">machine</span><span class="o">.</span><span class="n">Machine</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_weak_roles</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">Role</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_open_contexts</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_keep_alive</span> <span class="o">=</span> <span class="n">keep_alive</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_on_error_default</span> <span class="o">=</span> <span class="n">reset_on_error_by_default</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_teardown_order</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Type</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instances</span><span class="p">:</span> <span class="n">DefaultDict</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">machine</span><span class="o">.</span><span class="n">Machine</span><span class="p">],</span> <span class="n">InstanceManager</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="n">InstanceManager</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">add_defaults</span><span class="p">:</span>
+            <span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">_register_default_machines</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Context.register">
+<a class="viewcode-back" href="../../modules/main.html#tbot.Context.register">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">machine</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">M</span><span class="p">],</span> <span class="n">roles</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="o">*</span><span class="p">,</span> <span class="n">weak</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Register a machine in this context for certain roles.</span>
+
+<span class="sd">        Registers the machine-class ``machine`` for the role ``roles`` or, if</span>
+<span class="sd">        ``roles`` is a list, for all roles it contains.  If for any role</span>
+<span class="sd">        a machine is already registered, an exception is thrown.</span>
+
+<span class="sd">        This function is usually called in the ``register_machines()`` function</span>
+<span class="sd">        of a lab- or board-config:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            class SomeLabHostClass(...):</span>
+<span class="sd">                ...</span>
+
+<span class="sd">            def register_machines(ctx: tbot.Context) -&gt; None:</span>
+<span class="sd">                ctx.register(SomeLabHostClass, tbot.role.LabHost)</span>
+
+<span class="sd">                # or, to register for multiple roles</span>
+<span class="sd">                ctx.register(SomeLabHostClass, [tbot.role.LabHost, tbot.role.BuildHost])</span>
+
+<span class="sd">        :param machine: A concrete machine-class to be registered.  This</span>
+<span class="sd">            machine-class will later be instantiated on request via its</span>
+<span class="sd">            :py:meth:`Connector.from_context()</span>
+<span class="sd">            &lt;tbot.machine.connector.Connector.from_context()&gt;` classmethod.</span>
+<span class="sd">        :param roles: Either a single role or a list of roles for which</span>
+<span class="sd">            ``machine`` should be registered.</span>
+<span class="sd">        :param bool weak: Changes the way registration works:  The machine is</span>
+<span class="sd">            only registered for those roles which do not already have a machine</span>
+<span class="sd">            registered.  It will be registered as a weak default which means</span>
+<span class="sd">            a later register will overwrite it without erroring.  This is</span>
+<span class="sd">            usually not necessary and should be used with care.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">roles</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">roles</span> <span class="o">=</span> <span class="p">[</span><span class="n">roles</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">role</span> <span class="ow">in</span> <span class="n">roles</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">role</span><span class="p">,</span> <span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">Role</span><span class="p">):</span>
+                <span class="n">tbot</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">TbotException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">role</span><span class="si">!r}</span><span class="s2"> is not a role&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roles</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">weak</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">elif</span> <span class="n">role</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weak_roles</span><span class="p">:</span>
+                    <span class="c1"># Overwrite the weak default</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_weak_roles</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">role</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;a machine is already registered for role </span><span class="si">{</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">rolename</span><span class="p">(</span><span class="n">role</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">weak</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_weak_roles</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">role</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_roles</span><span class="p">[</span><span class="n">role</span><span class="p">]</span> <span class="o">=</span> <span class="n">machine</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_class_and_instance</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">M</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">M</span><span class="p">],</span> <span class="n">InstanceManager</span><span class="p">]:</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">Type</span><span class="p">[</span><span class="n">M</span><span class="p">],</span> <span class="nb">type</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roles</span><span class="p">:</span>
+            <span class="n">role</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">Type</span><span class="p">[</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">Role</span><span class="p">],</span> <span class="nb">type</span><span class="p">)</span>
+            <span class="n">machine_class</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">Type</span><span class="p">[</span><span class="n">M</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roles</span><span class="p">[</span><span class="n">role</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="nb">type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instances</span><span class="p">:</span>
+            <span class="n">machine_class</span> <span class="o">=</span> <span class="nb">type</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">tbot</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">MachineNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;no machine found for </span><span class="si">{</span><span class="nb">type</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">instance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="n">machine_class</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">machine_class</span><span class="p">,</span> <span class="n">instance</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Context.request">
+<a class="viewcode-back" href="../../modules/main.html#tbot.Context.request">[docs]</a>
+    <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">request</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">M</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">reset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">exclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">reset_on_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">M</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request a machine instance from this context.</span>
+
+<span class="sd">        Requests an instance of the :ref:`role &lt;tbot_role&gt;` ``type`` from the</span>
+<span class="sd">        context.  If no instance exists, one will be created.  If a previous</span>
+<span class="sd">        testcase has already requested such an instance, the same instance is</span>
+<span class="sd">        returned (this behavior can be controlled with the ``reset`` and</span>
+<span class="sd">        ``exclusive`` keyword arguments).</span>
+
+<span class="sd">        This function must be used as a context manager:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            @tbot.testcase</span>
+<span class="sd">            def foo_bar():</span>
+<span class="sd">                with tbot.ctx.request(tbot.role.LabHost) as lh:</span>
+<span class="sd">                    lh.exec0(&quot;uname&quot;, &quot;-a&quot;)</span>
+
+<span class="sd">        Alternatively, if you need multiple machines, a pattern similar to</span>
+<span class="sd">        :py:class:`contextlib.ExitStack` can be used:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            @tbot.testcase</span>
+<span class="sd">            def foo_bar():</span>
+<span class="sd">                with tbot.ctx() as cx:</span>
+<span class="sd">                    lh = cx.request(tbot.role.LabHost)</span>
+<span class="sd">                    bh = cx.request(tbot.role.BuildHost)</span>
+
+<span class="sd">                    lh.exec0(&quot;cat&quot;, &quot;/etc/os-release&quot;)</span>
+<span class="sd">                    bh.exec0(&quot;free&quot;, &quot;-h&quot;)</span>
+
+<span class="sd">        The semantics of a ``request()`` can be controlled further by the</span>
+<span class="sd">        ``reset``, ``exclusive``, and ``reset_on_error`` keyword arguments.</span>
+<span class="sd">        See their documentation for the details.</span>
+
+<span class="sd">        :param tbot.role.Role type: The :ref:`role &lt;tbot_role&gt;` for which a machine instance</span>
+<span class="sd">            is requested.</span>
+
+<span class="sd">        :param bool reset: Controls what happens if an instance already exists:</span>
+
+<span class="sd">            - ``False`` (default): If an instance already exists due to a</span>
+<span class="sd">              previous **request()**, it will be returned (both requests</span>
+<span class="sd">              *share* it).</span>
+<span class="sd">            - ``True``: If an instance already exists due to a previous</span>
+<span class="sd">              **request()**, it will be torn down and re-initialized (the</span>
+<span class="sd">              previous request thus looses access to it).</span>
+
+<span class="sd">            ``reset=True`` can, for example, be used to write a testcase where</span>
+<span class="sd">            the DUT is powercycled:</span>
+
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">                @tbot.testcase</span>
+<span class="sd">                def test_with_reboot():</span>
+<span class="sd">                    with tbot.ctx.request(tbot.role.BoardUBoot) as ub:</span>
+<span class="sd">                        ub.exec0(&quot;version&quot;)</span>
+
+<span class="sd">                    # Device will be powercycled here, even though if some &quot;outer&quot;</span>
+<span class="sd">                    # context for U-Boot is still active.  Note that such an outer</span>
+<span class="sd">                    # context will loose access to the instance after this point.</span>
+
+<span class="sd">                    with tbot.ctx.request(tbot.role.BoardUBoot, reset=True) as ub:</span>
+<span class="sd">                        ub.exec0(&quot;version&quot;)</span>
+
+<span class="sd">        :param bool exclusive: Controls whether other requests can get</span>
+<span class="sd">            access to the same instance while this request is active:</span>
+
+<span class="sd">            - ``False`` (default): A **request()** after this one will get</span>
+<span class="sd">              *shared* access to the same instance.</span>
+<span class="sd">            - ``True``: Any future **request()** while this one is active is</span>
+<span class="sd">              forbidden and will fail.  Once this **request()** ends, the</span>
+<span class="sd">              instance will be torn down so future requests will need to</span>
+<span class="sd">              re-initialize it.</span>
+
+<span class="sd">            This mode should be used when you are going to do changes to the</span>
+<span class="sd">            instance which could potentially bring it into a state that other</span>
+<span class="sd">            testcases won&#39;t expect.</span>
+
+<span class="sd">        :param bool reset_on_error:  Controls behavior when the context-manager</span>
+<span class="sd">            returned by this ``request()`` is exited abnormally via an exception:</span>
+
+<span class="sd">            - ``False`` (default):  The exception is ignored (and just</span>
+<span class="sd">              propagates further up), no special behavior.</span>
+<span class="sd">            - ``True``: Instructs the ``Context`` to forcefully de-initialize</span>
+<span class="sd">              this instance if the context-manager returned from this</span>
+<span class="sd">              ``request()`` was exited with an exception.  The exception is</span>
+<span class="sd">              then of course propagated further up.</span>
+
+<span class="sd">            This can be useful to ensure a follow-up request will always get a</span>
+<span class="sd">            clean instance, even when something went wrong here.  This is</span>
+<span class="sd">            especially relevant for a :py:class:`Context` which has</span>
+<span class="sd">            ``keep_alive=True``.</span>
+
+<span class="sd">            If ``exclusive=True``, ``reset_on_error=True`` is essentially a no-op.</span>
+
+<span class="sd">            The default might be ``True`` if the :py:class:`~tbot.Context` was</span>
+<span class="sd">            instantiated with ``reset_on_error_by_default=True``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">reset_on_error</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">reset_on_error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reset_on_error_default</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keep_alive</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_open_contexts</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">tbot</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">ContextError</span><span class="p">(</span>
+                <span class="s2">&quot;When a context is marked with `keep_alive` you **must** enter &quot;</span>
+                <span class="o">+</span> <span class="s2">&quot;its own context-manager to ensure proper cleanup.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">machine_class</span><span class="p">,</span> <span class="n">instance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_class_and_instance</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">instance</span><span class="o">.</span><span class="n">is_alive</span><span class="p">()</span> <span class="ow">and</span> <span class="n">reset</span><span class="p">:</span>
+            <span class="c1"># Requester wants the machine to be re-initialized if it is already alive.</span>
+            <span class="n">instance</span><span class="o">.</span><span class="n">teardown</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">instance</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+            <span class="n">instance</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="n">machine_class</span><span class="o">.</span><span class="n">from_context</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+        <span class="k">with</span> <span class="n">instance</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">exclusive</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keep_alive</span><span class="p">)</span> <span class="k">as</span> <span class="n">m</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">machine_class</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;machine type mismatch&quot;</span>
+
+            <span class="k">if</span> <span class="n">machine_class</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_teardown_order</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_teardown_order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">machine_class</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">m</span>
+            <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">reset_on_error</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="p">(</span>
+                        <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;Skipped&quot;</span>
+                        <span class="ow">and</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">mro</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="vm">__module__</span> <span class="o">==</span> <span class="s2">&quot;_pytest.outcomes&quot;</span>
+                    <span class="p">):</span>
+                        <span class="n">tbot</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                            <span class="s2">&quot;Ignoring `reset_on_error` because exception was from pytest.skip()&quot;</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">instance</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+                            <span class="n">instance</span><span class="o">.</span><span class="n">teardown</span><span class="p">()</span>
+                <span class="k">raise</span> <span class="n">e</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Context.get_machine_class">
+<a class="viewcode-back" href="../../modules/main.html#tbot.Context.get_machine_class">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_machine_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">M</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">M</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the registered machine class for a :py:class:`~tbot.role.Role`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">role</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">Type</span><span class="p">[</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">Role</span><span class="p">],</span> <span class="nb">type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">typing</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">Type</span><span class="p">[</span><span class="n">M</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roles</span><span class="p">[</span><span class="n">role</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="Context.teardown_if_alive">
+<a class="viewcode-back" href="../../modules/main.html#tbot.Context.teardown_if_alive">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">teardown_if_alive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">M</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Tear down any existing machine instances for a certain role.</span>
+
+<span class="sd">        This is useful, for example, when there might be a ``BoardLinux``</span>
+<span class="sd">        instance active and you need to get into ``BoardUBoot``.</span>
+
+<span class="sd">        :returns: Boolean whether an instance was alive and torn down</span>
+<span class="sd">            (``True``) or whether no instance was alive (``False``).</span>
+
+<span class="sd">        .. versionadded:: 0.9.3</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">instance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_class_and_instance</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">instance</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+            <span class="n">instance</span><span class="o">.</span><span class="n">teardown</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="Context.reconfigure">
+<a class="viewcode-back" href="../../modules/main.html#tbot.Context.reconfigure">[docs]</a>
+    <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reconfigure</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">keep_alive</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">reset_on_error_by_default</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Iterator[Context]&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Temporarily reconfigure this context (e.g. ``keep_alive`` flag).</span>
+
+<span class="sd">        This method allows you to temporarily change flags for this context and</span>
+<span class="sd">        have them restored afterwards.  For example, this can be useful for</span>
+<span class="sd">        running a test-suite with the ``keep_alive`` and ``reset_on_error``</span>
+<span class="sd">        flags enabled.</span>
+
+<span class="sd">        **Example**:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            with ctx.reconfigure(keep_alive=True):</span>
+<span class="sd">                ...</span>
+
+<span class="sd">        Once the reconfiguration context-manager exits, the old state will be</span>
+<span class="sd">        restored.  This especially means that any machines which were kept</span>
+<span class="sd">        alive due to the reconfiguration (but have no active outside users)</span>
+<span class="sd">        will be torn down before returning to the old state.</span>
+
+<span class="sd">        .. versionadded:: 0.9.1</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">keep_alive_orig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keep_alive</span>
+        <span class="n">reset_on_error_orig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reset_on_error_default</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">keep_alive</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_keep_alive</span> <span class="o">=</span> <span class="n">keep_alive</span>
+            <span class="k">if</span> <span class="n">reset_on_error_by_default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_reset_on_error_default</span> <span class="o">=</span> <span class="n">reset_on_error_by_default</span>
+
+            <span class="k">yield</span> <span class="bp">self</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_keep_alive</span> <span class="o">=</span> <span class="n">keep_alive_orig</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reset_on_error_default</span> <span class="o">=</span> <span class="n">reset_on_error_orig</span>
+
+            <span class="c1"># If the previous configuration did not enable keep_alive, we need</span>
+            <span class="c1"># to tear down all the machines which are still alive but have no</span>
+            <span class="c1"># users.</span>
+            <span class="k">if</span> <span class="n">keep_alive_orig</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">keep_alive</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_teardown_order</span><span class="p">):</span>
+                    <span class="n">inst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">is_alive</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">inst</span><span class="o">.</span><span class="n">has_users</span><span class="p">():</span>
+                        <span class="n">inst</span><span class="o">.</span><span class="n">teardown</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Context.is_active">
+<a class="viewcode-back" href="../../modules/main.html#tbot.Context.is_active">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_active</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check whether this context was already &quot;activated&quot; by entering it.</span>
+
+<span class="sd">        For the :py:class:`tbot.Context` to work properly, it should be entered</span>
+<span class="sd">        as a context-manager at least once (but it is okay to do it multiple</span>
+<span class="sd">        times):</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            with tbot.ctx:</span>
+<span class="sd">                ...</span>
+
+<span class="sd">        ``is_active()`` can be used to check if this has already happened.</span>
+<span class="sd">        This can be used as an indication whether the context was already</span>
+<span class="sd">        initialized or not.  If it wasn&#39;t, you probably need to register</span>
+<span class="sd">        machines for this context first (for example by loading configuration</span>
+<span class="sd">        modules).</span>
+
+<span class="sd">        .. versionadded:: 0.10.1</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_open_contexts</span> <span class="o">!=</span> <span class="mi">0</span></div>
+
+
+    <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Iterator[ContextHandle]&quot;</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">ExitStack</span><span class="p">()</span> <span class="k">as</span> <span class="n">exitstack</span><span class="p">:</span>
+            <span class="n">handle</span> <span class="o">=</span> <span class="n">ContextHandle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exitstack</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">handle</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Context&quot;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_open_contexts</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_open_contexts</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_teardown_order</span><span class="p">):</span>
+                    <span class="n">inst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keep_alive</span><span class="p">:</span>
+                            <span class="c1"># If we kept instances alive, now is a good time to</span>
+                            <span class="c1"># finally tear them down; there won&#39;t be any users</span>
+                            <span class="c1"># after this point...</span>
+                            <span class="n">inst</span><span class="o">.</span><span class="n">teardown</span><span class="p">()</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">tbot</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot;Found dangling </span><span class="si">{</span><span class="bp">cls</span><span class="si">!r}</span><span class="s2"> instance in this context&quot;</span>
+                            <span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_open_contexts</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">for</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">inst</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instances</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+                        <span class="n">tbot</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Teardown went wrong!  A </span><span class="si">{</span><span class="bp">cls</span><span class="si">!r}</span><span class="s2"> instance is still alive.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                            <span class="o">+</span> <span class="s2">&quot;Please report this to https://github.com/rahix/tbot/issues!&quot;</span>
+                        <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_open_contexts</span> <span class="o">-=</span> <span class="mi">1</span></div>
+
+
+
+<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ContextHandle</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">exitstack</span><span class="p">:</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">ExitStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span> <span class="o">=</span> <span class="n">ctx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exitstack</span> <span class="o">=</span> <span class="n">exitstack</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">request</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">M</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">reset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">exclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">reset_on_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">M</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+                <span class="nb">type</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="n">reset</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="n">exclusive</span><span class="p">,</span> <span class="n">reset_on_error</span><span class="o">=</span><span class="n">reset_on_error</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_machine_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">M</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">M</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">get_machine_class</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ContextManager</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exitstack</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+    <a href="https://github.com/Rahix/tbot">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" decoding="async" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" loading="lazy" data-recalc-dims="1">
+    </a>
+
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Rahix.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,858 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tbot.machine.board &mdash; tbot 0.10.10-0-g1853255 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5349f25f" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/documentation_options.js?v=e1796f6e"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tbot.machine.connector" href="machine_connector.html" />
+    <link rel="prev" title="tbot.machine.linux" href="machine_linux.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/tbot-logo-white.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">tbot CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../recipes.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../context.html">Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pytest.html">pytest Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating from tbot 0.7.1</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Modules</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="main.html"><code class="docutils literal notranslate"><span class="pre">tbot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="log.html"><code class="docutils literal notranslate"><span class="pre">tbot.log</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="machine.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="machine_linux.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.linux</span></code></a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">tbot.machine.board</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#board-hardware">Board Hardware</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tbot.machine.board.Board"><code class="docutils literal notranslate"><span class="pre">Board</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#board-initializers">Board Initializers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.PowerControl"><code class="docutils literal notranslate"><span class="pre">PowerControl</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#board-software">Board Software</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#board-u-boot">Board U-Boot</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tbot.machine.board.UBootShell"><code class="docutils literal notranslate"><span class="pre">UBootShell</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.UBootShell.boot_timeout"><code class="docutils literal notranslate"><span class="pre">UBootShell.boot_timeout</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.UBootShell.prompt"><code class="docutils literal notranslate"><span class="pre">UBootShell.prompt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.UBootShell.bootlog"><code class="docutils literal notranslate"><span class="pre">UBootShell.bootlog</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.UBootShell.escape"><code class="docutils literal notranslate"><span class="pre">UBootShell.escape()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.UBootShell.exec"><code class="docutils literal notranslate"><span class="pre">UBootShell.exec()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.UBootShell.exec0"><code class="docutils literal notranslate"><span class="pre">UBootShell.exec0()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.UBootShell.test"><code class="docutils literal notranslate"><span class="pre">UBootShell.test()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.UBootShell.env"><code class="docutils literal notranslate"><span class="pre">UBootShell.env()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.UBootShell.boot"><code class="docutils literal notranslate"><span class="pre">UBootShell.boot()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.UBootShell.interactive"><code class="docutils literal notranslate"><span class="pre">UBootShell.interactive()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.UBootShell.ram_base"><code class="docutils literal notranslate"><span class="pre">UBootShell.ram_base</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tbot.machine.board.UBootAutobootIntercept"><code class="docutils literal notranslate"><span class="pre">UBootAutobootIntercept</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.UBootAutobootIntercept.autoboot_prompt"><code class="docutils literal notranslate"><span class="pre">UBootAutobootIntercept.autoboot_prompt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.UBootAutobootIntercept.autoboot_keys"><code class="docutils literal notranslate"><span class="pre">UBootAutobootIntercept.autoboot_keys</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#board-linux">Board Linux</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tbot.machine.board.LinuxUbootConnector"><code class="docutils literal notranslate"><span class="pre">LinuxUbootConnector</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.LinuxUbootConnector.uboot"><code class="docutils literal notranslate"><span class="pre">LinuxUbootConnector.uboot</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.LinuxUbootConnector.do_boot"><code class="docutils literal notranslate"><span class="pre">LinuxUbootConnector.do_boot()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.LinuxUbootConnector.from_context"><code class="docutils literal notranslate"><span class="pre">LinuxUbootConnector.from_context()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.LinuxUbootConnector.clone"><code class="docutils literal notranslate"><span class="pre">LinuxUbootConnector.clone()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.LinuxUbootConnector.board"><code class="docutils literal notranslate"><span class="pre">LinuxUbootConnector.board</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tbot.machine.board.LinuxBootLogin"><code class="docutils literal notranslate"><span class="pre">LinuxBootLogin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.LinuxBootLogin.login_prompt"><code class="docutils literal notranslate"><span class="pre">LinuxBootLogin.login_prompt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.LinuxBootLogin.login_delay"><code class="docutils literal notranslate"><span class="pre">LinuxBootLogin.login_delay</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.LinuxBootLogin.password_prompt"><code class="docutils literal notranslate"><span class="pre">LinuxBootLogin.password_prompt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.LinuxBootLogin.boot_timeout"><code class="docutils literal notranslate"><span class="pre">LinuxBootLogin.boot_timeout</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.LinuxBootLogin.bootlog"><code class="docutils literal notranslate"><span class="pre">LinuxBootLogin.bootlog</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.LinuxBootLogin.username"><code class="docutils literal notranslate"><span class="pre">LinuxBootLogin.username</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.LinuxBootLogin.password"><code class="docutils literal notranslate"><span class="pre">LinuxBootLogin.password</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.LinuxBootLogin.no_password_timeout"><code class="docutils literal notranslate"><span class="pre">LinuxBootLogin.no_password_timeout</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tbot.machine.board.AskfirstInitializer"><code class="docutils literal notranslate"><span class="pre">AskfirstInitializer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tbot.machine.board.AskfirstInitializer.askfirst_prompt"><code class="docutils literal notranslate"><span class="pre">AskfirstInitializer.askfirst_prompt</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="machine_connector.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.connector</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="machine_shell.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.shell</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="machine_channel.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.channel</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="error.html"><code class="docutils literal notranslate"><span class="pre">tbot.error</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="role.html"><code class="docutils literal notranslate"><span class="pre">tbot.role</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="selectable.html"><code class="docutils literal notranslate"><span class="pre">tbot.selectable</span></code></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Testcase Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tc.html"><code class="docutils literal notranslate"><span class="pre">tbot.tc</span></code> - Builtin Testcases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/connector.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.connector</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/gdb.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.gdb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/gpio.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.gpio</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/linux.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.linux</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/locking.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.locking</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/swupdate.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.swupdate</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/timing.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.timing</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/uboot.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.uboot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/utils.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.utils</span></code></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing to tbot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../LICENSE.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">tbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><code class="docutils literal notranslate"><span class="pre">tbot.machine.board</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modules/machine_board.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="tbot-machine-board">
+<span id="module-tbot.machine.board"></span><h1><code class="docutils literal notranslate"><span class="pre">tbot.machine.board</span></code><a class="headerlink" href="#tbot-machine-board" title="Link to this heading">¶</a></h1>
+<p>This module contains definitions for interacting with embedded hardware.  tbot
+models hardware in a ‘layered’ approach:</p>
+<ul class="simple">
+<li><p>The underlying physical hardware is called a <em>board</em>.  The board class
+defines how tbot can connect to the board’s console, how to turn power on and
+off, etc.</p></li>
+<li><p>Ontop of the board, the software ‘layer’ is defined.  This might be a U-Boot,
+a Linux directly, or a Linux ontop of a U-Boot.  It could also be something
+completely custom if you implement the relevant
+<a class="reference internal" href="machine.html#tbot.machine.Initializer" title="tbot.machine.Initializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Initializer</span></code></a> s and
+<a class="reference internal" href="machine_shell.html#tbot.machine.shell.Shell" title="tbot.machine.shell.Shell"><code class="xref py py-class docutils literal notranslate"><span class="pre">Shell</span></code></a> s.</p></li>
+</ul>
+<p>Each of these ‘layers’ is its own machine.  See the docs for:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#board-hardware"><span class="std std-ref">Board Hardware</span></a></p></li>
+<li><p><a class="reference internal" href="#board-software"><span class="std std-ref">Board Software</span></a></p></li>
+<li><p><a class="reference internal" href="#board-uboot"><span class="std std-ref">Board U-Boot</span></a></p></li>
+<li><p><a class="reference internal" href="#board-linux"><span class="std std-ref">Board Linux</span></a></p></li>
+</ul>
+<section id="board-hardware">
+<span id="id1"></span><h2>Board Hardware<a class="headerlink" href="#board-hardware" title="Link to this heading">¶</a></h2>
+<p>The board-machine should inherit from <a class="reference internal" href="#tbot.machine.board.Board" title="tbot.machine.board.Board"><code class="xref py py-class docutils literal notranslate"><span class="pre">tbot.machine.board.Board</span></code></a> and
+define the pysical access for the hardware.  This means the connector will most
+likely be a <a class="reference internal" href="machine_connector.html#tbot.machine.connector.ConsoleConnector" title="tbot.machine.connector.ConsoleConnector"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConsoleConnector</span></code></a> and it might
+make use of the <a class="reference internal" href="#tbot.machine.board.PowerControl" title="tbot.machine.board.PowerControl"><code class="xref py py-class docutils literal notranslate"><span class="pre">tbot.machine.board.PowerControl</span></code></a> initializer to turn
+on/off power for the board.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tbot.machine</span><span class="w"> </span><span class="kn">import</span> <span class="n">connector</span><span class="p">,</span> <span class="n">board</span><span class="p">,</span> <span class="n">linux</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyBoard</span><span class="p">(</span>
+    <span class="n">connector</span><span class="o">.</span><span class="n">ConsoleConnector</span><span class="p">,</span>
+    <span class="n">board</span><span class="o">.</span><span class="n">PowerControl</span><span class="p">,</span>
+    <span class="n">board</span><span class="o">.</span><span class="n">Board</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="c1"># TODO</span>
+</pre></div>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="tbot.machine.board.Board">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tbot.machine.board.</span></span><span class="sig-name descname"><span class="pre">Board</span></span><a class="reference internal" href="../_modules/tbot/machine/board/board.html#Board"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.machine.board.Board" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="machine_shell.html#tbot.machine.shell.RawShell" title="tbot.machine.shell.RawShell"><code class="xref py py-class docutils literal notranslate"><span class="pre">RawShell</span></code></a></p>
+<p>Base class for board-machines.</p>
+<p>This class does nothing special except providing the <code class="docutils literal notranslate"><span class="pre">.interactive()</span></code>
+method for directly interacting with the serial-console.</p>
+</dd></dl>
+
+<section id="board-initializers">
+<h3>Board Initializers<a class="headerlink" href="#board-initializers" title="Link to this heading">¶</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="tbot.machine.board.PowerControl">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tbot.machine.board.</span></span><span class="sig-name descname"><span class="pre">PowerControl</span></span><a class="reference internal" href="../_modules/tbot/machine/board/board.html#PowerControl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.machine.board.PowerControl" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="machine.html#tbot.machine.Initializer" title="tbot.machine.machine.Initializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Initializer</span></code></a></p>
+<p>Machine-initializer for controlling power for a hardware.</p>
+<p>When initializing, <a class="reference internal" href="#tbot.machine.board.PowerControl.poweron" title="tbot.machine.board.PowerControl.poweron"><code class="xref py py-meth docutils literal notranslate"><span class="pre">poweron()</span></code></a> is
+called and when deinitializing,
+<a class="reference internal" href="#tbot.machine.board.PowerControl.poweroff" title="tbot.machine.board.PowerControl.poweroff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">poweroff()</span></code></a> is called.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tbot.machine.board.PowerControl.poweron">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">poweron</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/tbot/machine/board/board.html#PowerControl.poweron"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.machine.board.PowerControl.poweron" title="Link to this definition">¶</a></dt>
+<dd><p>Power-on the hardware.</p>
+<p>If the machine is using the
+<a class="reference internal" href="machine_connector.html#tbot.machine.connector.ConsoleConnector" title="tbot.machine.connector.ConsoleConnector"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConsoleConnector</span></code></a>, you can use
+<code class="docutils literal notranslate"><span class="pre">self.host.exec0()</span></code> to run commands on the lab-host.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">poweron</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;power-control.sh&quot;</span><span class="p">,</span> <span class="s2">&quot;on&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tbot.machine.board.PowerControl.poweroff">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">poweroff</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/tbot/machine/board/board.html#PowerControl.poweroff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.machine.board.PowerControl.poweroff" title="Link to this definition">¶</a></dt>
+<dd><p>Power-off the hardware.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tbot.machine.board.PowerControl.power_check">
+<span class="sig-name descname"><span class="pre">power_check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/tbot/machine/board/board.html#PowerControl.power_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.machine.board.PowerControl.power_check" title="Link to this definition">¶</a></dt>
+<dd><p>Check if the board is already on and someone else might be using it.</p>
+<p>Implementations of this function should raise an exception in case they
+detect the board to be on or return <code class="docutils literal notranslate"><span class="pre">False</span></code>.  If the board is off and
+ready to be used, an implementation should return <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tbot.machine.board.PowerControl.powercycle_delay">
+<span class="sig-name descname"><span class="pre">powercycle_delay</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#tbot.machine.board.PowerControl.powercycle_delay" title="Link to this definition">¶</a></dt>
+<dd><p>Delay between a poweroff and a subsequent poweron.</p>
+<p>This delay is only accounted for when both poweroff and poweron happen in
+the same tbot process.  If you are calling tbot multiple times really fast,
+the delay is not performed!</p>
+<p>Using this attribute over, for example, a <code class="docutils literal notranslate"><span class="pre">time.sleep()</span></code> call in the
+<code class="docutils literal notranslate"><span class="pre">poweroff()</span></code> implementation has the advantage that the delay is not
+performed at the end of a tbot run, only for powercycles “in the middle”.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.9.3.</span></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+<section id="board-software">
+<span id="id2"></span><h2>Board Software<a class="headerlink" href="#board-software" title="Link to this heading">¶</a></h2>
+<p>The ‘software layer’ machines for a board should not directly use a connector
+to connect to the boards console, but instead rely on the generic
+<code class="xref py py-class docutils literal notranslate"><span class="pre">tbot.machine.board.Connector</span></code> class.  This allows cleanly separating
+the hardware and software and thus reusing the software machines with different
+hardware.</p>
+<p>In practice, these ‘software machines’ should be defined like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tbot.machine</span><span class="w"> </span><span class="kn">import</span> <span class="n">board</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyBoard</span><span class="p">(</span>
+    <span class="o">...</span>
+    <span class="n">board</span><span class="o">.</span><span class="n">Board</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="c1"># Hardware machine</span>
+    <span class="o">...</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyBoardSoftware</span><span class="p">(</span>
+   <span class="n">board</span><span class="o">.</span><span class="n">Connector</span><span class="p">,</span>
+   <span class="o">...</span>
+<span class="p">):</span>
+   <span class="c1"># Software machine</span>
+   <span class="o">...</span>
+</pre></div>
+</div>
+<p>And then used like</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">MyBoard</span><span class="p">(</span><span class="n">lh</span><span class="p">)</span> <span class="k">as</span> <span class="n">b</span><span class="p">:</span>
+   <span class="k">with</span> <span class="n">MyBoardSoftware</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">as</span> <span class="n">bs</span><span class="p">:</span>
+      <span class="n">bs</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="c1"># Or, more consise</span>
+<span class="k">with</span> <span class="n">MyBoard</span><span class="p">(</span><span class="n">lh</span><span class="p">)</span> <span class="k">as</span> <span class="n">b</span><span class="p">,</span> <span class="n">MyBoardSoftware</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">as</span> <span class="n">bs</span><span class="p">:</span>
+   <span class="n">bs</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="board-u-boot">
+<span id="board-uboot"></span><h2>Board U-Boot<a class="headerlink" href="#board-u-boot" title="Link to this heading">¶</a></h2>
+<p>If you are using U-Boot you’ll probably want access to it from your testcases.
+This is done using a U-Boot machine.  Like any software ‘layer’, a U-Boot
+machine should use the <code class="xref py py-class docutils literal notranslate"><span class="pre">tbot.machine.board.Connector</span></code> class.  The
+shell should be a <a class="reference internal" href="#tbot.machine.board.UBootShell" title="tbot.machine.board.UBootShell"><code class="xref py py-class docutils literal notranslate"><span class="pre">tbot.machine.board.UBootShell</span></code></a>.</p>
+<p>In case your U-Boot is configured for autoboot, you’ll want to use the optional
+<a class="reference internal" href="#tbot.machine.board.UBootAutobootIntercept" title="tbot.machine.board.UBootAutobootIntercept"><code class="xref py py-class docutils literal notranslate"><span class="pre">UBootAutobootIntercept</span></code></a> initializer as well.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">BoardUBoot</span><span class="p">(</span>
+    <span class="n">board</span><span class="o">.</span><span class="n">Connector</span><span class="p">,</span>
+    <span class="n">board</span><span class="o">.</span><span class="n">UBootShell</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">prompt</span> <span class="o">=</span> <span class="s2">&quot;U-Boot&gt; &quot;</span>
+</pre></div>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="tbot.machine.board.UBootShell">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tbot.machine.board.</span></span><span class="sig-name descname"><span class="pre">UBootShell</span></span><a class="reference internal" href="../_modules/tbot/machine/board/uboot.html#UBootShell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.machine.board.UBootShell" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="machine_shell.html#tbot.machine.shell.Shell" title="tbot.machine.shell.Shell"><code class="xref py py-class docutils literal notranslate"><span class="pre">Shell</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">UbootStartup</span></code></p>
+<p>U-Boot shell.</p>
+<p>The interface of this shell was designed to be close to the
+<a class="reference internal" href="machine_linux.html#linux-shells"><span class="std std-ref">Linux shell</span></a> design.  This means that U-Boot shells
+also provide</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#tbot.machine.board.UBootShell.escape" title="tbot.machine.board.UBootShell.escape"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ub.escape()</span></code></a> - Escape
+args for the U-Boot shell.</p></li>
+<li><p><a class="reference internal" href="#tbot.machine.board.UBootShell.exec0" title="tbot.machine.board.UBootShell.exec0"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ub.exec0()</span></code></a> - Run command
+and ensure it succeeded.</p></li>
+<li><p><a class="reference internal" href="#tbot.machine.board.UBootShell.exec" title="tbot.machine.board.UBootShell.exec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ub.exec()</span></code></a> - Run command
+and return output and return code.</p></li>
+<li><p><a class="reference internal" href="#tbot.machine.board.UBootShell.test" title="tbot.machine.board.UBootShell.test"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ub.test()</span></code></a> - Run command
+and return boolean whether it succeeded.</p></li>
+<li><p><a class="reference internal" href="#tbot.machine.board.UBootShell.env" title="tbot.machine.board.UBootShell.env"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ub.env()</span></code></a> - Get/Set
+environment variables.</p></li>
+<li><p><a class="reference internal" href="#tbot.machine.board.UBootShell.interactive" title="tbot.machine.board.UBootShell.interactive"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ub.interactive()</span></code></a> -
+Start an interactive session for this machine.</p></li>
+</ul>
+<p>There is also the special <a class="reference internal" href="#tbot.machine.board.UBootShell.boot" title="tbot.machine.board.UBootShell.boot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ub.boot()</span></code></a>
+which will boot a payload and return the machine’s channel, for use in a
+machine for the booted payload.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tbot.machine.board.UBootShell.boot_timeout">
+<span class="sig-name descname"><span class="pre">boot_timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#tbot.machine.board.UBootShell.boot_timeout" title="Link to this definition">¶</a></dt>
+<dd><p>Maximum time from power-on to U-Boot shell.</p>
+<p>If tbot can’t reach the U-Boot shell during this time, an exception will be thrown.</p>
+<p>Maximum time from power-on to U-Boot shell.</p>
+<p>If tbot can’t reach the U-Boot shell during this time, an exception will be thrown.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tbot.machine.board.UBootShell.prompt">
+<span class="sig-name descname"><span class="pre">prompt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'U-Boot&gt;</span> <span class="pre">'</span></em><a class="headerlink" href="#tbot.machine.board.UBootShell.prompt" title="Link to this definition">¶</a></dt>
+<dd><p>Prompt which was configured for U-Boot.</p>
+<p>Commonly <code class="docutils literal notranslate"><span class="pre">&quot;U-Boot&gt;</span> <span class="pre">&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;=&gt;</span> <span class="pre">&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">&quot;U-Boot#</span> <span class="pre">&quot;</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>Don’t forget the trailing space, if your prompt has one!</strong></p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tbot.machine.board.UBootShell.bootlog">
+<span class="sig-name descname"><span class="pre">bootlog</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#tbot.machine.board.UBootShell.bootlog" title="Link to this definition">¶</a></dt>
+<dd><p>Transcript of console output during boot.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tbot.machine.board.UBootShell.escape">
+<span class="sig-name descname"><span class="pre">escape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Special</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/tbot/machine/board/uboot.html#UBootShell.escape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.machine.board.UBootShell.escape" title="Link to this definition">¶</a></dt>
+<dd><p>Escape a string so it can be used safely on the U-Boot command-line.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tbot.machine.board.UBootShell.exec">
+<span class="sig-name descname"><span class="pre">exec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Special</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tbot/machine/board/uboot.html#UBootShell.exec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.machine.board.UBootShell.exec" title="Link to this definition">¶</a></dt>
+<dd><p>Run a command in U-Boot.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">retcode</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">ub</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">retcode</span> <span class="o">==</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple with the return code of the command and its console
+output.  The output will also contain a trailing newline in most
+cases.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tbot.machine.board.UBootShell.exec0">
+<span class="sig-name descname"><span class="pre">exec0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Special</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/tbot/machine/board/uboot.html#UBootShell.exec0"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.machine.board.UBootShell.exec0" title="Link to this definition">¶</a></dt>
+<dd><p>Run a command and assert its return code to be 0.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">output</span> <span class="o">=</span> <span class="n">ub</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">)</span>
+
+<span class="c1"># This will raise an exception!</span>
+<span class="n">ub</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;false&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The command’s console output.  It will also contain a trailing
+newline in most cases.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tbot.machine.board.UBootShell.test">
+<span class="sig-name descname"><span class="pre">test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Special</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/tbot/machine/board/uboot.html#UBootShell.test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.machine.board.UBootShell.test" title="Link to this definition">¶</a></dt>
+<dd><p>Run a command and return a boolean value whether it succeeded.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">ub</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="s2">&quot;true&quot;</span><span class="p">):</span>
+    <span class="n">tbot</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;Is correct&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Boolean representation of commands success.  <code class="docutils literal notranslate"><span class="pre">True</span></code> if
+return code was <code class="docutils literal notranslate"><span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tbot.machine.board.UBootShell.env">
+<span class="sig-name descname"><span class="pre">env</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Special</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/tbot/machine/board/uboot.html#UBootShell.env"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.machine.board.UBootShell.env" title="Link to this definition">¶</a></dt>
+<dd><p>Get or set an environment variable.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get the value of a var</span>
+<span class="n">value</span> <span class="o">=</span> <span class="n">ub</span><span class="o">.</span><span class="n">env</span><span class="p">(</span><span class="s2">&quot;bootcmd&quot;</span><span class="p">)</span>
+
+<span class="c1"># Set the value of a var</span>
+<span class="n">lnx</span><span class="o">.</span><span class="n">env</span><span class="p">(</span><span class="s2">&quot;bootargs&quot;</span><span class="p">,</span> <span class="s2">&quot;loglevel=7&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Environment variable name.</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Optional value to set the variable to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Current (new) value of the environment variable.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tbot.machine.board.UBootShell.boot">
+<span class="sig-name descname"><span class="pre">boot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Special</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="machine_channel.html#tbot.machine.channel.Channel" title="tbot.machine.channel.channel.Channel"><span class="pre">Channel</span></a></span></span><a class="reference internal" href="../_modules/tbot/machine/board/uboot.html#UBootShell.boot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.machine.board.UBootShell.boot" title="Link to this definition">¶</a></dt>
+<dd><p>Boot a payload from U-Boot.</p>
+<p>This method will run the given command and expects it to start booting
+a payload.  <code class="docutils literal notranslate"><span class="pre">ub.boot()</span></code> will then return the channel so a new machine
+can be built on top of it for the booted payload.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ub</span><span class="o">.</span><span class="n">env</span><span class="p">(</span><span class="s2">&quot;bootargs&quot;</span><span class="p">,</span> <span class="s2">&quot;loglevel=7&quot;</span><span class="p">)</span>
+<span class="n">ch</span> <span class="o">=</span> <span class="n">ub</span><span class="o">.</span><span class="n">boot</span><span class="p">(</span><span class="s2">&quot;bootm&quot;</span><span class="p">,</span> <span class="s2">&quot;0x10000000&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="machine_channel.html#tbot.machine.channel.Channel" title="tbot.machine.channel.Channel">tbot.machine.channel.Channel</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tbot.machine.board.UBootShell.interactive">
+<span class="sig-name descname"><span class="pre">interactive</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/tbot/machine/board/uboot.html#UBootShell.interactive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.machine.board.UBootShell.interactive" title="Link to this definition">¶</a></dt>
+<dd><p>Start an interactive session on this machine.</p>
+<p>This method will connect tbot’s stdio to the machine’s channel so you
+can interactively run commands.  This method is used by the
+<code class="docutils literal notranslate"><span class="pre">interactive_uboot</span></code> testcase.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tbot.machine.board.UBootShell.ram_base">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ram_base</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#tbot.machine.board.UBootShell.ram_base" title="Link to this definition">¶</a></dt>
+<dd><p>Return the base address of RAM for this U-Boot instance.</p>
+<p>This address can be used as a safe bet when your testcase needs to
+store something in RAM.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">serverip</span> <span class="o">=</span>  <span class="c1"># ...</span>
+<span class="n">filepath</span> <span class="o">=</span>  <span class="c1"># ...</span>
+<span class="n">ub</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;tftp&quot;</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span><span class="n">ub</span><span class="o">.</span><span class="n">ram_base</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">serverip</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">filepath</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">ub</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;iminfo&quot;</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span><span class="n">ub</span><span class="o">.</span><span class="n">ram_base</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tbot.machine.board.UBootAutobootIntercept">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tbot.machine.board.</span></span><span class="sig-name descname"><span class="pre">UBootAutobootIntercept</span></span><a class="reference internal" href="../_modules/tbot/machine/board/uboot.html#UBootAutobootIntercept"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.machine.board.UBootAutobootIntercept" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="machine.html#tbot.machine.Initializer" title="tbot.machine.machine.Initializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Initializer</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">UbootStartup</span></code></p>
+<p>Machine-initializer to intercept U-Boot autobooting.</p>
+<p>The default settings for this class should work for most cases, but if a
+custom autoboot prompt was configured, or a special key sequence is
+necessary, you will have to adjust this here.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyUBoot</span><span class="p">(</span>
+    <span class="n">board</span><span class="o">.</span><span class="n">Connector</span><span class="p">,</span>
+    <span class="n">board</span><span class="o">.</span><span class="n">UBootAutobootIntercept</span><span class="p">,</span>
+    <span class="n">board</span><span class="o">.</span><span class="n">UBootShell</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">autoboot_prompt</span> <span class="o">=</span> <span class="n">tbot</span><span class="o">.</span><span class="n">Re</span><span class="p">(</span><span class="s2">&quot;Press DEL 4 times.{0,100}&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
+    <span class="n">autoboot_keys</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\x7f\x7f\x7f\x7f</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tbot.machine.board.UBootAutobootIntercept.autoboot_prompt">
+<span class="sig-name descname"><span class="pre">autoboot_prompt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">BoundedPattern</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Pattern" title="(in Python v3.14)"><span class="pre">Pattern</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">re.compile(b'autoboot:\\s{0,5}\\d{0,3}\\s{0,3}.{0,80}')</span></em><a class="headerlink" href="#tbot.machine.board.UBootAutobootIntercept.autoboot_prompt" title="Link to this definition">¶</a></dt>
+<dd><p>Autoboot prompt to wait for.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tbot.machine.board.UBootAutobootIntercept.autoboot_keys">
+<span class="sig-name descname"><span class="pre">autoboot_keys</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\r'</span></em><a class="headerlink" href="#tbot.machine.board.UBootAutobootIntercept.autoboot_keys" title="Link to this definition">¶</a></dt>
+<dd><p>Keys to press as soon as autoboot prompt is detected.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="board-linux">
+<span id="id3"></span><h2>Board Linux<a class="headerlink" href="#board-linux" title="Link to this heading">¶</a></h2>
+<p>The board’s Linux machine can be configured in different ways, depending on
+your setup and needs.</p>
+<ul class="simple">
+<li><p>If you do not need any bootloader interaction, you can define it in a way
+that goes straight from power-on to waiting for Linux.  This is done very
+similarly to the U-Boot machine above, by using the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">board.Connector</span></code>.</p></li>
+<li><p>If you do need bootloader interaction (because of manual commands to boot
+Linux for example), you should instead use the much more powerful
+<a class="reference internal" href="#tbot.machine.board.LinuxUbootConnector" title="tbot.machine.board.LinuxUbootConnector"><code class="xref py py-class docutils literal notranslate"><span class="pre">board.LinuxUbootConnector</span></code></a>.
+This class allows to boot Linux from U-Boot, either by passing it an existing
+U-Boot machine, or by automatically waiting for U-Boot first and then booting
+Linux.</p></li>
+</ul>
+<p>In code, the two options look like this:</p>
+<p><strong>Example for a standalone Linux (no bootloader interaction)</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tbot.machine</span><span class="w"> </span><span class="kn">import</span> <span class="n">board</span><span class="p">,</span> <span class="n">linux</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">StandaloneLinux</span><span class="p">(</span>
+    <span class="n">board</span><span class="o">.</span><span class="n">Connector</span><span class="p">,</span>
+    <span class="n">board</span><span class="o">.</span><span class="n">LinuxBootLogin</span><span class="p">,</span>
+    <span class="n">linux</span><span class="o">.</span><span class="n">Bash</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="c1"># No config for the connector needed</span>
+
+    <span class="c1"># LinuxBootLogin handles waiting for Linux to boot &amp; logging in</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;root&quot;</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="s2">&quot;hunter2&quot;</span>
+</pre></div>
+</div>
+<p><strong>Example for a Linux booting from U-Boot</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tbot.machine</span><span class="w"> </span><span class="kn">import</span> <span class="n">board</span><span class="p">,</span> <span class="n">linux</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyUBoot</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">Connector</span><span class="p">,</span> <span class="n">board</span><span class="o">.</span><span class="n">UBootShell</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">LinuxFromUBoot</span><span class="p">(</span>
+    <span class="n">board</span><span class="o">.</span><span class="n">LinuxUbootConnector</span><span class="p">,</span>
+    <span class="n">board</span><span class="o">.</span><span class="n">LinuxBootLogin</span><span class="p">,</span>
+    <span class="n">linux</span><span class="o">.</span><span class="n">Bash</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="c1"># Configuration for LinuxUbootConnector</span>
+    <span class="n">uboot</span> <span class="o">=</span> <span class="n">MyUBoot</span>  <span class="c1"># &lt;- Our UBoot machine</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">do_boot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ub</span><span class="p">):</span>  <span class="c1"># &lt;- Procedure to boot Linux</span>
+       <span class="n">ub</span><span class="o">.</span><span class="n">env</span><span class="p">(</span><span class="s2">&quot;autoload&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span>
+       <span class="n">ub</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;dhcp&quot;</span><span class="p">)</span>
+       <span class="k">return</span> <span class="n">ub</span><span class="o">.</span><span class="n">boot</span><span class="p">(</span><span class="s2">&quot;run&quot;</span><span class="p">,</span> <span class="s2">&quot;nfsboot&quot;</span><span class="p">)</span>
+
+    <span class="c1"># LinuxBootLogin handles waiting for Linux to boot &amp; logging in</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;root&quot;</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="s2">&quot;hunter2&quot;</span>
+</pre></div>
+</div>
+<p>With both options, you’ll use the
+<a class="reference internal" href="#tbot.machine.board.LinuxBootLogin" title="tbot.machine.board.LinuxBootLogin"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinuxBootLogin</span></code></a> initializer to handle the boot
+and login.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tbot.machine.board.LinuxUbootConnector">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tbot.machine.board.</span></span><span class="sig-name descname"><span class="pre">LinuxUbootConnector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tbot.machine.board.Board" title="tbot.machine.board.board.Board"><span class="pre">Board</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#tbot.machine.board.UBootShell" title="tbot.machine.board.uboot.UBootShell"><span class="pre">UBootShell</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tbot/machine/board/linux.html#LinuxUbootConnector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.machine.board.LinuxUbootConnector" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="machine_connector.html#tbot.machine.connector.Connector" title="tbot.machine.connector.connector.Connector"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connector</span></code></a>, <a class="reference internal" href="#tbot.machine.board.LinuxBootLogin" title="tbot.machine.board.linux.LinuxBootLogin"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinuxBootLogin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">BoardMachineBase</span></code></p>
+<p>Connector for booting Linux from U-Boot.</p>
+<p>This connector can either boot from a <a class="reference internal" href="#tbot.machine.board.Board" title="tbot.machine.board.Board"><code class="xref py py-class docutils literal notranslate"><span class="pre">Board</span></code></a>
+instance or from a <a class="reference internal" href="#tbot.machine.board.UBootShell" title="tbot.machine.board.UBootShell"><code class="xref py py-class docutils literal notranslate"><span class="pre">UBootShell</span></code></a> instance.  If
+booting directly from the board, it will first initialize a U-Boot machine
+and then use it to kick off the boot to Linux.  See above for an example.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="tbot.machine.board.LinuxUbootConnector.uboot">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">uboot</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.14)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tbot.machine.board.UBootShell" title="tbot.machine.board.uboot.UBootShell"><span class="pre">UBootShell</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tbot.machine.board.LinuxUbootConnector.uboot" title="Link to this definition">¶</a></dt>
+<dd><p>U-Boot machine to use when booting directly from a
+<a class="reference internal" href="#tbot.machine.board.Board" title="tbot.machine.board.Board"><code class="xref py py-class docutils literal notranslate"><span class="pre">Board</span></code></a> instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tbot.machine.board.LinuxUbootConnector.do_boot">
+<span class="sig-name descname"><span class="pre">do_boot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ub</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tbot.machine.board.UBootShell" title="tbot.machine.board.uboot.UBootShell"><span class="pre">UBootShell</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="machine_channel.html#tbot.machine.channel.Channel" title="tbot.machine.channel.channel.Channel"><span class="pre">Channel</span></a></span></span><a class="reference internal" href="../_modules/tbot/machine/board/linux.html#LinuxUbootConnector.do_boot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.machine.board.LinuxUbootConnector.do_boot" title="Link to this definition">¶</a></dt>
+<dd><p>Boot procedure.</p>
+<p>An implementation of this method should use the U-Boot machine given as
+<code class="docutils literal notranslate"><span class="pre">ub</span></code> to kick off the Linux boot.  It should return the channel to the
+now booting Linux.  This will in almost all cases be achieved by using
+the <a class="reference internal" href="#tbot.machine.board.UBootShell.boot" title="tbot.machine.board.UBootShell.boot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tbot.machine.board.UBootShell.boot()</span></code></a> method.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tbot.machine</span><span class="w"> </span><span class="kn">import</span> <span class="n">board</span><span class="p">,</span> <span class="n">linux</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">LinuxFromUBoot</span><span class="p">(</span>
+    <span class="n">board</span><span class="o">.</span><span class="n">LinuxUbootConnector</span><span class="p">,</span>
+    <span class="n">board</span><span class="o">.</span><span class="n">LinuxBootLogin</span><span class="p">,</span>
+    <span class="n">linux</span><span class="o">.</span><span class="n">Bash</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">uboot</span> <span class="o">=</span> <span class="n">MyUBoot</span>  <span class="c1"># &lt;- Our UBoot machine</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">do_boot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ub</span><span class="p">):</span>  <span class="c1"># &lt;- Procedure to boot Linux</span>
+       <span class="c1"># Any logic necessary to prepare for boot</span>
+       <span class="n">ub</span><span class="o">.</span><span class="n">env</span><span class="p">(</span><span class="s2">&quot;autoload&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span>
+       <span class="n">ub</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;dhcp&quot;</span><span class="p">)</span>
+
+       <span class="c1"># Return the channel using ub.boot()</span>
+       <span class="k">return</span> <span class="n">ub</span><span class="o">.</span><span class="n">boot</span><span class="p">(</span><span class="s2">&quot;run&quot;</span><span class="p">,</span> <span class="s2">&quot;nfsboot&quot;</span><span class="p">)</span>
+
+    <span class="o">...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tbot.machine.board.LinuxUbootConnector.from_context">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="main.html#tbot.Context" title="tbot.context.Context"><span class="pre">Context</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.14)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Self</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tbot/machine/board/linux.html#LinuxUbootConnector.from_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.machine.board.LinuxUbootConnector.from_context" title="Link to this definition">¶</a></dt>
+<dd><p>Create this machine from a tbot context.</p>
+<p>This method defines how tbot can automatically attempt creating this
+machine from a given context. It is usually defined by the connector
+but might be overridden by board config in certain more complex
+scenarios.</p>
+<p>This method must return a context-manager that, upon entering, yields a
+<strong>fully initialized</strong> machine. In practical terms this means, the
+implementation must enter the “machine’s context” as well. As an
+example, the most basic implementation would look like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">from_context</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ctx</span><span class="p">):</span>
+    <span class="c1"># Create instance and enter its context, in this example, no</span>
+    <span class="c1"># args are passed to the constructor ...</span>
+    <span class="k">with</span> <span class="bp">cls</span><span class="p">()</span> <span class="k">as</span> <span class="n">m</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">m</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tbot.machine.board.LinuxUbootConnector.clone">
+<span class="sig-name descname"><span class="pre">clone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="reference internal" href="../_modules/tbot/machine/board/linux.html#LinuxUbootConnector.clone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.machine.board.LinuxUbootConnector.clone" title="Link to this definition">¶</a></dt>
+<dd><p>This machine cannot be cloned.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tbot.machine.board.LinuxUbootConnector.board">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">board</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tbot.machine.board.Board" title="tbot.machine.board.board.Board"><span class="pre">Board</span></a></em><a class="headerlink" href="#tbot.machine.board.LinuxUbootConnector.board" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the instance of the underlying board machine on which this
+machine is “running”.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tbot.machine.board.LinuxBootLogin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tbot.machine.board.</span></span><span class="sig-name descname"><span class="pre">LinuxBootLogin</span></span><a class="reference internal" href="../_modules/tbot/machine/board/linux.html#LinuxBootLogin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.machine.board.LinuxBootLogin" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="machine.html#tbot.machine.Initializer" title="tbot.machine.machine.Initializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Initializer</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">LinuxBoot</span></code></p>
+<p>Machine <a class="reference internal" href="machine.html#tbot.machine.Initializer" title="tbot.machine.Initializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Initializer</span></code></a> to wait for linux boot-up and
+automatically login.</p>
+<p>Use this initializer whenever you have a serial-console for a Linux system.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tbot.machine</span><span class="w"> </span><span class="kn">import</span> <span class="n">board</span><span class="p">,</span> <span class="n">linux</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">StandaloneLinux</span><span class="p">(</span>
+    <span class="n">board</span><span class="o">.</span><span class="n">Connector</span><span class="p">,</span>
+    <span class="n">board</span><span class="o">.</span><span class="n">LinuxBootLogin</span><span class="p">,</span>
+    <span class="n">linux</span><span class="o">.</span><span class="n">Bash</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="c1"># board.LinuxBootLogin config:</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;root&quot;</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="s2">&quot;hunter2&quot;</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tbot.machine.board.LinuxBootLogin.login_prompt">
+<span class="sig-name descname"><span class="pre">login_prompt</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'login:</span> <span class="pre">'</span></em><a class="headerlink" href="#tbot.machine.board.LinuxBootLogin.login_prompt" title="Link to this definition">¶</a></dt>
+<dd><p>Prompt that indicates tbot should send the username.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tbot.machine.board.LinuxBootLogin.login_delay">
+<span class="sig-name descname"><span class="pre">login_delay</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#tbot.machine.board.LinuxBootLogin.login_delay" title="Link to this definition">¶</a></dt>
+<dd><p>The delay between first occurrence of login_prompt and actual login.</p>
+<p>This delay might be necessary if your system clutters the login prompt with
+log-messages during the first few seconds after boot.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tbot.machine.board.LinuxBootLogin.password_prompt">
+<span class="sig-name descname"><span class="pre">password_prompt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">BoundedPattern</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Pattern" title="(in Python v3.14)"><span class="pre">Pattern</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'assword:</span> <span class="pre">'</span></em><a class="headerlink" href="#tbot.machine.board.LinuxBootLogin.password_prompt" title="Link to this definition">¶</a></dt>
+<dd><p>Prompt that indicates tbot should send the password.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tbot.machine.board.LinuxBootLogin.boot_timeout">
+<span class="sig-name descname"><span class="pre">boot_timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#tbot.machine.board.LinuxBootLogin.boot_timeout" title="Link to this definition">¶</a></dt>
+<dd><p>Maximum time for Linux to reach the login prompt.</p>
+<p>The timer starts after initiation of the boot. This may either be power-on
+if booting into Linux directly or the point where the boot process is
+initiated from the bootloader (when using <a class="reference internal" href="#tbot.machine.board.LinuxUbootConnector" title="tbot.machine.board.LinuxUbootConnector"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinuxUbootConnector</span></code></a>).</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.10.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tbot.machine.board.LinuxBootLogin.bootlog">
+<span class="sig-name descname"><span class="pre">bootlog</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#tbot.machine.board.LinuxBootLogin.bootlog" title="Link to this definition">¶</a></dt>
+<dd><p>Log of kernel-messages which were output during boot.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tbot.machine.board.LinuxBootLogin.username">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">username</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#tbot.machine.board.LinuxBootLogin.username" title="Link to this definition">¶</a></dt>
+<dd><p>Username to login as.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tbot.machine.board.LinuxBootLogin.password">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">password</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#tbot.machine.board.LinuxBootLogin.password" title="Link to this definition">¶</a></dt>
+<dd><p>Password to login with.  Set to <code class="docutils literal notranslate"><span class="pre">None</span></code> if no password is needed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tbot.machine.board.LinuxBootLogin.no_password_timeout">
+<span class="sig-name descname"><span class="pre">no_password_timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5.0</span></em><a class="headerlink" href="#tbot.machine.board.LinuxBootLogin.no_password_timeout" title="Link to this definition">¶</a></dt>
+<dd><p>Timeout after which login without a password should be attempted.  Set to
+<code class="docutils literal notranslate"><span class="pre">None</span></code> to disable this mechanism.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.10.1.</span></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tbot.machine.board.AskfirstInitializer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tbot.machine.board.</span></span><span class="sig-name descname"><span class="pre">AskfirstInitializer</span></span><a class="reference internal" href="../_modules/tbot/machine/board/linux.html#AskfirstInitializer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.machine.board.AskfirstInitializer" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="machine.html#tbot.machine.Initializer" title="tbot.machine.machine.Initializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Initializer</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">LinuxBoot</span></code></p>
+<p>Initializer to deal with <code class="docutils literal notranslate"><span class="pre">askfirst</span></code> TTYs.</p>
+<p>On some boards, the console is configured with <code class="docutils literal notranslate"><span class="pre">askfirst</span></code> which means that
+the getty for logging in is only spawned after an initial ENTER is sent.
+This initializer takes care of that by first waiting for the <code class="docutils literal notranslate"><span class="pre">askfirst</span></code>
+prompt and then sending ENTER.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">askfirst</span></code> prompt can be customized with the <code class="docutils literal notranslate"><span class="pre">askfirst_prompt</span></code> attribute.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tbot.machine</span><span class="w"> </span><span class="kn">import</span> <span class="n">board</span><span class="p">,</span> <span class="n">linux</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">StandaloneLinux</span><span class="p">(</span>
+    <span class="n">board</span><span class="o">.</span><span class="n">Connector</span><span class="p">,</span>
+    <span class="n">board</span><span class="o">.</span><span class="n">AskfirstInitializer</span><span class="p">,</span>
+    <span class="n">board</span><span class="o">.</span><span class="n">LinuxBootLogin</span><span class="p">,</span>
+    <span class="n">linux</span><span class="o">.</span><span class="n">Bash</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="c1"># board.LinuxBootLogin config:</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;root&quot;</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="s2">&quot;hunter2&quot;</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.10.6.</span></p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tbot.machine.board.AskfirstInitializer.askfirst_prompt">
+<span class="sig-name descname"><span class="pre">askfirst_prompt</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Please</span> <span class="pre">press</span> <span class="pre">Enter</span> <span class="pre">to</span> <span class="pre">activate</span> <span class="pre">this</span> <span class="pre">console.'</span></em><a class="headerlink" href="#tbot.machine.board.AskfirstInitializer.askfirst_prompt" title="Link to this definition">¶</a></dt>
+<dd><p>Prompt that indicates the board is waiting for <code class="docutils literal notranslate"><span class="pre">askfirst</span></code> confirmation.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <a href="https://github.com/Rahix/tbot">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" decoding="async" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" loading="lazy" data-recalc-dims="1">
+    </a>
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="machine_linux.html" class="btn btn-neutral float-left" title="tbot.machine.linux" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="machine_connector.html" class="btn btn-neutral float-right" title="tbot.machine.connector" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Rahix.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

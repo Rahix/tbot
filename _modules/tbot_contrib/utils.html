@@ -1,0 +1,521 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tbot_contrib.utils &mdash; tbot 0.10.10-0-g1853255 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5349f25f" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/documentation_options.js?v=e1796f6e"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/tbot-logo-white.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli.html">tbot CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../recipes.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../context.html">Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pytest.html">pytest Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating from tbot 0.7.1</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/main.html"><code class="docutils literal notranslate"><span class="pre">tbot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/log.html"><code class="docutils literal notranslate"><span class="pre">tbot.log</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/machine.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/machine_linux.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.linux</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/machine_board.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.board</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/machine_connector.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.connector</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/machine_shell.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.shell</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/machine_channel.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.channel</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/error.html"><code class="docutils literal notranslate"><span class="pre">tbot.error</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/role.html"><code class="docutils literal notranslate"><span class="pre">tbot.role</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/selectable.html"><code class="docutils literal notranslate"><span class="pre">tbot.selectable</span></code></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Testcase Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/tc.html"><code class="docutils literal notranslate"><span class="pre">tbot.tc</span></code> - Builtin Testcases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contrib/connector.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.connector</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contrib/gdb.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.gdb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contrib/gpio.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.gpio</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contrib/linux.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.linux</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contrib/locking.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.locking</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contrib/swupdate.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.swupdate</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contrib/timing.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.timing</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contrib/uboot.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.uboot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contrib/utils.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.utils</span></code></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing to tbot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../LICENSE.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">tbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tbot_contrib.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tbot_contrib.utils</h1><div class="highlight"><pre>
+<span></span><span class="c1"># tbot, Embedded Automation Tool</span>
+<span class="c1"># Copyright (C) 2020  Heiko Schocher</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">typing</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">tbot.error</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tbot.machine</span><span class="w"> </span><span class="kn">import</span> <span class="n">linux</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tbot.tc</span><span class="w"> </span><span class="kn">import</span> <span class="n">shell</span>
+
+<span class="n">H</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">linux</span><span class="o">.</span><span class="n">LinuxShell</span><span class="p">)</span>
+<span class="n">_SERVICES_CACHE</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+<div class="viewcode-block" id="ensure_sd_unit">
+<a class="viewcode-back" href="../../contrib/utils.html#tbot_contrib.utils.ensure_sd_unit">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">ensure_sd_unit</span><span class="p">(</span><span class="n">lnx</span><span class="p">:</span> <span class="n">linux</span><span class="o">.</span><span class="n">LinuxShell</span><span class="p">,</span> <span class="n">services</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    check if all systemd services in list services run on linux machine lnx.</span>
+<span class="sd">    If not, try to start them.</span>
+
+<span class="sd">    :param lnx: linux shell</span>
+<span class="sd">    :param services: list of systemd services</span>
+
+<span class="sd">    .. versionadded:: 0.8.3</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">lnx</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_SERVICES_CACHE</span><span class="p">:</span>
+        <span class="n">_SERVICES_CACHE</span><span class="p">[</span><span class="n">lnx</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">services</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">_SERVICES_CACHE</span><span class="p">[</span><span class="n">lnx</span><span class="o">.</span><span class="n">name</span><span class="p">]:</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">lnx</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="s2">&quot;systemctl&quot;</span><span class="p">,</span> <span class="s2">&quot;is-active&quot;</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+            <span class="n">lnx</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;sudo&quot;</span><span class="p">,</span> <span class="s2">&quot;systemctl&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+
+        <span class="n">_SERVICES_CACHE</span><span class="p">[</span><span class="n">lnx</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+
+<span class="c1"># 7-bit C1 ANSI sequences, see https://stackoverflow.com/a/14693789</span>
+<span class="n">_ANSI_ESCAPE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    \x1B  # ESC</span>
+<span class="sd">    (?:   # 7-bit C1 Fe (except CSI)</span>
+<span class="sd">        [@-Z\\-_]</span>
+<span class="sd">    |     # or [ for CSI, followed by a control sequence</span>
+<span class="sd">        \[</span>
+<span class="sd">        [0-?]*  # Parameter bytes</span>
+<span class="sd">        [ -/]*  # Intermediate bytes</span>
+<span class="sd">        [@-~]   # Final byte</span>
+<span class="sd">    )</span>
+<span class="sd">&quot;&quot;&quot;</span><span class="p">,</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="strip_ansi_escapes">
+<a class="viewcode-back" href="../../contrib/utils.html#tbot_contrib.utils.strip_ansi_escapes">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">strip_ansi_escapes</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Strip all ANSI escape sequences from a string</span>
+
+<span class="sd">    This helper can be used when programs have colored output and piping with</span>
+<span class="sd">    ``| cat`` doesn&#39;t help (e.g. forced color as with ``--color=always``).</span>
+
+<span class="sd">    .. versionadded:: 0.9.2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_ANSI_ESCAPE</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span></div>
+
+
+
+<span class="n">_IP_CACHE</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">linux</span><span class="o">.</span><span class="n">LinuxShell</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+<div class="viewcode-block" id="find_ip_address">
+<a class="viewcode-back" href="../../contrib/utils.html#tbot_contrib.utils.find_ip_address">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_ip_address</span><span class="p">(</span>
+    <span class="n">lnx</span><span class="p">:</span> <span class="n">linux</span><span class="o">.</span><span class="n">LinuxShell</span><span class="p">,</span>
+    <span class="n">route_target</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find out an IP-address of a host.</span>
+
+<span class="sd">    In times where most hosts have many IP addresses, this is not as trivial as</span>
+<span class="sd">    one would like.  This testcase approaches the problem by trying to find the</span>
+<span class="sd">    IP-address, the host would use on a certain route.</span>
+
+<span class="sd">    By default, this is the route to reach a theoretical host at ``1.0.0.0``.</span>
+<span class="sd">    This will yield a sensible result in *most* cases but of course will not</span>
+<span class="sd">    always be the address you want.  For more fine-grained control you can pass</span>
+<span class="sd">    a ``route_target``.  This is the IP-address of this theoretical host to reach.</span>
+
+<span class="sd">    :param linux.LinuxShell lnx: The host to work on.</span>
+<span class="sd">    :param str route_target: An optional route target.  Defaults to ``1.0.0.0``.</span>
+<span class="sd">    :param bool force: By default, this testcase caches results for faster</span>
+<span class="sd">        lookup when called multiple times.  This parameter enforces a re-check</span>
+<span class="sd">        which might be useful when the network configuration on ``lnx``</span>
+<span class="sd">        changed.</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    :returns: The IP-address which was found.</span>
+
+<span class="sd">    .. versionadded:: 0.8.3</span>
+<span class="sd">    .. versionchanged:: 0.9.2</span>
+
+<span class="sd">        Fixed ``find_ip_address()`` not working properly when the route target</span>
+<span class="sd">        is a local address.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">route_target</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># 1 equals to 1.0.0.0 which will probably yield a sensible route in</span>
+        <span class="c1"># most cases.</span>
+        <span class="n">route_target</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">lnx</span><span class="p">,</span> <span class="n">route_target</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_IP_CACHE</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">shell</span><span class="o">.</span><span class="n">check_for_tool</span><span class="p">(</span><span class="n">lnx</span><span class="p">,</span> <span class="s2">&quot;ip&quot;</span><span class="p">):</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">strip_ansi_escapes</span><span class="p">(</span>
+                <span class="n">lnx</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;ip&quot;</span><span class="p">,</span> <span class="s2">&quot;route&quot;</span><span class="p">,</span> <span class="s2">&quot;get&quot;</span><span class="p">,</span> <span class="n">route_target</span><span class="p">,</span> <span class="n">linux</span><span class="o">.</span><span class="n">Pipe</span><span class="p">,</span> <span class="s2">&quot;cat&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span>
+                <span class="sa">r</span><span class="s2">&quot;(?:local\s+)?\S+\s+(?:via\s+\S+\s+)?dev\s+\S+\s+src\s+(\S+).*&quot;</span><span class="p">,</span>
+                <span class="n">output</span><span class="p">,</span>
+                <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">assert</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Failed to parse `ip route` output (</span><span class="si">{</span><span class="n">output</span><span class="si">!r}</span><span class="s2">)!&quot;</span>
+            <span class="n">ip</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Found no way to find out ip-address&quot;</span><span class="p">)</span>
+
+        <span class="n">_IP_CACHE</span><span class="p">[(</span><span class="n">lnx</span><span class="p">,</span> <span class="n">route_target</span><span class="p">)]</span> <span class="o">=</span> <span class="n">ip</span>
+
+    <span class="k">return</span> <span class="n">_IP_CACHE</span><span class="p">[(</span><span class="n">lnx</span><span class="p">,</span> <span class="n">route_target</span><span class="p">)]</span></div>
+
+
+
+<span class="n">_HASHCMP_TOOLS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;sha256sum&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sha1sum&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;md5sum&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;crc32&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="hashcmp">
+<a class="viewcode-back" href="../../contrib/utils.html#tbot_contrib.utils.hashcmp">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">hashcmp</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">linux</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">linux</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compare the hashsum of two files (potentially from different hosts).</span>
+
+<span class="sd">    ``hashcmp()`` automatically selects a hash-summing tool which is available</span>
+<span class="sd">    on both hosts and uses it to compare the checksum of the two files.  It</span>
+<span class="sd">    returns ``True`` if they match and ``False`` otherwise.  If one of the</span>
+<span class="sd">    files does not exist, ``False`` is returned.</span>
+
+<span class="sd">    .. versionadded:: 0.9.2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">a</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">b</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="c1"># Short-circuit if one of the files is missing.</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">_HASHCMP_TOOLS</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">shell</span><span class="o">.</span><span class="n">check_for_tool</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">tool</span><span class="p">)</span> <span class="ow">and</span> <span class="n">shell</span><span class="o">.</span><span class="n">check_for_tool</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">tool</span><span class="p">):</span>
+            <span class="k">break</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">tbot</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">MissingToolError</span><span class="p">(</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
+            <span class="n">_HASHCMP_TOOLS</span><span class="p">,</span>
+            <span class="s2">&quot;No suitable hashing tool found which exists on both hosts!&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">sum_a</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">host</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="n">tool</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">sum_b</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">host</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="n">tool</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">sum_a</span> <span class="o">==</span> <span class="n">sum_b</span></div>
+
+
+
+<span class="c1"># alias for later functions which have a shadowing argument</span>
+<span class="n">_hashcmp</span> <span class="o">=</span> <span class="n">hashcmp</span>
+
+
+<span class="n">H1</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;H1&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">linux</span><span class="o">.</span><span class="n">LinuxShell</span><span class="p">)</span>
+<span class="n">H2</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;H2&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">linux</span><span class="o">.</span><span class="n">LinuxShell</span><span class="p">)</span>
+
+
+<span class="nd">@typing</span><span class="o">.</span><span class="n">overload</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">copy_to_dir</span><span class="p">(</span>
+    <span class="n">sources</span><span class="p">:</span> <span class="n">linux</span><span class="o">.</span><span class="n">Path</span><span class="p">[</span><span class="n">H1</span><span class="p">],</span>
+    <span class="n">dest_dir</span><span class="p">:</span> <span class="n">linux</span><span class="o">.</span><span class="n">Path</span><span class="p">[</span><span class="n">H2</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">hashcmp</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">linux</span><span class="o">.</span><span class="n">Path</span><span class="p">[</span><span class="n">H2</span><span class="p">]:</span>
+    <span class="k">pass</span>
+
+
+<span class="nd">@typing</span><span class="o">.</span><span class="n">overload</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">copy_to_dir</span><span class="p">(</span>
+    <span class="n">sources</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="n">linux</span><span class="o">.</span><span class="n">Path</span><span class="p">[</span><span class="n">H1</span><span class="p">]],</span>
+    <span class="n">dest_dir</span><span class="p">:</span> <span class="n">linux</span><span class="o">.</span><span class="n">Path</span><span class="p">[</span><span class="n">H2</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">hashcmp</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">linux</span><span class="o">.</span><span class="n">Path</span><span class="p">[</span><span class="n">H2</span><span class="p">]]:</span>
+    <span class="k">pass</span>
+
+
+<div class="viewcode-block" id="copy_to_dir">
+<a class="viewcode-back" href="../../contrib/utils.html#tbot_contrib.utils.copy_to_dir">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">copy_to_dir</span><span class="p">(</span>
+    <span class="n">sources</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">linux</span><span class="o">.</span><span class="n">Path</span><span class="p">[</span><span class="n">H1</span><span class="p">],</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="n">linux</span><span class="o">.</span><span class="n">Path</span><span class="p">[</span><span class="n">H1</span><span class="p">]]],</span>
+    <span class="n">dest_dir</span><span class="p">:</span> <span class="n">linux</span><span class="o">.</span><span class="n">Path</span><span class="p">[</span><span class="n">H2</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">hashcmp</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">linux</span><span class="o">.</span><span class="n">Path</span><span class="p">[</span><span class="n">H2</span><span class="p">],</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">linux</span><span class="o">.</span><span class="n">Path</span><span class="p">[</span><span class="n">H2</span><span class="p">]]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Copy one or more files to a directory</span>
+
+<span class="sd">    This function will copy each file from ``sources`` into a new file in</span>
+<span class="sd">    ``dest_dir`` which has the same name as the original one.</span>
+
+<span class="sd">    This function uses :py:func:`linux.copy() &lt;tbot.machine.linux.copy&gt;` under</span>
+<span class="sd">    the hood so ``sources`` and ``dest_dir`` need not be on the same host.  See</span>
+<span class="sd">    that function for details.</span>
+
+<span class="sd">    :param sources: The file(s) to copy.  This may be a single</span>
+<span class="sd">        :py:class:`~tbot.machine.linux.Path` or an iterable which yields zero</span>
+<span class="sd">        or more :py:class:`~tbot.machine.linux.Path` objects.</span>
+
+<span class="sd">    :param linux.Path dest_dir: The target directory where the files should be</span>
+<span class="sd">        copied to.  It does not need to be on the same host as ``sources``.</span>
+
+<span class="sd">    :param bool hashcmp: This optional named argument can be set to true to</span>
+<span class="sd">        make the function verify checksums of each file before performing the</span>
+<span class="sd">        copy. This is very useful to skip superfluous copying operations.</span>
+
+<span class="sd">    :returns: If a single ``sources`` path was passed, a single path is</span>
+<span class="sd">        returned which points to the newly created copy.  If multiple</span>
+<span class="sd">        ``sources`` were passed (as an iterable), a list of paths for each</span>
+<span class="sd">        copied file is returned.</span>
+
+<span class="sd">    .. versionadded:: 0.10.2</span>
+
+<span class="sd">    **Example**: Copy a file from lab-host to a tftp-server for serving it to a</span>
+<span class="sd">    target device.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        from tbot_contrib import utils</span>
+
+<span class="sd">        linux_sources = lh.workdir / &quot;linux&quot;</span>
+
+<span class="sd">        tftp_zimage = utils.copy_to_dir(</span>
+<span class="sd">            linux_sources / &quot;arch/arm/boot/zImage&quot;,</span>
+<span class="sd">            tftp_server.tftp_dir,</span>
+<span class="sd">            hashcmp=True,</span>
+<span class="sd">        )</span>
+
+<span class="sd">        tftp_filename = tftp_zimage.name</span>
+
+<span class="sd">        u_boot.exec0(&quot;tftp&quot;, &quot;0x10000000&quot;, f&quot;{tftp_server.addr}:{tftp_filename}&quot;)</span>
+
+<span class="sd">    **Example**: Copy many files from lab-host to a tftp-server for serving</span>
+<span class="sd">    them to a target device.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        from tbot_contrib import utils</span>
+
+<span class="sd">        linux_sources = lh.workdir / &quot;linux&quot;</span>
+
+<span class="sd">        utils.copy_to_dir(</span>
+<span class="sd">            [</span>
+<span class="sd">                linux_sources / &quot;arch/arm/boot/zImage&quot;,</span>
+<span class="sd">                linux_sources / &quot;arch/arm/boot/dts/mydevice.dtb&quot;,</span>
+<span class="sd">            ],</span>
+<span class="sd">            tftp_server.tftp_dir,</span>
+<span class="sd">            hashcmp=True,</span>
+<span class="sd">        )</span>
+
+<span class="sd">    **Example**: Copy all config files to a new directory and then run a</span>
+<span class="sd">    replacement command on each one.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        from tbot_contrib import utils</span>
+
+<span class="sd">        config_dir = lnx.fsroot / &quot;etc&quot; / &quot;myapp&quot;</span>
+<span class="sd">        newconfig_dir = lnx.workdir / &quot;newconfig&quot;</span>
+<span class="sd">        lnx.exec0(&quot;rm&quot;, &quot;-rf&quot;, newconfig_dir)</span>
+<span class="sd">        lnx.exec0(&quot;mkdir&quot;, newconfig_dir)</span>
+
+<span class="sd">        new_cfg_files = utils.copy_to_dir(</span>
+<span class="sd">            config_dir.glob(&quot;*.conf&quot;),</span>
+<span class="sd">            newconfig_dir,</span>
+<span class="sd">        )</span>
+
+<span class="sd">        for cfg_file in new_cfg_files:</span>
+<span class="sd">            lnx.exec0(&quot;sed&quot;, &quot;-i&quot;, &quot;s/eth0/wlan0/g&quot;, cfg_file)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sources</span><span class="p">,</span> <span class="n">linux</span><span class="o">.</span><span class="n">Path</span><span class="p">):</span>
+        <span class="n">source_iter</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="n">linux</span><span class="o">.</span><span class="n">Path</span><span class="p">[</span><span class="n">H1</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="n">sources</span><span class="p">,)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">source_iter</span> <span class="o">=</span> <span class="n">sources</span>
+
+    <span class="n">dest_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">source_iter</span><span class="p">:</span>
+        <span class="n">dest</span> <span class="o">=</span> <span class="n">dest_dir</span> <span class="o">/</span> <span class="n">source</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">dest_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">hashcmp</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">_hashcmp</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
+                <span class="n">linux</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">linux</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sources</span><span class="p">,</span> <span class="n">linux</span><span class="o">.</span><span class="n">Path</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">dest_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dest_list</span></div>
+
+
+
+<div class="viewcode-block" id="find_block_partitions">
+<a class="viewcode-back" href="../../contrib/utils.html#tbot_contrib.utils.find_block_partitions">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_block_partitions</span><span class="p">(</span>
+    <span class="n">dev</span><span class="p">:</span> <span class="n">linux</span><span class="o">.</span><span class="n">Path</span><span class="p">[</span><span class="n">H</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">include_self</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="n">linux</span><span class="o">.</span><span class="n">Path</span><span class="p">[</span><span class="n">H</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find all partitions of a given block device.</span>
+
+<span class="sd">    :param linux.Path dev: The block device whose partitions should be found.</span>
+
+<span class="sd">    :param bool include_self: Whether to include the block device itself in the</span>
+<span class="sd">        partition list as well.  Defaults to ``False``.</span>
+
+<span class="sd">    :returns: An iterator over path objects for all partitions of the block device.</span>
+
+<span class="sd">    .. versionadded:: 0.10.5</span>
+
+<span class="sd">    **Example**: Unmount all partitions before writing a new image</span>
+<span class="sd">    to the device.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        from tbot_contrib import utils</span>
+
+<span class="sd">        blkdev = lnx.fsroot / &quot;dev&quot; / &quot;sdb&quot;</span>
+<span class="sd">        for part in utils.find_block_partitions(blkdev):</span>
+<span class="sd">            # Ignore errors...</span>
+<span class="sd">            lnx.exec(&quot;umount&quot;, part)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">dev</span><span class="o">.</span><span class="n">is_block_device</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">shell</span><span class="o">.</span><span class="n">check_for_tool</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="s2">&quot;lsblk&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">tbot</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">MissingToolError</span><span class="p">(</span>
+            <span class="n">dev</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;lsblk&quot;</span><span class="p">],</span> <span class="s2">&quot;Need `lsblk` for block_partitions()&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">output</span> <span class="o">=</span> <span class="n">dev</span><span class="o">.</span><span class="n">host</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;lsblk&quot;</span><span class="p">,</span> <span class="s2">&quot;--paths&quot;</span><span class="p">,</span> <span class="s2">&quot;--noheadings&quot;</span><span class="p">,</span> <span class="s2">&quot;-o&quot;</span><span class="p">,</span> <span class="s2">&quot;KNAME&quot;</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">output</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">include_self</span> <span class="ow">and</span> <span class="n">line</span> <span class="o">==</span> <span class="n">dev</span><span class="o">.</span><span class="n">at_host</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">host</span><span class="p">):</span>
+            <span class="c1"># Skip the device itself</span>
+            <span class="k">continue</span>
+        <span class="k">yield</span> <span class="n">linux</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+    <a href="https://github.com/Rahix/tbot">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" decoding="async" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" loading="lazy" data-recalc-dims="1">
+    </a>
+
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Rahix.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

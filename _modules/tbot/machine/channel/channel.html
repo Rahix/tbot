@@ -1,0 +1,1348 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tbot.machine.channel.channel &mdash; tbot 0.10.10-0-g1853255 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=5349f25f" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/documentation_options.js?v=e1796f6e"></script>
+      <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html">
+            
+              <img src="../../../../_static/tbot-logo-white.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cli.html">tbot CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../recipes.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../context.html">Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pytest.html">pytest Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration.html">Migrating from tbot 0.7.1</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/main.html"><code class="docutils literal notranslate"><span class="pre">tbot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/log.html"><code class="docutils literal notranslate"><span class="pre">tbot.log</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/machine.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/machine_linux.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.linux</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/machine_board.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.board</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/machine_connector.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.connector</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/machine_shell.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.shell</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/machine_channel.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.channel</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/error.html"><code class="docutils literal notranslate"><span class="pre">tbot.error</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/role.html"><code class="docutils literal notranslate"><span class="pre">tbot.role</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/selectable.html"><code class="docutils literal notranslate"><span class="pre">tbot.selectable</span></code></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Testcase Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/tc.html"><code class="docutils literal notranslate"><span class="pre">tbot.tc</span></code> - Builtin Testcases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/connector.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.connector</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/gdb.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.gdb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/gpio.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.gpio</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/linux.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.linux</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/locking.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.locking</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/swupdate.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.swupdate</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/timing.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.timing</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/uboot.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.uboot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/utils.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.utils</span></code></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CONTRIBUTING.html">Contributing to tbot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../LICENSE.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">tbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../tbot.html">tbot</a></li>
+      <li class="breadcrumb-item active">tbot.machine.channel.channel</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tbot.machine.channel.channel</h1><div class="highlight"><pre>
+<span></span><span class="c1"># tbot, Embedded Automation Tool</span>
+<span class="c1"># Copyright (C) 2019  Harald Seiler</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">select</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">termios</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tty</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">typing</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">tbot</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tbot.error</span>
+
+<span class="n">ChanIO</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;ChanIO&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s2">&quot;ChannelIO&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># compatibility aliases</span>
+<span class="n">ChannelClosedException</span> <span class="o">=</span> <span class="n">tbot</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">ChannelClosedError</span>
+<span class="n">ChannelBorrowedException</span> <span class="o">=</span> <span class="n">tbot</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">ChannelBorrowedError</span>
+<span class="n">ChannelTakenException</span> <span class="o">=</span> <span class="n">tbot</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">ChannelTakenError</span>
+
+
+<div class="viewcode-block" id="ChannelIO">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.ChannelIO">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ChannelIO</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">ContextManager</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="c1"># generic channel interface {{{</span>
+<div class="viewcode-block" id="ChannelIO.write">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.ChannelIO.write">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buf</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write some bytes to this channel.</span>
+
+<span class="sd">        ``write()`` returns the number of bytes written.  This number might be lower</span>
+<span class="sd">        than ``len(buf)``.</span>
+
+<span class="sd">        :param bytes buf: Buffer with bytes to be written.</span>
+<span class="sd">        :raises ChannelClosedException:  If the channel was closed previous to, or</span>
+<span class="sd">            during writing.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="ChannelIO.read">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.ChannelIO.read">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Receive some bytes from this channel.</span>
+
+<span class="sd">        Return at most ``n`` bytes, but at least 1 (if ``n`` is not ``0``).  Raise an</span>
+<span class="sd">        exception if ``timeout`` is not ``None`` and expires before data was received.</span>
+
+<span class="sd">        :param int n: Maximum number of bytes to read.</span>
+<span class="sd">        :param float timeout:  Optional timeout.  If ``timout`` is not ``None``, ``read()``</span>
+<span class="sd">            will return early after ``timeout`` seconds.</span>
+<span class="sd">        :rtype: bytes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="ChannelIO.close">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.ChannelIO.close">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Close this channel.</span>
+
+<span class="sd">        The following invariant **must** be upheld by an implementation:</span>
+
+<span class="sd">            channel.close()</span>
+<span class="sd">            assert channel.closed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="ChannelIO.fileno">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.ChannelIO.fileno">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fileno</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a file descriptor which represents this channel.</span>
+
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">closed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Whether this channel was already closed.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="ChannelIO.update_pty">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.ChannelIO.update_pty">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_pty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the terminal window size of this channel.</span>
+
+<span class="sd">        Channels lacking this functionality should silently ignore this call.</span>
+
+<span class="sd">        :param int columns: The new width of the pty.</span>
+<span class="sd">        :param int lines: The new height of the pty.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+    <span class="c1"># }}}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ChanIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ChanIO</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+
+<span class="n">_CHANID_COLORS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;magenta&quot;</span><span class="p">,</span> <span class="s2">&quot;cyan&quot;</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_debug_log</span><span class="p">(</span><span class="n">chan</span><span class="p">:</span> <span class="n">ChannelIO</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">is_out</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">tbot</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">VERBOSITY</span> <span class="o">&gt;=</span> <span class="n">tbot</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">Verbosity</span><span class="o">.</span><span class="n">CHANNEL</span><span class="p">:</span>
+        <span class="n">json_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Find a color for this channel to make distinguishing them easier</span>
+        <span class="n">chanid_color</span> <span class="o">=</span> <span class="n">_CHANID_COLORS</span><span class="p">[(</span><span class="nb">id</span><span class="p">(</span><span class="n">chan</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">6</span><span class="p">)</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">_CHANID_COLORS</span><span class="p">)]</span>
+        <span class="n">chanid</span> <span class="o">=</span> <span class="n">tbot</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">c</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">id</span><span class="p">(</span><span class="n">chan</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xffffff</span><span class="si">:</span><span class="s2">x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">chanid_colored</span> <span class="o">=</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">chanid</span><span class="p">,</span> <span class="n">chanid_color</span><span class="p">)</span><span class="o">.</span><span class="n">dark</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
+
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">tbot</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">c</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">data</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="n">tbot</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">EventIO</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;__debug__&quot;</span><span class="p">],</span>
+            <span class="p">(</span>
+                <span class="n">chanid_colored</span> <span class="o">+</span> <span class="n">tbot</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">c</span><span class="p">(</span><span class="s2">&quot;&gt; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">blue</span><span class="o">.</span><span class="n">bold</span> <span class="o">+</span> <span class="n">msg</span><span class="o">.</span><span class="n">blue</span>
+                <span class="k">if</span> <span class="n">is_out</span>
+                <span class="k">else</span> <span class="n">chanid_colored</span> <span class="o">+</span> <span class="n">tbot</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">c</span><span class="p">(</span><span class="s2">&quot;&lt; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">yellow</span><span class="o">.</span><span class="n">bold</span> <span class="o">+</span> <span class="n">msg</span><span class="o">.</span><span class="n">yellow</span>
+            <span class="p">),</span>
+            <span class="n">verbosity</span><span class="o">=</span><span class="n">tbot</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">Verbosity</span><span class="o">.</span><span class="n">CHANNEL</span><span class="p">,</span>
+            <span class="n">direction</span><span class="o">=</span><span class="s2">&quot;send&quot;</span> <span class="k">if</span> <span class="n">is_out</span> <span class="k">else</span> <span class="s2">&quot;recv&quot;</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">json_data</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">data</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ChannelBorrowed</span><span class="p">(</span><span class="n">ChannelIO</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+    <span class="n">exception</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Type</span><span class="p">[</span><span class="ne">Exception</span><span class="p">]</span> <span class="o">=</span> <span class="n">tbot</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">ChannelBorrowedError</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buf</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">exception</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">exception</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">exception</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">fileno</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">exception</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">closed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">exception</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_pty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">exception</span><span class="p">()</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ChannelTaken</span><span class="p">(</span><span class="n">ChannelBorrowed</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+    <span class="n">exception</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Type</span><span class="p">[</span><span class="ne">Exception</span><span class="p">]</span> <span class="o">=</span> <span class="n">tbot</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">ChannelTakenError</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">closed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">BoundedPattern</span><span class="p">:</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;pattern&quot;</span><span class="p">,</span> <span class="s2">&quot;_length&quot;</span><span class="p">)</span>
+    <span class="n">_length</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Pattern</span><span class="p">[</span><span class="nb">bytes</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="n">pattern</span>
+
+        <span class="kn">import</span><span class="w"> </span><span class="nn">sre_parse</span>
+
+        <span class="n">parsed</span> <span class="o">=</span> <span class="n">sre_parse</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span>
+            <span class="n">typing</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">pattern</span><span class="p">),</span> <span class="n">flags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">flags</span>
+        <span class="p">)</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">getwidth</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_length</span> <span class="o">=</span> <span class="n">width</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_length</span> <span class="o">=</span> <span class="n">width</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># It seems that when MAXREPEAT is not defined, the values 2**32-1 or</span>
+        <span class="c1"># 2**64-1 are used.  Let&#39;s be portable by just interpreting any value</span>
+        <span class="c1"># above 2**16-1 as an unbounded length.  Surely nobody wants to</span>
+        <span class="c1"># intentionally match 64 kiB patterns.......</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_length</span> <span class="o">&gt;=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sre_parse</span><span class="p">,</span> <span class="s2">&quot;MAXREPEAT&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="o">**</span><span class="mi">16</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">tbot</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">UnboundedPatternError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">pattern</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_length</span>
+
+
+<span class="n">SearchString</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="n">BoundedPattern</span><span class="p">]</span>
+<span class="n">ConvenientSearchString</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">SearchString</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Pattern</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_convert_search_string</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="n">ConvenientSearchString</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SearchString</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">string</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Pattern</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">BoundedPattern</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">string</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">DeathStringException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="s2">&quot;match&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Match</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]]</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">match</span> <span class="o">=</span> <span class="n">match</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;DeathStringException(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">match</span><span class="si">!r}</span><span class="s2">)&quot;</span>
+
+
+<div class="viewcode-block" id="ExpectResult">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.ExpectResult">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExpectResult</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">NamedTuple</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Result from a call to :py:meth:`~tbot.machine.channel.Channel.expect`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">i</span><span class="p">:</span> <span class="nb">int</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Index into the pattern list of the matched pattern (if a list was passed to</span>
+<span class="sd">    :py:meth:`~tbot.machine.channel.Channel.expect`).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">match</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Match</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Match object if the pattern was a regex-pattern or the literal if the</span>
+<span class="sd">    pattern was a ``str`` or ``bytes``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">before</span><span class="p">:</span> <span class="nb">str</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Everything from the input stream before the match, up to the matched pattern.&quot;&quot;&quot;</span>
+
+    <span class="n">after</span><span class="p">:</span> <span class="nb">str</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Any potential bytes which were read following the matched pattern.&quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="Channel">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.Channel">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Channel</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">ContextManager</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;_c&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_log_prompt&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_ringbuf&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_stream&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_streambuf&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;death_strings&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;prompt&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_io</span><span class="p">:</span> <span class="n">ChannelIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_c</span> <span class="o">=</span> <span class="n">channel_io</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">SearchString</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">death_strings</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span>
+            <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span>
+                <span class="n">SearchString</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Type</span><span class="p">[</span><span class="n">DeathStringException</span><span class="p">],</span> <span class="n">typing</span><span class="o">.</span><span class="n">Deque</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+            <span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_streams</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">TextIO</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_streambuf</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_prompt</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_blacklist</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">slow_send_delay</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        There are unfortunately some serial consoles which cannot process large</span>
+<span class="sd">        amounts of data at once.  The receive buffer on the other end overflows</span>
+<span class="sd">        and characters get dropped.</span>
+
+<span class="sd">        To mitigate this, a :py:class:`~tbot.machine.channel.Channel` can be</span>
+<span class="sd">        configured to send chunks of data with a delay.  To do this, set the</span>
+<span class="sd">        :py:attr:`slow_send_delay` to a (fractional) number of seconds to wait</span>
+<span class="sd">        between chunks and :py:attr:`slow_send_chunksize` to the maximum size</span>
+<span class="sd">        of each chunk to send.</span>
+
+<span class="sd">        **Example**:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            # Configuration for a machine which needs slow sending</span>
+<span class="sd">            class BoardWithSlowSend(connector.ConsoleConnector, board.Board):</span>
+<span class="sd">                def connect(self, mach):</span>
+<span class="sd">                    ch = mach.open_channel(&quot;picocom&quot;, &quot;-b&quot;, &quot;115200&quot;, &quot;-q&quot;, &quot;/dev/ttyUSB0&quot;)</span>
+<span class="sd">                    ch.slow_send_delay = 0.01</span>
+<span class="sd">                    ch.slow_send_chunksize = 32</span>
+<span class="sd">                    return ch</span>
+
+<span class="sd">        .. versionadded:: 0.9.3</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slow_send_chunksize</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Maximum size of each chunk to send, when :py:attr:`slow_send_delay` is</span>
+<span class="sd">        set.  Check its documentation for details.</span>
+
+<span class="sd">        .. versionadded:: 0.9.3</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="c1"># raw byte-level IO {{{</span>
+<div class="viewcode-block" id="Channel.write">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.Channel.write">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buf</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">_ignore_blacklist</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write some bytes to this channel.</span>
+
+<span class="sd">        ``write()`` ensures the whole buffer was written.  If this was not possible,</span>
+<span class="sd">        it will throw an exception.</span>
+
+<span class="sd">        :param bytes buf: Buffer with bytes to be written.</span>
+<span class="sd">        :raises ChannelClosedException:  If the channel was closed previous to, or</span>
+<span class="sd">            during writing.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_ignore_blacklist</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">blacklisted</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_blacklist</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">blacklisted</span> <span class="ow">in</span> <span class="n">buf</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">tbot</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">IllegalDataException</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;attempted to write a forbidden byte (</span><span class="si">{</span><span class="nb">chr</span><span class="p">(</span><span class="n">blacklisted</span><span class="p">)</span><span class="si">!r}</span><span class="s2">)&quot;</span>
+                    <span class="p">)</span>
+
+        <span class="n">cursor</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">cursor</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">buf</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">slow_send_delay</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># write as much as possible</span>
+                <span class="n">bytes_written</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_c</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="n">cursor</span><span class="p">:])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># write at most `slow_send_chunksize` bytes</span>
+                <span class="n">bytes_written</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_c</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="n">cursor</span><span class="p">:][:</span> <span class="bp">self</span><span class="o">.</span><span class="n">slow_send_chunksize</span><span class="p">])</span>
+                <span class="c1"># and then wait for `slow_send_delay` before sending the next chunk</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slow_send_delay</span><span class="p">)</span>
+            <span class="n">cursor</span> <span class="o">+=</span> <span class="n">bytes_written</span></div>
+
+
+    <span class="c1"># Size of individual read calls.</span>
+    <span class="n">READ_CHUNK_SIZE</span> <span class="o">=</span> <span class="mi">4096</span>
+
+<div class="viewcode-block" id="Channel.read">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.Channel.read">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Receive some bytes from this channel.</span>
+
+<span class="sd">        If ``n`` is ``-1``, ``read()`` will wait until at least one byte is available</span>
+<span class="sd">        and will then return all available bytes.  Otherwise it will wait until exactly</span>
+<span class="sd">        ``n`` bytes could be read.  If timeout is not None and expires before this is</span>
+<span class="sd">        the case, ``read()`` will raise an exception.</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            ``read()`` does not ensure that the returned bytes end with the end of a</span>
+<span class="sd">            Unicode character boundary.  This means, decoding as Unicode can fail and</span>
+<span class="sd">            code using ``read()`` should be prepared to deal with this case.</span>
+
+<span class="sd">        :param int n: Number of bytes to read.  If ``n`` is not ``-1``, ``read()`` will</span>
+<span class="sd">            return **exactly** ``n`` bytes.  If ``n`` is ``-1``, at least one byte is</span>
+<span class="sd">            returned.</span>
+<span class="sd">        :param float timeout:  Optional timeout.  If ``timout`` is not ``None``, ``read()``</span>
+<span class="sd">            will return early after ``timeout`` seconds.</span>
+<span class="sd">        :rtype: bytes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Block first and then read non-blocking</span>
+            <span class="n">buf</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_c</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">READ_CHUNK_SIZE</span><span class="p">,</span> <span class="n">timeout</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_stream</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>
+            <span class="n">reader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_iter</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Read n bytes non-blocking</span>
+            <span class="n">buf</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
+            <span class="n">reader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_iter</span><span class="p">(</span><span class="nb">max</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+                <span class="n">buf</span> <span class="o">+=</span> <span class="n">chunk</span>
+        <span class="k">except</span> <span class="ne">TimeoutError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span>
+
+        <span class="k">assert</span> <span class="p">(</span><span class="n">n</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span> <span class="o">==</span> <span class="n">n</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">buf</span></div>
+
+
+<div class="viewcode-block" id="Channel.read_iter">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.Channel.read_iter">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_iter</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="nb">max</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Iterate over chunks of bytes read from the channel.</span>
+
+<span class="sd">        ``read_iter`` reads at most ``max`` bytes from the channel before the</span>
+<span class="sd">        iterator is exhausted.  If ``timeout`` is not ``None`` and expires</span>
+<span class="sd">        before ``max`` bytes could be read, the next iteration attempt will</span>
+<span class="sd">        raise an exception.</span>
+
+<span class="sd">        :param int max: Maximum number of bytes to read.</span>
+<span class="sd">        :param float timeout: Optional timeout.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+
+        <span class="n">bytes_read</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">timeout_remaining</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">timeout_remaining</span> <span class="o">=</span> <span class="n">timeout</span> <span class="o">-</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">timeout_remaining</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">()</span>
+
+            <span class="n">max_read</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">READ_CHUNK_SIZE</span><span class="p">,</span> <span class="nb">max</span> <span class="o">-</span> <span class="n">bytes_read</span><span class="p">)</span>
+            <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_c</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">max_read</span><span class="p">,</span> <span class="n">timeout_remaining</span><span class="p">)</span>
+            <span class="n">bytes_read</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_stream</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">new</span>
+
+            <span class="k">assert</span> <span class="n">bytes_read</span> <span class="o">&lt;=</span> <span class="nb">max</span><span class="p">,</span> <span class="s2">&quot;read overflow&quot;</span>
+            <span class="k">if</span> <span class="n">bytes_read</span> <span class="o">==</span> <span class="nb">max</span><span class="p">:</span>
+                <span class="k">break</span></div>
+
+
+    <span class="c1"># }}}</span>
+
+    <span class="c1"># log-event streams {{{</span>
+<div class="viewcode-block" id="Channel.with_stream">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.Channel.with_stream">[docs]</a>
+    <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">with_stream</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">stream</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">TextIO</span><span class="p">,</span> <span class="n">show_prompt</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;typing.Iterator[Channel]&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Attach a stream to this channel.</span>
+
+<span class="sd">        All data read from the channel will also be sent to the stream.  This</span>
+<span class="sd">        can be used, for example, to capture the entire boot-log of a board.</span>
+<span class="sd">        ``with_stream`` should be used as a context-manager:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            import tbot</span>
+
+<span class="sd">            with tbot.log.message(&quot;Output: &quot;) as ev, chan.with_stream(ev):</span>
+<span class="sd">                # During this context block, output is captured into `ev`</span>
+<span class="sd">                ...</span>
+
+<span class="sd">        :param io.TextIOBase stream: The stream to attach.</span>
+<span class="sd">        :param bool show_prompt: Whether the currently configured prompt should</span>
+<span class="sd">                                 also be sent to the stream if detected.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">previous_log_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_prompt</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_streams</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log_prompt</span> <span class="o">=</span> <span class="n">show_prompt</span>
+            <span class="k">yield</span> <span class="bp">self</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_streams</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+
+            <span class="c1"># If we don&#39;t want to log the prompt, advance the buffer to skip the</span>
+            <span class="c1"># prompt string.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_prompt</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_streambuf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_streambuf</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">)</span> <span class="p">:]</span>
+                <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_streambuf</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log_prompt</span> <span class="o">=</span> <span class="n">previous_log_prompt</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_write_stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buf</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_streams</span> <span class="o">!=</span> <span class="p">[]:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_prompt</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">stream</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_streams</span><span class="p">:</span>
+                    <span class="n">stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">buf</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_streambuf</span> <span class="o">+=</span> <span class="n">buf</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+                    <span class="c1"># Peek ahead and check whether the end of the stream matches</span>
+                    <span class="c1"># the beginning of the prompt</span>
+                    <span class="n">maxlen</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_streambuf</span><span class="p">))</span>
+                    <span class="n">length</span> <span class="o">=</span> <span class="n">maxlen</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">maxlen</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)):</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_streambuf</span><span class="p">[</span><span class="o">-</span><span class="n">i</span><span class="p">:]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">[:</span><span class="n">i</span><span class="p">]:</span>
+                            <span class="k">break</span>
+                        <span class="n">length</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
+
+                    <span class="k">if</span> <span class="n">length</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">fragment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_streambuf</span><span class="p">[:</span><span class="o">-</span><span class="n">length</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">fragment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_streambuf</span>
+
+                    <span class="k">for</span> <span class="n">stream</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_streams</span><span class="p">:</span>
+                        <span class="n">stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fragment</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">))</span>
+
+                    <span class="k">if</span> <span class="n">length</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_streambuf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_streambuf</span><span class="p">[</span><span class="o">-</span><span class="n">length</span><span class="p">:]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_streambuf</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Naive approach when we can&#39;t guess whether the start of</span>
+                    <span class="c1"># the prompt might be included in the output</span>
+                    <span class="n">fragment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_streambuf</span><span class="p">[:</span> <span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">)]</span>
+                    <span class="k">for</span> <span class="n">stream</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_streams</span><span class="p">:</span>
+                        <span class="n">stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fragment</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_streambuf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_streambuf</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">)</span> <span class="p">:]</span>
+
+    <span class="c1"># }}}</span>
+
+    <span class="c1"># file-like interface {{{</span>
+<div class="viewcode-block" id="Channel.fileno">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.Channel.fileno">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fileno</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a file descriptor which represents this channel.</span>
+
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_c</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Channel.close">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.Channel.close">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Close this channel.</span>
+
+<span class="sd">        The following is always true:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            channel.close()</span>
+<span class="sd">            assert channel.closed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_c</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">closed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Whether this channel was already closed.</span>
+
+<span class="sd">        .. warning::</span>
+
+<span class="sd">            A ``channel.write()`` immediately after checking ``channel.closed`` might</span>
+<span class="sd">            still fail in the unlucky case where the remote end closed the channel just</span>
+<span class="sd">            in between the two calls.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_c</span><span class="o">.</span><span class="n">closed</span>
+
+    <span class="c1"># }}}</span>
+
+    <span class="c1"># context manager {{{</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Channel&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="c1"># }}}</span>
+
+    <span class="c1"># death string handling {{{</span>
+
+    <span class="c1"># Channel keeps a ringbuffer with enough space to match the longest death-string</span>
+    <span class="c1"># and checks it for each chunk of data coming in.  If any of the strings matches,</span>
+    <span class="c1"># the channel will throw an exception.</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_death_string</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">string_in</span><span class="p">:</span> <span class="n">ConvenientSearchString</span><span class="p">,</span>
+        <span class="n">exception_type</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Type</span><span class="p">[</span><span class="n">DeathStringException</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="n">_convert_search_string</span><span class="p">(</span><span class="n">string_in</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">exception_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">exception_type</span> <span class="o">=</span> <span class="n">DeathStringException</span>
+
+        <span class="n">ringbuf</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Deque</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">([],</span> <span class="n">maxlen</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">death_strings</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">exception_type</span><span class="p">,</span> <span class="n">ringbuf</span><span class="p">))</span>
+
+    <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">with_death_string</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">string_in</span><span class="p">:</span> <span class="n">ConvenientSearchString</span><span class="p">,</span>
+        <span class="n">exception_type</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Type</span><span class="p">[</span><span class="n">DeathStringException</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;typing.Iterator[Channel]&quot;</span><span class="p">:</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="n">_convert_search_string</span><span class="p">(</span><span class="n">string_in</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">exception_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">exception_type</span> <span class="o">=</span> <span class="n">DeathStringException</span>
+
+        <span class="n">ringbuf</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Deque</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">([],</span> <span class="n">maxlen</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">death_strings</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">exception_type</span><span class="p">,</span> <span class="n">ringbuf</span><span class="p">))</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="bp">self</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">death_strings</span><span class="o">.</span><span class="n">remove</span><span class="p">((</span><span class="n">string</span><span class="p">,</span> <span class="n">exception_type</span><span class="p">,</span> <span class="n">ringbuf</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">incoming</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">death_strings</span> <span class="o">==</span> <span class="p">[]:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Chunk size is the shortest death-string.</span>
+        <span class="n">chunk_size</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+            <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">maxlen</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">death_strings</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="n">incoming</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">chunk_size</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">incoming</span><span class="p">),</span> <span class="n">chunk_size</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">for</span> <span class="n">string</span><span class="p">,</span> <span class="n">exception_type</span><span class="p">,</span> <span class="n">ringbuf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">death_strings</span><span class="p">:</span>
+                <span class="n">ringbuf</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+                <span class="n">ringbuf_bytes</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">ringbuf</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">string</span> <span class="ow">in</span> <span class="n">ringbuf_bytes</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">exception_type</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">BoundedPattern</span><span class="p">):</span>
+                    <span class="n">match</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">ringbuf_bytes</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">exception_type</span><span class="p">(</span><span class="n">match</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;death string has unknown type: </span><span class="si">{</span><span class="n">string</span><span class="o">.</span><span class="vm">__class__</span><span class="si">!r}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+
+    <span class="c1"># }}}</span>
+
+    <span class="c1"># pexpect-like interface {{{</span>
+<div class="viewcode-block" id="Channel.send">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.Channel.send">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">send</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">s</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">],</span>
+        <span class="n">read_back</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">timeout</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">_ignore_blacklist</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Send data to this channel.</span>
+
+<span class="sd">        Send ``s`` to this channel and optionally read it back (to not clobber</span>
+<span class="sd">        the next read).</span>
+
+<span class="sd">        :param str,bytes s: Data to send.  A ``str`` will be encoded as UTF-8.</span>
+<span class="sd">        :param bool read_back: Whether to read back the sent data.</span>
+<span class="sd">        :param float timeout: Optional timeout for reading back data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Do nothing for empty strings</span>
+        <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="n">s</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">s</span>
+
+        <span class="c1"># Let&#39;s not overwhelm the channel-io by sending too much at once...</span>
+        <span class="n">s_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">chunk</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">islice</span><span class="p">(</span><span class="n">s_iter</span><span class="p">,</span> <span class="mi">512</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">chunk</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">,</span> <span class="n">_ignore_blacklist</span><span class="o">=</span><span class="n">_ignore_blacklist</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">read_back</span><span class="p">:</span>
+                <span class="c1"># Read back what was just sent.  Assume a well-behaved other side</span>
+                <span class="c1"># and read two characters for every &#39;\r&#39; or &#39;\n&#39; sent.  This might</span>
+                <span class="c1"># be flawed in some cases, though ...</span>
+                <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span> <span class="o">+</span> <span class="n">chunk</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">chunk</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">length</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Channel.sendline">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.Channel.sendline">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sendline</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">s</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">read_back</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">timeout</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Send data to this channel and terminate with a newline.</span>
+
+<span class="sd">        Send ``s`` and a newline (``\\r``) to this channel and optionally read</span>
+<span class="sd">        it back (to not clobber the next read).</span>
+
+<span class="sd">        :param str,bytes s: Data to send.  A ``str`` will be encoded as UTF-8.</span>
+<span class="sd">        :param bool read_back: Whether to read back the sent data.</span>
+<span class="sd">        :param float timeout: Optional timeout for reading back data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">s</span>
+        <span class="c1"># The &quot;Enter&quot; key sends &#39;\r&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">read_back</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Channel.sendcontrol">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.Channel.sendcontrol">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sendcontrol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Send a control-character to this terminal.</span>
+
+<span class="sd">        ``c`` is the keyboard key which would need to be pressed (for example</span>
+<span class="sd">        ``C`` for ``CTRL-C``).  See `C0 and C1 control codes`_ for more info.</span>
+
+<span class="sd">        .. _C0 and C1 control codes: https://en.wikipedia.org/wiki/C0_and_C1_control_codes</span>
+
+<span class="sd">        :param str c: Control character to send.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Only a single character is allowed for sendcontrol()&quot;</span>
+
+        <span class="n">num</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">-</span> <span class="mi">64</span>
+        <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">num</span> <span class="o">&lt;=</span> <span class="mh">0x1F</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Character </span><span class="si">{</span><span class="n">c</span><span class="si">!r}</span><span class="s2"> does not represent a control char!&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">bytes</span><span class="p">([</span><span class="n">num</span><span class="p">]),</span> <span class="n">_ignore_blacklist</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">sendeof</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Channel.sendintr">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.Channel.sendintr">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sendintr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send ``CTRL-C`` to this channel.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sendcontrol</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Channel.readline">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.Channel.readline">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">readline</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">timeout</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">lineending</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read until the next line ending.</span>
+
+<span class="sd">        **Example**:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            ch.sendline(&quot;echo Hello; echo World&quot;, read_back=True)</span>
+<span class="sd">            assert ch.readline() == &quot;Hello\\n&quot;</span>
+<span class="sd">            assert ch.readline() == &quot;World\\n&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lineending</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">lineending</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">lineending</span>
+
+        <span class="c1"># This implementation is quite naive but any</span>
+        <span class="c1"># other way would possibly read too much :/</span>
+
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">timeout_remaining</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">timeout_remaining</span> <span class="o">=</span> <span class="n">timeout</span> <span class="o">-</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span>
+
+            <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout_remaining</span><span class="p">)</span>
+            <span class="n">line</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">end</span><span class="p">):</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Channel.expect">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.Channel.expect">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">expect</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">patterns</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
+            <span class="n">ConvenientSearchString</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">ConvenientSearchString</span><span class="p">]</span>
+        <span class="p">],</span>
+        <span class="n">timeout</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExpectResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wait for a pattern to appear in the incoming data.</span>
+
+<span class="sd">        This method is similar to `pexpect`_&#39;s ``expect()`` although there are</span>
+<span class="sd">        a few important differences.</span>
+
+<span class="sd">        ``expect()`` will read ahead in the input stream until one of the</span>
+<span class="sd">        patterns in ``patterns`` matches or, if not ``None``, the ``timeout``</span>
+<span class="sd">        expires.  It might read further than the given pattern, if the input</span>
+<span class="sd">        contains follow-up bytes in the same chunk of data.</span>
+
+<span class="sd">        Different to `pexpect`_, the results are available as an</span>
+<span class="sd">        :ref:`channel_expect_result` (:py:class:`~tbot.machine.channel.channel.ExpectResult`)</span>
+<span class="sd">        which is returned on match.</span>
+
+<span class="sd">        :param patterns: Pattern(s) to wait for.  Can be either a single</span>
+<span class="sd">            pattern or a list of patterns.  See :ref:`channel_search_string`</span>
+<span class="sd">            for more info about which types can be passed as patterns.</span>
+<span class="sd">        :param None,\\ float timeout: Optional timeout.</span>
+
+<span class="sd">        .. _pexpect: https://pexpect.readthedocs.io/en/stable/overview.html</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">patterns</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">pattern_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">_convert_search_string</span><span class="p">(</span><span class="n">patterns</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pattern_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">_convert_search_string</span><span class="p">(</span><span class="n">pat</span><span class="p">)</span> <span class="k">for</span> <span class="n">pat</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">]</span>
+
+        <span class="n">buf</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_iter</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">):</span>
+            <span class="n">buf</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">pattern_index</span><span class="p">,</span> <span class="n">pat</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pattern_list</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pat</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="n">buf</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">pat</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">index</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">ExpectResult</span><span class="p">(</span>
+                            <span class="n">pattern_index</span><span class="p">,</span>
+                            <span class="n">pat</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">),</span>
+                            <span class="n">buf</span><span class="p">[:</span><span class="n">index</span><span class="p">]</span>
+                            <span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">)</span>
+                            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">),</span>
+                            <span class="n">buf</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">pat</span><span class="p">)</span> <span class="p">:]</span>
+                            <span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">)</span>
+                            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">),</span>
+                        <span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pat</span><span class="p">,</span> <span class="n">BoundedPattern</span><span class="p">):</span>
+                    <span class="n">match</span> <span class="o">=</span> <span class="n">pat</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">ExpectResult</span><span class="p">(</span>
+                            <span class="n">pattern_index</span><span class="p">,</span>
+                            <span class="n">match</span><span class="p">,</span>
+                            <span class="n">buf</span><span class="p">[:</span> <span class="n">match</span><span class="o">.</span><span class="n">span</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span>
+                            <span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">)</span>
+                            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">),</span>
+                            <span class="n">buf</span><span class="p">[</span><span class="n">match</span><span class="o">.</span><span class="n">span</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="p">:]</span>
+                            <span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">)</span>
+                            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">),</span>
+                        <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;expect pattern has unknown type: </span><span class="si">{</span><span class="n">pat</span><span class="o">.</span><span class="vm">__class__</span><span class="si">!r}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;reached end of stream without pattern appearing&quot;</span><span class="p">)</span></div>
+
+
+    <span class="c1"># pexpect-like }}}</span>
+
+    <span class="c1"># prompt handling {{{</span>
+<div class="viewcode-block" id="Channel.with_prompt">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.Channel.with_prompt">[docs]</a>
+    <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">with_prompt</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">prompt_in</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">ConvenientSearchString</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;typing.Iterator[Channel]&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the prompt for this channel during a context.</span>
+
+<span class="sd">        ``with_prompt`` is a context-manager that sets the prompt for this</span>
+<span class="sd">        channel for the duration of a context:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            with chan.with_prompt(&quot;=&gt; &quot;):</span>
+<span class="sd">                chan.sendline(&quot;echo Foo&quot;, read_back=True)</span>
+<span class="sd">                # Waits for `=&gt; `</span>
+<span class="sd">                chan.read_until_prompt()</span>
+
+<span class="sd">        :param ConvenientSearchString prompt: The new prompt pattern/string.</span>
+<span class="sd">            See :ref:`channel_search_string` for more info.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">prompt_in</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Ignore when no prompt was given. This makes conditional prompt</span>
+            <span class="c1"># overrides easier to implement.</span>
+            <span class="k">yield</span> <span class="bp">self</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">prompt</span> <span class="o">=</span> <span class="n">_convert_search_string</span><span class="p">(</span><span class="n">prompt_in</span><span class="p">)</span>
+
+            <span class="c1"># If the prompt is a pattern, we need to recompile it with an additional $ in the</span>
+            <span class="c1"># end to ensure that it only matches the end of the stream</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">BoundedPattern</span><span class="p">):</span>
+                <span class="n">new_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+                    <span class="n">prompt</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">pattern</span> <span class="o">+</span> <span class="sa">b</span><span class="s2">&quot;$&quot;</span><span class="p">,</span> <span class="n">prompt</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">flags</span>
+                <span class="p">)</span>
+                <span class="n">prompt</span> <span class="o">=</span> <span class="n">BoundedPattern</span><span class="p">(</span><span class="n">new_pattern</span><span class="p">)</span>
+
+            <span class="n">previous</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span> <span class="o">=</span> <span class="n">prompt</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="bp">self</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span> <span class="o">=</span> <span class="n">previous</span></div>
+
+
+<div class="viewcode-block" id="Channel.read_until_prompt">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.Channel.read_until_prompt">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_until_prompt</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">prompt</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">ConvenientSearchString</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">timeout</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read until prompt is detected.</span>
+
+<span class="sd">        Read from the channel until the configured prompt string is detected.</span>
+<span class="sd">        All data captured up until the prompt is returned, decoded as UTF-8.</span>
+<span class="sd">        If ``prompt`` is ``None``, the prompt which was set using</span>
+<span class="sd">        :py:meth:`tbot.machine.channel.Channel.with_prompt` is used.</span>
+
+<span class="sd">        :param ConvenientSearchString prompt: The prompt to read up to.  It</span>
+<span class="sd">            must appear as the very last readable data in the channel&#39;s data</span>
+<span class="sd">            stream.  See :ref:`channel_search_string` for more info about which</span>
+<span class="sd">            types can be passed for this parameter.</span>
+<span class="sd">        :param float timeout: Optional timeout.  If ``timeout`` is set and</span>
+<span class="sd">            expires before the prompt was detected, ``read_until_prompt``</span>
+<span class="sd">            raises an exception.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        :returns: UTF-8 decoded string of all bytes read up to the prompt.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ctx</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">ContextManager</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">prompt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ctx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_prompt</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># contextlib.nullcontext() would be a better fit here but sadly it</span>
+            <span class="c1"># is only available in 3.7+</span>
+            <span class="n">ctx</span> <span class="o">=</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">ExitStack</span><span class="p">()</span>
+
+        <span class="n">buf</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
+
+        <span class="k">with</span> <span class="n">ctx</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">new</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_iter</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">):</span>
+                <span class="n">buf</span> <span class="o">+=</span> <span class="n">new</span>
+
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">buf</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="p">(</span>
+                            <span class="n">buf</span><span class="p">[:</span> <span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">)]</span>
+                            <span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">)</span>
+                            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span> <span class="n">BoundedPattern</span><span class="p">):</span>
+                    <span class="n">match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="p">(</span>
+                            <span class="n">buf</span><span class="p">[:</span> <span class="n">match</span><span class="o">.</span><span class="n">span</span><span class="p">()[</span><span class="mi">0</span><span class="p">]]</span>
+                            <span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">)</span>
+                            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="p">)</span>
+
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;unreachable&quot;</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span></div>
+
+
+    <span class="c1"># }}}</span>
+
+    <span class="c1"># miscellaneous {{{</span>
+<div class="viewcode-block" id="Channel.read_until_timeout">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.Channel.read_until_timeout">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_until_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read until the given timeout expires.</span>
+
+<span class="sd">        This method will only return after the given timeout expires.  This can</span>
+<span class="sd">        be useful when waiting for something to start up, but when all console</span>
+<span class="sd">        output should still become immediately visible on stdout.</span>
+
+<span class="sd">        Another use-case is waiting for a death-string to appear or a</span>
+<span class="sd">        run-command to exit.  In those cases, pass ``None`` as timeout to make</span>
+<span class="sd">        this method wait indefinitely.</span>
+
+<span class="sd">        :param float timeout: The time to wait for, before returning.  Can be</span>
+<span class="sd">            ``None`` to signal infinite wait time.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        :returns: All data received while waiting.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">buf</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">new</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_iter</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">):</span>
+                <span class="n">buf</span> <span class="o">+=</span> <span class="n">new</span>
+        <span class="k">except</span> <span class="ne">TimeoutError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">buf</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+    <span class="c1"># }}}</span>
+
+    <span class="c1"># borrowing &amp; taking {{{</span>
+<div class="viewcode-block" id="Channel.borrow">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.Channel.borrow">[docs]</a>
+    <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">borrow</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;typing.Iterator[Channel]&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Temporarily borrow this channel for the duration of a context.</span>
+
+<span class="sd">        **Example**:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            with chan.borrow() as chan2:</span>
+<span class="sd">                # `chan` cannot be accessed inside this context</span>
+<span class="sd">                chan2.sendline(&quot;Hello World&quot;)</span>
+
+<span class="sd">            # `chan` can be accessed again here</span>
+<span class="sd">            chan.sendintr()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">chan_io</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_c</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_c</span> <span class="o">=</span> <span class="n">ChannelBorrowed</span><span class="p">()</span>
+            <span class="n">new</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">new</span><span class="o">.</span><span class="n">_c</span> <span class="o">=</span> <span class="n">chan_io</span>
+            <span class="k">yield</span> <span class="n">new</span>
+
+            <span class="c1"># TODO: Maybe don&#39;t allow exceptions here?</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_c</span> <span class="o">=</span> <span class="n">chan_io</span></div>
+
+            <span class="c1"># Todo mark the `new` channel as no longer accessible</span>
+
+<div class="viewcode-block" id="Channel.take">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.Channel.take">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">take</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Channel&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move ownership of this channel.</span>
+
+<span class="sd">        All existing references to this channel will no longer be accessible</span>
+<span class="sd">        after calling ``take()``.  Use this to mark transitions of a channel</span>
+<span class="sd">        into a new (irreversible) context.  For example, when a board boots</span>
+<span class="sd">        from U-Boot to Linux, U-Boot is no longer accessible.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">chan_io</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_c</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_c</span> <span class="o">=</span> <span class="n">ChannelTaken</span><span class="p">()</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">new</span><span class="o">.</span><span class="n">_c</span> <span class="o">=</span> <span class="n">chan_io</span>
+        <span class="k">return</span> <span class="n">new</span></div>
+
+
+    <span class="c1"># }}}</span>
+
+    <span class="c1"># interactive {{{</span>
+<div class="viewcode-block" id="Channel.attach_interactive">
+<a class="viewcode-back" href="../../../../modules/machine_channel.html#tbot.machine.channel.Channel.attach_interactive">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">attach_interactive</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">end_magic</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ctrld_exit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Connect tbot&#39;s terminal to this channel.</span>
+
+<span class="sd">        Allows the user to interact directly with whatever this channel is</span>
+<span class="sd">        connected to.</span>
+
+<span class="sd">        The interactive session can be exited at any point by **pressing**</span>
+<span class="sd">        ``CTRL+]`` **three times within 1 second**.</span>
+
+<span class="sd">        :param str, bytes end_magic: The ``end_magic`` parameter may be used to</span>
+<span class="sd">            define an automatic exit condition (sequence sent from the remote</span>
+<span class="sd">            side to trigger the end).</span>
+<span class="sd">        :param bool ctrld_exit:  If ``True``, pressing ``CTRL-D`` will also</span>
+<span class="sd">            terminate the session immediately.</span>
+
+<span class="sd">        .. versionchanged:: 0.10.1</span>
+
+<span class="sd">           - The escape sequence is now &quot;Press ``CTRL-]`` three times within 1</span>
+<span class="sd">             second&quot;.</span>
+<span class="sd">           - The ``ctrld_exit`` parameter was added to restore the old</span>
+<span class="sd">             &quot;``CTRL-D`` to exit&quot; behavior.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">end_magic_bytes</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">end_magic</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">end_magic</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">end_magic</span>
+        <span class="p">)</span>
+
+        <span class="n">end_ring_buffer</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Deque</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">(</span>
+            <span class="n">maxlen</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">end_magic_bytes</span><span class="p">)</span> <span class="k">if</span> <span class="n">end_magic_bytes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">1</span>
+        <span class="p">)</span>
+
+        <span class="c1"># During an interactive session, the blacklist should not apply</span>
+        <span class="n">old_blacklist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_blacklist</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_blacklist</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">escape_timestamp</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">previous</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Deque</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">(</span><span class="n">maxlen</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ctrld_exit</span><span class="p">:</span>
+            <span class="n">tbot</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">message</span><span class="p">(</span>
+                <span class="n">tbot</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">c</span><span class="p">(</span><span class="s2">&quot;Press CTRL+] three times within 1 second to exit.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">bold</span>
+            <span class="p">)</span>
+
+        <span class="n">oldtty</span> <span class="o">=</span> <span class="n">termios</span><span class="o">.</span><span class="n">tcgetattr</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tty</span><span class="o">.</span><span class="n">setraw</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">fileno</span><span class="p">())</span>
+            <span class="n">tty</span><span class="o">.</span><span class="n">setcbreak</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">fileno</span><span class="p">())</span>
+
+            <span class="n">mode</span> <span class="o">=</span> <span class="n">termios</span><span class="o">.</span><span class="n">tcgetattr</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="p">)</span>
+            <span class="n">special_chars</span> <span class="o">=</span> <span class="n">mode</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">special_chars</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+            <span class="n">special_chars</span><span class="p">[</span><span class="n">termios</span><span class="o">.</span><span class="n">VMIN</span><span class="p">]</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0</span><span class="s2">&quot;</span>
+            <span class="n">special_chars</span><span class="p">[</span><span class="n">termios</span><span class="o">.</span><span class="n">VTIME</span><span class="p">]</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0</span><span class="s2">&quot;</span>
+            <span class="n">termios</span><span class="o">.</span><span class="n">tcsetattr</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="p">,</span> <span class="n">termios</span><span class="o">.</span><span class="n">TCSAFLUSH</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">r</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="bp">self</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="p">],</span> <span class="p">[],</span> <span class="p">[])</span>
+
+                <span class="k">if</span> <span class="bp">self</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_c</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4096</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">end_magic_bytes</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+                        <span class="n">end_ring_buffer</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">zip_longest</span><span class="p">(</span>
+                            <span class="n">end_ring_buffer</span><span class="p">,</span> <span class="n">end_magic_bytes</span>
+                        <span class="p">):</span>
+                            <span class="k">if</span> <span class="n">a</span> <span class="o">!=</span> <span class="n">b</span><span class="p">:</span>
+                                <span class="k">break</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">break</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4096</span><span class="p">)</span>
+                    <span class="n">previous</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+                    <span class="c1"># Old ^D to exit behavior</span>
+                    <span class="k">if</span> <span class="n">ctrld_exit</span> <span class="ow">and</span> <span class="n">data</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x04</span><span class="s2">&quot;</span><span class="p">:</span>
+                        <span class="k">break</span>
+
+                    <span class="c1"># Detect whether ^] was pressed 3 times in 1 second</span>
+                    <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">escape_timestamp</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="mh">0x1D</span> <span class="ow">in</span> <span class="n">previous</span><span class="p">:</span>
+                        <span class="n">escape_timestamp</span> <span class="o">=</span> <span class="n">now</span>
+                    <span class="k">elif</span> <span class="n">escape_timestamp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">now</span> <span class="o">&lt;</span> <span class="n">escape_timestamp</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">previous</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="mh">0x1D</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+                                <span class="k">break</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">escape_timestamp</span> <span class="o">=</span> <span class="kc">None</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_blacklist</span> <span class="o">=</span> <span class="n">old_blacklist</span>
+            <span class="n">termios</span><span class="o">.</span><span class="n">tcsetattr</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="p">,</span> <span class="n">termios</span><span class="o">.</span><span class="n">TCSADRAIN</span><span class="p">,</span> <span class="n">oldtty</span><span class="p">)</span></div>
+</div>
+
+
+    <span class="c1"># }}}</span>
+</pre></div>
+
+           </div>
+          </div>
+    <a href="https://github.com/Rahix/tbot">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" decoding="async" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" loading="lazy" data-recalc-dims="1">
+    </a>
+
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Rahix.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

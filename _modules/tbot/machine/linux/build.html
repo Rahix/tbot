@@ -1,0 +1,359 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tbot.machine.linux.build &mdash; tbot 0.10.10-0-g1853255 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=5349f25f" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/documentation_options.js?v=e1796f6e"></script>
+      <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html">
+            
+              <img src="../../../../_static/tbot-logo-white.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cli.html">tbot CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../recipes.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../context.html">Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pytest.html">pytest Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration.html">Migrating from tbot 0.7.1</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/main.html"><code class="docutils literal notranslate"><span class="pre">tbot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/log.html"><code class="docutils literal notranslate"><span class="pre">tbot.log</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/machine.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/machine_linux.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.linux</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/machine_board.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.board</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/machine_connector.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.connector</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/machine_shell.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.shell</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/machine_channel.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.channel</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/error.html"><code class="docutils literal notranslate"><span class="pre">tbot.error</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/role.html"><code class="docutils literal notranslate"><span class="pre">tbot.role</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/selectable.html"><code class="docutils literal notranslate"><span class="pre">tbot.selectable</span></code></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Testcase Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/tc.html"><code class="docutils literal notranslate"><span class="pre">tbot.tc</span></code> - Builtin Testcases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/connector.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.connector</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/gdb.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.gdb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/gpio.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.gpio</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/linux.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.linux</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/locking.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.locking</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/swupdate.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.swupdate</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/timing.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.timing</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/uboot.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.uboot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/utils.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.utils</span></code></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CONTRIBUTING.html">Contributing to tbot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../LICENSE.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">tbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../tbot.html">tbot</a></li>
+      <li class="breadcrumb-item active">tbot.machine.linux.build</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tbot.machine.linux.build</h1><div class="highlight"><pre>
+<span></span><span class="c1"># tbot, Embedded Automation Tool</span>
+<span class="c1"># Copyright (C) 2019  Harald Seiler</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">typing</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">linux_shell</span><span class="p">,</span> <span class="n">path</span>
+
+
+<div class="viewcode-block" id="Toolchain">
+<a class="viewcode-back" href="../../../../modules/machine_linux.html#tbot.machine.linux.Toolchain">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Toolchain</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generic toolchain type.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Toolchain.enable">
+<a class="viewcode-back" href="../../../../modules/machine_linux.html#tbot.machine.linux.Toolchain.enable">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">enable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="s2">&quot;Builder&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Enable this toolchain on the given ``host``.&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="EnvScriptToolchain">
+<a class="viewcode-back" href="../../../../modules/machine_linux.html#tbot.machine.linux.EnvScriptToolchain">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EnvScriptToolchain</span><span class="p">(</span><span class="n">Toolchain</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Toolchain that is initialized using an env script (e.g. yocto toolchain).</span>
+
+<span class="sd">    **Example**:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        @property</span>
+<span class="sd">        def toolchains(self):</span>
+<span class="sd">            yocto_root = self.fsroot / &quot;opt&quot; / &quot;poky&quot; / &quot;2.6&quot;</span>
+
+<span class="sd">            return {</span>
+<span class="sd">                &quot;cortexa8hf&quot;: linux.build.EnvScriptToolchain(</span>
+<span class="sd">                    yocto_root / &quot;environment-setup-cortexa8hf-neon-poky-linux-gnueabi&quot;,</span>
+<span class="sd">                ),</span>
+<span class="sd">            }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="s2">&quot;path.Path[Builder]&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new EnvScriptToolchain.</span>
+
+<span class="sd">        :param linux.Path path: Path to the env script</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">env_script</span> <span class="o">=</span> <span class="n">path</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">enable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="s2">&quot;Builder&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">host</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;unset&quot;</span><span class="p">,</span> <span class="s2">&quot;LD_LIBRARY_PATH&quot;</span><span class="p">)</span>
+        <span class="n">host</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">env_script</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="DistroToolchain">
+<a class="viewcode-back" href="../../../../modules/machine_linux.html#tbot.machine.linux.DistroToolchain">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DistroToolchain</span><span class="p">(</span><span class="n">Toolchain</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Toolchain that was installed from distribution repositories.</span>
+
+<span class="sd">    **Example**:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        @property</span>
+<span class="sd">        def toolchains(self):</span>
+<span class="sd">            return {</span>
+<span class="sd">                &quot;armv7a&quot;: linux.build.DistroToolchain(&quot;arm&quot;, &quot;arm-linux-gnueabi-&quot;),</span>
+<span class="sd">                &quot;armv8&quot;: linux.build.DistroToolchain(&quot;aarch64&quot;, &quot;aarch64-linux-gnu-&quot;),</span>
+<span class="sd">            }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arch</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arch</span> <span class="o">=</span> <span class="n">arch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">enable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="s2">&quot;Builder&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">host</span><span class="o">.</span><span class="n">env</span><span class="p">(</span><span class="s2">&quot;ARCH&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">arch</span><span class="p">)</span>
+        <span class="n">host</span><span class="o">.</span><span class="n">env</span><span class="p">(</span><span class="s2">&quot;CROSS_COMPILE&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">)</span>
+
+        <span class="n">host</span><span class="o">.</span><span class="n">env</span><span class="p">(</span><span class="s2">&quot;CC&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;gcc&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="s2">&quot;objdump&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;size&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ar&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;nm&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;strings&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;as&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ld&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;objcopy&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;readelf&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;strip&quot;</span><span class="p">,</span>
+        <span class="p">]:</span>
+            <span class="n">host</span><span class="o">.</span><span class="n">env</span><span class="p">(</span><span class="n">tool</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">tool</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Builder">
+<a class="viewcode-back" href="../../../../modules/machine_linux.html#tbot.machine.linux.Builder">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Builder</span><span class="p">(</span><span class="n">linux_shell</span><span class="o">.</span><span class="n">LinuxShell</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mixin to mark a machine as a build-host.</span>
+
+<span class="sd">    You need to define the ``toolchain()`` method when using this mixin.  You</span>
+<span class="sd">    can then use the ``enable()`` method to enable a toolchain and compile</span>
+<span class="sd">    projects with it:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        with MyBuildHost(lh) as bh:</span>
+<span class="sd">            bh.exec0(&quot;uptime&quot;)</span>
+
+<span class="sd">            with bh.enable(&quot;generic-armv7a-hf&quot;):</span>
+<span class="sd">                cc = bh.env(&quot;CC&quot;)</span>
+<span class="sd">                bh.exec0(linux.Raw(cc), &quot;main.c&quot;)</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        If you look closely, I have used ``linux.Raw(cc)`` in the ``exec0()``</span>
+<span class="sd">        call.  This is necessary because a lot of toolchains define ``$CC`` as</span>
+<span class="sd">        something like</span>
+
+<span class="sd">        .. code-block:: text</span>
+
+<span class="sd">            CC=arm-poky-linux-gnueabi-gcc -march=armv7-a -mfpu=neon -mfloat-abi=hard -mcpu=cortex-a8</span>
+
+<span class="sd">        where some parameters are already included.  Without the</span>
+<span class="sd">        :py:class:`linux.Raw &lt;tbot.machine.linux.Raw&gt;`, tbot would run</span>
+
+<span class="sd">        .. code-block:: shell-session</span>
+
+<span class="sd">            $ &quot;${CC}&quot; main.c</span>
+
+<span class="sd">        where the arguments are interpreted as part of the path to the compiler.</span>
+<span class="sd">        This will obviously fail so instead, with the :py:class:`linux.Raw</span>
+<span class="sd">        &lt;tbot.machine.linux.Raw&gt;`,</span>
+<span class="sd">        tbot will run</span>
+
+<span class="sd">        .. code-block:: shell-session</span>
+
+<span class="sd">            $ ${CC} main.c</span>
+
+<span class="sd">        where the shell expansion will do the right thing.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">toolchains</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Toolchain</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a dictionary of all toolchains that exist on this buildhost.</span>
+
+<span class="sd">        **Example**:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            @property</span>
+<span class="sd">            def toolchains(self) -&gt; typing.Dict[str, linux.build.Toolchain]:</span>
+<span class="sd">                return {</span>
+<span class="sd">                    &quot;armv7a&quot;: linux.build.DistroToolchain(&quot;arm&quot;, &quot;arm-linux-gnueabi-&quot;),</span>
+<span class="sd">                    &quot;armv8&quot;: linux.build.DistroToolchain(&quot;aarch64&quot;, &quot;aarch64-linux-gnu-&quot;),</span>
+<span class="sd">                    &quot;mipsel&quot;: linux.build.DistroToolchain(&quot;mips&quot;, &quot;mipsel-linux-gnu-&quot;),</span>
+<span class="sd">                }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="Builder.enable">
+<a class="viewcode-back" href="../../../../modules/machine_linux.html#tbot.machine.linux.Builder.enable">[docs]</a>
+    <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">enable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arch</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Enable the toolchain for ``arch`` on this BuildHost instance.</span>
+
+<span class="sd">        **Example**::</span>
+
+<span class="sd">            with lh.build() as bh:</span>
+<span class="sd">                # Now we are on the buildhost</span>
+
+<span class="sd">                with bh.enable(&quot;generic-armv7a-hf&quot;):</span>
+<span class="sd">                    # Toolchain is enabled here</span>
+<span class="sd">                    cc = bh.env(&quot;CC&quot;)</span>
+<span class="sd">                    bh.exec0(linux.Raw(cc), &quot;--version&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolchains</span><span class="p">[</span><span class="n">arch</span><span class="p">]</span>
+
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">tc</span><span class="p">,</span> <span class="n">Toolchain</span>
+        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Toolchain </span><span class="si">{</span><span class="n">arch</span><span class="si">!r}</span><span class="s2"> is not an instance of `Toolchain` (is </span><span class="si">{</span><span class="n">tc</span><span class="si">!r}</span><span class="s2">).&quot;</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">subshell</span><span class="p">():</span>
+            <span class="n">tc</span><span class="o">.</span><span class="n">enable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="kc">None</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+    <a href="https://github.com/Rahix/tbot">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" decoding="async" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" loading="lazy" data-recalc-dims="1">
+    </a>
+
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Rahix.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

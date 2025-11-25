@@ -1,0 +1,439 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tbot.machine.linux.bash &mdash; tbot 0.10.10-0-g1853255 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=5349f25f" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/documentation_options.js?v=e1796f6e"></script>
+      <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html">
+            
+              <img src="../../../../_static/tbot-logo-white.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cli.html">tbot CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../recipes.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../context.html">Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pytest.html">pytest Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration.html">Migrating from tbot 0.7.1</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/main.html"><code class="docutils literal notranslate"><span class="pre">tbot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/log.html"><code class="docutils literal notranslate"><span class="pre">tbot.log</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/machine.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/machine_linux.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.linux</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/machine_board.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.board</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/machine_connector.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.connector</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/machine_shell.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.shell</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/machine_channel.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.channel</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/error.html"><code class="docutils literal notranslate"><span class="pre">tbot.error</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/role.html"><code class="docutils literal notranslate"><span class="pre">tbot.role</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/selectable.html"><code class="docutils literal notranslate"><span class="pre">tbot.selectable</span></code></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Testcase Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/tc.html"><code class="docutils literal notranslate"><span class="pre">tbot.tc</span></code> - Builtin Testcases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/connector.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.connector</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/gdb.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.gdb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/gpio.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.gpio</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/linux.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.linux</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/locking.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.locking</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/swupdate.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.swupdate</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/timing.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.timing</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/uboot.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.uboot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contrib/utils.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.utils</span></code></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CONTRIBUTING.html">Contributing to tbot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../LICENSE.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">tbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../tbot.html">tbot</a></li>
+      <li class="breadcrumb-item active">tbot.machine.linux.bash</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tbot.machine.linux.bash</h1><div class="highlight"><pre>
+<span></span><span class="c1"># tbot, Embedded Automation Tool</span>
+<span class="c1"># Copyright (C) 2019  Harald Seiler</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shlex</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">typing</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">tbot</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tbot.error</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">channel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">linux_shell</span><span class="p">,</span> <span class="n">util</span><span class="p">,</span> <span class="n">special</span><span class="p">,</span> <span class="n">path</span>
+
+<span class="n">TBOT_PROMPT</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;TBOT-VEJPVC1QUk9NUFQK$ &quot;</span>
+
+<span class="n">Self</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;Self&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s2">&quot;Bash&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Bash">
+<a class="viewcode-back" href="../../../../modules/machine_linux.html#tbot.machine.linux.Bash">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Bash</span><span class="p">(</span><span class="n">linux_shell</span><span class="o">.</span><span class="n">LinuxShell</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Bourne-again shell.&quot;&quot;&quot;</span>
+
+    <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_init_shell</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Wait for shell to appear</span>
+            <span class="n">util</span><span class="o">.</span><span class="n">wait_for_shell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="p">)</span>
+
+            <span class="c1"># Set a blacklist of control characters.  These characters are</span>
+            <span class="c1"># known to mess up the state of the shell.  They are:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">_write_blacklist</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="mh">0x03</span><span class="p">,</span>  <span class="c1"># ETX  | End of Text / Interrupt</span>
+                <span class="mh">0x04</span><span class="p">,</span>  <span class="c1"># EOT  | End of Transmission</span>
+                <span class="mh">0x11</span><span class="p">,</span>  <span class="c1"># DC1  | Device Control One (XON)</span>
+                <span class="mh">0x12</span><span class="p">,</span>  <span class="c1"># DC2  | Device Control Two</span>
+                <span class="mh">0x13</span><span class="p">,</span>  <span class="c1"># DC3  | Device Control Three (XOFF)</span>
+                <span class="mh">0x14</span><span class="p">,</span>  <span class="c1"># DC4  | Device Control Four</span>
+                <span class="mh">0x15</span><span class="p">,</span>  <span class="c1"># NAK  | Negative Acknowledge</span>
+                <span class="mh">0x16</span><span class="p">,</span>  <span class="c1"># SYN  | Synchronous Idle</span>
+                <span class="mh">0x17</span><span class="p">,</span>  <span class="c1"># ETB  | End of Transmission Block</span>
+                <span class="mh">0x1A</span><span class="p">,</span>  <span class="c1"># SUB  | Substitute / Suspend Process</span>
+                <span class="mh">0x1C</span><span class="p">,</span>  <span class="c1"># FS   | File Separator</span>
+                <span class="mh">0x7F</span><span class="p">,</span>  <span class="c1"># DEL  | Delete</span>
+            <span class="p">]</span>
+
+            <span class="c1"># Set prompt to a known string</span>
+            <span class="c1">#</span>
+            <span class="c1"># The prompt is mangled in a way which will be unfolded by the</span>
+            <span class="c1"># shell.  This will ensure tbot won&#39;t accidentally read the prompt</span>
+            <span class="c1"># back early if the connection is slow.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span>
+                <span class="sa">b</span><span class="s2">&quot;PROMPT_COMMAND=&#39;&#39;; PS1=&#39;&quot;</span>
+                <span class="o">+</span> <span class="n">TBOT_PROMPT</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span>
+                <span class="o">+</span> <span class="sa">b</span><span class="s2">&quot;&#39;&#39;&quot;</span>
+                <span class="o">+</span> <span class="n">TBOT_PROMPT</span><span class="p">[</span><span class="mi">6</span><span class="p">:]</span>
+                <span class="o">+</span> <span class="sa">b</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">prompt</span> <span class="o">=</span> <span class="n">TBOT_PROMPT</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">read_until_prompt</span><span class="p">()</span>
+
+            <span class="c1"># Disable history</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s2">&quot;unset HISTFILE&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">read_until_prompt</span><span class="p">()</span>
+
+            <span class="c1"># Disable line editing</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s2">&quot;set +o emacs; set +o vi&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">read_until_prompt</span><span class="p">()</span>
+
+            <span class="c1"># Set secondary prompt to &quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s2">&quot;PS2=&#39;&#39;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">read_until_prompt</span><span class="p">()</span>
+
+            <span class="c1"># Disable history expansion because it is not always affected by</span>
+            <span class="c1"># quoting rules and thus can mess with parameter values.  For</span>
+            <span class="c1"># example, m.exec0(&quot;echo&quot;, &quot;\n^&quot;) triggers the &#39;quick substitution&#39;</span>
+            <span class="c1"># feature and will return &quot;\n!!:s^\n&quot; instead of the expected</span>
+            <span class="c1"># &quot;\n^\n&quot;.  As it is not really useful for tbot tests anyway,</span>
+            <span class="c1"># disable all history expansion &#39;magic characters&#39; entirely.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s2">&quot;histchars=&#39;&#39;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">read_until_prompt</span><span class="p">()</span>
+
+            <span class="c1"># Set terminal size</span>
+            <span class="n">termsize</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">get_terminal_size</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;stty cols </span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span><span class="w"> </span><span class="n">termsize</span><span class="o">.</span><span class="n">columns</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">48</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">read_until_prompt</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;stty rows </span><span class="si">{</span><span class="n">termsize</span><span class="o">.</span><span class="n">lines</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">read_until_prompt</span><span class="p">()</span>
+
+            <span class="c1"># Do a sanity check to assert that shell interaction is working</span>
+            <span class="c1"># exactly as expected</span>
+            <span class="n">util</span><span class="o">.</span><span class="n">shell_sanity_check</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+            <span class="k">yield</span> <span class="kc">None</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">escape</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">Self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">special</span><span class="o">.</span><span class="n">Special</span><span class="p">[</span><span class="n">Self</span><span class="p">],</span> <span class="n">path</span><span class="o">.</span><span class="n">Path</span><span class="p">[</span><span class="n">Self</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">string_args</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">string_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">linux_shell</span><span class="o">.</span><span class="n">Special</span><span class="p">):</span>
+                <span class="n">string_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">_to_string</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">Path</span><span class="p">):</span>
+                <span class="n">string_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">at_host</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="si">!r}</span><span class="s2"> is not a supported argument type!&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">string_args</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">exec</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">Self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">special</span><span class="o">.</span><span class="n">Special</span><span class="p">[</span><span class="n">Self</span><span class="p">],</span> <span class="n">path</span><span class="o">.</span><span class="n">Path</span><span class="p">[</span><span class="n">Self</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">tbot</span><span class="o">.</span><span class="n">log_event</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">cmd</span><span class="p">)</span> <span class="k">as</span> <span class="n">ev</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">read_back</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">with_stream</span><span class="p">(</span><span class="n">ev</span><span class="p">,</span> <span class="n">show_prompt</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">read_until_prompt</span><span class="p">()</span>
+            <span class="n">ev</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;stdout&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">out</span>
+
+            <span class="n">retcode</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">posix_fetch_return_code</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">retcode</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">exec0</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">Self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">special</span><span class="o">.</span><span class="n">Special</span><span class="p">[</span><span class="n">Self</span><span class="p">],</span> <span class="n">path</span><span class="o">.</span><span class="n">Path</span><span class="p">[</span><span class="n">Self</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">retcode</span><span class="p">,</span> <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">retcode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">tbot</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">CommandFailure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">test</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">Self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">special</span><span class="o">.</span><span class="n">Special</span><span class="p">[</span><span class="n">Self</span><span class="p">],</span> <span class="n">path</span><span class="o">.</span><span class="n">Path</span><span class="p">[</span><span class="n">Self</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="n">retcode</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">retcode</span> <span class="o">==</span> <span class="mi">0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">env</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">Self</span><span class="p">,</span> <span class="n">var</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">Path</span><span class="p">[</span><span class="n">Self</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">posix_environment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">Self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">special</span><span class="o">.</span><span class="n">Special</span><span class="p">[</span><span class="n">Self</span><span class="p">],</span> <span class="n">path</span><span class="o">.</span><span class="n">Path</span><span class="p">[</span><span class="n">Self</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="n">util</span><span class="o">.</span><span class="n">RunCommandProxy</span><span class="p">]:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">cmd_context</span><span class="p">(</span>
+            <span class="n">proxy_ch</span><span class="p">:</span> <span class="n">util</span><span class="o">.</span><span class="n">RunCommandProxy</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Generator</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">ExitStack</span><span class="p">()</span> <span class="k">as</span> <span class="n">cx</span><span class="p">:</span>
+                <span class="n">ev</span> <span class="o">=</span> <span class="n">cx</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">log_event</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">cmd</span><span class="p">))</span>
+                <span class="n">proxy_ch</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">read_back</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">cx</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">proxy_ch</span><span class="o">.</span><span class="n">with_stream</span><span class="p">(</span><span class="n">ev</span><span class="p">,</span> <span class="n">show_prompt</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+                <span class="k">assert</span> <span class="n">proxy_ch</span><span class="o">.</span><span class="n">prompt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;prompt is missing!&quot;</span>
+
+                <span class="c1"># During the context (before calling terminate), the prompt</span>
+                <span class="c1"># string may never appear in the command output.  If it does</span>
+                <span class="c1"># anyway, raise an Exception.</span>
+                <span class="c1">#</span>
+                <span class="c1"># The exception type is dynamically created here to capture</span>
+                <span class="c1"># some variables from the context.  This way, the context knows</span>
+                <span class="c1"># of an early exit happening and can behave differently because</span>
+                <span class="c1"># of it.</span>
+
+                <span class="n">early_exit</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="k">class</span><span class="w"> </span><span class="nc">CommandEndedException</span><span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">CommandEndedException</span><span class="p">):</span>
+                    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">):</span>
+                        <span class="k">nonlocal</span> <span class="n">early_exit</span>
+                        <span class="n">early_exit</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="n">proxy_ch</span><span class="o">.</span><span class="n">_pre_terminate</span><span class="p">()</span>
+                        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+
+                    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;The interactive command </span><span class="si">{</span><span class="n">cmd</span><span class="si">!r}</span><span class="s2"> exited prematurely.&quot;</span>
+
+                <span class="k">with</span> <span class="n">proxy_ch</span><span class="o">.</span><span class="n">with_death_string</span><span class="p">(</span><span class="n">proxy_ch</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span> <span class="n">CommandEndedException</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">cmd</span>
+
+                <span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">early_exit</span><span class="p">:</span>
+                    <span class="n">output</span> <span class="o">=</span> <span class="n">proxy_ch</span><span class="o">.</span><span class="n">read_until_prompt</span><span class="p">()</span>
+                <span class="n">ev</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;stdout&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ev</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+
+            <span class="n">retcode</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">posix_fetch_return_code</span><span class="p">(</span><span class="n">proxy_ch</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="p">(</span><span class="n">retcode</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+
+        <span class="k">yield from</span> <span class="n">util</span><span class="o">.</span><span class="n">RunCommandProxy</span><span class="o">.</span><span class="n">_ctx</span><span class="p">(</span>
+            <span class="n">channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">cmd_context</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">open_channel</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">Self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">special</span><span class="o">.</span><span class="n">Special</span><span class="p">[</span><span class="n">Self</span><span class="p">],</span> <span class="n">path</span><span class="o">.</span><span class="n">Path</span><span class="p">[</span><span class="n">Self</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">channel</span><span class="o">.</span><span class="n">Channel</span><span class="p">:</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+
+        <span class="c1"># Disable the interrupt key in the outer shell</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s2">&quot;stty -isig&quot;</span><span class="p">,</span> <span class="n">read_back</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">read_until_prompt</span><span class="p">()</span>
+
+        <span class="k">with</span> <span class="n">tbot</span><span class="o">.</span><span class="n">log_event</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">cmd</span><span class="p">):</span>
+            <span class="c1"># Append `; exit` to ensure the channel won&#39;t live past the command</span>
+            <span class="c1"># exiting</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">cmd</span> <span class="o">+</span> <span class="s2">&quot;; exit&quot;</span><span class="p">,</span> <span class="n">read_back</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">take</span><span class="p">()</span>
+
+    <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">subshell</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">Self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">special</span><span class="o">.</span><span class="n">Special</span><span class="p">[</span><span class="n">Self</span><span class="p">],</span> <span class="n">path</span><span class="o">.</span><span class="n">Path</span><span class="p">[</span><span class="n">Self</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;typing.Iterator[Bash]&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">args</span> <span class="o">==</span> <span class="p">():</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot;bash --norc --noprofile&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">tbot</span><span class="o">.</span><span class="n">log_event</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">cmd</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_shell</span><span class="p">():</span>
+                <span class="k">yield</span> <span class="bp">self</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s2">&quot;exit&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">read_until_prompt</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">interactive</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Generate the endstring instead of having it as a constant</span>
+        <span class="c1"># so opening this files won&#39;t trigger an exit</span>
+        <span class="n">endstr</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;INTERACTIVE-END-&quot;</span>
+            <span class="o">+</span> <span class="nb">hex</span><span class="p">(</span><span class="mi">165_380_656_580_165_943_945_649_390_069_628_824_191</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span>
+        <span class="p">)</span>
+
+        <span class="n">termsize</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">get_terminal_size</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="s2">&quot;stty&quot;</span><span class="p">,</span> <span class="s2">&quot;cols&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">termsize</span><span class="o">.</span><span class="n">columns</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="s2">&quot;stty&quot;</span><span class="p">,</span> <span class="s2">&quot;rows&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">termsize</span><span class="o">.</span><span class="n">lines</span><span class="p">)))</span>
+
+        <span class="c1"># Outer shell which is used to detect the end of the interactive session</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;bash --norc --noprofile&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PS1=</span><span class="si">{</span><span class="n">endstr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">read_until_prompt</span><span class="p">(</span><span class="n">prompt</span><span class="o">=</span><span class="n">endstr</span><span class="p">)</span>
+
+        <span class="c1"># Inner shell which will be used by the user</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s2">&quot;bash --norc --noprofile&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s2">&quot;set -o emacs&quot;</span><span class="p">)</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">[</span><span class="se">\\</span><span class="s2">033[36m</span><span class="se">\\</span><span class="s2">]</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="se">\\</span><span class="s2">[</span><span class="se">\\</span><span class="s2">033[32m</span><span class="se">\\</span><span class="s2">]</span><span class="se">\\</span><span class="s2">w</span><span class="se">\\</span><span class="s2">[</span><span class="se">\\</span><span class="s2">033[0m</span><span class="se">\\</span><span class="s2">]&gt; &quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PS1=</span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">read_until_prompt</span><span class="p">(</span><span class="n">prompt</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;&gt; (</span><span class="se">\x1B\\</span><span class="s2">[.{0,10})?&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">sendline</span><span class="p">()</span>
+        <span class="n">tbot</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;Entering interactive shell ...&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">attach_interactive</span><span class="p">(</span><span class="n">end_magic</span><span class="o">=</span><span class="n">endstr</span><span class="p">)</span>
+
+        <span class="n">tbot</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;Exiting interactive shell ...&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s2">&quot;exit&quot;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">read_until_prompt</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TimeoutError</span><span class="p">:</span>
+                <span class="c1"># we might still be in the inner shell so let&#39;s try exiting again</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s2">&quot;exit&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">read_until_prompt</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TimeoutError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Failed to reacquire shell after interactive session!&quot;</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+    <a href="https://github.com/Rahix/tbot">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" decoding="async" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" loading="lazy" data-recalc-dims="1">
+    </a>
+
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Rahix.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,503 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Context &mdash; tbot 0.10.10-0-g1853255 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5349f25f" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/documentation_options.js?v=e1796f6e"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pytest Integration" href="pytest.html" />
+    <link rel="prev" title="Logging" href="logging.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/tbot-logo-white.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">tbot CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Context</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-idea">The idea</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-tbot-ctx-object">The <code class="docutils literal notranslate"><span class="pre">tbot.ctx</span></code> object</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#single-machine">Single Machine</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multiple-machines">Multiple Machines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#keeping-tests-flexible">Keeping tests flexible</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#complex-testcases-e-g-powercycle">Complex Testcases (e.g. Powercycle)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#roles">Roles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-lab-config">Example lab-config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-board-config">Example board-config</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#controlling-machine-instantiation">Controlling machine instantiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#migrating-to-context">Migrating to Context</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#migrating-testcases">Migrating Testcases</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#migrating-configuration">Migrating Configuration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pytest.html">pytest Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migration.html">Migrating from tbot 0.7.1</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules/main.html"><code class="docutils literal notranslate"><span class="pre">tbot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/log.html"><code class="docutils literal notranslate"><span class="pre">tbot.log</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/machine.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/machine_linux.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.linux</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/machine_board.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.board</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/machine_connector.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.connector</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/machine_shell.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.shell</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/machine_channel.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.channel</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/error.html"><code class="docutils literal notranslate"><span class="pre">tbot.error</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/role.html"><code class="docutils literal notranslate"><span class="pre">tbot.role</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/selectable.html"><code class="docutils literal notranslate"><span class="pre">tbot.selectable</span></code></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Testcase Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules/tc.html"><code class="docutils literal notranslate"><span class="pre">tbot.tc</span></code> - Builtin Testcases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/connector.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.connector</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/gdb.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.gdb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/gpio.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.gpio</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/linux.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.linux</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/locking.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.locking</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/swupdate.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.swupdate</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/timing.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.timing</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/uboot.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.uboot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/utils.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.utils</span></code></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to tbot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LICENSE.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">tbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Context</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/context.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="context">
+<span id="id1"></span><h1>Context<a class="headerlink" href="#context" title="Link to this heading">¶</a></h1>
+<p>The <em>context</em> is the new mechanism in tbot for managing machine instances.
+Under the hood, the old configuration mechanism and the
+<a class="reference internal" href="modules/selectable.html#module-tbot.selectable" title="tbot.selectable"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tbot.selectable</span></code></a> module are already using the context but using it
+directly gives you even more power!</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you want to migrate from the “old” way of accessing the configured
+machines, please read the <a class="reference internal" href="#context-migration"><span class="std std-ref">Migrating to Context</span></a> guide at the end of this
+page.  Though it is a good idea to first familiarize yourself with the new
+concepts.</p>
+</div>
+<section id="the-idea">
+<h2>The idea<a class="headerlink" href="#the-idea" title="Link to this heading">¶</a></h2>
+<p>At the core, everything revolves around a context object:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Configuration registers machines with the context object (See
+<a class="reference internal" href="#tbot-ctx-config"><span class="std std-ref">Configuration</span></a>).</p></li>
+<li><p>Testcases can then request instances of registered machines (See
+<a class="reference internal" href="#tbot-ctx"><span class="std std-ref">The tbot.ctx object</span></a>).</p></li>
+</ul>
+</div></blockquote>
+<p>Machines are registered for fulfilling certain <a class="reference internal" href="#tbot-role"><span class="std std-ref">roles</span></a>.  For
+example the lab-config should register a machine for the
+<a class="reference internal" href="modules/role.html#tbot.role.LabHost" title="tbot.role.LabHost"><code class="xref py py-class docutils literal notranslate"><span class="pre">tbot.role.LabHost</span></code></a> role while the board-config registers machines for
+e.g.  <a class="reference internal" href="modules/role.html#tbot.role.Board" title="tbot.role.Board"><code class="xref py py-class docutils literal notranslate"><span class="pre">tbot.role.Board</span></code></a> and <a class="reference internal" href="modules/role.html#tbot.role.BoardLinux" title="tbot.role.BoardLinux"><code class="xref py py-class docutils literal notranslate"><span class="pre">tbot.role.BoardLinux</span></code></a>.</p>
+<p>When a testcase requests a machine, the instance that is created is <em>cached</em>.
+That means when a later testcase requests the same machine (before the first one
+released it again!), it will get access to the <em>same</em> instance.</p>
+</section>
+<section id="the-tbot-ctx-object">
+<span id="tbot-ctx"></span><h2>The <code class="docutils literal notranslate"><span class="pre">tbot.ctx</span></code> object<a class="headerlink" href="#the-tbot-ctx-object" title="Link to this heading">¶</a></h2>
+<p>tbot defines a global context as <code class="docutils literal notranslate"><span class="pre">tbot.ctx</span></code>.  Testcases can directly interact
+with this context to access machines.  See the <a class="reference internal" href="modules/main.html#tbot.Context" title="tbot.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">tbot.Context</span></code></a> class
+for the full API.  Essentially, there are two design patterns for testcases:</p>
+<section id="single-machine">
+<h3>Single Machine<a class="headerlink" href="#single-machine" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@tbot</span><span class="o">.</span><span class="n">testcase</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_with_labhost</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">tbot</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">LabHost</span><span class="p">)</span> <span class="k">as</span> <span class="n">lh</span><span class="p">:</span>
+        <span class="n">lh</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;uname&quot;</span><span class="p">,</span> <span class="s2">&quot;-a&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="multiple-machines">
+<h3>Multiple Machines<a class="headerlink" href="#multiple-machines" title="Link to this heading">¶</a></h3>
+<p>This is analogous to pythons own <a class="reference external" href="https://docs.python.org/3/library/contextlib.html#contextlib.ExitStack" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">contextlib.ExitStack</span></code></a> and useful
+when you need multiple machines (= multiple context-managers) in one testcase:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@tbot</span><span class="o">.</span><span class="n">testcase</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_with_board_and_lab</span><span class="p">():</span>
+   <span class="k">with</span> <span class="n">tbot</span><span class="o">.</span><span class="n">ctx</span><span class="p">()</span> <span class="k">as</span> <span class="n">cx</span><span class="p">:</span>
+      <span class="n">lh</span> <span class="o">=</span> <span class="n">cx</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">LabHost</span><span class="p">)</span>
+      <span class="n">lnx</span> <span class="o">=</span> <span class="n">cx</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">BoardLinux</span><span class="p">)</span>
+
+      <span class="n">lh</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;hostname&quot;</span><span class="p">)</span>
+      <span class="n">lnx</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;hostname&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="keeping-tests-flexible">
+<h3>Keeping tests flexible<a class="headerlink" href="#keeping-tests-flexible" title="Link to this heading">¶</a></h3>
+<p>When writing reusable testcases, you should always prepare them for situations
+where a caller would want to pass in custom machines instead of the ones
+registered in the context.  The best way to do this is this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@tbot</span><span class="o">.</span><span class="n">testcase</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">reusable_test_one_machine</span><span class="p">(</span><span class="n">m</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">LinuxShell</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">tbot</span><span class="o">.</span><span class="n">ctx</span><span class="p">()</span> <span class="k">as</span> <span class="n">cx</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">cx</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">LabHost</span><span class="p">)</span>
+
+        <span class="o">...</span>
+
+<span class="nd">@tbot</span><span class="o">.</span><span class="n">testcase</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">reusable_test_multiple</span><span class="p">(</span>
+    <span class="n">lab</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">LinuxShell</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">ub</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UBootShell</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="k">with</span> <span class="n">tbot</span><span class="o">.</span><span class="n">ctx</span><span class="p">()</span> <span class="k">as</span> <span class="n">cx</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">lab</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lab</span> <span class="o">=</span> <span class="n">cx</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">LabHost</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ub</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ub</span> <span class="o">=</span> <span class="n">cx</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">BoardUBoot</span><span class="p">)</span>
+
+        <span class="o">...</span>
+</pre></div>
+</div>
+<div class="admonition-todo admonition" id="id2">
+<p class="admonition-title">Todo</p>
+<p>Eventually, tbot might grow a new decorator for making contex usage even
+easier.  For now the above patterns are what should be used.</p>
+</div>
+</section>
+<section id="complex-testcases-e-g-powercycle">
+<h3>Complex Testcases (e.g. Powercycle)<a class="headerlink" href="#complex-testcases-e-g-powercycle" title="Link to this heading">¶</a></h3>
+<p>Sometimes, testcases need to do more complex things with instances than to
+simply interact with them.  A common example would be a powercycle of a DUT.
+For such cases, the <a class="reference internal" href="modules/main.html#tbot.Context.request" title="tbot.Context.request"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Context.request()</span></code></a> method
+provides some keyword arguments to allow fine-grained control over instance
+requesting.</p>
+<p>For the DUT powercycle example, a testcase might look like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@tbot</span><span class="o">.</span><span class="n">testcase</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_with_dut_reboot</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">tbot</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">BoardLinux</span><span class="p">)</span> <span class="k">as</span> <span class="n">lnx</span><span class="p">:</span>
+        <span class="c1"># Do some things before powercycle</span>
+        <span class="n">lnx</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;hwclock&quot;</span><span class="p">,</span> <span class="s2">&quot;--systohc&quot;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">tbot</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">BoardLinux</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">lnx</span><span class="p">:</span>
+        <span class="c1"># The DUT was powercycled before entering this context</span>
+        <span class="n">lnx</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;hwclock&quot;</span><span class="p">,</span> <span class="s2">&quot;--hctosys&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="roles">
+<span id="tbot-role"></span><h2>Roles<a class="headerlink" href="#roles" title="Link to this heading">¶</a></h2>
+<p>The <a class="reference internal" href="modules/role.html#module-tbot.role" title="tbot.role"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tbot.role</span></code></a> module pre-defines a number of roles that are commonly
+needed in embedded automation and testing.  These roles are also what testcases
+distributed alongside tbot use.  As an overview (details are in the
+<a class="reference internal" href="modules/role.html#module-tbot.role" title="tbot.role"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tbot.role</span></code></a> module documentation):</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="modules/role.html#tbot.role.LabHost" title="tbot.role.LabHost"><code class="xref py py-class docutils literal notranslate"><span class="pre">tbot.role.LabHost</span></code></a></p></li>
+<li><p><a class="reference internal" href="modules/role.html#tbot.role.BuildHost" title="tbot.role.BuildHost"><code class="xref py py-class docutils literal notranslate"><span class="pre">tbot.role.BuildHost</span></code></a></p></li>
+<li><p><a class="reference internal" href="modules/role.html#tbot.role.LocalHost" title="tbot.role.LocalHost"><code class="xref py py-class docutils literal notranslate"><span class="pre">tbot.role.LocalHost</span></code></a></p></li>
+<li><p><a class="reference internal" href="modules/role.html#tbot.role.Board" title="tbot.role.Board"><code class="xref py py-class docutils literal notranslate"><span class="pre">tbot.role.Board</span></code></a></p></li>
+<li><p><a class="reference internal" href="modules/role.html#tbot.role.BoardUBoot" title="tbot.role.BoardUBoot"><code class="xref py py-class docutils literal notranslate"><span class="pre">tbot.role.BoardUBoot</span></code></a></p></li>
+<li><p><a class="reference internal" href="modules/role.html#tbot.role.BoardLinux" title="tbot.role.BoardLinux"><code class="xref py py-class docutils literal notranslate"><span class="pre">tbot.role.BoardLinux</span></code></a></p></li>
+</ul>
+</div></blockquote>
+<p>However, you can also define your own roles for more complex scenarios!  The
+role should inherit <a class="reference internal" href="modules/role.html#tbot.role.Role" title="tbot.role.Role"><code class="xref py py-class docutils literal notranslate"><span class="pre">tbot.role.Role</span></code></a> and any ABCs that a machine-class
+implementing the role uses.  For example, a role for a Linux machine should
+probably inherit <a class="reference internal" href="modules/machine_linux.html#tbot.machine.linux.LinuxShell" title="tbot.machine.linux.LinuxShell"><code class="xref py py-class docutils literal notranslate"><span class="pre">tbot.machine.linux.LinuxShell</span></code></a>.  Or a role for
+a U-Boot machine should inherit <a class="reference internal" href="modules/machine_board.html#tbot.machine.board.UBootShell" title="tbot.machine.board.UBootShell"><code class="xref py py-class docutils literal notranslate"><span class="pre">tbot.machine.board.UBootShell</span></code></a>.</p>
+</section>
+<section id="configuration">
+<span id="tbot-ctx-config"></span><h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">¶</a></h2>
+<p>For <a class="reference internal" href="modules/selectable.html#module-tbot.selectable" title="tbot.selectable"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tbot.selectable</span></code></a>, machines were configured via globals in the lab-
+and board-config named <code class="docutils literal notranslate"><span class="pre">LAB</span></code>, <code class="docutils literal notranslate"><span class="pre">BOARD</span></code>, <code class="docutils literal notranslate"><span class="pre">UBOOT</span></code>, and <code class="docutils literal notranslate"><span class="pre">LINUX</span></code>.  This still
+works and will actually register the machines in <code class="xref py py-data docutils literal notranslate"><span class="pre">tbot.ctx</span></code> under the
+hood.</p>
+<p>The new context-based configuration works slightly different:  lab- and
+board-config scripts should define a global <code class="docutils literal notranslate"><span class="pre">register_machines()</span></code> function
+that registers all machines from this config into the supplied context using
+<a class="reference internal" href="modules/main.html#tbot.Context.register" title="tbot.Context.register"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tbot.Context.register()</span></code></a>.  The method documentation explains the details
+of registration but here are two examples:</p>
+<section id="example-lab-config">
+<h3>Example lab-config<a class="headerlink" href="#example-lab-config" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyLab</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyBuildHost</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">register_machines</span><span class="p">(</span><span class="n">ctx</span><span class="p">:</span> <span class="n">tbot</span><span class="o">.</span><span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">ctx</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">MyLab</span><span class="p">,</span> <span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">LabHost</span><span class="p">)</span>
+    <span class="c1"># Optionally register a build-host as well</span>
+    <span class="n">ctx</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">MyBuildHost</span><span class="p">,</span> <span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">BuildHost</span><span class="p">)</span>
+
+    <span class="c1"># You could also register MyLab for both LabHost and BuildHost:</span>
+    <span class="n">ctx</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">MyLab</span><span class="p">,</span> <span class="p">[</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">LabHost</span><span class="p">,</span> <span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">BuildHost</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="example-board-config">
+<h3>Example board-config<a class="headerlink" href="#example-board-config" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyBoard</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyBoardLinux</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">register_machines</span><span class="p">(</span><span class="n">ctx</span><span class="p">:</span> <span class="n">tbot</span><span class="o">.</span><span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">ctx</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">MyBoard</span><span class="p">,</span> <span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">Board</span><span class="p">)</span>
+    <span class="n">ctx</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">MyBoardLinux</span><span class="p">,</span> <span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">BoardLinux</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="controlling-machine-instantiation">
+<h2>Controlling machine instantiation<a class="headerlink" href="#controlling-machine-instantiation" title="Link to this heading">¶</a></h2>
+<p>When a testcase calls <a class="reference internal" href="modules/main.html#tbot.Context.request" title="tbot.Context.request"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tbot.Context.request()</span></code></a> to request a machine
+instance, this instance needs to be created which is not trivial in all cases.
+The context relies on the <a class="reference internal" href="modules/machine_connector.html#tbot.machine.connector.Connector.from_context" title="tbot.machine.connector.Connector.from_context"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Connector.from_context()</span></code></a> classmethod of the registered
+machine-class for this.</p>
+<p>Most connectors come with a reasonable default implementation of this method
+which often just requests the prerequisite machines from the context and then
+constructs the machine-class using them.  As an example, here is the
+implementation of <code class="docutils literal notranslate"><span class="pre">from_context()</span></code> for
+<a class="reference internal" href="modules/machine_connector.html#tbot.machine.connector.ConsoleConnector" title="tbot.machine.connector.ConsoleConnector"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConsoleConnector</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@classmethod</span>
+<span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">from_context</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ctx</span><span class="p">:</span> <span class="s2">&quot;tbot.Context&quot;</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">ExitStack</span><span class="p">()</span> <span class="k">as</span> <span class="n">cx</span><span class="p">:</span>
+        <span class="c1"># Will try to connect to console from lab-host, thus request</span>
+        <span class="c1"># lab-host here:</span>
+        <span class="n">lh</span> <span class="o">=</span> <span class="n">cx</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">LabHost</span><span class="p">))</span>
+
+        <span class="c1"># Then instantiate the machine-class using `lh`:</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">cx</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="bp">cls</span><span class="p">(</span><span class="n">lh</span><span class="p">))</span>
+        <span class="k">yield</span> <span class="n">m</span>
+</pre></div>
+</div>
+<p>For more complex scenarios, lab- or board-config can of course overwrite this
+method with custom behavior.  Please keep in mind the special semantics of
+<a class="reference internal" href="modules/machine_connector.html#tbot.machine.connector.Connector.from_context" title="tbot.machine.connector.Connector.from_context"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Connector.from_context()</span></code></a> which are detailed in the
+method documentation.</p>
+</section>
+<section id="migrating-to-context">
+<span id="context-migration"></span><h2>Migrating to Context<a class="headerlink" href="#migrating-to-context" title="Link to this heading">¶</a></h2>
+<p>If you are interested in converting existing testcases and configuration to the
+new “Context” API, this guide is for you.  For the most part the changes are
+small and can be done incrementally as the new API is compatible with old code
+&amp; the other way around.</p>
+<section id="migrating-testcases">
+<h3>Migrating Testcases<a class="headerlink" href="#migrating-testcases" title="Link to this heading">¶</a></h3>
+<p>The following functions/context-managers can be replaced by equivalent calls to
+the context:</p>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="gd">-with tbot.acquire_lab() as lh:</span>
+<span class="gi">+with tbot.ctx.request(tbot.role.LabHost) as lh:</span>
+<span class="w"> </span>    lh.exec0(&quot;uname&quot;, &quot;-a&quot;)
+
+<span class="gd">-with tbot.acquire_local() as lo:</span>
+<span class="gi">+with tbot.ctx.request(tbot.role.LocalHost) as lo:</span>
+<span class="w"> </span>    lh.exec0(&quot;uname&quot;, &quot;-a&quot;)
+</pre></div>
+</div>
+<p>For some, you can simplify the code because prerequisites are acquired
+automatically:</p>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="gd">-with tbot.acquire_lab() as lh:</span>
+<span class="gd">-    with tbot.acquire_board(lh) as b:</span>
+<span class="gi">+with tbot.ctx.request(tbot.role.Board) as b:</span>
+<span class="w"> </span>        ...
+
+<span class="gd">-with tbot.acquire_lab() as lh:</span>
+<span class="gd">-    with tbot.acquire_board(lh) as b:</span>
+<span class="gd">-        with tbot.acquire_uboot(b) as ub:</span>
+<span class="gi">+with tbot.ctx.request(tbot.role.BoardUBoot) as ub:</span>
+<span class="w"> </span>            ub.exec0(&quot;version&quot;)
+
+<span class="w"> </span># The above was also often done like this:
+<span class="gd">-with contextlib.ExitStack() as cx:</span>
+<span class="gd">-    lh = cx.enter_context(tbot.acquire_lab())</span>
+<span class="gd">-    b = cx.enter_context(tbot.acquire_board(lh))</span>
+<span class="gd">-    ub = cx.enter_context(tbot.acquire_uboot(b))</span>
+<span class="gi">+with tbot.ctx.request(tbot.role.BoardUBoot) as ub:</span>
+<span class="w"> </span>    ub.exec0(&quot;version&quot;)
+
+<span class="w"> </span># The same is true for board linux:
+<span class="gd">-with contextlib.ExitStack() as cx:</span>
+<span class="gd">-    lh = cx.enter_context(tbot.acquire_lab())</span>
+<span class="gd">-    b = cx.enter_context(tbot.acquire_board(lh))</span>
+<span class="gd">-    lnx = cx.enter_context(tbot.acquire_linux(b))</span>
+<span class="gi">+with tbot.ctx.request(tbot.role.BoardLinux) as lnx:</span>
+<span class="w"> </span>    lnx.exec0(&quot;cat&quot;, &quot;/etc/os-release&quot;)
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="modules/main.html#tbot.with_lab" title="tbot.with_lab"><code class="xref py py-func docutils literal notranslate"><span class="pre">tbot.with_lab()</span></code></a>, <a class="reference internal" href="modules/main.html#tbot.with_uboot" title="tbot.with_uboot"><code class="xref py py-func docutils literal notranslate"><span class="pre">tbot.with_uboot()</span></code></a>, and
+<a class="reference internal" href="modules/main.html#tbot.with_linux" title="tbot.with_linux"><code class="xref py py-func docutils literal notranslate"><span class="pre">tbot.with_linux()</span></code></a> decorators do not have a direct replacement but
+because acquring a machine from the context is a single line, the change is not
+too big either:</p>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>@tbot.testcase
+<span class="gd">-@tbot.with_lab</span>
+<span class="gd">-def lab_name(lh):</span>
+<span class="gi">+def lab_name():</span>
+<span class="gi">+    with tbot.ctx.request(tbot.role.LabHost) as lh:</span>
+<span class="w"> </span>        lh.exec0(&quot;hostname&quot;)
+
+<span class="w"> </span>@tbot.testcase
+<span class="gd">-@tbot.with_linux</span>
+<span class="gd">-def some_test_with_linux(lnx):</span>
+<span class="gi">+def some_test_with_linux():</span>
+<span class="gi">+    with tbot.ctx.request(tbot.role.BoardLinux) as lnx:</span>
+<span class="w"> </span>        lnx.exec0(&quot;cat&quot;, &quot;/etc/os-release&quot;)
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>At some point, a new decorator to replace the existing ones might be
+introduced.  For the time being, the example above shows what needs to be done.</p>
+</div>
+</section>
+<section id="migrating-configuration">
+<h3>Migrating Configuration<a class="headerlink" href="#migrating-configuration" title="Link to this heading">¶</a></h3>
+<p>While the old way of configuring tbot still works and is fully compatible with
+the context API, it only provides limited possibilities.  For more complex
+scenarios, the new <a class="reference internal" href="#tbot-ctx-config"><span class="std std-ref">Configuration</span></a> mechanism is much more flexible.</p>
+<p>Switching over is not hard:  You need to define a <code class="docutils literal notranslate"><span class="pre">register_machines()</span></code>
+function in the lab- and/or board-config which replaces the existing <code class="docutils literal notranslate"><span class="pre">LAB</span> <span class="pre">=</span></code>,
+<code class="docutils literal notranslate"><span class="pre">BOARD</span> <span class="pre">=</span></code>, <code class="docutils literal notranslate"><span class="pre">UBOOT</span> <span class="pre">=</span></code>, and <code class="docutils literal notranslate"><span class="pre">LINUX</span> <span class="pre">=</span></code> statements.  For the lab-config,
+additionally, there is now a cleaner way to define the build-host:</p>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>class MyBuildHost(...):
+<span class="w"> </span>    ...
+
+<span class="w"> </span>class MyPersonalLab(...):
+<span class="w"> </span>    ...
+
+<span class="gd">-    def build(self):</span>
+<span class="gd">-        return MyBuildHost(self)</span>
+
+<span class="gd">-LAB = MyPersonalLab</span>
+<span class="gi">+def register_machines(ctx):</span>
+<span class="gi">+    ctx.register(MyPersonalLab, tbot.role.LabHost)</span>
+<span class="gi">+    ctx.register(MyBuildHost, tbot.role.BuildHost)</span>
+</pre></div>
+</div>
+<p>For the board-config it is even more straight-forward:</p>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>class MyBoard(...):
+<span class="w"> </span>    ...
+
+<span class="w"> </span>class MyUBoot(...):
+<span class="w"> </span>    ...
+
+<span class="w"> </span>class MyBoardLinux(...):
+<span class="w"> </span>    ...
+
+<span class="gi">+def register_machines(ctx):</span>
+<span class="gd">-BOARD = MyBoard</span>
+<span class="gi">+    ctx.register(MyBoard, tbot.role.Board)</span>
+<span class="gd">-UBOOT = MyUBoot</span>
+<span class="gi">+    ctx.register(MyUBoot, tbot.role.BoardUBoot)</span>
+<span class="gd">-LINUX = MyBoardLinux</span>
+<span class="gi">+    ctx.register(MyBoardLinux, tbot.role.BoardLinux)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <a href="https://github.com/Rahix/tbot">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" decoding="async" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" loading="lazy" data-recalc-dims="1">
+    </a>
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="logging.html" class="btn btn-neutral float-left" title="Logging" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pytest.html" class="btn btn-neutral float-right" title="pytest Integration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Rahix.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

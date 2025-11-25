@@ -1,0 +1,1905 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changelog &mdash; tbot 0.10.10-0-g1853255 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5349f25f" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/documentation_options.js?v=e1796f6e"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributing to tbot" href="CONTRIBUTING.html" />
+    <link rel="prev" title="tbot_contrib.utils" href="contrib/utils.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/tbot-logo-white.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">tbot CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="context.html">Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pytest.html">pytest Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migration.html">Migrating from tbot 0.7.1</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules/main.html"><code class="docutils literal notranslate"><span class="pre">tbot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/log.html"><code class="docutils literal notranslate"><span class="pre">tbot.log</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/machine.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/machine_linux.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.linux</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/machine_board.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.board</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/machine_connector.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.connector</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/machine_shell.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.shell</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/machine_channel.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.channel</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/error.html"><code class="docutils literal notranslate"><span class="pre">tbot.error</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/role.html"><code class="docutils literal notranslate"><span class="pre">tbot.role</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/selectable.html"><code class="docutils literal notranslate"><span class="pre">tbot.selectable</span></code></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Testcase Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules/tc.html"><code class="docutils literal notranslate"><span class="pre">tbot.tc</span></code> - Builtin Testcases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/connector.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.connector</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/gdb.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.gdb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/gpio.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.gpio</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/linux.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.linux</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/locking.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.locking</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/swupdate.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.swupdate</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/timing.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.timing</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/uboot.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.uboot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/utils.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.utils</span></code></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Info</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#unreleased">Unreleased</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">0.10.10 - 2025-11-25</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#added">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#changed">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fixed">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">0.10.9 - 2024-11-01</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">0.10.8 - 2024-05-18</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">0.10.7 - 2024-03-17</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id9">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id11">0.10.6 - 2023-09-08</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id12">Added</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id13">0.10.5 - 2023-06-12</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id14">Added</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id15">0.10.4 - 2023-04-13</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id16">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id17">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id18">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id19">0.10.3 - 2022-11-21</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id20">Added</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id21">0.10.2 - 2022-10-13</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id22">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id23">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id24">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id25">0.10.1 - 2022-08-18</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id26">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id27">Fixed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id28">Changed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id29">0.10.0 - 2022-05-13</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id30">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id31">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id32">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id33">0.9.6 - 2022-03-02</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id34">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id35">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id36">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id37">0.9.5 - 2022-02-14</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id38">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#removed">Removed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id39">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id40">0.9.4 - 2021-12-24</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id41">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id42">0.9.3 - 2021-12-10</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id43">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id44">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id45">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id46">0.9.2 - 2021-09-13</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id47">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id48">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id49">0.9.1 - 2021-06-23</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id50">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id51">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id52">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id53">0.9.0 - 2021-03-03</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id54">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id55">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id56">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id57">0.8.3 - 2020-09-22</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id58">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id59">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id60">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id61">0.8.2 - 2020-04-08</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id62">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id63">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id64">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id65">0.8.1 - 2020-03-06</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id66">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id67">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id68">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id69">0.8.0 - 2019-11-20</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id70">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id71">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id72">Removed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id73">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id74">0.7.1 - 2019-03-14</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id75">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id76">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id77">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id78">0.7.0 - 2019-02-08</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id79">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id80">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id81">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id82">0.6.6 - 2019-01-18</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id83">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id84">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id85">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id86">0.6.5 - 2018-12-20</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id87">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id88">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id89">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id90">0.6.4 - 2018-12-05</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id91">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id92">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id93">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id94">0.6.3 - 2018-11-28</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id95">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id96">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id97">Removed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id98">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id99">0.6.2 - 2018-11-22</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id100">Added</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id101">0.6.1 - 2018-11-16</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id102">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id103">Changed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id104">0.6.0 - 2018-11-08</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id105">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id106">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id107">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pre08-2018-10-29">0.6.0-pre08 - 2018-10-29</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id108">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id109">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id110">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pre07-2018-10-25">0.6.0-pre07 - 2018-10-25</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id111">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id112">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id113">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pre06-2018-10-11">0.6.0-pre06 - 2018-10-11</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id114">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id115">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id116">Fixed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id117">Removed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pre05-2018-09-26">0.6.0-pre05 - 2018-09-26</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id118">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id119">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id120">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pre04-2018-09-19">0.6.0-pre04 - 2018-09-19</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id121">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id122">Changed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pre-2018-08-28">0.6.0-pre - 2018-08-28</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id123">0.3.4 - 2018-08-09</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id124">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id125">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id126">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id127">0.3.3 - 2018-07-20</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id128">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id129">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id130">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id131">0.3.2 - 2018-07-12</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id132">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id133">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id134">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id135">0.3.1 - 2018-06-22</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id136">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id137">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id138">Removed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id139">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id140">0.3.0 - 2018-06-15</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id141">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id142">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id143">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id144">0.2.4 - 2018-05-28</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id145">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id146">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id147">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id148">0.2.3 - 2018-05-16</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id149">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id150">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id151">Removed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id152">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id153">0.2.2 - 2018-05-15</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id154">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id155">Removed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id156">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id157">0.2.1 - 2018-05-14</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id158">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id159">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id160">0.2.0 - 2018-05-04</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id161">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id162">Fixed</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to tbot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LICENSE.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">tbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Changelog</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/CHANGELOG.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="changelog">
+<h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">¶</a></h1>
+<section id="unreleased">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.10.10...master">Unreleased</a><a class="headerlink" href="#unreleased" title="Link to this heading">¶</a></h2>
+</section>
+<section id="id1">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.10.9...v0.10.10">0.10.10</a> - 2025-11-25<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<section id="added">
+<h3>Added<a class="headerlink" href="#added" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added a <code class="docutils literal notranslate"><span class="pre">requires_legacy_scp</span></code> setting for SSH-based machines to make
+<code class="docutils literal notranslate"><span class="pre">linux.copy()</span></code> and similar functions use the legacy SCP protocol instead of
+SFTP (<a class="reference external" href="https://github.com/rahix/tbot/pull/123">#123</a>).  This may be useful for some old systems where no SFTP is
+available.</p></li>
+</ul>
+</section>
+<section id="changed">
+<h3>Changed<a class="headerlink" href="#changed" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Dropped official support for Python 3.8 - tbot now expects at least
+Python 3.9.</p></li>
+</ul>
+</section>
+<section id="fixed">
+<h3>Fixed<a class="headerlink" href="#fixed" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed an error about incorrect slots in <code class="docutils literal notranslate"><span class="pre">SubprocessChannelIO</span></code> on more recent
+Python versions.</p></li>
+</ul>
+</section>
+</section>
+<section id="id2">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.10.8...v0.10.9">0.10.9</a> - 2024-11-01<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<section id="id3">
+<h3>Changed<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Increased grace period for subprocesses to terminate from 1 to 10 seconds.  A
+warning is emitted after 1 seconds anyway, to let the user know why tbot is
+waiting (<a class="reference external" href="https://github.com/rahix/tbot/pull/120">#120</a>).</p></li>
+</ul>
+</section>
+<section id="id4">
+<h3>Fixed<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added a workaround for the <code class="docutils literal notranslate"><span class="pre">crc32</span></code> command in U-Boot which can collide with
+the U-Boot prompt in some cases (<a class="reference external" href="https://github.com/rahix/tbot/pull/112">#112</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="id5">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.10.7...v0.10.8">0.10.8</a> - 2024-05-18<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
+<section id="id6">
+<h3>Added<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added a sanity check to Linux shell initialization which should catch
+situations where things went wrong.  This should provided a more clear error
+message in the future (<a class="reference external" href="https://github.com/Rahix/tbot/pull/115">#115</a>).</p></li>
+<li><p>A specific (and documented) error type for situations where a bounded regex
+pattern is required but an unbounded pattern was supplied.</p></li>
+<li><p>A specific error type for situations where a tool is missing on a host which
+would be required by some testcase.</p></li>
+</ul>
+</section>
+<section id="id7">
+<h3>Fixed<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed U-Boot selftests failing on some systems due to an unclean environment.</p></li>
+</ul>
+</section>
+</section>
+<section id="id8">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.10.6...v0.10.7">0.10.7</a> - 2024-03-17<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
+<section id="id9">
+<h3>Changed<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Dropped official support for Python 3.7 - tbot now expects at least
+Python 3.8.</p></li>
+<li><p>Improved exception message when parsing of a command’s return code fails (for
+example due to console clutter).</p></li>
+<li><p>Made the shell detection mechanism a bit more robust (<code class="docutils literal notranslate"><span class="pre">wait_for_shell()</span></code>).</p></li>
+</ul>
+</section>
+<section id="id10">
+<h3>Fixed<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed tbot hanging when an unresponsive subprocess does not terminate by
+itself (<a class="reference external" href="https://github.com/Rahix/tbot/pull/104">#104</a>).</p></li>
+<li><p>Fixed tbot no longer detecting unbounded regex patterns on recent Python
+versions.</p></li>
+</ul>
+</section>
+</section>
+<section id="id11">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.10.5...v0.10.6">0.10.6</a> - 2023-09-08<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h2>
+<section id="id12">
+<h3>Added<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Gpio.pulse()</span></code> method in <code class="docutils literal notranslate"><span class="pre">tbot_contrib</span></code> for pulsing a GPIO pin (<a class="reference external" href="https://github.com/Rahix/tbot/pull/95">#95</a>).</p></li>
+<li><p>Added coverage tracking for tests.  Feel free to help improving coverage,
+especially of obscure features that will easily break when we don’t ensure
+their functionality with tests.</p></li>
+<li><p>Added an <code class="docutils literal notranslate"><span class="pre">AskfirstInitializer</span></code> which can be used to deal with boards where
+the console is configured with <code class="docutils literal notranslate"><span class="pre">askfirst</span></code> (<a class="reference external" href="https://github.com/Rahix/tbot/pull/98">#98</a>).</p></li>
+<li><p>Added the ability to use environment variables in <code class="docutils literal notranslate"><span class="pre">&#64;&lt;filename&gt;</span></code> argument
+files (<a class="reference external" href="https://github.com/Rahix/tbot/pull/96">#96</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="id13">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.10.4...v0.10.5">0.10.5</a> - 2023-06-12<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h2>
+<section id="id14">
+<h3>Added<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added a <code class="docutils literal notranslate"><span class="pre">password_prompt</span></code> configuration to <code class="docutils literal notranslate"><span class="pre">LinuxBootLogin</span></code> which allows
+customizing what password prompt to wait for.  This helps when the system is
+localized in a different language (<a class="reference external" href="https://github.com/Rahix/tbot/pull/93">#93</a>).</p></li>
+<li><p>Added a <code class="docutils literal notranslate"><span class="pre">tbot_contrib.utils.find_block_partitions()</span></code> helper for finding all
+partitions of a particular block device.</p></li>
+</ul>
+</section>
+</section>
+<section id="id15">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.10.3...v0.10.4">0.10.4</a> - 2023-04-13<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h2>
+<section id="id16">
+<h3>Added<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added a <code class="docutils literal notranslate"><span class="pre">tbot_contrib.linux.meminfo()</span></code> helper for extracting info from
+<code class="docutils literal notranslate"><span class="pre">/proc/meminfo</span></code>.</p></li>
+</ul>
+</section>
+<section id="id17">
+<h3>Changed<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p>Updated the best-practice example for pytest integration (<a class="reference external" href="https://tbot.tools/pytest.html">pytest
+Integration</a>).  It now properly allows accessing the configured machines
+before tests are run (<a class="reference external" href="https://github.com/Rahix/tbot/pull/86">#86</a>).  An example, where this may be useful, is
+parameterizing a test depending on a configured machine:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># board config</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyBoard</span><span class="p">(</span><span class="o">......</span><span class="p">):</span>
+    <span class="n">interfaces</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;eth0&quot;</span><span class="p">,</span> <span class="s2">&quot;usb0&quot;</span><span class="p">]</span>
+
+<span class="c1"># testcase module</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tbot</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_interfaces</span><span class="p">():</span>
+    <span class="n">board_cls</span> <span class="o">=</span> <span class="n">tbot</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">get_machine_class</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">Board</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">board_cls</span><span class="o">.</span><span class="n">interfaces</span>
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s2">&quot;interface&quot;</span><span class="p">,</span> <span class="n">_interfaces</span><span class="p">())</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_interface</span><span class="p">(</span><span class="n">interface</span><span class="p">):</span>
+    <span class="n">tbot</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Testing interface </span><span class="si">{</span><span class="n">interface</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="id18">
+<h3>Fixed<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed a file descriptor leak in the <code class="docutils literal notranslate"><span class="pre">SubprocessConnector</span></code> (<a class="reference external" href="https://github.com/Rahix/tbot/pull/88">#88</a>).  This
+would lead to an ever increasing number of open files in long test runs.  On
+systems with a low file descriptor limit, tbot would then crash with
+<code class="docutils literal notranslate"><span class="pre">OSError:</span> <span class="pre">[Errno</span> <span class="pre">24]</span> <span class="pre">Too</span> <span class="pre">many</span> <span class="pre">open</span> <span class="pre">files</span></code>.</p></li>
+<li><p>Fixed channels not being closed by <code class="docutils literal notranslate"><span class="pre">SSHConnector</span></code> (<a class="reference external" href="https://github.com/Rahix/tbot/pull/91">#91</a>).  Channels stayed
+open until tbot exited, which is again problematic for long running tests.</p></li>
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">SSHConnector</span></code> not using the lab-host to connect to remote hosts
+(<a class="reference external" href="https://github.com/Rahix/tbot/pull/92">#92</a>).  This was the behavior in the past and got broken in tbot <a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.8.3...v0.9.0">0.9.0</a>.</p></li>
+<li><p>Fixed a couple of robustness issues in <code class="docutils literal notranslate"><span class="pre">tbot_contrib.gdb</span></code> where tbot would
+hang or throw the wrong type of exception when encountering unexpected
+situations.</p></li>
+</ul>
+</section>
+</section>
+<section id="id19">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.10.2...v0.10.3">0.10.3</a> - 2022-11-21<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h2>
+<section id="id20">
+<h3>Added<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added a <code class="docutils literal notranslate"><span class="pre">force</span></code> parameter to <code class="docutils literal notranslate"><span class="pre">tbot.tc.check_for_tool()</span></code> which forces the
+check even if a result was already cached for this tool (<a class="reference external" href="https://github.com/Rahix/tbot/pull/83">#83</a>).</p></li>
+<li><p>Added an <code class="docutils literal notranslate"><span class="pre">only_decrease</span></code> parameter to <code class="docutils literal notranslate"><span class="pre">tbot.log.with_verbosity()</span></code>.</p></li>
+<li><p>Added an <a class="reference external" href="https://github.com/Rahix/tbot/blob/master/tbot_contrib/connector/auto.py"><code class="docutils literal notranslate"><span class="pre">AutoConsoleConnector</span></code></a> to <code class="docutils literal notranslate"><span class="pre">tbot_contrib</span></code> which automatically selects
+the best available tool for connecting to a serial console.</p></li>
+</ul>
+</section>
+</section>
+<section id="id21">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.10.1...v0.10.2">0.10.2</a> - 2022-10-13<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h2>
+<section id="id22">
+<h3>Added<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added a <code class="docutils literal notranslate"><span class="pre">tbot_contrib.utils.copy_to_dir()</span></code> helper which copies multiple files
+to a directory.  It is a more ergonomic wrapper around the existing <code class="docutils literal notranslate"><span class="pre">copy()</span></code>
+function.  Check its documentation for more details:
+<a class="reference external" href="https://tbot.tools/contrib/utils.html#tbot_contrib.utils.copy_to_dir"><code class="docutils literal notranslate"><span class="pre">copy_to_dir()</span></code></a> (<a class="reference external" href="https://github.com/Rahix/tbot/pull/77">#77</a>).</p></li>
+<li><p>Lots of custom exception types in the <a class="reference external" href="https://tbot.tools/modules/error.html"><code class="docutils literal notranslate"><span class="pre">tbot.error</span></code></a> module so test-code can
+differentiate between different kinds of errors.  This is ongoing work and
+will continue in future releases (<a class="reference external" href="https://github.com/Rahix/tbot/pull/79">#79</a>).</p></li>
+<li><p>Added a <code class="docutils literal notranslate"><span class="pre">--json-log-stream</span></code> CLI option to <code class="docutils literal notranslate"><span class="pre">newbot</span></code> which can be used to
+reactivate the existing old json-stream logging infrastructure.  A new
+logging mechanism will be added for newbot at some point in the future
+(<a class="reference external" href="https://github.com/Rahix/tbot/pull/78">#78</a>).</p></li>
+</ul>
+</section>
+<section id="id23">
+<h3>Changed<a class="headerlink" href="#id23" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Moved <code class="docutils literal notranslate"><span class="pre">tbot.tc.shell.copy()</span></code> to <code class="docutils literal notranslate"><span class="pre">tbot.machine.linux.copy()</span></code> as it is a core
+part of tbot.  The old name still exists for compatibility (<a class="reference external" href="https://github.com/Rahix/tbot/pull/77">#77</a>).</p></li>
+</ul>
+</section>
+<section id="id24">
+<h3>Fixed<a class="headerlink" href="#id24" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed tbot hanging when the remote side closes a channel while tbot is
+reading from it (<a class="reference external" href="https://github.com/Rahix/tbot/pull/74">#74</a>).</p></li>
+<li><p>Fixed a double exception in the context manager for a channel (<a class="reference external" href="https://github.com/Rahix/tbot/pull/74">#74</a>).</p></li>
+<li><p>Fixed the U-Boot shell not initializing correctly on very slow serial lines.</p></li>
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">copy()</span></code> not honoring the <code class="docutils literal notranslate"><span class="pre">use_multiplexing</span></code> setting (<a class="reference external" href="https://github.com/Rahix/tbot/pull/77">#77</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="id25">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.10.0...v0.10.1">0.10.1</a> - 2022-08-18<a class="headerlink" href="#id25" title="Link to this heading">¶</a></h2>
+<section id="id26">
+<h3>Added<a class="headerlink" href="#id26" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">linux.RedirStdin</span></code> to feed file contents to stdin of a command (<a class="reference external" href="https://github.com/Rahix/tbot/pull/69">#69</a>).</p></li>
+<li><p>Added a mechanism which allows tbot to skip entering the password if the
+remote system never asks for one (<a class="reference external" href="https://github.com/Rahix/tbot/commit/61800b63461bfe954776dd134000af0c57a62846"><code class="docutils literal notranslate"><span class="pre">61800b63461b</span></code></a>).  See
+<code class="docutils literal notranslate"><span class="pre">no_password_timeout</span></code> for details.</p></li>
+<li><p>Added the <code class="docutils literal notranslate"><span class="pre">tbot.log.with_verbosity()</span></code> helper which can be used to temporarily
+change the verbosity level of tbot.</p></li>
+<li><p>Added some documentation on how to integrate tbot with pytest: <a class="reference external" href="https://tbot.tools/pytest.html">pytest
+Integration</a></p></li>
+</ul>
+</section>
+<section id="id27">
+<h3>Fixed<a class="headerlink" href="#id27" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">Channel.send()</span></code> behavior when called with large amounts of data.</p></li>
+<li><p>Fixed invalid non-blocking I/O handling in the <code class="docutils literal notranslate"><span class="pre">SubprocessChannel</span></code>
+implementation.</p></li>
+<li><p>Fixed a few more escape sequences that clobber tbot’s output.</p></li>
+</ul>
+</section>
+<section id="id28">
+<h3>Changed<a class="headerlink" href="#id28" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Updated the <code class="docutils literal notranslate"><span class="pre">tbot_contrib.swupdate</span></code> testcases to newer tbot APIs.</p></li>
+<li><p>Changed the escape sequence for exiting interactive sessions.  You can now
+<strong>press <code class="docutils literal notranslate"><span class="pre">CTRL-]</span></code> three times within 1 second</strong> to exit any interactive
+session at any time.  Pressing <code class="docutils literal notranslate"><span class="pre">CTRL-D</span></code> is no longer supported in any but the
+interactive linux-shell sessions (<a class="reference external" href="https://github.com/Rahix/tbot/pull/70">#70</a>).</p></li>
+<li><p>For all who didn’t get the memo that Python 3.6 is EOL: tbot now requires 3.7
+as the minimum supported Python version.</p></li>
+</ul>
+</section>
+</section>
+<section id="id29">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.9.6...v0.10.0">0.10.0</a> - 2022-05-13<a class="headerlink" href="#id29" title="Link to this heading">¶</a></h2>
+<section id="id30">
+<h3>Added<a class="headerlink" href="#id30" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">newbot</span></code> CLI interface as a completely new and improved tool for calling
+tbot scripts.  The documentation has been updated, you can familiarize
+yourself with the new tool in the new <a class="reference external" href="https://tbot.tools/quickstart.html">Quickstart Guide</a> and learn about
+migrating to it in <a class="reference external" href="https://tbot.tools/cli.html#migrating-to-newbot">Migrating to <code class="docutils literal notranslate"><span class="pre">newbot</span></code></a>.  The <code class="docutils literal notranslate"><span class="pre">tbot</span></code> tool will not be
+removed for the time being but it will not be the place for new development
+from now on.</p></li>
+<li><p>Added a <code class="docutils literal notranslate"><span class="pre">boot_timeout</span></code> setting to <code class="docutils literal notranslate"><span class="pre">LinuxBootLogin</span></code> which will raise a
+<code class="docutils literal notranslate"><span class="pre">TimeoutException</span></code> if the login-prompt is not reached in the given time.</p></li>
+</ul>
+</section>
+<section id="id31">
+<h3>Changed<a class="headerlink" href="#id31" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Upgraded the python package metadata to newer standards.  Ideally this should
+not have any visible effects to users.</p></li>
+</ul>
+</section>
+<section id="id32">
+<h3>Fixed<a class="headerlink" href="#id32" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">tbot_contrib.locking</span></code> sometimes failing with <code class="docutils literal notranslate"><span class="pre">chmod</span></code> related error
+messages while checking lock expiry.</p></li>
+</ul>
+</section>
+</section>
+<section id="id33">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.9.5...v0.9.6">0.9.6</a> - 2022-03-02<a class="headerlink" href="#id33" title="Link to this heading">¶</a></h2>
+<section id="id34">
+<h3>Added<a class="headerlink" href="#id34" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added the <code class="docutils literal notranslate"><span class="pre">linux.Path.resolve()</span></code> method to turn relative paths absolute and
+to resolve all symlinked components of a path.  This is essentially
+<code class="docutils literal notranslate"><span class="pre">realpath(1)</span></code>.</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">linux.Path.readlink()</span></code>.</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">linux.Path.symlink_to()</span></code>.  This is a more ergonomic wrapper around
+calling <code class="docutils literal notranslate"><span class="pre">ln(1)</span></code> manually.</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">linux.Path.rglob()</span></code>.  This method can be used to recursively find all
+files matching a glob beneath a certain path.</p></li>
+</ul>
+</section>
+<section id="id35">
+<h3>Changed<a class="headerlink" href="#id35" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">linux.Path.glob()</span></code> now only allows globbing in the the last component of the
+pattern path.  This means <code class="docutils literal notranslate"><span class="pre">common/*.c</span></code> works fine, but <code class="docutils literal notranslate"><span class="pre">co*/*.c</span></code> does <em>not.</em></p></li>
+</ul>
+</section>
+<section id="id36">
+<h3>Fixed<a class="headerlink" href="#id36" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed some problems with some busybox versions when using <code class="docutils literal notranslate"><span class="pre">Path.write_text()</span></code>
+for device property files in <code class="docutils literal notranslate"><span class="pre">/sys</span></code>.</p></li>
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">linux.Workdir</span></code> sometimes returning a different workdir (when same “key” is
+used for multiple workdirs on the same host).</p></li>
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">linux.Path.glob()</span></code> not dealing properly with odd characters in the
+glob pattern (most notably spaces).</p></li>
+</ul>
+</section>
+</section>
+<section id="id37">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.9.4...v0.9.5">0.9.5</a> - 2022-02-14<a class="headerlink" href="#id37" title="Link to this heading">¶</a></h2>
+<section id="id38">
+<h3>Added<a class="headerlink" href="#id38" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added a new, reworked integration for U-Boot’s test/py testsuite as
+<a class="reference external" href="https://tbot.tools/contrib/uboot.html#tbot_contrib.uboot.testpy"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.uboot.testpy</span></code></a>.  Consider using this one in preference of the
+old <code class="docutils literal notranslate"><span class="pre">tbot.tc.uboot.testpy</span></code>.</p></li>
+<li><p>Added a <code class="docutils literal notranslate"><span class="pre">.board</span></code> property to all machines which were instantiated from a
+“board” (like a <code class="docutils literal notranslate"><span class="pre">BoardLinux</span></code>, for example).  This property points back to
+this original board machine.  See issue <a class="reference external" href="https://github.com/Rahix/tbot/issues/65">#65</a> for a usecase of this.</p></li>
+</ul>
+</section>
+<section id="removed">
+<h3>Removed<a class="headerlink" href="#removed" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p>Soft-removed the old selftest suite (which was called with <code class="docutils literal notranslate"><span class="pre">tbot</span> <span class="pre">selftest</span></code>)
+in favor of the new pytest based one.  Please selftest tbot with the
+following command instead:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/path/to/tbot-sources
+python3<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>selftest/
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="id39">
+<h3>Fixed<a class="headerlink" href="#id39" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed a bug when using death-strings on a machine and then calling
+<code class="docutils literal notranslate"><span class="pre">LinuxShell.run()</span></code>.  This fixes spurious messages about the command having
+ended prematurely when it really hasn’t.</p></li>
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">Path.write_bytes()</span></code> and <code class="docutils literal notranslate"><span class="pre">Path.write_text()</span></code> raising an exception of the
+wrong type when an error occurs. This could sometimes even lead to improper
+behavior of follow-up commands.</p></li>
+<li><p>Fixed the <code class="docutils literal notranslate"><span class="pre">GDBShell</span></code> for versions of <code class="docutils literal notranslate"><span class="pre">gdb</span></code> which ask about enabling
+<code class="docutils literal notranslate"><span class="pre">debuginfod</span></code>.</p></li>
+</ul>
+</section>
+</section>
+<section id="id40">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.9.3...v0.9.4">0.9.4</a> - 2021-12-24<a class="headerlink" href="#id40" title="Link to this heading">¶</a></h2>
+<section id="id41">
+<h3>Fixed<a class="headerlink" href="#id41" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fix machine locking (<code class="docutils literal notranslate"><span class="pre">tbot_contrib.locking</span></code>) not quite working when
+<code class="docutils literal notranslate"><span class="pre">reset_on_error_by_default</span></code> is active in the tbot context.</p></li>
+<li><p>Fix <code class="docutils literal notranslate"><span class="pre">reset_on_error</span></code> raising odd exceptions when nested requests of the same
+machine are done.</p></li>
+<li><p>Fixed tbot not running with Python 3.10.</p></li>
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">tbot_contrib.locking</span></code> locks not working properly on multi-user systems
+due to bad permissions.</p></li>
+</ul>
+</section>
+</section>
+<section id="id42">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.9.2...v0.9.3">0.9.3</a> - 2021-12-10<a class="headerlink" href="#id42" title="Link to this heading">¶</a></h2>
+<section id="id43">
+<h3>Added<a class="headerlink" href="#id43" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added the <code class="docutils literal notranslate"><span class="pre">NullConnector</span></code> for designing machine classes which do not have a
+channel.  This is useful, for example, when a board has no serial console.</p></li>
+<li><p>Added the <code class="docutils literal notranslate"><span class="pre">powercycle_delay</span></code> attribute to the <code class="docutils literal notranslate"><span class="pre">PowerControl</span></code> initializer.
+This can be used to specify a wait time between poweroff and subsequent
+poweron of a board.  Used to let the poweroff settle to have the board really
+off before turning it back on.</p></li>
+<li><p>Added an option to slow down transmission of a <code class="docutils literal notranslate"><span class="pre">Channel</span></code> for serial consoles
+which cannot process incoming data fast enough.  See <a class="reference external" href="https://tbot.tools/modules/machine_channel.html#tbot.machine.channel.Channel.slow_send_delay"><code class="docutils literal notranslate"><span class="pre">Channel.slow_send_delay</span></code></a>
+for details.</p></li>
+<li><p>Added a <code class="docutils literal notranslate"><span class="pre">Context.teardown_if_alive()</span></code> method to ensure no instance of a
+certain role is active.  This can be useful, for example, when a <code class="docutils literal notranslate"><span class="pre">BoardLinux</span></code>
+instance is alive but you need to enter U-Boot.  Normally this would fail,
+because the <code class="docutils literal notranslate"><span class="pre">BoardLinux</span></code> instance is keeping the <code class="docutils literal notranslate"><span class="pre">Board</span></code> instance for itself.
+With teardown_if_alive() you can first tear down this <code class="docutils literal notranslate"><span class="pre">BoardLinux</span></code> instance
+and then request the <code class="docutils literal notranslate"><span class="pre">BoardUBoot</span></code> instance as usual.</p></li>
+</ul>
+</section>
+<section id="id44">
+<h3>Changed<a class="headerlink" href="#id44" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>When a pytest testcase is skipped, <code class="docutils literal notranslate"><span class="pre">tbot.Context</span></code>’s <code class="docutils literal notranslate"><span class="pre">reset_on_error</span></code> flag no
+longer triggers a board reset.  This means skipping testcases is now just as
+fast as not executing them where it previously would trigger a reset of all
+machines.</p></li>
+</ul>
+</section>
+<section id="id45">
+<h3>Fixed<a class="headerlink" href="#id45" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed Linux machines not connecting when a very long <code class="docutils literal notranslate"><span class="pre">PS1</span></code> is used on the
+remote side.</p></li>
+<li><p>Fixed an exception during context teardown when <code class="docutils literal notranslate"><span class="pre">keep_alive</span></code> mode is enabled.</p></li>
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">find_ip_address()</span></code> not working with the BusyBox version of the <code class="docutils literal notranslate"><span class="pre">ip</span></code>
+utility.</p></li>
+</ul>
+</section>
+</section>
+<section id="id46">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.9.1...v0.9.2">0.9.2</a> - 2021-09-13<a class="headerlink" href="#id46" title="Link to this heading">¶</a></h2>
+<section id="id47">
+<h3>Added<a class="headerlink" href="#id47" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added a new <code class="docutils literal notranslate"><span class="pre">strip_ansi_escapes()</span></code> utility in <code class="docutils literal notranslate"><span class="pre">tbot_contrib.utils</span></code> which can
+be used to remove e.g. color escape codes from command output.</p></li>
+<li><p>Added a <code class="docutils literal notranslate"><span class="pre">hashcmp()</span></code> utility in <code class="docutils literal notranslate"><span class="pre">tbot_contrib.utils</span></code> to compare the hashsum of
+two files (which may be located on different machines).</p></li>
+<li><p>Added the <code class="docutils literal notranslate"><span class="pre">py.typed</span></code> marker for type-checkers (see <a class="reference external" href="https://www.python.org/dev/peps/pep-0561/">PEP 561</a>).</p></li>
+</ul>
+</section>
+<section id="id48">
+<h3>Fixed<a class="headerlink" href="#id48" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed the order of instance teardown in <code class="docutils literal notranslate"><span class="pre">keep_alive</span></code> contexts.  This fixes any
+kinds of problems due to wrong teardown order of dependent machines (e.g.
+lab-host torn down before a board machine).</p></li>
+<li><p>Fixed selftests failing due to deprecation of <code class="docutils literal notranslate"><span class="pre">ssh-rsa</span></code> algorithm.</p></li>
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">find_ip_address()</span></code> not working when a local address is passed as the
+<code class="docutils literal notranslate"><span class="pre">route_target</span></code>.</p></li>
+</ul>
+</section>
+</section>
+<section id="id49">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.9.0...v0.9.1">0.9.1</a> - 2021-06-23<a class="headerlink" href="#id49" title="Link to this heading">¶</a></h2>
+<section id="id50">
+<h3>Added<a class="headerlink" href="#id50" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added a mechanism for “locking” connections to certain machines.  This can be
+used, for example, to ensure exclusive access to a certain board.  See
+<a class="reference external" href="https://tbot.tools/contrib/locking.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.locking</span></code></a> for details.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Path.rmdir()</span></code> and <code class="docutils literal notranslate"><span class="pre">Path.unlink()</span></code>: Methods to conveniently delete an empty
+directory, a symlink, or a file from a host’s filesystem.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Path.mkdir()</span></code>: Method to conveniently create a directory on the respective
+machine.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Path.at_host(host)</span></code>:  A method to safely convert a tbot-path into a plain
+string.  The <code class="docutils literal notranslate"><span class="pre">host</span></code> parameter is used to check that the <code class="docutils literal notranslate"><span class="pre">Path</span></code> is actually
+meant for the expected host.  Any uses of the (unofficial) <code class="docutils literal notranslate"><span class="pre">_local_str()</span></code>
+method should be replaced by <code class="docutils literal notranslate"><span class="pre">at_host()</span></code> as the former will be removed soon.</p></li>
+<li><p>New classes <code class="docutils literal notranslate"><span class="pre">AppendStdout</span></code>, <code class="docutils literal notranslate"><span class="pre">AppendStderr</span></code>, and <code class="docutils literal notranslate"><span class="pre">AppendBoth</span></code> in
+<code class="docutils literal notranslate"><span class="pre">machine.linux</span></code> allow to append command output to files in <code class="docutils literal notranslate"><span class="pre">exec()</span></code> and
+<code class="docutils literal notranslate"><span class="pre">exec0()</span></code> methods.</p></li>
+<li><p>Added a feature to the <code class="docutils literal notranslate"><span class="pre">Context</span></code> to allow reconfiguring a context temporarily
+(<code class="docutils literal notranslate"><span class="pre">Context.reconfigure()</span></code>).  This is useful to e.g. enable <code class="docutils literal notranslate"><span class="pre">keep_alive</span></code> mode
+for certain tests.</p></li>
+</ul>
+</section>
+<section id="id51">
+<h3>Changed<a class="headerlink" href="#id51" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Warnings emitted due to problems when parsing the SSH config now include
+hints about the actual problem.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">linux.Path</span></code> no longer inherits from <code class="docutils literal notranslate"><span class="pre">pathlib.PurePosixPath</span></code>.  This fixes
+a number of long standing oddities where certain methods would not function
+correctly.  All API from <code class="docutils literal notranslate"><span class="pre">PurePosixPath</span></code> has been reimplemented in
+<code class="docutils literal notranslate"><span class="pre">linux.Path</span></code> explicitly, now with the proper behavior.</p></li>
+</ul>
+</section>
+<section id="id52">
+<h3>Fixed<a class="headerlink" href="#id52" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed the <code class="docutils literal notranslate"><span class="pre">PyserialConnector</span></code> not working properly with tbot contexts.</p></li>
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">linux.Background</span></code> not properly redirecting stderr output.</p></li>
+</ul>
+</section>
+</section>
+<section id="id53">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.8.3...v0.9.0">0.9.0</a> - 2021-03-03<a class="headerlink" href="#id53" title="Link to this heading">¶</a></h2>
+<section id="id54">
+<h3>Added<a class="headerlink" href="#id54" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added the <strong>Context</strong> API for much easier and more flexible machine
+management.  Please read the <a class="reference external" href="https://tbot.tools/context.html">Context API</a> documentation for an
+introduction and migration guide.  <strong>Note</strong>: For now the old <code class="docutils literal notranslate"><span class="pre">tbot.selectable</span></code>
+API still exists and will be compatible both ways with the new API.  It will,
+however, slowly be phased out in the future.</p></li>
+<li><p>Warning about incorrect build-host configuration when running <code class="docutils literal notranslate"><span class="pre">uboot_testpy</span></code>
+testcase.</p></li>
+<li><p>Added support for SSH connection multiplexing to <code class="docutils literal notranslate"><span class="pre">SSHConnector</span></code>.  You can
+enable it by adding <code class="docutils literal notranslate"><span class="pre">use_multiplexing</span> <span class="pre">=</span> <span class="pre">True</span></code> to your host config.
+Multiplexing can drastically speed up testcases which open many connections to
+the same host (see <a class="reference external" href="https://man.openbsd.org/ssh_config.5#ControlMaster"><code class="docutils literal notranslate"><span class="pre">ControlMaster</span></code> in <code class="docutils literal notranslate"><span class="pre">sshd_config(5)</span></code></a> for
+details).</p></li>
+<li><p>Added two more types of machine initializers:</p>
+<ul>
+<li><p><a class="reference external" href="https://tbot.tools/modules/machine.html#tbot.machine.PreConnectInitializer"><code class="docutils literal notranslate"><span class="pre">PreConnectInitializer</span></code></a>: Runs before the
+connection is established.</p></li>
+<li><p><a class="reference external" href="https://tbot.tools/modules/machine.html#tbot.machine.PostShellInitializer"><code class="docutils literal notranslate"><span class="pre">PostShellInitializer</span></code></a>: Runs after the shell is
+available (and thus can interact with it).</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id55">
+<h3>Changed<a class="headerlink" href="#id55" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">LinuxShell.env()</span></code> can now be used to query <code class="docutils literal notranslate"><span class="pre">$!</span></code> (last background job PID) and
+<code class="docutils literal notranslate"><span class="pre">$$</span></code> (current shell PID) special environment  variables (using <code class="docutils literal notranslate"><span class="pre">m.env(&quot;!&quot;)</span></code>
+and <code class="docutils literal notranslate"><span class="pre">m.env(&quot;$&quot;)</span></code>).</p></li>
+<li><p>Added some more specific exception types and started using them where
+appropriate.  This effort is by far not over yet, though …</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">linux.Background</span></code> special token is now more safe to use as it prevents
+console clobbering as good as it can.  You can manually redirect command
+output to files using a new call syntax.  See <a class="reference external" href="https://tbot.tools/modules/machine_linux.html#tbot.machine.linux.Background"><code class="docutils literal notranslate"><span class="pre">Background</span></code></a>
+documentation for details.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">paramiko</span></code> is now an optional dependency.  tbot works just fine without
+paramiko, but if it is installed, the <code class="docutils literal notranslate"><span class="pre">ParamikoConnector</span></code> becomes available.</p></li>
+<li><p>Switched to <code class="docutils literal notranslate"><span class="pre">pytest</span></code> for tbot’s selftests.</p></li>
+</ul>
+</section>
+<section id="id56">
+<h3>Fixed<a class="headerlink" href="#id56" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Call <code class="docutils literal notranslate"><span class="pre">olddefconfig</span></code> before attempting to build U-Boot.  This prevents kconfig
+from attempting to interactively query new config settings.</p></li>
+<li><p>Fixed a rare timing-dependent bash/ash initialization deadlock.</p></li>
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">selftest_tc</span></code> failing if user has no git identity set up.</p></li>
+<li><p>Fixed documentation silently building without version information if
+<code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">describe</span></code> fails.</p></li>
+<li><p>Fixed tbot configuring an overly narrow terminal in some cases, leading to
+weird looking output (now the minimum is 80 chars wide).</p></li>
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">Path.write_text()</span></code>/<code class="docutils literal notranslate"><span class="pre">Path.write_bytes()</span></code> hanging when an error occurs
+and the channel receives data very slowly.</p></li>
+</ul>
+</section>
+</section>
+<section id="id57">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.8.2...v0.8.3">0.8.3</a> - 2020-09-22<a class="headerlink" href="#id57" title="Link to this heading">¶</a></h2>
+<section id="id58">
+<h3>Added<a class="headerlink" href="#id58" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">ensure_sd_unit()</span></code> testcase/util-function which starts systemd
+services if not yet running.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tbot.error</span></code> module as a central place for defining all exception types.</p></li>
+<li><p>Added a <code class="docutils literal notranslate"><span class="pre">PyserialConnector</span></code> to connect to a serial port using
+<a class="reference external" href="https://pyserial.readthedocs.io/en/latest/pyserial.html">PySerial</a>.</p></li>
+<li><p>super-verbose mode (<code class="docutils literal notranslate"><span class="pre">-vvv</span></code>) now prefixes each output line with a channel
+identifier to help separate what data came from which channel.</p></li>
+<li><p>Added a <code class="docutils literal notranslate"><span class="pre">Channel.read_until_timeout()</span></code> method for reading all data until
+a timeout is reached (or an Exception is thrown).</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">find_ip_address()</span></code> testcase/util-function to discover the IP
+address of a machine.</p></li>
+<li><p>One can now pass a custom line-ending to <code class="docutils literal notranslate"><span class="pre">Channel.readline()</span></code> incase the
+remote does not behave properly and send <code class="docutils literal notranslate"><span class="pre">\r\n</span></code> for every line.</p></li>
+<li><p>Added a <code class="docutils literal notranslate"><span class="pre">Channel.add_death_string()</span></code> method which is like
+<code class="docutils literal notranslate"><span class="pre">.with_death_string()</span></code> but not a context-manager.  The death string is
+added for the entire lifetime of the channel with this new method.</p></li>
+</ul>
+</section>
+<section id="id59">
+<h3>Changed<a class="headerlink" href="#id59" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>tbot now prints all passed flags on start (and thus also stores this
+info in the log-file).</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">\e[K</span></code> is passed through to make output from programs like
+ninja-build prettier.</p></li>
+</ul>
+</section>
+<section id="id60">
+<h3>Fixed<a class="headerlink" href="#id60" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed an issue where the path returned by <code class="docutils literal notranslate"><span class="pre">mach.workdir</span></code> would be
+associated with a wrong host machine.</p></li>
+<li><p>Fixed bash completions for <code class="docutils literal notranslate"><span class="pre">&#64;args</span></code> not properly dealing with
+directories.</p></li>
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">login_delay</span></code> for board-linux not behaving as documented and in
+some circumstances leading to a login without waiting.</p></li>
+</ul>
+</section>
+</section>
+<section id="id61">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.8.1...v0.8.2">0.8.2</a> - 2020-04-08<a class="headerlink" href="#id61" title="Link to this heading">¶</a></h2>
+<p><em>Update</em>: Development now happens on the <code class="docutils literal notranslate"><span class="pre">master</span></code> branch instead of <code class="docutils literal notranslate"><span class="pre">development</span></code>.</p>
+<section id="id62">
+<h3>Added<a class="headerlink" href="#id62" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">LinuxShell.run()</span></code> to run a command and interact with its stdio:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">lh</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;gdb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">gdb</span><span class="p">:</span>
+    <span class="n">gdb</span><span class="o">.</span><span class="n">read_until_prompt</span><span class="p">(</span><span class="s2">&quot;(gdb) &quot;</span><span class="p">)</span>
+    <span class="n">gdb</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s2">&quot;target remote 127.0.0.1:3333&quot;</span><span class="p">)</span>
+    <span class="n">gdb</span><span class="o">.</span><span class="n">read_until_prompt</span><span class="p">(</span><span class="s2">&quot;(gdb) &quot;</span><span class="p">)</span>
+    <span class="n">gdb</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s2">&quot;load&quot;</span><span class="p">)</span>
+    <span class="n">gdb</span><span class="o">.</span><span class="n">read_until_prompt</span><span class="p">(</span><span class="s2">&quot;(gdb) &quot;</span><span class="p">)</span>
+    <span class="n">gdb</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s2">&quot;quit&quot;</span><span class="p">)</span>
+    <span class="n">gdb</span><span class="o">.</span><span class="n">terminate0</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Path.write_text()</span></code>, <code class="docutils literal notranslate"><span class="pre">Path.read_text()</span></code>, <code class="docutils literal notranslate"><span class="pre">Path.write_bytes()</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">Path.read_bytes()</span></code>: Methods to easily manipulate remote files.</p></li>
+<li><p>Added integration for U-Boot’s test/py test-framework.  See the
+<code class="docutils literal notranslate"><span class="pre">uboot_testpy</span></code> testcase fore more.</p></li>
+<li><p>A connector for connection to a <a class="reference external" href="https://www.conserver.com/">conserver</a>
+based serial console: <code class="docutils literal notranslate"><span class="pre">tbot_contrib.connector.conserver</span></code></p></li>
+<li><p>Testcases for timing the duration of an operation (<code class="docutils literal notranslate"><span class="pre">tbot_contrib.timing</span></code>).</p></li>
+<li><p>A testcase to deploy an <code class="docutils literal notranslate"><span class="pre">swu</span></code>-file to
+<a class="reference external" href="https://github.com/sbabic/swupdate">SWUpdate</a> (<code class="docutils literal notranslate"><span class="pre">tbot_contrib.swupdate</span></code>).</p></li>
+<li><p>Machines now implement <code class="docutils literal notranslate"><span class="pre">==</span></code> and <code class="docutils literal notranslate"><span class="pre">hash()</span></code>.  A machine which was cloned
+from another machine has the same hash, i.e. they can be treated as equal.</p></li>
+<li><p>Added a U-Boot smoke-test: <code class="docutils literal notranslate"><span class="pre">tbot.tc.uboot.smoke_test()</span></code> or <code class="docutils literal notranslate"><span class="pre">uboot_smoke_test</span></code></p></li>
+<li><p>Added a <code class="docutils literal notranslate"><span class="pre">DistroToolchain</span></code> class to easily allow using pre-installed
+toolchains with tbot.</p></li>
+<li><p>Added a Workdir which lives in <code class="docutils literal notranslate"><span class="pre">$XDG_DATA_HOME</span></code> and one living in
+<code class="docutils literal notranslate"><span class="pre">$XDG_RUNTIME_DIR</span></code> (<code class="docutils literal notranslate"><span class="pre">Workdir.xdg_home()</span></code> and <code class="docutils literal notranslate"><span class="pre">Workdir.xdg_runtime()</span></code>).</p></li>
+<li><p>You can now specify the U-Boot revision to checkout:
+<code class="docutils literal notranslate"><span class="pre">tbot</span> <span class="pre">uboot_checkout</span> <span class="pre">-prev=\&quot;v2020.01\&quot;</span></code></p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">boot_timeout</span></code> parameter was added to U-Boot machines to limit the maximum
+time, U-Boot is allowed to take during boot.</p></li>
+<li><p>Testcases for interacting with GPIOs (<code class="docutils literal notranslate"><span class="pre">tbot_contrib.gpio</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tbot.Re</span></code>: A convenience wrapper around <code class="docutils literal notranslate"><span class="pre">re.compile</span></code>.  Wherever
+regex-patterns are needed (e.g. in channel-interaction), you can now use
+<code class="docutils literal notranslate"><span class="pre">tbot.Re</span></code> instead of <code class="docutils literal notranslate"><span class="pre">re.compile(&quot;...&quot;.encode())</span></code>.</p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">Channel.readline()</span></code> and a <code class="docutils literal notranslate"><span class="pre">Channel.expect()</span></code> method to mimic pexpect.</p></li>
+</ul>
+</section>
+<section id="id63">
+<h3>Changed<a class="headerlink" href="#id63" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>The default workdir for Linux shells is no longer <code class="docutils literal notranslate"><span class="pre">/tmp/tbot-wd</span></code>.  It is
+now <code class="docutils literal notranslate"><span class="pre">$XDG_DATA_HOME/tbot</span></code> (usually <code class="docutils literal notranslate"><span class="pre">~/.local/share/tbot</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">UBootBuilder</span></code> now points to the new U-Boot upstream
+(<a class="reference external" href="https://gitlab.denx.de/u-boot/u-boot.git">https://gitlab.denx.de/u-boot/u-boot.git</a>) by default.</p></li>
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">linux.Bash</span></code>’s <code class="docutils literal notranslate"><span class="pre">.env()</span></code> implementation unnecessarily querying the
+variable after setting it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">selftest</span></code> now uses a dedicated machine class which does not clobber
+the default workdir and instead stores data in a temporary directory.</p></li>
+</ul>
+</section>
+<section id="id64">
+<h3>Fixed<a class="headerlink" href="#id64" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed tbot sometimes not displaying a message before entering
+interactive mode, thus leaving the user clueless what escape-sequence to
+use to exit.</p></li>
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">linux.Bash</span></code>, <code class="docutils literal notranslate"><span class="pre">linux.Ash</span></code>, and <code class="docutils literal notranslate"><span class="pre">board.UBootShell</span></code> allowing some
+bad characters in command invocations which would mess up the shell’s
+state.</p></li>
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">tbot.flags</span></code> only being set <em>after</em> loading the testcases which
+could lead to weird inconsistency errors.</p></li>
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">Channel.sendcontrol()</span></code> not actually allowing all C0 control
+characters.</p></li>
+</ul>
+</section>
+</section>
+<section id="id65">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.8.0...v0.8.1">0.8.1</a> - 2020-03-06<a class="headerlink" href="#id65" title="Link to this heading">¶</a></h2>
+<section id="id66">
+<h3>Added<a class="headerlink" href="#id66" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">LinuxShell.glob()</span></code> method for easily using shell globs.</p></li>
+<li><p>Added parameters to <code class="docutils literal notranslate"><span class="pre">LinuxShell.subshell()</span></code> which can be used to spawn
+custom subshells.</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">linux.RedirBoth</span></code> to redirect both stdout and stderr to the same
+file.</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">UBootShell.ram_base</span></code> property to learn the RAM base address in
+testcases.</p></li>
+<li><p>Added a write blacklist to channels.  This feature can be used to
+disallow tests sending certain control characters.</p></li>
+<li><p>Added a <code class="docutils literal notranslate"><span class="pre">do_build()</span></code> step to <code class="docutils literal notranslate"><span class="pre">UBootBuilder</span></code> which can be used to
+customize the command used for building U-Boot.</p></li>
+<li><p>Empty <code class="docutils literal notranslate"><span class="pre">tbot_contrib</span></code> module for the future :)</p></li>
+</ul>
+</section>
+<section id="id67">
+<h3>Changed<a class="headerlink" href="#id67" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p>Made <code class="docutils literal notranslate"><span class="pre">SSHConnector</span></code> based machine cloneable (if the underlying host is
+cloneable).</p></li>
+<li><p>Made <code class="docutils literal notranslate"><span class="pre">tbot.testcase</span></code> also work as a context-manager.  This can be used
+to define ‘sub-tests’ in a function.  Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">tbot</span><span class="o">.</span><span class="n">testcase</span><span class="p">(</span><span class="s2">&quot;my_sub_testcase&quot;</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="id68">
+<h3>Fixed<a class="headerlink" href="#id68" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed U-Boot and board-Linux not saving the bootlog to the log-event.</p></li>
+<li><p>Fixed tbot happily printing special characters as part of a command which was
+sent (in the log).</p></li>
+<li><p>Fixed selftests failing in some rare circumstances because a subprocess
+is not properly terminated or when bash is slow.</p></li>
+<li><p>Removed use of the deprecated <code class="docutils literal notranslate"><span class="pre">time.clock()</span></code> function.</p></li>
+<li><p>Properly check stdout encoding.</p></li>
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">read_iter</span></code> sometimes passing negative timeout values to the
+underlying channel IO.</p></li>
+<li><p>Fixed tbot hanging on zero-byte <code class="docutils literal notranslate"><span class="pre">Channel.send()</span></code> call.</p></li>
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">lnx.env()</span></code> behaving incorrectly when an environment variable has
+a value which looks like an <code class="docutils literal notranslate"><span class="pre">echo</span></code>-option.</p></li>
+<li><p>Fixed a bug caused by passing <code class="docutils literal notranslate"><span class="pre">&quot;\n^&quot;</span></code> as a parameter (bash interprets this as
+a kind of history expansion).</p></li>
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">UBootShell</span></code> not properly escaping <code class="docutils literal notranslate"><span class="pre">\</span></code> and <code class="docutils literal notranslate"><span class="pre">'</span></code>.</p></li>
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">ub.env()</span></code> failing on environment variables with weird values.</p></li>
+</ul>
+</section>
+</section>
+<section id="id69">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.7.1...v0.8.0">0.8.0</a> - 2019-11-20<a class="headerlink" href="#id69" title="Link to this heading">¶</a></h2>
+<p>The machine interface was completely overhauled.  Please read the <a class="reference external" href="https://tbot.tools/migration.html">migration
+guide</a> for more info.</p>
+<section id="id70">
+<h3>Added<a class="headerlink" href="#id70" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&#64;tbot.with_lab</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;tbot.with_uboot</span></code>, and <code class="docutils literal notranslate"><span class="pre">&#64;tbot.with_linux</span></code> decorators to
+make writing testcase much simpler</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">linux.RedirStdout(f)</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">linux.RedirStderr(f)</span></code>: Redirect stdout and stderr symbols</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Machine.init()</span></code> hook to call custom code after the machine was initialized.
+This can be used, for example, to init network manually in U-Boot.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tc.shell.check_for_tool()</span></code> testcase</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tbot.skip()</span></code>: Skip a testcase</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Machine.clone()</span></code>: Attempt creating a copy of a machine.  The two copies
+allow parallel interaction with the same host.</p></li>
+</ul>
+</section>
+<section id="id71">
+<h3>Changed<a class="headerlink" href="#id71" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">linux.BuildMachine</span></code> is now a mixin called <code class="docutils literal notranslate"><span class="pre">linux.Builder</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">linux.LabHost</span></code> is now a mixin called <code class="docutils literal notranslate"><span class="pre">linux.Lab</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">linux.LinuxMachine</span></code> should be replaced by <code class="docutils literal notranslate"><span class="pre">linux.LinuxShell</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LabHost.new_channel()</span></code> was removed in favor of <code class="docutils literal notranslate"><span class="pre">LinuxShell.open_channel()</span></code>.
+<code class="docutils literal notranslate"><span class="pre">open_channel()</span></code> consumes the machine it is called on which means the
+equivalent to <code class="docutils literal notranslate"><span class="pre">new_channel()</span></code> now is:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">mach</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span> <span class="k">as</span> <span class="n">cl</span><span class="p">:</span>
+    <span class="n">chan</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">open_channel</span><span class="p">(</span><span class="s2">&quot;telnet&quot;</span><span class="p">,</span> <span class="s2">&quot;192.0.2.1&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="id72">
+<h3>Removed<a class="headerlink" href="#id72" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">exec0(stdout=f)</span></code>: Redirection should be done using <code class="docutils literal notranslate"><span class="pre">RedirStdout</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">linux.Env(var)</span></code>: Environment-Variable substitution is hard to control.  It
+is much easier to just use <code class="docutils literal notranslate"><span class="pre">mach.env(var)</span></code>.</p></li>
+</ul>
+</section>
+<section id="id73">
+<h3>Fixed<a class="headerlink" href="#id73" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Path.__fspath__()</span></code> erroneously returning a result, even though the contract
+that is assumed with this method cannot be upheld by tbot.</p></li>
+</ul>
+</section>
+</section>
+<section id="id74">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.7.0...v0.7.1">0.7.1</a> - 2019-03-14<a class="headerlink" href="#id74" title="Link to this heading">¶</a></h2>
+<section id="id75">
+<h3>Added<a class="headerlink" href="#id75" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tbot.acquire_local()</span></code>: Quick access to a localhost machine</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LinuxMachine.home</span></code>: Path to the current user’s home</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LocalLabHost.tbotdir</span></code>: tbot’s current working directory on the localhost (either
+from where you ran <code class="docutils literal notranslate"><span class="pre">tbot</span></code> or the path given with <code class="docutils literal notranslate"><span class="pre">-C</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tbot.tc.kconfig</span></code>:  Testcases for modifying a kernel config file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">login_delay</span></code>: Time to wait before logging in on the board.  This should
+allow working with boards that clobber the console a lot during boot.</p></li>
+</ul>
+</section>
+<section id="id76">
+<h3>Changed<a class="headerlink" href="#id76" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Unknown parameters are now ignored if running multiple testcases so
+you can specify parameters that are just relevant to a single one.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SSHMachine</span></code>s now use <code class="docutils literal notranslate"><span class="pre">NoneAuthenticator</span></code> by default.</p></li>
+</ul>
+</section>
+<section id="id77">
+<h3>Fixed<a class="headerlink" href="#id77" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">selftest</span></code>s sometimes failing if dropbear does not start fast enough</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SSHMachine</span></code>s using the local user’s home dir instead of the one on the
+lab-host.</p></li>
+<li><p>Local channels now correctly end the session which fixes weird bugs like
+picocom not being able to reaquire the shell.</p></li>
+</ul>
+</section>
+</section>
+<section id="id78">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.6.6...v0.7.0">0.7.0</a> - 2019-02-08<a class="headerlink" href="#id78" title="Link to this heading">¶</a></h2>
+<section id="id79">
+<h3>Added<a class="headerlink" href="#id79" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Read commandline arguments from files:  You can now specify a file using
+<code class="docutils literal notranslate"><span class="pre">&#64;filename</span></code> and each line from that file will be interpreted as a commandline
+argument.</p></li>
+<li><p>A man-page: <code class="docutils literal notranslate"><span class="pre">doc/tbot.1</span></code>!</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tbot.named_testcase</span></code>: Define testcases with a different name in log-files
+than the function name.  The motivation is to reduce name ambiguity
+(e.g. <code class="docutils literal notranslate"><span class="pre">uboot.build</span></code> and <code class="docutils literal notranslate"><span class="pre">linux.build</span></code> would both be called <code class="docutils literal notranslate"><span class="pre">build</span></code> in the
+log).  This also affects the testcases name when calling it from the
+commandline (you have to use the new name).</p></li>
+</ul>
+</section>
+<section id="id80">
+<h3>Changed<a class="headerlink" href="#id80" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p>The U-Boot build testcase has been completely rewritten.  You will need to
+adapt you board config to work with the new version:</p>
+<ul class="simple">
+<li><p>The build-info no longer exists, instead you define a <code class="docutils literal notranslate"><span class="pre">UBootBuilder</span></code>.  Take
+a look at the docs to see available options.</p></li>
+<li><p>The build attribute of your U-Boot machine must now be an <strong>instance</strong> of
+your <code class="docutils literal notranslate"><span class="pre">UBootBuilder</span></code>, <strong>not</strong> the class itself.</p></li>
+</ul>
+<p>Example of the new config:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tbot.machine</span><span class="w"> </span><span class="kn">import</span> <span class="n">board</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tbot.tc</span><span class="w"> </span><span class="kn">import</span> <span class="n">uboot</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyUBootBuilder</span><span class="p">(</span><span class="n">uboot</span><span class="o">.</span><span class="n">UBootBuilder</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;my-builder&quot;</span>
+    <span class="n">defconfig</span> <span class="o">=</span> <span class="s2">&quot;my_defconfig&quot;</span>
+    <span class="n">toolchain</span> <span class="o">=</span> <span class="s2">&quot;generic-armv7a-hf&quot;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyUBootMachine</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">UBootMachine</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="n">build</span> <span class="o">=</span> <span class="n">MyUBootBuilder</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="id81">
+<h3>Fixed<a class="headerlink" href="#id81" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">boot_to_shell</span></code> is no longer a public method of <code class="docutils literal notranslate"><span class="pre">BoardLinux</span></code> machines.</p></li>
+</ul>
+</section>
+</section>
+<section id="id82">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.6.5...v0.6.6">0.6.6</a> - 2019-01-18<a class="headerlink" href="#id82" title="Link to this heading">¶</a></h2>
+<section id="id83">
+<h3>Added<a class="headerlink" href="#id83" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Graphviz <code class="docutils literal notranslate"><span class="pre">dot</span></code> diagram generator</p></li>
+<li><p>New and improved documentation!</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LinuxMachine.fsroot</span></code>: A little convenience helper: You can now write
+<code class="docutils literal notranslate"><span class="pre">mach.fsroot</span> <span class="pre">/</span> <span class="pre">&quot;proc/version&quot;</span></code> instead of <code class="docutils literal notranslate"><span class="pre">linux.Path(mach,</span> <span class="pre">&quot;/proc/version&quot;)</span></code></p></li>
+</ul>
+</section>
+<section id="id84">
+<h3>Changed<a class="headerlink" href="#id84" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>tbot no longer automatically creates a log file.  If you want
+the previous behavior, use <code class="docutils literal notranslate"><span class="pre">--log-auto</span></code>.  <code class="docutils literal notranslate"><span class="pre">--log=&lt;file&gt;</span></code> will
+still behave as before.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">generators/generate_htmllog.py</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">generators/htmllog.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">generators/debug_messages.py</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">generators/messages.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">UBootMachine.env()</span></code> now also accepts <code class="docutils literal notranslate"><span class="pre">board.Special</span></code>s.</p></li>
+</ul>
+</section>
+<section id="id85">
+<h3>Fixed<a class="headerlink" href="#id85" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Duplication warning when star-importing another testcase-file.</p></li>
+</ul>
+</section>
+</section>
+<section id="id86">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.6.4...v0.6.5">0.6.5</a> - 2018-12-20<a class="headerlink" href="#id86" title="Link to this heading">¶</a></h2>
+<section id="id87">
+<h3>Added<a class="headerlink" href="#id87" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">Machine.lh</span></code>: You can access the lab-host from every machine now.  The idea
+behind this is to allow access to lab-specific configuration in a much
+easier way.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mach.env()</span></code> can now be used to set environment variables as well:
+<code class="docutils literal notranslate"><span class="pre">env(&quot;name&quot;,</span> <span class="pre">&quot;value&quot;)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-p</span></code> for setting testcase parameters.  Provided values are parsed
+using <code class="docutils literal notranslate"><span class="pre">eval</span></code>, so be careful … Example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>tbot<span class="w"> </span>-p<span class="w"> </span><span class="nv">int_param</span><span class="o">=</span><span class="m">42</span><span class="w"> </span>-p<span class="w"> </span><span class="nv">boolean</span><span class="o">=</span>True<span class="w"> </span>-p<span class="w"> </span><span class="nv">string</span><span class="o">=</span><span class="se">\&#39;</span>str<span class="se">\&#39;</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="id88">
+<h3>Changed<a class="headerlink" href="#id88" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>You can now use <code class="docutils literal notranslate"><span class="pre">--log=</span></code> to suppress the creation of a log file.</p></li>
+</ul>
+</section>
+<section id="id89">
+<h3>Fixed<a class="headerlink" href="#id89" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">selftest_path_stat</span></code> assuming the existence of <code class="docutils literal notranslate"><span class="pre">/dev/sda</span></code>, which makes
+it fail on systems without this block device.</p></li>
+<li><p>tbot will now only color its output if appropriate.
+It honors <a class="reference external" href="https://bixense.com/clicolors/">CLICOLOR</a>.</p></li>
+</ul>
+</section>
+</section>
+<section id="id90">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.6.3...v0.6.4">0.6.4</a> - 2018-12-05<a class="headerlink" href="#id90" title="Link to this heading">¶</a></h2>
+<section id="id91">
+<h3>Added<a class="headerlink" href="#id91" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-C</span></code> parameter to allow setting a different working directory</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">${TBOTPATH}</span></code> environment variable to provide additional testcase
+directories; <code class="docutils literal notranslate"><span class="pre">TBOTPATH</span></code> is a <code class="docutils literal notranslate"><span class="pre">:</span></code> separated list of directorie</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">auth.NoneAuthenticator</span></code>: Authenticator without key nor password, useful
+if ssh can figure authentication out by itself (eg with ssh-agent)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GitRepository.apply</span></code>: Apply patches without committing the changes</p></li>
+</ul>
+</section>
+<section id="id92">
+<h3>Changed<a class="headerlink" href="#id92" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">linux.shell</span></code>: Shells now have a <code class="docutils literal notranslate"><span class="pre">shell.command</span></code>, which allows specifying
+a command to run the shell.  For example, bash is run using <code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">--norc</span></code>
+now.</p></li>
+</ul>
+</section>
+<section id="id93">
+<h3>Fixed<a class="headerlink" href="#id93" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>timeout in <code class="docutils literal notranslate"><span class="pre">read_until_prompt</span></code> sometimes being negative</p></li>
+<li><p>log missing bootlog for U-Boot if no autoboot is configured</p></li>
+<li><p>tbot ignored ssh host aliases (ref #8)</p></li>
+</ul>
+</section>
+</section>
+<section id="id94">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.6.2...v0.6.3">0.6.3</a> - 2018-11-28<a class="headerlink" href="#id94" title="Link to this heading">¶</a></h2>
+<section id="id95">
+<h3>Added<a class="headerlink" href="#id95" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tbot.log.warning</span></code>: Print a warning message</p></li>
+<li><p>If tbot fails to load a testcase source, it will now show the
+traceback that caused the failure</p></li>
+</ul>
+</section>
+<section id="id96">
+<h3>Changed<a class="headerlink" href="#id96" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Show any and all output that is received on the channel with <code class="docutils literal notranslate"><span class="pre">-vvv</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BoardLinuxMachine</span></code> now allows the login and password prompts to
+be clobbered</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BoardLinuxMachine</span></code> login now waits for the shell to respond</p></li>
+</ul>
+</section>
+<section id="id97">
+<h3>Removed<a class="headerlink" href="#id97" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">login_wait</span></code> config parameter from <code class="docutils literal notranslate"><span class="pre">BoardLinuxMachine</span></code>.  This “hack”
+is superseded by the more robust login implementation now.</p></li>
+</ul>
+</section>
+<section id="id98">
+<h3>Fixed<a class="headerlink" href="#id98" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">importlib.util</span></code> needs to be manually imported on some python versions</p></li>
+</ul>
+</section>
+</section>
+<section id="id99">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.6.1...v0.6.2">0.6.2</a> - 2018-11-22<a class="headerlink" href="#id99" title="Link to this heading">¶</a></h2>
+<section id="id100">
+<h3>Added<a class="headerlink" href="#id100" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Machine.env</span></code>: Easily get the value of an environment variable</p></li>
+<li><p>Allow specifying a command when spawning a subshell.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ub.bootlog</span></code> and <code class="docutils literal notranslate"><span class="pre">lnx.bootlog</span></code> to allow accessing the bootlog (ref #5)</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">SSHMachine.ssh_config</span></code>: List of additional ssh config options</p></li>
+</ul>
+</section>
+</section>
+<section id="id101">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.6.0...v0.6.1">0.6.1</a> - 2018-11-16<a class="headerlink" href="#id101" title="Link to this heading">¶</a></h2>
+<section id="id102">
+<h3>Added<a class="headerlink" href="#id102" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Proper buildhost support + U-Boot build testcase</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GitRepository</span></code> now fetches latest changes from remote by default</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LinuxMachine.subshell</span></code>: Spawn subshell to isolate context changes</p></li>
+</ul>
+</section>
+<section id="id103">
+<h3>Changed<a class="headerlink" href="#id103" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Allow setting <code class="docutils literal notranslate"><span class="pre">autoboot_prompt</span></code> to <code class="docutils literal notranslate"><span class="pre">None</span></code>, if the board automatically drops
+into a U-Boot shell.</p></li>
+<li><p>Testcase directories are now traversed recurively</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SSHLabHost</span></code> now attempts to use values from <code class="docutils literal notranslate"><span class="pre">~/.ssh/config</span></code> if available.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SSHMachine</span></code>: Use labhost’s username by default</p></li>
+</ul>
+</section>
+</section>
+<section id="id104">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.6.0-pre08...v0.6.0">0.6.0</a> - 2018-11-08<a class="headerlink" href="#id104" title="Link to this heading">¶</a></h2>
+<p>Version 0.6.0 is finally here!  It is a complete rewrite so none of the old
+stuff is relevant any more.  The changelog below is not everything that was
+changed, but the changes since the last prerelease (<code class="docutils literal notranslate"><span class="pre">0.6.0-pre08</span></code>).</p>
+<section id="id105">
+<h3>Added<a class="headerlink" href="#id105" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mach.test()</span></code> to just check the return code of a command</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">linux.F</span></code>, <code class="docutils literal notranslate"><span class="pre">board.F</span></code>: Formatter with TBot support</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max</span></code> parameter for <code class="docutils literal notranslate"><span class="pre">Channel.recv()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">recv_n</span></code> method for <code class="docutils literal notranslate"><span class="pre">Channel</span></code> to read exactly N bytes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ignore_hostkey</span></code> in <code class="docutils literal notranslate"><span class="pre">SSHLabHost</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">console_check</span></code> hook to prevent racey board connections
+from multiple developers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LinuxWithUBootMachine.do_boot</span></code> for a more flexible
+<code class="docutils literal notranslate"><span class="pre">boot_commands</span></code> definition</p></li>
+</ul>
+</section>
+<section id="id106">
+<h3>Changed<a class="headerlink" href="#id106" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Improved testrun end handling</p></li>
+<li><p>Made <code class="docutils literal notranslate"><span class="pre">SSHMachine</span></code> more userfriendly; now shows ssh errors in log</p></li>
+<li><p>Made <code class="docutils literal notranslate"><span class="pre">shell</span></code> mandatory for <code class="docutils literal notranslate"><span class="pre">BoardLinux</span></code> machines</p></li>
+</ul>
+</section>
+<section id="id107">
+<h3>Fixed<a class="headerlink" href="#id107" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">shell.copy</span></code> sometimes not respecting <code class="docutils literal notranslate"><span class="pre">ignore_hostkey</span></code> flag</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shell.copy</span></code> relying on an ugly hack that breaks on some python versions</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Verbosity</span></code> being in the wrong format in log events</p></li>
+</ul>
+</section>
+</section>
+<section id="pre08-2018-10-29">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.6.0-pre07...v0.6.0-pre08">0.6.0-pre08</a> - 2018-10-29<a class="headerlink" href="#pre08-2018-10-29" title="Link to this heading">¶</a></h2>
+<section id="id108">
+<h3>Added<a class="headerlink" href="#id108" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Selftest that fails intentionally</p></li>
+</ul>
+</section>
+<section id="id109">
+<h3>Changed<a class="headerlink" href="#id109" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><em>Internal</em>: <code class="docutils literal notranslate"><span class="pre">Board</span></code> no longer manages the boot-logevent as that breaks
+when no BoardMachine follows up</p></li>
+</ul>
+</section>
+<section id="id110">
+<h3>Fixed<a class="headerlink" href="#id110" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>HTMLLog generater producing bad HTML because of some log issues</p></li>
+</ul>
+</section>
+</section>
+<section id="pre07-2018-10-25">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.6.0-pre06...v0.6.0-pre07">0.6.0-pre07</a> - 2018-10-25<a class="headerlink" href="#pre07-2018-10-25" title="Link to this heading">¶</a></h2>
+<section id="id111">
+<h3>Added<a class="headerlink" href="#id111" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Password support in <code class="docutils literal notranslate"><span class="pre">shell.copy</span></code></p></li>
+<li><p>Recipes in documentation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Board.cleanup</span></code>, <code class="docutils literal notranslate"><span class="pre">Channel.register_cleanup</span></code>, ability to register a hook
+for cleaning a channel.  Might help if some lockfiles are kept when TBot
+just kills a connection.</p></li>
+<li><p>Support for copying from <code class="docutils literal notranslate"><span class="pre">LocalLabHost()</span></code> to <code class="docutils literal notranslate"><span class="pre">SSHLabHost()</span></code> and the other
+way around.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GitRepository.symbolic_head</span></code> to get current branch name</p></li>
+</ul>
+</section>
+<section id="id112">
+<h3>Changed<a class="headerlink" href="#id112" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">GitRepository.bisect</span></code> now ensures that the good revision is actually good
+and the current revision is actually bad.</p></li>
+</ul>
+</section>
+<section id="id113">
+<h3>Fixed<a class="headerlink" href="#id113" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fix failures not leading to error return code</p></li>
+<li><p>Better error message if a board/lab was not found</p></li>
+<li><p>Stdout showing password prompt late</p></li>
+<li><p>Remove some escape sequences from log output to keep it tidy</p></li>
+</ul>
+</section>
+</section>
+<section id="pre06-2018-10-11">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.6.0-pre05...v0.6.0-pre06">0.6.0-pre06</a> - 2018-10-11<a class="headerlink" href="#pre06-2018-10-11" title="Link to this heading">¶</a></h2>
+<section id="id114">
+<h3>Added<a class="headerlink" href="#id114" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Reimplemented Logging. The following generators have been updated:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">htmllog</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">junit</span></code></p></li>
+</ul>
+</li>
+<li><p>Support for password authentication on SSH machines.  <strong>I strongly
+reccomend not using this!</strong></p></li>
+</ul>
+</section>
+<section id="id115">
+<h3>Changed<a class="headerlink" href="#id115" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Updated documentation</p></li>
+</ul>
+</section>
+<section id="id116">
+<h3>Fixed<a class="headerlink" href="#id116" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed pre-commit selftest hook creating log files</p></li>
+</ul>
+</section>
+<section id="id117">
+<h3>Removed<a class="headerlink" href="#id117" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Unnecessary files from pre 0.6 versions</p></li>
+</ul>
+</section>
+</section>
+<section id="pre05-2018-09-26">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.6.0-pre04...v0.6.0-pre05">0.6.0-pre05</a> - 2018-09-26<a class="headerlink" href="#pre05-2018-09-26" title="Link to this heading">¶</a></h2>
+<section id="id118">
+<h3>Added<a class="headerlink" href="#id118" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">verbosity</span></code> parameter for <code class="docutils literal notranslate"><span class="pre">log.message</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ignore_hostkey</span></code> flag for <code class="docutils literal notranslate"><span class="pre">SSHMachine</span></code>s</p></li>
+</ul>
+</section>
+<section id="id119">
+<h3>Changed<a class="headerlink" href="#id119" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>More robust completions</p></li>
+</ul>
+</section>
+<section id="id120">
+<h3>Fixed<a class="headerlink" href="#id120" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Program name in help and version message was wrong</p></li>
+<li><p>Better error messages when a testcase file can’t be loaded</p></li>
+<li><p>Selftests failing because sshd host key changes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GitRepository</span></code> failing to reset in <code class="docutils literal notranslate"><span class="pre">__init__</span></code></p></li>
+</ul>
+</section>
+</section>
+<section id="pre04-2018-09-19">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.6.0-pre...v0.6.0-pre04">0.6.0-pre04</a> - 2018-09-19<a class="headerlink" href="#pre04-2018-09-19" title="Link to this heading">¶</a></h2>
+<section id="id121">
+<h3>Added<a class="headerlink" href="#id121" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">GitRepository.head</span></code>: Get the current position of <code class="docutils literal notranslate"><span class="pre">HEAD</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GitRepository.bisect</span></code>: Bisect the git repo to find the commit
+which introduced a bug.</p></li>
+<li><p>Show durations of testcase runs.</p></li>
+</ul>
+</section>
+<section id="id122">
+<h3>Changed<a class="headerlink" href="#id122" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Moved package metadata into <code class="docutils literal notranslate"><span class="pre">__about__.py</span></code></p></li>
+<li><p>Always show long version in documentation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shell.copy</span></code> can now copy from and to SSHMachines.</p></li>
+</ul>
+</section>
+</section>
+<section id="pre-2018-08-28">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.3.4...v0.6.0-pre">0.6.0-pre</a> - 2018-08-28<a class="headerlink" href="#pre-2018-08-28" title="Link to this heading">¶</a></h2>
+<p>Version <strong>0.6.0</strong> is basically a complete rewrite of TBot.  A rough summary of changes:</p>
+<ul class="simple">
+<li><p>Be as <em>pythonic</em> as possible, the old version had a big issue of non pythonic patterns
+making things that should be easy difficult.</p></li>
+<li><p>More static guarantees. New TBot can guarantee even more when checking your testcases with
+a static typechecker.  A big new feature in that regard is static guarantee of never using
+a path with a wrong machine!</p></li>
+<li><p>Cleaner and much smaller codebase.  Every piece of code is written as small and pythonic
+as possible which has made the codebase much more manageable.</p></li>
+<li><p>Speedups! New TBot can complete its selfchecks in under 1s. This is possible because of a
+new channel API that no longer uses sleep unless absolutely necessary.</p></li>
+<li><p>Much more stable and predictable.  Even more care was taken in making TBot behave as predictable
+as possible and reducing side effects.</p></li>
+</ul>
+</section>
+<section id="id123">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.3.3...v0.3.4">0.3.4</a> - 2018-08-09<a class="headerlink" href="#id123" title="Link to this heading">¶</a></h2>
+<section id="id124">
+<h3>Added<a class="headerlink" href="#id124" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">TestcaseFailure</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">InvalidUsageException</span></code> exceptions</p></li>
+</ul>
+</section>
+<section id="id125">
+<h3>Changed<a class="headerlink" href="#id125" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Better error message when testcase does not exist</p></li>
+<li><p>More explicit exceptions</p></li>
+</ul>
+</section>
+<section id="id126">
+<h3>Fixed<a class="headerlink" href="#id126" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed TBot ignoring failures while applying patches (#13)</p></li>
+<li><p>Fixed -d not being allowed between board and testcase (#6)</p></li>
+</ul>
+</section>
+</section>
+<section id="id127">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.3.2...v0.3.3">0.3.3</a> - 2018-07-20<a class="headerlink" href="#id127" title="Link to this heading">¶</a></h2>
+<section id="id128">
+<h3>Added<a class="headerlink" href="#id128" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">uboot.shell.autboot-keys</span></code>: Custom key sequence for intercepting
+autoboot (#9)</p></li>
+<li><p>Warning if an invalid testcase file is in the path (TBot no longer
+refuses to do anything, in this case)</p></li>
+</ul>
+</section>
+<section id="id129">
+<h3>Changed<a class="headerlink" href="#id129" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Made scp config settings consistent with ssh settings (#10)</p></li>
+</ul>
+</section>
+<section id="id130">
+<h3>Fixed<a class="headerlink" href="#id130" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed TBot still clogging the user’s history with commands (#7)</p></li>
+<li><p>Fixed testcase files not being able to import local submodules</p></li>
+<li><p>Fixed TBot errors being shown when attempting testcase completion (#11)</p></li>
+</ul>
+</section>
+</section>
+<section id="id131">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.3.1...v0.3.2">0.3.2</a> - 2018-07-12<a class="headerlink" href="#id131" title="Link to this heading">¶</a></h2>
+<section id="id132">
+<h3>Added<a class="headerlink" href="#id132" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Comments in files generated by <code class="docutils literal notranslate"><span class="pre">tbot-mgr</span></code> to explain
+config options</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-s</span></code>, <code class="docutils literal notranslate"><span class="pre">--show</span></code> command line option to get information about
+testcases</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">warning</span></code> and <code class="docutils literal notranslate"><span class="pre">error</span></code> log message functions</p></li>
+</ul>
+</section>
+<section id="id133">
+<h3>Changed<a class="headerlink" href="#id133" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Removed <code class="docutils literal notranslate"><span class="pre">ssh_command</span></code> and added <code class="docutils literal notranslate"><span class="pre">ssh_flags</span></code> instead. This allows TBot
+to have more control over ssh</p></li>
+</ul>
+</section>
+<section id="id134">
+<h3>Fixed<a class="headerlink" href="#id134" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed TBot hanging when SSH asks for a password</p></li>
+<li><p>Fixed git bisecting</p></li>
+</ul>
+</section>
+</section>
+<section id="id135">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.3.0...v0.3.1">0.3.1</a> - 2018-06-22<a class="headerlink" href="#id135" title="Link to this heading">¶</a></h2>
+<section id="id136">
+<h3>Added<a class="headerlink" href="#id136" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tbot-mgr</span></code>: A script for managing TBot configs</p></li>
+<li><p>Testcases for building Linux</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">interactive_build_uboot</span></code> and <code class="docutils literal notranslate"><span class="pre">interactive_build_linux</span></code></p></li>
+<li><p>Selftests are now run as a pre-commit hook</p></li>
+<li><p>A dummy lab and board for running selftests
+that are as generic as possible</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">linux.revision</span></code> and <code class="docutils literal notranslate"><span class="pre">uboot.revision</span></code> config keys</p></li>
+</ul>
+</section>
+<section id="id137">
+<h3>Changed<a class="headerlink" href="#id137" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>git testcases now have a <code class="docutils literal notranslate"><span class="pre">rev</span></code> parameter for checking out a specific
+revision</p></li>
+</ul>
+</section>
+<section id="id138">
+<h3>Removed<a class="headerlink" href="#id138" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>DENX specific configs</p></li>
+</ul>
+</section>
+<section id="id139">
+<h3>Fixed<a class="headerlink" href="#id139" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>A crash while checking the config</p></li>
+</ul>
+</section>
+</section>
+<section id="id140">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.2.4...v0.3.0">0.3.0</a> - 2018-06-15<a class="headerlink" href="#id140" title="Link to this heading">¶</a></h2>
+<section id="id141">
+<h3>Added<a class="headerlink" href="#id141" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Buildhosts:</strong> This release adds the ability to build U-Boot/Linux
+on a separate machine. This will reduce load on your labhost if multiple
+people are using it</p></li>
+<li><p>You can now disable documentation for a testcase by passing
+<code class="docutils literal notranslate"><span class="pre">doc=False</span></code> to <code class="docutils literal notranslate"><span class="pre">tb.call</span></code></p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">-i/--interactive</span></code> commandline flag that will make TBot wait for user
+confirmation for each command it wants to execute. Use this if you are unsure
+whether your testcase will do anything harmful, because you can intervene if a
+critical command has ie. wrong parameters</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">retrieve_build_artifact</span></code> and <code class="docutils literal notranslate"><span class="pre">tbot_clean_builddir</span></code> tasks</p></li>
+<li><p>Added a new config key <code class="docutils literal notranslate"><span class="pre">build.local</span></code> that defines the buildhost that is the
+labhost itself</p></li>
+<li><p>More tests in <code class="docutils literal notranslate"><span class="pre">check_config</span></code></p></li>
+<li><p>Better documentation</p></li>
+</ul>
+</section>
+<section id="id142">
+<h3>Changed<a class="headerlink" href="#id142" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">uboot_checkout</span></code> now checks out U-Boot onto the default buildhost by default</p></li>
+<li><p>U-Boot is built on the buildhost by defalt, you need to use <code class="docutils literal notranslate"><span class="pre">retrieve_build_artifact</span></code>
+to copy binaries to the labhost</p></li>
+<li><p>Renamed <code class="docutils literal notranslate"><span class="pre">tbot_check_config</span></code> to <code class="docutils literal notranslate"><span class="pre">check_config</span></code></p></li>
+</ul>
+</section>
+<section id="id143">
+<h3>Fixed<a class="headerlink" href="#id143" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Removed an unnecessary shell check from U-Boot tests</p></li>
+<li><p>Fixed TBot “leaking” from a with statement</p></li>
+</ul>
+</section>
+</section>
+<section id="id144">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.2.3...v0.2.4">0.2.4</a> - 2018-05-28<a class="headerlink" href="#id144" title="Link to this heading">¶</a></h2>
+<section id="id145">
+<h3>Added<a class="headerlink" href="#id145" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>pre-commit hook config, run <code class="docutils literal notranslate"><span class="pre">pre-commit</span> <span class="pre">install</span></code> to use these
+hooks.</p></li>
+<li><p>Checks for malformed commands (eg. running <code class="docutils literal notranslate"><span class="pre">exit</span></code> or a command that
+contains a <code class="docutils literal notranslate"><span class="pre">\n</span></code>)</p></li>
+</ul>
+</section>
+<section id="id146">
+<h3>Changed<a class="headerlink" href="#id146" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Use flake8 instead of pylint</p></li>
+<li><p>Reformat using black</p></li>
+</ul>
+</section>
+<section id="id147">
+<h3>Fixed<a class="headerlink" href="#id147" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fix the config not being properly installed and thus TBot not
+working outside a development environment</p></li>
+<li><p>Small visual errors that were created when moving to the
+new logger</p></li>
+</ul>
+</section>
+</section>
+<section id="id148">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.2.2...v0.2.3">0.2.3</a> - 2018-05-16<a class="headerlink" href="#id148" title="Link to this heading">¶</a></h2>
+<section id="id149">
+<h3>Added<a class="headerlink" href="#id149" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>New singleton logger <code class="docutils literal notranslate"><span class="pre">tbot.log</span></code></p></li>
+<li><p>Warning when trying to generate documentation
+from unsuccessful TBot runs</p></li>
+</ul>
+</section>
+<section id="id150">
+<h3>Changed<a class="headerlink" href="#id150" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>The old logger was replaced by a new singleton implementation.
+This solves a few issues where the logger was not available
+when it should have been. Also, logging is a prime example for
+where to use a singleton. This will ensure that stdout is only
+used in one place and things don’t get messy …</p></li>
+</ul>
+</section>
+<section id="id151">
+<h3>Removed<a class="headerlink" href="#id151" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Old <code class="docutils literal notranslate"><span class="pre">tbot.logger</span></code> module and it’s <code class="docutils literal notranslate"><span class="pre">LogEvent</span></code>’s</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TBot.log</span></code></p></li>
+</ul>
+</section>
+<section id="id152">
+<h3>Fixed<a class="headerlink" href="#id152" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>U-Boot bootlog was not shown in very-verbose logging</p></li>
+<li><p>Documentation links not working properly</p></li>
+<li><p>The interactive shells were not properly handling the
+receival of multiple bytes at once, this is fixed now</p></li>
+<li><p>Path expansion in completions is now handled properly</p></li>
+</ul>
+</section>
+</section>
+<section id="id153">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.2.1...v0.2.2">0.2.2</a> - 2018-05-15<a class="headerlink" href="#id153" title="Link to this heading">¶</a></h2>
+<section id="id154">
+<h3>Added<a class="headerlink" href="#id154" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Commandline testcase parameters</strong>: You can now pass parameters
+to testcases from the commandline using the <code class="docutils literal notranslate"><span class="pre">-p</span></code> or <code class="docutils literal notranslate"><span class="pre">--param</span></code>
+commandline parameter</p></li>
+<li><p>Completions for logfile</p></li>
+<li><p>More config documentation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shell_utils.command_and_retval</span></code>: Run a command on a channel
+and get it’s return code</p></li>
+</ul>
+</section>
+<section id="id155">
+<h3>Removed<a class="headerlink" href="#id155" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&#64;cmdline</span></code> decorator. All testcases are now callable from
+the commandline, for some you will need to use the new <code class="docutils literal notranslate"><span class="pre">-p</span></code>
+option to work properly</p></li>
+</ul>
+</section>
+<section id="id156">
+<h3>Fixed<a class="headerlink" href="#id156" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Completions for <code class="docutils literal notranslate"><span class="pre">-c</span></code> were not always properly handled
+(<code class="docutils literal notranslate"><span class="pre">=</span></code> messed with argument splitting)</p></li>
+</ul>
+</section>
+</section>
+<section id="id157">
+<h2><a class="reference external" href="https://github.com/Rahix/tbot/compare/v0.2.0...v0.2.1">0.2.1</a> - 2018-05-14<a class="headerlink" href="#id157" title="Link to this heading">¶</a></h2>
+<section id="id158">
+<h3>Changed<a class="headerlink" href="#id158" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Disable writing to history when setting up a channel</p></li>
+<li><p>Implement cleanup in interactive testcases so user code can continue
+after finishing an interactive session</p></li>
+</ul>
+</section>
+<section id="id159">
+<h3>Fixed<a class="headerlink" href="#id159" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fix KeyErrors not displaying the full path to the failing key</p></li>
+</ul>
+</section>
+</section>
+<section id="id160">
+<h2>0.2.0 - 2018-05-04<a class="headerlink" href="#id160" title="Link to this heading">¶</a></h2>
+<section id="id161">
+<h3>Changed<a class="headerlink" href="#id161" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Use custom bash completions instead of argcomplete</p></li>
+<li><p>Make the HTMLLog generator use a template. Eases development
+and reduces clutter in the source file. Also, the html logs
+no longer depend on the existence of the css file</p></li>
+<li><p>Implement better quiet handling. Adjust the verbosity
+levels of some log messages to ensure they are displayed
+when they should be</p></li>
+</ul>
+</section>
+<section id="id162">
+<h3>Fixed<a class="headerlink" href="#id162" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fix testcase EXPORTS. Exports are now in a separate file
+that is loaded before everything else. This should fix
+some testcases not working because exports they depend on
+were loaded later</p></li>
+<li><p>Fix <code class="docutils literal notranslate"><span class="pre">call_then</span></code> not returning the function itself</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <a href="https://github.com/Rahix/tbot">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" decoding="async" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" loading="lazy" data-recalc-dims="1">
+    </a>
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="contrib/utils.html" class="btn btn-neutral float-left" title="tbot_contrib.utils" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="CONTRIBUTING.html" class="btn btn-neutral float-right" title="Contributing to tbot" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Rahix.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

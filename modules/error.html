@@ -1,0 +1,401 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tbot.error &mdash; tbot 0.10.10-0-g1853255 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5349f25f" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/documentation_options.js?v=e1796f6e"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tbot.role" href="role.html" />
+    <link rel="prev" title="tbot.machine.channel" href="machine_channel.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/tbot-logo-white.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">tbot CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../recipes.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../context.html">Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pytest.html">pytest Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating from tbot 0.7.1</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Modules</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="main.html"><code class="docutils literal notranslate"><span class="pre">tbot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="log.html"><code class="docutils literal notranslate"><span class="pre">tbot.log</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="machine.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="machine_linux.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.linux</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="machine_board.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.board</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="machine_connector.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.connector</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="machine_shell.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.shell</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="machine_channel.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.channel</span></code></a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">tbot.error</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#tbot.error.TbotException"><code class="docutils literal notranslate"><span class="pre">TbotException</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tbot.error.ApiViolationError"><code class="docutils literal notranslate"><span class="pre">ApiViolationError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tbot.error.MachineError"><code class="docutils literal notranslate"><span class="pre">MachineError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tbot.error.AbstractMethodError"><code class="docutils literal notranslate"><span class="pre">AbstractMethodError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tbot.error.WrongHostError"><code class="docutils literal notranslate"><span class="pre">WrongHostError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tbot.error.ContextError"><code class="docutils literal notranslate"><span class="pre">ContextError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tbot.error.MachineNotFoundError"><code class="docutils literal notranslate"><span class="pre">MachineNotFoundError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tbot.error.CommandFailure"><code class="docutils literal notranslate"><span class="pre">CommandFailure</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tbot.error.CommandFailure.repr"><code class="docutils literal notranslate"><span class="pre">CommandFailure.repr</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tbot.error.CommandFailure.host"><code class="docutils literal notranslate"><span class="pre">CommandFailure.host</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tbot.error.CommandFailure.cmd"><code class="docutils literal notranslate"><span class="pre">CommandFailure.cmd</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#tbot.error.ChannelClosedError"><code class="docutils literal notranslate"><span class="pre">ChannelClosedError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tbot.error.UncleanShellError"><code class="docutils literal notranslate"><span class="pre">UncleanShellError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tbot.error.InvalidRetcodeError"><code class="docutils literal notranslate"><span class="pre">InvalidRetcodeError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tbot.error.MissingToolError"><code class="docutils literal notranslate"><span class="pre">MissingToolError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tbot.error.ChannelBorrowedError"><code class="docutils literal notranslate"><span class="pre">ChannelBorrowedError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tbot.error.ChannelTakenError"><code class="docutils literal notranslate"><span class="pre">ChannelTakenError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tbot.error.IllegalDataException"><code class="docutils literal notranslate"><span class="pre">IllegalDataException</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tbot.error.UnboundedPatternError"><code class="docutils literal notranslate"><span class="pre">UnboundedPatternError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="role.html"><code class="docutils literal notranslate"><span class="pre">tbot.role</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="selectable.html"><code class="docutils literal notranslate"><span class="pre">tbot.selectable</span></code></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Testcase Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tc.html"><code class="docutils literal notranslate"><span class="pre">tbot.tc</span></code> - Builtin Testcases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/connector.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.connector</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/gdb.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.gdb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/gpio.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.gpio</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/linux.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.linux</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/locking.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.locking</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/swupdate.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.swupdate</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/timing.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.timing</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/uboot.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.uboot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/utils.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.utils</span></code></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing to tbot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../LICENSE.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">tbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><code class="docutils literal notranslate"><span class="pre">tbot.error</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modules/error.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="module-tbot.error">
+<span id="tbot-error"></span><h1><code class="docutils literal notranslate"><span class="pre">tbot.error</span></code><a class="headerlink" href="#module-tbot.error" title="Link to this heading">¶</a></h1>
+<dl class="py exception">
+<dt class="sig sig-object py" id="tbot.error.TbotException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tbot.error.</span></span><span class="sig-name descname"><span class="pre">TbotException</span></span><a class="reference internal" href="../_modules/tbot/error.html#TbotException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.error.TbotException" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+<p>Base-class for all exceptions which are specific to tbot.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="tbot.error.ApiViolationError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tbot.error.</span></span><span class="sig-name descname"><span class="pre">ApiViolationError</span></span><a class="reference internal" href="../_modules/tbot/error.html#ApiViolationError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.error.ApiViolationError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tbot.error.TbotException" title="tbot.error.TbotException"><code class="xref py py-class docutils literal notranslate"><span class="pre">TbotException</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></a></p>
+<p>Base-class for all exceptions that are raised due to wrong use of tbot’s API.</p>
+<p>Seeing this exception means that the calling code has a bug and needs to be
+fixed. This is in contrast to <a class="reference internal" href="#tbot.error.MachineError" title="tbot.error.MachineError"><code class="xref py py-class docutils literal notranslate"><span class="pre">tbot.error.MachineError</span></code></a> which is
+the base-class for exceptions raised due to unexpected occurrences on the
+remote side during a test-run.</p>
+<p>The subclasses of <code class="docutils literal notranslate"><span class="pre">ApiViolationError</span></code> should detail in their
+documentation how to fix them.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.10.2.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="tbot.error.MachineError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tbot.error.</span></span><span class="sig-name descname"><span class="pre">MachineError</span></span><a class="reference internal" href="../_modules/tbot/error.html#MachineError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.error.MachineError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tbot.error.TbotException" title="tbot.error.TbotException"><code class="xref py py-class docutils literal notranslate"><span class="pre">TbotException</span></code></a></p>
+<p>Base-class for exceptions raised due to remote machine errors.</p>
+<p>Usually, this indicates something is wrong with the remote systems that
+tbot was interacting with.  This is in contrast to
+<a class="reference internal" href="#tbot.error.ApiViolationError" title="tbot.error.ApiViolationError"><code class="xref py py-class docutils literal notranslate"><span class="pre">tbot.error.ApiViolationError</span></code></a> which is raised when downstream
+code has a bug and/or misuses the tbot API.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.10.2.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="tbot.error.AbstractMethodError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tbot.error.</span></span><span class="sig-name descname"><span class="pre">AbstractMethodError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tbot/error.html#AbstractMethodError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.error.AbstractMethodError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tbot.error.ApiViolationError" title="tbot.error.ApiViolationError"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiViolationError</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a></p>
+<p>A method which needs to be overwritten was called from code.  This
+shouldn’t ever really happen in practice hopefully …</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="tbot.error.WrongHostError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tbot.error.</span></span><span class="sig-name descname"><span class="pre">WrongHostError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="machine.html#tbot.machine.Machine" title="tbot.machine.Machine"><span class="pre">machine.Machine</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tbot/error.html#WrongHostError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.error.WrongHostError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tbot.error.ApiViolationError" title="tbot.error.ApiViolationError"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiViolationError</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a></p>
+<p>A method was called with arguments that reference a different host.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="tbot.error.ContextError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tbot.error.</span></span><span class="sig-name descname"><span class="pre">ContextError</span></span><a class="reference internal" href="../_modules/tbot/error.html#ContextError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.error.ContextError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tbot.error.ApiViolationError" title="tbot.error.ApiViolationError"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiViolationError</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></a></p>
+<p>A forbidden or wrong kind of interaction with tbot’s context was attempted.</p>
+<p>The exception message will include more details.  As an example, this
+exception is raised when requesting an instance that is currently
+exclusively requested elsewhere.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.10.2.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="tbot.error.MachineNotFoundError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tbot.error.</span></span><span class="sig-name descname"><span class="pre">MachineNotFoundError</span></span><a class="reference internal" href="../_modules/tbot/error.html#MachineNotFoundError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.error.MachineNotFoundError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tbot.error.ApiViolationError" title="tbot.error.ApiViolationError"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiViolationError</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IndexError</span></code></a></p>
+<p>The requested machine was not found in the tbot context.</p>
+<p>The most likely cause for this is that the selected configuration did not
+register a machine for the requested role.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.10.2.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="tbot.error.CommandFailure">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tbot.error.</span></span><span class="sig-name descname"><span class="pre">CommandFailure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="machine.html#tbot.machine.Machine" title="tbot.machine.Machine"><span class="pre">machine.Machine</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tbot/error.html#CommandFailure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.error.CommandFailure" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tbot.error.MachineError" title="tbot.error.MachineError"><code class="xref py py-class docutils literal notranslate"><span class="pre">MachineError</span></code></a></p>
+<p>A command exited with non-zero exit code.</p>
+<p>This exception is raised by <code class="docutils literal notranslate"><span class="pre">exec0()</span></code> methods to indicate command failures.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.10.2.</span></p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tbot.error.CommandFailure.repr">
+<span class="sig-name descname"><span class="pre">repr</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#tbot.error.CommandFailure.repr" title="Link to this definition">¶</a></dt>
+<dd><p>String representation of the command which failed.</p>
+<p>Should only be used for diagnostic purposes.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tbot.error.CommandFailure.host">
+<span class="sig-name descname"><span class="pre">host</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="machine.html#tbot.machine.Machine" title="tbot.machine.Machine"><span class="pre">machine.Machine</span></a></em><a class="headerlink" href="#tbot.error.CommandFailure.host" title="Link to this definition">¶</a></dt>
+<dd><p>The host where the failed command was executed.</p>
+<p>This host may or may not be available at the time of catching the exception,
+depending on how far the exception was bubbled up.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tbot.error.CommandFailure.cmd">
+<span class="sig-name descname"><span class="pre">cmd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></em><a class="headerlink" href="#tbot.error.CommandFailure.cmd" title="Link to this definition">¶</a></dt>
+<dd><p>The original form of the command, usually a list of arguments.</p>
+<p>For a readable and displayable version, use the <code class="docutils literal notranslate"><span class="pre">repr</span></code> field instead.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="tbot.error.ChannelClosedError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tbot.error.</span></span><span class="sig-name descname"><span class="pre">ChannelClosedError</span></span><a class="reference internal" href="../_modules/tbot/error.html#ChannelClosedError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.error.ChannelClosedError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tbot.error.MachineError" title="tbot.error.MachineError"><code class="xref py py-class docutils literal notranslate"><span class="pre">MachineError</span></code></a></p>
+<p>Error type for exceptions when a channel was closed unexpectedly.</p>
+<p>This error is raised when interaction with a channel is attemped which was
+either closed explicitly beforehand or which was closed unexpectedly by the
+remote end.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.10.2.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="tbot.error.UncleanShellError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tbot.error.</span></span><span class="sig-name descname"><span class="pre">UncleanShellError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="machine.html#tbot.machine.Machine" title="tbot.machine.Machine"><span class="pre">machine.Machine</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tbot/error.html#UncleanShellError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.error.UncleanShellError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tbot.error.MachineError" title="tbot.error.MachineError"><code class="xref py py-class docutils literal notranslate"><span class="pre">MachineError</span></code></a></p>
+<p>While trying to prepare the remote shell, tbot detected unexpected behavior.</p>
+<p>This error means that the shell responded with unexpected output during
+setup.  tbot cannot proceed to interact, as it cannot be certain about the
+state of the remote shell.</p>
+<p>If you encounter this error, enable verbose channel logging to see what
+unexpected output was received.  You need to ensure that the remote system
+does not send this additional output.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.10.8.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="tbot.error.InvalidRetcodeError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tbot.error.</span></span><span class="sig-name descname"><span class="pre">InvalidRetcodeError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="machine.html#tbot.machine.Machine" title="tbot.machine.Machine"><span class="pre">machine.Machine</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">retcode_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tbot/error.html#InvalidRetcodeError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.error.InvalidRetcodeError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tbot.error.MachineError" title="tbot.error.MachineError"><code class="xref py py-class docutils literal notranslate"><span class="pre">MachineError</span></code></a></p>
+<p>While trying to fetch the return code of a command, unexpected output was received.</p>
+<p>This error usually indicates some deeper issue with the machine connection.
+For example, there could be kernel log messages being printed in between
+command output.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.10.7.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="tbot.error.MissingToolError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tbot.error.</span></span><span class="sig-name descname"><span class="pre">MissingToolError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="machine.html#tbot.machine.Machine" title="tbot.machine.Machine"><span class="pre">machine.Machine</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">need_one_of</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tbot/error.html#MissingToolError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.error.MissingToolError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tbot.error.MachineError" title="tbot.error.MachineError"><code class="xref py py-class docutils literal notranslate"><span class="pre">MachineError</span></code></a></p>
+<p>A tool that is needed for a testcase is not installed on the respective machine.</p>
+<p>The usual solution is to install one of the listed tools.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.10.8.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="tbot.error.ChannelBorrowedError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tbot.error.</span></span><span class="sig-name descname"><span class="pre">ChannelBorrowedError</span></span><a class="reference internal" href="../_modules/tbot/error.html#ChannelBorrowedError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.error.ChannelBorrowedError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tbot.error.ApiViolationError" title="tbot.error.ApiViolationError"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiViolationError</span></code></a></p>
+<p>Error type for exceptions when accessing a channel which is currently borrowed.</p>
+<p>This error will be raised when an attempt is made to interact with a
+channel which is currently borrowed.  As an example, when an interactive
+command is started with <code class="xref py py-meth docutils literal notranslate"><span class="pre">LinuxShell.run()</span></code>, while this command is
+running, the channel of the <code class="docutils literal notranslate"><span class="pre">LinuxShell</span></code> is borrowed and cannot be used.
+So a call to, for example, <code class="docutils literal notranslate"><span class="pre">exec0()</span></code> during this time would raise
+<code class="docutils literal notranslate"><span class="pre">ChannelBorrowedError</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.10.2.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="tbot.error.ChannelTakenError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tbot.error.</span></span><span class="sig-name descname"><span class="pre">ChannelTakenError</span></span><a class="reference internal" href="../_modules/tbot/error.html#ChannelTakenError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.error.ChannelTakenError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tbot.error.ApiViolationError" title="tbot.error.ApiViolationError"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiViolationError</span></code></a></p>
+<p>Error type for exceptions when accessing a channel which was “taken”.</p>
+<p>This error will be raised when an attempt is made to interact with a
+channel which is was “taken”.  The channel docs contain more details about
+this concept.  Essentially, a different machine now uses the channel so it
+can no longer be accessed from its previous “owner”.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.10.2.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="tbot.error.IllegalDataException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tbot.error.</span></span><span class="sig-name descname"><span class="pre">IllegalDataException</span></span><a class="reference internal" href="../_modules/tbot/error.html#IllegalDataException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.error.IllegalDataException" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tbot.error.ApiViolationError" title="tbot.error.ApiViolationError"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiViolationError</span></code></a></p>
+<p>Raised when attempting to write illegal data to a channel.</p>
+<p>Some channels cannot deal with all byte sequences.  For example, certain
+escape sequences will mess up the connection.  If an attempt is made to
+send such data, this exception is raised.  The exact set of illegal
+sequences depends on the specific machine configuration.</p>
+<p>In most situations, the shell implementation will escape such data
+correctly.  This error should only become relevant when directly
+interacting with a channel.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.10.2.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="tbot.error.UnboundedPatternError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tbot.error.</span></span><span class="sig-name descname"><span class="pre">UnboundedPatternError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tbot/error.html#UnboundedPatternError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tbot.error.UnboundedPatternError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tbot.error.ApiViolationError" title="tbot.error.ApiViolationError"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiViolationError</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a></p>
+<p>Raised when a regex pattern is used which does not have a bounded length.</p>
+<p>tbot requires the use of patterns with a bounded length to keep track of
+incoming data efficiently.  A bounded pattern is one which does not use any
+infinitely repeating expressions.</p>
+<p>For example, <code class="docutils literal notranslate"><span class="pre">r&quot;.*&quot;</span></code> is unbounded, but <code class="docutils literal notranslate"><span class="pre">r&quot;.{0,80}&quot;</span></code> is.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.10.8.</span></p>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+    <a href="https://github.com/Rahix/tbot">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" decoding="async" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" loading="lazy" data-recalc-dims="1">
+    </a>
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="machine_channel.html" class="btn btn-neutral float-left" title="tbot.machine.channel" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="role.html" class="btn btn-neutral float-right" title="tbot.role" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Rahix.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,610 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quick Start &mdash; tbot 0.10.10-0-g1853255 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5349f25f" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/documentation_options.js?v=e1796f6e"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="tbot CLI" href="cli.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/tbot-logo-white.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#directory-structure">1. Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simple-testcases">2. Simple Testcases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#machines">3. Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration">4. Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#machines-in-depth">5. Machines in depth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#power-control">6. Power Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#board-linux">7. Board Linux</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">tbot CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="context.html">Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pytest.html">pytest Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migration.html">Migrating from tbot 0.7.1</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules/main.html"><code class="docutils literal notranslate"><span class="pre">tbot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/log.html"><code class="docutils literal notranslate"><span class="pre">tbot.log</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/machine.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/machine_linux.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.linux</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/machine_board.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.board</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/machine_connector.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.connector</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/machine_shell.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.shell</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/machine_channel.html"><code class="docutils literal notranslate"><span class="pre">tbot.machine.channel</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/error.html"><code class="docutils literal notranslate"><span class="pre">tbot.error</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/role.html"><code class="docutils literal notranslate"><span class="pre">tbot.role</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/selectable.html"><code class="docutils literal notranslate"><span class="pre">tbot.selectable</span></code></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Testcase Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules/tc.html"><code class="docutils literal notranslate"><span class="pre">tbot.tc</span></code> - Builtin Testcases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/connector.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.connector</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/gdb.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.gdb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/gpio.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.gpio</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/linux.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.linux</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/locking.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.locking</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/swupdate.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.swupdate</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/timing.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.timing</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/uboot.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.uboot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib/utils.html"><code class="docutils literal notranslate"><span class="pre">tbot_contrib.utils</span></code></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to tbot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LICENSE.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">tbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Quick Start</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/quickstart.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="quick-start">
+<span id="quickstart"></span><h1>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">¶</a></h1>
+<p>This quick-start guide will introduce you step-by-step to setting up a tbot
+environment for automating your development workflow.  Please start by
+installing tbot as detailed in <a class="reference internal" href="installation.html#installation"><span class="std std-ref">Installation</span></a>.</p>
+<p>This guide assumes you have an embedded Linux system like a BeagleBone or
+Raspberry Pi (or some other board) with a serial console you can access.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This version of the quick-start guide uses <code class="docutils literal notranslate"><span class="pre">newbot</span></code>, tbot’s new
+commandline tool.  It is easier to use than the old CLI tool (<code class="docutils literal notranslate"><span class="pre">tbot</span></code>).  At
+some point in the future, the old tool will be removed.  For migration,
+please first read this guide to familiarize yourself with the new tool.
+Then, you can find additional information in <a class="reference internal" href="cli.html#cli"><span class="std std-ref">tbot CLI</span></a> about switching to
+<code class="docutils literal notranslate"><span class="pre">newbot</span></code>.</p>
+</div>
+<section id="directory-structure">
+<h2>1. Directory Structure<a class="headerlink" href="#directory-structure" title="Link to this heading">¶</a></h2>
+<p>To start, let’s set up a basic directory structure.  Importantly, you can do
+this completely different - here is just a simple and proven suggestion.</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>mkdir<span class="w"> </span>tbot-example<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>tbot-example<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>init
+<span class="gp">$ </span>mkdir<span class="w"> </span>-p<span class="w"> </span>config/<span class="w"> </span>tc/
+<span class="gp">$ </span>touch<span class="w"> </span>config/my_config.py<span class="w"> </span>tc/interactive.py<span class="w"> </span>tc/examples.py
+<span class="gp">$ </span>tree
+<span class="go">./</span>
+<span class="go">├──config/</span>
+<span class="go">│  └──my_config.py</span>
+<span class="go">└──tc/</span>
+<span class="go">   ├──examples.py</span>
+<span class="go">   └──interactive.py</span>
+</pre></div>
+</div>
+<p>There are two directories here:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">config/</span></code>: This directory is a Python module containing all configurations.
+For now, there is only one.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tc/</span></code>: This directory is a Python module containing “testcases”.
+“Testcase” just means a callable routine which does something.  “Task” might
+also be an adequate description.</p></li>
+</ul>
+<p>Next, we will fill <code class="docutils literal notranslate"><span class="pre">tc/interactive.py</span></code> with some “testcase” code.  This will
+help with the next step.  Please add the following code to
+<code class="docutils literal notranslate"><span class="pre">tc/interactive.py</span></code>.  I will explain what it does later in this guide.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tbot</span>
+
+<span class="nd">@tbot</span><span class="o">.</span><span class="n">testcase</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">board</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Open an interactive session on the board&#39;s serial console.&quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">tbot</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">Board</span><span class="p">)</span> <span class="k">as</span> <span class="n">b</span><span class="p">:</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
+
+<span class="nd">@tbot</span><span class="o">.</span><span class="n">testcase</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">linux</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Open an interactive session on the board&#39;s Linux shell.&quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">tbot</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">BoardLinux</span><span class="p">)</span> <span class="k">as</span> <span class="n">lnx</span><span class="p">:</span>
+        <span class="n">lnx</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>If your board uses U-Boot and you also intend to interact with it, you can also
+add this one:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@tbot</span><span class="o">.</span><span class="n">testcase</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">uboot</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Open an interactive session on the board&#39;s U-Boot shell.&quot;&quot;&quot;</span>
+    <span class="n">tbot</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">teardown_if_alive</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">BoardLinux</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">tbot</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">BoardUBoot</span><span class="p">)</span> <span class="k">as</span> <span class="n">ub</span><span class="p">:</span>
+        <span class="n">ub</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="simple-testcases">
+<h2>2. Simple Testcases<a class="headerlink" href="#simple-testcases" title="Link to this heading">¶</a></h2>
+<p>Now it is time to write some testcases ourselves.  Again, testcase just means
+“callable function”/”task” in tbot.  Start with the following skeleton in
+<code class="docutils literal notranslate"><span class="pre">tc/examples.py</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tbot</span>
+
+<span class="nd">@tbot</span><span class="o">.</span><span class="n">testcase</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello_world</span><span class="p">():</span>
+    <span class="n">tbot</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;Hello World!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can now run this testcase like this:</p>
+<div class="highlight">
+<pre><font color="#f92672"><b>$</b></font> newbot tc.examples.hello_world
+<font color="#F4BF75"><b>tbot</b></font> starting ...
+<font color="#A5A5A1">├─</font>Calling <font color="#A1EFE4"><b>hello_world</b></font> ...
+<font color="#A5A5A1">│   ├─</font>Hello World!
+<font color="#A5A5A1">│   └─</font><font color="#A6E22E"><b>Done</b></font>. (0.000s)
+<font color="#A5A5A1">├─────────────────────────────────────────</font>
+<font color="#A5A5A1">└─</font><font color="#A6E22E"><b>SUCCESS</b></font> (0.218s)
+</pre>
+</div><p>As you can see, you need to pass a sort of module path to <code class="docutils literal notranslate"><span class="pre">newbot</span></code> to run a
+testcase.  Under the hood, you can imagine tbot is doing nothing more than:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># newbot tc.examples.hello_world</span>
+<span class="c1"># ... essentially does:</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tc.examples</span>
+<span class="n">tc</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">hello_world</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The next testcase will run some commands on the localhost (= the machine tbot
+is running on).  To do this, we first need to introduce the concept of
+machines:</p>
+</section>
+<section id="machines">
+<h2>3. Machines<a class="headerlink" href="#machines" title="Link to this heading">¶</a></h2>
+<p>Any “host” or board tbot can interact with is called a <em>machine</em>.  We can
+interact with them by instantiating a machine and then calling methods on this
+instance.  To make everything a bit more generic, instantiation usually happens
+by <em>requesting</em> a <strong>role</strong>.  A role is later filled in with a concrete
+<em>machine</em> in the configuration.  A few roles have default machines attached, so
+for now, no config is needed. In practice:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tbot</span>
+
+<span class="nd">@tbot</span><span class="o">.</span><span class="n">testcase</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello_machine</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">tbot</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">LocalHost</span><span class="p">)</span> <span class="k">as</span> <span class="n">lo</span><span class="p">:</span>
+        <span class="n">lo</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;uname&quot;</span><span class="p">,</span> <span class="s2">&quot;-a&quot;</span><span class="p">)</span>
+        <span class="n">host</span> <span class="o">=</span> <span class="n">lo</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;hostname&quot;</span><span class="p">)</span>
+        <span class="n">tbot</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;This host is called: </span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Add this <code class="docutils literal notranslate"><span class="pre">hello_machine()</span></code> testcase to <code class="docutils literal notranslate"><span class="pre">tc/examples.py</span></code> and run it:</p>
+<div class="highlight">
+<pre><font color="#f92672"><b>$</b></font> newbot tc.examples.hello_machine
+<font color="#F4BF75"><b>tbot</b></font> starting ...
+<font color="#A5A5A1">├─</font>Calling <font color="#A1EFE4"><b>hello_machine</b></font> ...
+<font color="#A5A5A1">│   ├─[</font><font color="#F4BF75">local</font>] uname -a
+<font color="#A5A5A1">│   │    </font>## Linux sandvich 5.17.4-arch1-1 #1 SMP PREEMPT Wed, 20 Apr 2022 18:29:28 +0000 x86_64 GNU/Linux
+<font color="#A5A5A1">│   ├─[</font><font color="#F4BF75">local</font>] hostname
+<font color="#A5A5A1">│   │    </font>## sandvich
+<font color="#A5A5A1">│   └─</font><font color="#A6E22E"><b>Done</b></font>. (0.070s)
+<font color="#A5A5A1">├─────────────────────────────────────────</font>
+<font color="#A5A5A1">└─</font><font color="#A6E22E"><b>SUCCESS</b></font> (0.210s)
+</pre>
+</div><p>In this case, the role <a class="reference internal" href="modules/role.html#tbot.role.LocalHost" title="tbot.role.LocalHost"><code class="xref py py-class docutils literal notranslate"><span class="pre">tbot.role.LocalHost</span></code></a> is used.  It describes
+the host tbot is running on.  After requesting an instance of it, we can use
+methods on the instance to run commands.</p>
+<p><a class="reference internal" href="modules/machine_linux.html#tbot.machine.linux.LinuxShell.exec0" title="tbot.machine.linux.LinuxShell.exec0"><code class="xref py py-meth docutils literal notranslate"><span class="pre">exec0()</span></code></a> runs a command and
+asserts that its return code is 0.  It returns the command’s output (both stdout
+and stderr interleaved).  The command is passed as multiple arguments, each
+containing one “shell token”.  tbot automatically escapes everything correctly.
+To make this more clear, here are a few shell commands and their equivalent
+tbot call:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># uname -a</span>
+<span class="n">lo</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;uname&quot;</span><span class="p">,</span> <span class="s2">&quot;-a&quot;</span><span class="p">)</span>
+<span class="c1"># find / -name &quot;*.git&quot;</span>
+<span class="n">lo</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;find&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;-name&quot;</span><span class="p">,</span> <span class="s2">&quot;*.git&quot;</span><span class="p">)</span>
+<span class="c1"># echo &#39;${this is not expanded}&#39;</span>
+<span class="n">lo</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;echo&quot;</span><span class="p">,</span> <span class="s2">&quot;${this is not expanded}&quot;</span><span class="p">)</span>
+<span class="c1"># git commit -a -m &quot;commit message&quot;</span>
+<span class="n">lo</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;commit&quot;</span><span class="p">,</span> <span class="s2">&quot;-a&quot;</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;commit message&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Linux machines have a lot of other methods to make interaction easy.  Here is a
+more involved example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@tbot</span><span class="o">.</span><span class="n">testcase</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">machine_interaction</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">tbot</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">LocalHost</span><span class="p">)</span> <span class="k">as</span> <span class="n">lo</span><span class="p">:</span>
+        <span class="c1"># get the value of the ${HOME} environment variable</span>
+        <span class="n">home</span> <span class="o">=</span> <span class="n">lo</span><span class="o">.</span><span class="n">env</span><span class="p">(</span><span class="s2">&quot;HOME&quot;</span><span class="p">)</span>
+
+        <span class="c1"># test if it is a directory.  test() returns True if the command</span>
+        <span class="c1"># succeeded and False otherwise</span>
+        <span class="k">if</span> <span class="n">lo</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="s2">&quot;-d&quot;</span><span class="p">,</span> <span class="n">home</span><span class="p">):</span>
+            <span class="n">tbot</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;$</span><span class="si">{HOME}</span><span class="s2"> is a real directory!&quot;</span><span class="p">)</span>
+
+        <span class="c1"># exec() returns a tuple of (retcode, output)</span>
+        <span class="n">retcode</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">lo</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s2">&quot;systemctl&quot;</span><span class="p">,</span> <span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="s2">&quot;multi-user.target&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">retcode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">tbot</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;systemctl failed?&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For a full list, check the documentation for <a class="reference internal" href="modules/machine_linux.html#linux-shells"><span class="std std-ref">Linux Shells</span></a>.</p>
+<p>There is one more method I want to highlight here: <a class="reference internal" href="modules/machine_linux.html#tbot.machine.linux.LinuxShell.interactive" title="tbot.machine.linux.LinuxShell.interactive"><code class="xref py py-meth docutils literal notranslate"><span class="pre">interactive()</span></code></a>.  It allows you to drop into an
+interactive shell session at any time.  In its simplest form, we used it in
+<code class="docutils literal notranslate"><span class="pre">tc/interactive.py</span></code> at the very beginning.  But you can use it at any point
+in your own code as well.  This is very useful while developing testcases.</p>
+</section>
+<section id="configuration">
+<h2>4. Configuration<a class="headerlink" href="#configuration" title="Link to this heading">¶</a></h2>
+<p>The configuration module tells tbot what machines exist beyond the localhost
+and how to interact with each one.  Such machines might be a remote server
+which can be reached over SSH, your board, or the Linux on your board.</p>
+<p>The last two are important to distinguish:  The “bare” board is treated as a
+separate machine from the Linux running on it.  This split tries to separate
+the physical hardware from the “virtual” software running on it.  The software
+might be the same for multiple boards, so this scheme allows reusing parts of
+the configuration.</p>
+<p>The configuration module in our case will be <code class="docutils literal notranslate"><span class="pre">config.my_config</span></code> and as such
+it is stored in <code class="docutils literal notranslate"><span class="pre">config/my_config.py</span></code>.  Let’s start by creating a simple
+configuration for a board with a serial console.  Please copy the following
+code into <code class="docutils literal notranslate"><span class="pre">config/my_config.py</span></code> and adjust it appropriately:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tbot</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tbot.machine</span><span class="w"> </span><span class="kn">import</span> <span class="n">board</span><span class="p">,</span> <span class="n">connector</span><span class="p">,</span> <span class="n">linux</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyBoard</span><span class="p">(</span><span class="n">connector</span><span class="o">.</span><span class="n">ConsoleConnector</span><span class="p">,</span> <span class="n">board</span><span class="o">.</span><span class="n">Board</span><span class="p">):</span>
+    <span class="n">baudrate</span> <span class="o">=</span> <span class="mi">115200</span>
+    <span class="n">serial_port</span> <span class="o">=</span> <span class="s2">&quot;/dev/ttyUSB0&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mach</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">mach</span><span class="o">.</span><span class="n">open_channel</span><span class="p">(</span><span class="s2">&quot;picocom&quot;</span><span class="p">,</span> <span class="s2">&quot;-b&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baudrate</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">serial_port</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">register_machines</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+    <span class="n">ctx</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">MyBoard</span><span class="p">,</span> <span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">Board</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">MyBoard</span></code> is a class describing the “board machine”.  In this case, it just
+connects to the serial console using <a class="reference external" href="https://github.com/npat-efault/picocom">picocom</a>.  We will look at the details
+of this class in the next section.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">register_machines()</span></code> function is special: It will be called by tbot to
+“activate” this configuration.  Its job is to register all the new machines for
+appropriate roles.  Here, we register <code class="docutils literal notranslate"><span class="pre">MyBoard</span></code> for the
+<a class="reference internal" href="modules/role.html#tbot.role.Board" title="tbot.role.Board"><code class="xref py py-class docutils literal notranslate"><span class="pre">tbot.role.Board</span></code></a> class.</p>
+<p>We can already try out this configuration using one of the testcases from
+earlier. Call the <code class="docutils literal notranslate"><span class="pre">tc.interactive.board</span></code> testcase and powercycle the board.
+You will enter an session on the serial console where you can interact with the
+board.  Press <code class="docutils literal notranslate"><span class="pre">CTRL-D</span></code> to exit.</p>
+<div class="highlight">
+<pre><font color="#f92672"><b>$</b></font> newbot -c config.my_config tc.interactive.board
+<font color="#F4BF75"><b>tbot</b></font> starting ...
+<font color="#A5A5A1">├─</font>Calling <font color="#A1EFE4"><b>board</b></font> ...
+<font color="#A5A5A1">│   ├─[</font><font color="#F4BF75">local</font>] picocom -q -b 115200 /dev/ttyUSB1
+<font color="#A5A5A1">│   ├─</font>Entering interactive shell (<b>CTRL+D to exit</b>) ...
+
+U-Boot 2022.01 (Apr 06 2022 - 14:09:55 +0000)
+
+CPU:   Freescale i.MX6UL rev1.1 528 MHz (running at 396 MHz)
+Reset cause: POR
+Scanning mmc 0:1...
+Found U-Boot script /boot/boot.scr
+1691 bytes read in 2 ms (825.2 KiB/s)
+## Executing script at 86000000
+5490104 bytes read in 124 ms (42.2 MiB/s)
+Kernel image @ 0x82000000 [ 0x000000 - 0x53c5b8 ]
+## Flattened Device Tree blob at 84000000
+   Booting using the fdt blob at 0x84000000
+   Loading Device Tree to 8ef71000, end 8ef7b0d2 ... OK
+
+Starting kernel ...
+
+[    2.658999] sd 0:0:0:0: [sda] No Caching mode page found
+[    2.664394] sd 0:0:0:0: [sda] Assuming drive cache: write through
+
+Xyz Linux 2022.04 test ttymxc5
+
+test login: root
+root@emb-imx6ul:~# uname -a
+Linux test 5.10.99 #1 Tue Feb 8 17:30:41 UTC 2022 armv7l GNU/Linux
+root@emb-imx6ul:~#
+<font color="#A5A5A1">│   └─</font><font color="#A6E22E"><b>Done</b></font>. (72.616s)
+<font color="#A5A5A1">├─────────────────────────────────────────</font>
+<font color="#A5A5A1">└─</font><font color="#A6E22E"><b>SUCCESS</b></font> (72.676s)
+</pre>
+</div><p>The <code class="docutils literal notranslate"><span class="pre">-c</span></code> argument is used to tell <code class="docutils literal notranslate"><span class="pre">newbot</span></code> which configuration to load.
+Again, there is little magic here.  You can imagine tbot is just doing this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># newbot -c config.my_config</span>
+<span class="c1"># ... essentially does:</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">config.my_config</span>
+<span class="n">config</span><span class="o">.</span><span class="n">my_config</span><span class="o">.</span><span class="n">register_machines</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">ctx</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>After that, the listed testcases are called like before.</p>
+<p>A thing worth mentioning is that you can pass <code class="docutils literal notranslate"><span class="pre">-c</span></code> multiple times.  This
+means you can modularize your configuration and mix-and-match from the
+commandline.</p>
+</section>
+<section id="machines-in-depth">
+<h2>5. Machines in depth<a class="headerlink" href="#machines-in-depth" title="Link to this heading">¶</a></h2>
+<p>Machines in tbot have two core parts:</p>
+<ul class="simple">
+<li><p>A “connector” which defines how to open the connection to this machine.  This
+can be opening a serial console
+(<a class="reference internal" href="modules/machine_connector.html#tbot.machine.connector.ConsoleConnector" title="tbot.machine.connector.ConsoleConnector"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConsoleConnector</span></code></a>) or ssh-ing to a server
+(<a class="reference internal" href="modules/machine_connector.html#tbot.machine.connector.SSHConnector" title="tbot.machine.connector.SSHConnector"><code class="xref py py-class docutils literal notranslate"><span class="pre">SSHConnector</span></code></a>), for example.</p></li>
+<li><p>A “shell” which defines how to interact with the machine once the connection
+is established.  On Linux, this could be
+<a class="reference internal" href="modules/machine_linux.html#tbot.machine.linux.Bash" title="tbot.machine.linux.Bash"><code class="xref py py-class docutils literal notranslate"><span class="pre">linux.Bash</span></code></a> or
+<code class="xref py py-class docutils literal notranslate"><span class="pre">linux.Ash</span></code>.  Or for U-Boot, there is
+<code class="xref py py-class docutils literal notranslate"><span class="pre">board.UBoot</span></code>.  For the bare board above, we used
+<a class="reference internal" href="modules/machine_board.html#tbot.machine.board.Board" title="tbot.machine.board.Board"><code class="xref py py-class docutils literal notranslate"><span class="pre">board.Board</span></code></a> as the shell.</p></li>
+</ul>
+<p>A machine class must inherit from a connector class and a shell class.  These
+classes usually demand that the machine class then defines additional
+attributes and methods to configure them.  For example, the
+<a class="reference internal" href="modules/machine_connector.html#tbot.machine.connector.ConsoleConnector" title="tbot.machine.connector.ConsoleConnector"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConsoleConnector</span></code></a> requires you to define a
+<code class="docutils literal notranslate"><span class="pre">connect()</span></code> method.  Similarly, the
+<a class="reference internal" href="modules/machine_connector.html#tbot.machine.connector.SSHConnector" title="tbot.machine.connector.SSHConnector"><code class="xref py py-class docutils literal notranslate"><span class="pre">SSHConnector</span></code></a> requires a <code class="docutils literal notranslate"><span class="pre">hostname</span></code>
+attribute.  You can check their documentation for more info.</p>
+<p>In addition to connector and shell, there can be optional initializers.  These
+come in many flavors: <a class="reference internal" href="modules/machine.html#tbot.machine.PreConnectInitializer" title="tbot.machine.PreConnectInitializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">PreConnectInitializer</span></code></a>,
+<a class="reference internal" href="modules/machine.html#tbot.machine.Initializer" title="tbot.machine.Initializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Initializer</span></code></a> (runs between connect and shell), and
+<a class="reference internal" href="modules/machine.html#tbot.machine.PostShellInitializer" title="tbot.machine.PostShellInitializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">PostShellInitializer</span></code></a>.</p>
+</section>
+<section id="power-control">
+<h2>6. Power Control<a class="headerlink" href="#power-control" title="Link to this heading">¶</a></h2>
+<p>One such initializer would be <a class="reference internal" href="modules/machine_board.html#tbot.machine.board.PowerControl" title="tbot.machine.board.PowerControl"><code class="xref py py-class docutils literal notranslate"><span class="pre">board.PowerControl</span></code></a>.  It allows controlling board power
+automatically.  If you have a switchable socket or relay connected to your
+board’s power, you can integrate it like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyBoard</span><span class="p">(</span><span class="n">connector</span><span class="o">.</span><span class="n">ConsoleConnector</span><span class="p">,</span> <span class="n">board</span><span class="o">.</span><span class="n">PowerControl</span><span class="p">,</span> <span class="n">board</span><span class="o">.</span><span class="n">Board</span><span class="p">):</span>
+    <span class="n">baudrate</span> <span class="o">=</span> <span class="mi">115200</span>
+    <span class="n">serial_port</span> <span class="o">=</span> <span class="s2">&quot;/dev/ttyUSB0&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">poweron</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">tbot</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">LocalHost</span><span class="p">)</span> <span class="k">as</span> <span class="n">lo</span><span class="p">:</span>
+            <span class="n">lo</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;sispmctl&quot;</span><span class="p">,</span> <span class="s2">&quot;-o&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">poweroff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">tbot</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">LocalHost</span><span class="p">)</span> <span class="k">as</span> <span class="n">lo</span><span class="p">:</span>
+            <span class="n">lo</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;sispmctl&quot;</span><span class="p">,</span> <span class="s2">&quot;-f&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mach</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">mach</span><span class="o">.</span><span class="n">open_channel</span><span class="p">(</span><span class="s2">&quot;picocom&quot;</span><span class="p">,</span> <span class="s2">&quot;-b&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baudrate</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">serial_port</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now you don’t need to manually powercycle the board anymore!</p>
+<p>A quick tip:  If I can’t control power for some hardware, I still use
+<a class="reference internal" href="modules/machine_board.html#tbot.machine.board.PowerControl" title="tbot.machine.board.PowerControl"><code class="xref py py-class docutils literal notranslate"><span class="pre">board.PowerControl</span></code></a>.  Instead of
+real commands, I instruct it to notify me of the need for a manual powercycle:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">poweron</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">tbot</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">LocalHost</span><span class="p">)</span> <span class="k">as</span> <span class="n">lo</span><span class="p">:</span>
+        <span class="n">lo</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;notify-send&quot;</span><span class="p">,</span> <span class="s2">&quot;Powercycle&quot;</span><span class="p">,</span> <span class="s2">&quot;Powercycle foo board please!&quot;</span><span class="p">)</span>
+        <span class="n">tbot</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;Powercycle now!&quot;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">poweroff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="board-linux">
+<h2>7. Board Linux<a class="headerlink" href="#board-linux" title="Link to this heading">¶</a></h2>
+<p>So far, tbot cannot really “interact” with the board.  We only got the
+interactive console.  Let’s change this by telling tbot about the Linux system
+running on the board.  To do this, we need to define a new machine.  This
+machine</p>
+<ol class="arabic simple">
+<li><p>“connects” to the existing board machine’s console using the special
+<code class="xref py py-class docutils literal notranslate"><span class="pre">board.Connector</span></code>,</p></li>
+<li><p>then uses the <a class="reference internal" href="modules/machine_board.html#tbot.machine.board.LinuxBootLogin" title="tbot.machine.board.LinuxBootLogin"><code class="xref py py-class docutils literal notranslate"><span class="pre">board.LinuxBootLogin</span></code></a> initializer to wait for the login
+prompt and then log in,</p></li>
+<li><p>and finally it will use a <code class="xref py py-class docutils literal notranslate"><span class="pre">linux.Ash</span></code>
+shell to interact with the Linux shell.</p></li>
+</ol>
+<p>The configuration module in <code class="docutils literal notranslate"><span class="pre">config/my_config.py</span></code> now looks like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tbot</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tbot.machine</span><span class="w"> </span><span class="kn">import</span> <span class="n">board</span><span class="p">,</span> <span class="n">connector</span><span class="p">,</span> <span class="n">linux</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyBoard</span><span class="p">(</span><span class="n">connector</span><span class="o">.</span><span class="n">ConsoleConnector</span><span class="p">,</span> <span class="n">board</span><span class="o">.</span><span class="n">PowerControl</span><span class="p">,</span> <span class="n">board</span><span class="o">.</span><span class="n">Board</span><span class="p">):</span>
+    <span class="n">baudrate</span> <span class="o">=</span> <span class="mi">115200</span>
+    <span class="n">serial_port</span> <span class="o">=</span> <span class="s2">&quot;/dev/ttyUSB0&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">poweron</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">tbot</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">LocalHost</span><span class="p">)</span> <span class="k">as</span> <span class="n">lo</span><span class="p">:</span>
+            <span class="n">lo</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;sispmctl&quot;</span><span class="p">,</span> <span class="s2">&quot;-o&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">poweroff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">tbot</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">LocalHost</span><span class="p">)</span> <span class="k">as</span> <span class="n">lo</span><span class="p">:</span>
+            <span class="n">lo</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;sispmctl&quot;</span><span class="p">,</span> <span class="s2">&quot;-f&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mach</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">mach</span><span class="o">.</span><span class="n">open_channel</span><span class="p">(</span><span class="s2">&quot;picocom&quot;</span><span class="p">,</span> <span class="s2">&quot;-b&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baudrate</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">serial_port</span><span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyBoardLinux</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">Connector</span><span class="p">,</span> <span class="n">board</span><span class="o">.</span><span class="n">LinuxBootLogin</span><span class="p">,</span> <span class="n">linux</span><span class="o">.</span><span class="n">Ash</span><span class="p">):</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;root&quot;</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="s2">&quot;hunter2&quot;</span>  <span class="c1"># or `None` if no password is needed</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">register_machines</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+    <span class="n">ctx</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">MyBoard</span><span class="p">,</span> <span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">Board</span><span class="p">)</span>
+    <span class="n">ctx</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">MyBoardLinux</span><span class="p">,</span> <span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">BoardLinux</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Similar to before, you can test this config with <code class="docutils literal notranslate"><span class="pre">tc.interactive.linux</span></code> to
+get an interactive session on the board Linux.  But to really show where tbot
+provides added value, let’s write a testcase to automate something.  Add this
+to <code class="docutils literal notranslate"><span class="pre">tc/examples.py</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tbot</span>
+
+<span class="nd">@tbot</span><span class="o">.</span><span class="n">testcase</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">board_linux</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">tbot</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">tbot</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">BoardLinux</span><span class="p">)</span> <span class="k">as</span> <span class="n">lnx</span><span class="p">:</span>
+        <span class="n">lnx</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;ip&quot;</span><span class="p">,</span> <span class="s2">&quot;address&quot;</span><span class="p">)</span>
+        <span class="n">lnx</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;uname&quot;</span><span class="p">,</span> <span class="s2">&quot;-a&quot;</span><span class="p">)</span>
+        <span class="n">lnx</span><span class="o">.</span><span class="n">exec0</span><span class="p">(</span><span class="s2">&quot;cat&quot;</span><span class="p">,</span> <span class="s2">&quot;/etc/os-release&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Run it!</p>
+<div class="highlight">
+<pre><font color="#f92672"><b>$</b></font> newbot -c config.my_config tc.examples.board_linux
+<font color="#F4BF75"><b>tbot</b></font> starting ...
+<font color="#A5A5A1">├─</font>Calling <font color="#A1EFE4"><b>board_linux</b></font> ...
+<font color="#A5A5A1">│   ├─</font>[<font color="#F4BF75">local</font>] <font color="#A5A5A1">picocom -q -b 115200 /dev/ttyUSB0</font>
+<font color="#A5A5A1">│   ├─</font><b>POWERON</b> (my-board)
+<font color="#A5A5A1">│   ├─</font>[<font color="#F4BF75">local</font>] <font color="#A5A5A1">sispmctl -o 3</font>
+<font color="#A5A5A1">│   │    </font>## Accessing Gembird #0 USB device 002
+<font color="#A5A5A1">│   │    </font>## Switched outlet 3 on
+<font color="#A5A5A1">│   ├─</font><b>LINUX</b> (my-board-linux)
+<font color="#A5A5A1">│   │    </font>&lt;&gt;
+<font color="#A5A5A1">│   │    </font>&lt;&gt; U-Boot 2022.01 (Apr 06 2022 - 14:09:55 +0000)
+<font color="#A5A5A1">│   │    </font>&lt;&gt;
+<font color="#A5A5A1">│   │    </font>&lt;&gt; CPU:   Freescale i.MX6UL rev1.1 528 MHz (running at 396 MHz)
+<font color="#A5A5A1">│   │    </font>&lt;&gt; Reset cause: POR
+<font color="#A5A5A1">│   │    </font>&lt;&gt; Scanning mmc 0:1...
+<font color="#A5A5A1">│   │    </font>&lt;&gt; Found U-Boot script /boot/boot.scr
+<font color="#A5A5A1">│   │    </font>&lt;&gt; 1691 bytes read in 2 ms (825.2 KiB/s)
+<font color="#A5A5A1">│   │    </font>&lt;&gt; ## Executing script at 86000000
+<font color="#A5A5A1">│   │    </font>&lt;&gt; 5490104 bytes read in 124 ms (42.2 MiB/s)
+<font color="#A5A5A1">│   │    </font>&lt;&gt; Kernel image @ 0x82000000 [ 0x000000 - 0x53c5b8 ]
+<font color="#A5A5A1">│   │    </font>&lt;&gt; ## Flattened Device Tree blob at 84000000
+<font color="#A5A5A1">│   │    </font>&lt;&gt;    Booting using the fdt blob at 0x84000000
+<font color="#A5A5A1">│   │    </font>&lt;&gt;    Loading Device Tree to 8ef71000, end 8ef7b0d2 ... OK
+<font color="#A5A5A1">│   │    </font>&lt;&gt;
+<font color="#A5A5A1">│   │    </font>&lt;&gt; Starting kernel ...
+<font color="#A5A5A1">│   │    </font>&lt;&gt;
+<font color="#A5A5A1">│   │    </font>&lt;&gt; [    2.658999] sd 0:0:0:0: [sda] No Caching mode page found
+<font color="#A5A5A1">│   │    </font>&lt;&gt; [    2.664394] sd 0:0:0:0: [sda] Assuming drive cache: write through
+<font color="#A5A5A1">│   │    </font>&lt;&gt;
+<font color="#A5A5A1">│   │    </font>&lt;&gt; Xyz Linux 2022.04 test ttymxc5
+<font color="#A5A5A1">│   │    </font>&lt;&gt;
+<font color="#A5A5A1">│   │    </font>&lt;&gt; test login:
+<font color="#A5A5A1">│   ├─</font>[<font color="#F4BF75">my-board-linux</font>] <font color="#A5A5A1">ip address</font>
+<font color="#A5A5A1">│   │    </font>## 1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue qlen 1000
+<font color="#A5A5A1">│   │    </font>##     inet 127.0.0.1/8 scope host lo
+<font color="#A5A5A1">│   │    </font>##        valid_lft forever preferred_lft forever
+<font color="#A5A5A1">│   │    </font>## 2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast qlen 1000
+<font color="#A5A5A1">│   │    </font>##     inet 10.0.0.100/16 brd 10.10.255.255 scope global dynamic eth0
+<font color="#A5A5A1">│   │    </font>##        valid_lft 85290sec preferred_lft 85290sec
+<font color="#A5A5A1">│   ├─</font>[<font color="#F4BF75">my-board-linux</font>] <font color="#A5A5A1">uname -a</font>
+<font color="#A5A5A1">│   │    </font>## Linux test 5.10.99 #1 Tue Feb 8 17:30:41 UTC 2022 armv7l GNU/Linux
+<font color="#A5A5A1">│   ├─</font>[<font color="#F4BF75">my-board-linux</font>] <font color="#A5A5A1">cat /etc/os-release</font>
+<font color="#A5A5A1">│   │    </font>## ID=test
+<font color="#A5A5A1">│   │    </font>## NAME=&quot;Xyz Linux&quot;
+<font color="#A5A5A1">│   │    </font>## VERSION=&quot;2022.04&quot;
+<font color="#A5A5A1">│   │    </font>## VERSION_ID=2022.04
+<font color="#A5A5A1">│   │    </font>## PRETTY_NAME=&quot;Xyz Linux 2022.04&quot;
+<font color="#A5A5A1">│   ├─</font><b>POWEROFF</b> (my-board)
+<font color="#A5A5A1">│   ├─</font>[<font color="#F4BF75">local</font>] <font color="#A5A5A1">sispmctl -f 4</font>
+<font color="#A5A5A1">│   │    </font>## Accessing Gembird #0 USB device 002
+<font color="#A5A5A1">│   │    </font>## Switched outlet 4 off
+<font color="#A5A5A1">│   └─</font><font color="#A6E22E"><b>Done</b></font>. (32.864s)
+<font color="#A5A5A1">├─────────────────────────────────────────</font>
+<font color="#A5A5A1">└─</font><font color="#A6E22E"><b>SUCCESS</b></font> (32.925s)
+</pre>
+</div><p>That’s it for a basic overview of tbot!  Here are links to resources you could
+dive into next:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="cli.html#cli"><span class="std std-ref">tbot CLI</span></a>: The <code class="docutils literal notranslate"><span class="pre">newbot</span></code> commandline interface</p></li>
+<li><p><a class="reference internal" href="configuration.html#configuration"><span class="std std-ref">Configuration</span></a>: More details on configuration</p></li>
+<li><p><a class="reference internal" href="context.html#context"><span class="std std-ref">Context</span></a>: The mechanism for requesting machine instances</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <a href="https://github.com/Rahix/tbot">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" decoding="async" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" loading="lazy" data-recalc-dims="1">
+    </a>
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cli.html" class="btn btn-neutral float-right" title="tbot CLI" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Rahix.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
