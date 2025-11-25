@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+
+
+## [0.10.10] - 2025-11-25
 ### Added
 - Added a `requires_legacy_scp` setting for SSH-based machines to make
   `linux.copy()` and similar functions use the legacy SCP protocol instead of
@@ -1106,7 +1109,8 @@ Version **0.6.0** is basically a complete rewrite of TBot.  A rough summary of c
   were loaded later
 - Fix `call_then` not returning the function itself
 
-[Unreleased]: https://github.com/Rahix/tbot/compare/v0.10.9...master
+[Unreleased]: https://github.com/Rahix/tbot/compare/v0.10.10...master
+[0.10.10]: https://github.com/Rahix/tbot/compare/v0.10.9...v0.10.10
 [0.10.9]: https://github.com/Rahix/tbot/compare/v0.10.8...v0.10.9
 [0.10.8]: https://github.com/Rahix/tbot/compare/v0.10.7...v0.10.8
 [0.10.7]: https://github.com/Rahix/tbot/compare/v0.10.6...v0.10.7

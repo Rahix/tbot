@@ -16,7 +16,7 @@ Installation
 
    .. code-block:: shell-session
 
-      $ pip3 install -U --user git+https://github.com/rahix/tbot@v0.10.9
+      $ pip3 install -U --user git+https://github.com/rahix/tbot@v0.10.10
 
 2. If you haven't done this already, you need to add ``~/.local/bin`` to your
    ``$PATH``.
