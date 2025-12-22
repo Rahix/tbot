@@ -38,7 +38,8 @@ document here serves as a reference documentation.
      -h, --help            show this help message and exit
      -C WORKDIR            use WORKDIR as working directory instead of the current directory.
      -c CONFIG, --config CONFIG
-     -f FLAG               set a user defined flag to change testcase behaviour
+     -f FLAG[=VALUE]       set a user defined flag with or without a custom value to change
+                           testcase behaviour.
      -k, --keep-alive      keep machines alive for later tests to reacquire them
      -v                    increase the verbosity
      -q                    decrease the verbosity
@@ -79,16 +80,21 @@ testcases.  For example, a flag might be used to switch to booting from a
 different source.
 
 All flags passed to ``newbot`` with ``-f`` are added to the
-:py:data:`tbot.flags` set.  Config and testcases can then check for them like
+:py:data:`tbot.flags` set.  Config and testcases can then check for them and 
+use the stored value like
 this:
 
 .. code-block:: python
 
-   # Check if flag is present
+   # Check if flag is present and use value
    if "boot-nfs" in tbot.flags:
-       bootargs = "root=/dev/nfs nfsroot=...,tcp,v3"
+       bootargs = f"root=/dev/nfs nfsroot={tbot.flags["boot-nfs"]},tcp,v3"
    else:
        bootargs = "root=/dev/mmcblk0p1"
+
+   # Check if flag is present
+   if "no-console" in tbot.flags:
+       bootargs += " console=null"
 
    # Check if flag is absent
    if "silent-boot" not in tbot.flags:
