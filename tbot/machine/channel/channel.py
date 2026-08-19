@@ -193,7 +193,13 @@ class BoundedPattern:
     def __init__(self, pattern: typing.Pattern[bytes]) -> None:
         self.pattern = pattern
 
-        import sre_parse
+        try:
+            # Python >= 3.11 moved this module to `re._parser` and turned
+            # `sre_parse` into a deprecated compatibility shim around it.
+            from re import _parser as sre_parse  # type: ignore[attr-defined]
+        except ImportError:
+            # Python < 3.11 doesn't have `re._parser` yet.
+            import sre_parse
 
         parsed = sre_parse.parse(
             typing.cast(str, self.pattern.pattern), flags=self.pattern.flags
