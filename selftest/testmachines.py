@@ -1,3 +1,4 @@
+import os
 import time
 import contextlib
 from typing import Iterator, Union
@@ -106,6 +107,9 @@ class MocksshServer(
 
     @contextlib.contextmanager
     def _init_post_shell(self) -> Iterator[None]:
+        if os.environ.get("TBOT_SELFTEST_SKIP_SSH", default="0") != "0":
+            pytest.skip("Skipping ssh tests because TBOT_SELFTEST_SKIP_SSH was set.")
+
         # Make sure all requirements are available
         for tool in ["ssh", "ssh-keygen", "sshd"]:
             if not shell.check_for_tool(self, tool):
