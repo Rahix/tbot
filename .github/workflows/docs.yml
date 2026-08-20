@@ -7,19 +7,19 @@ on:
 
 jobs:
   docs:
-    name: Deploy to GH-Pages
+    name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           # So we can find out the version information for the docs
           fetch-depth: 0
       - name: Install Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v7
         with:
-          python-version: 3.9
-      - name: Install dependencies, linters, doc-tools
+          python-version: 3.14
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install recommonmark sphinx sphinx_rtd_theme
@@ -30,7 +30,7 @@ jobs:
           rm -r Documentation/output/.doctrees
           touch Documentation/output/.nojekyll
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./Documentation/output
