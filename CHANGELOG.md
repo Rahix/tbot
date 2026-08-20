@@ -1,6 +1,11 @@
 # Changelog
 
 ## [Unreleased]
+### Fixed
+- Fixed the ever-present `DeprecationWarning: module 'sre_parse' is deprecated`
+  on python versions >=3.11 ([#127]).
+
+[#127]: https://github.com/rahix/tbot/pull/127
 
 
 ## [0.10.10] - 2025-11-25
