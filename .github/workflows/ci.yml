@@ -13,9 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
       - name: Install Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v7
         with:
           python-version: 3.9
       - name: Install dependencies, linters, doc-tools
@@ -37,6 +37,6 @@ jobs:
           export CLICOLOR_FORCE=1
           python -m tbot.main -vv selftest_tc
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v7
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
