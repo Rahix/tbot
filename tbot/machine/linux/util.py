@@ -158,7 +158,7 @@ class RunCommandProxy(channel.Channel):
             try:
                 yield proxy
             except Exception as e:
-                proxy._cmd_context.throw(e.__class__, e)
+                proxy._cmd_context.throw(e)
             proxy._assert_end()
 
     def __new__(
