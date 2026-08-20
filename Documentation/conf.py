@@ -46,6 +46,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
+    "sphinx_rtd_theme",
 ]
 
 source_parsers = {".md": recommonmark.parser.CommonMarkParser}
@@ -79,16 +80,13 @@ intersphinx_mapping = {
 # - https://github.com/snide/sphinx_rtd_theme
 # - https://pypi.python.org/pypi/sphinx_rtd_theme
 # - python-sphinx-rtd-theme package (on Debian)
-try:
-    html_theme = "sphinx_rtd_theme"
-except ImportError:
-    logger.warning(
-        'The Sphinx "sphinx_rtd_theme" HTML theme was not found. Make sure you have the theme installed to produce pretty HTML output. Falling back to the default theme.'
-    )
+html_theme = "sphinx_rtd_theme"
 
 html_logo = "static/tbot-logo-white.png"
-html_theme_options = {"logo_only": True, "style_external_links": True}
-html_static_path = ["static"]
+html_theme_options = {
+    "logo_only": True,
+    "style_external_links": True,
+}
 # }}}
 
 # -- Options for LaTeX output ------------------------------------------------ {{{
