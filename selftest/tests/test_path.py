@@ -133,6 +133,21 @@ def test_regular_file(testdir_builder: "TestDir") -> None:
         assert not regular_file.is_file()
 
 
+def test_unlink_write_protected(testdir_builder: "TestDir") -> None:
+    with testdir_builder() as testdir:
+        write_protected_file = testdir / "a-write-protected-file"
+        testdir.host.exec0("touch", write_protected_file)
+        testdir.host.exec0("chmod", "0400", write_protected_file)
+        assert write_protected_file.exists()
+
+        # Even though the file itself is write-protected, unlink() should
+        # still succeed as long as the containing directory permits removal
+        # (matching the behavior of Python's pathlib).
+        write_protected_file.unlink()
+
+        assert not write_protected_file.exists()
+
+
 def test_directory(testdir_builder: "TestDir") -> None:
     with testdir_builder() as testdir:
         directory = testdir / "directory"
