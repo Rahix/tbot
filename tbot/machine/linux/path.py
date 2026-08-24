@@ -564,7 +564,7 @@ class Path(typing.Generic[H]):
                 )
             return
 
-        self.host.exec0("rm", "-f", self)
+        self.host.exec0("rm", "-f", "--", self)
 
     def mkdir(self, parents: bool = False, exist_ok: bool = False) -> None:
         """
