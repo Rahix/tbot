@@ -146,6 +146,7 @@ def testpy(
     uboot: Optional[tbot.role.BoardUBoot] = None,
     boardenv: Optional[str] = None,
     testpy_args: Optional[List[str]] = None,
+    uboot_builddir: Optional[linux.Path[BH]] = None,
 ) -> None:
     """
     Run U-Boot's test/py test-framework against a tbot-machine.
@@ -238,11 +239,26 @@ def testpy(
         test/py invocation.  For example, you can use ``["-k", "mmc"]`` to
         filter for mmc tests only.  Or ``["-v"]`` to show the names of all
         testcases as they are executed (or skipped).
+    :param tbot.machine.linux.Path uboot_builddir: Optional path to the U-Boot
+        build directory when an out-of-tree build is used.  In this case, the
+        U-Boot configuration must be located in the ``uboot_builddir`` instead
+        of the ``uboot_sources`` directory, of course.
+
+    .. versionchanged:: UNRELEASED
+
+        Added the optional ``uboot_builddir`` parameter.
 
     .. versionadded:: 0.9.5
     """
     if board is not None:
         assert uboot is not None, "when passing `board`, `uboot` is also required!"
+
+    if uboot_builddir is None:
+        uboot_builddir = uboot_sources
+
+    assert (
+        uboot_builddir.host == uboot_sources.host
+    ), "build and source directories must be on the same host!"
 
     with tbot.ctx() as cx:
         bh = uboot_sources.host
@@ -264,10 +280,10 @@ def testpy(
         chan_console, chan_command = setup_testhooks(bh, m_console, m_command)
 
         assert (
-            uboot_sources / ".config"
+            uboot_builddir / ".config"
         ).exists(), "u-boot does not seem configured (.config is missing)!"
         assert (
-            uboot_sources / "include" / "autoconf.mk"
+            uboot_builddir / "include" / "autoconf.mk"
         ).exists(), "include/autoconf.mk is missing!"
 
         if board is not None:
@@ -304,7 +320,7 @@ def testpy(
             bh.run(
                 "./test/py/test.py",
                 "--build-dir",
-                ".",
+                "." if uboot_builddir == uboot_sources else uboot_builddir,
                 "--board-type",
                 boardtype,
                 *(testpy_args or []),
