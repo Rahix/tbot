@@ -6,9 +6,12 @@
   removes them correctly, if possible, like the `pathlink` equivalent does.
 - Fixed the ever-present `DeprecationWarning: module 'sre_parse' is deprecated`
   on python versions >=3.11 ([#127]).
+- Fixed the `test_rglob_error` selftest failing on some modern Linux systems
+  ([#133]).
 
 [#127]: https://github.com/rahix/tbot/pull/127
 [#130]: https://github.com/rahix/tbot/pull/130
+[#133]: https://github.com/rahix/tbot/pull/133
 
 
 ## [0.10.10] - 2025-11-25
