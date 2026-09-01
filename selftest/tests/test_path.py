@@ -480,11 +480,11 @@ def test_rglob(testdir_builder: "TestDir", args: Tuple[str, int, Set[str]]) -> N
 def test_rglob_error(testdir_builder: "TestDir") -> None:
     testdir: linux.Path
     with testdir_builder() as testdir:
-        path = testdir / "/sys"
-        result = list(path.rglob("cpu"))
-        assert len(result) > 3
+        testfiles = create_glob_testfiles(testdir)
+        result = list(testfiles.rglob("file*"))
+        assert len(result) == 5
 
-        result = list(path.rglob("this-will-never-be-in-sysfs"))
+        result = list(testfiles.rglob("this-will-never-be-present"))
         assert len(result) == 0
 
 
