@@ -33,6 +33,16 @@ Self = typing.TypeVar("Self", bound="Bash")
 class Bash(linux_shell.LinuxShell):
     """Bourne-again shell."""
 
+    interactive_plain_prompt: bool = False
+    """
+    Use a plain prompt in :py:meth:`interactive`.
+
+    By default the interactive shell gets a colored prompt which also shows
+    the current directory.  Some shells print these escape sequences
+    literally, for example the ash of old busybox versions.  Set this to
+    ``True`` to get a plain ``<name>> `` prompt instead.
+    """
+
     @contextlib.contextmanager
     def _init_shell(self) -> typing.Iterator:
         try:
@@ -270,9 +280,12 @@ class Bash(linux_shell.LinuxShell):
         # Inner shell which will be used by the user
         self.ch.sendline("bash --norc --noprofile")
         self.ch.sendline("set -o emacs")
-        prompt = self.escape(
-            f"\\[\\033[36m\\]{self.name}: \\[\\033[32m\\]\\w\\[\\033[0m\\]> "
-        )
+        if self.interactive_plain_prompt:
+            prompt = self.escape(f"{self.name}> ")
+        else:
+            prompt = self.escape(
+                f"\\[\\033[36m\\]{self.name}: \\[\\033[32m\\]\\w\\[\\033[0m\\]> "
+            )
         self.ch.sendline(f"PS1={prompt}")
 
         self.ch.read_until_prompt(prompt=re.compile(b"> (\x1B\\[.{0,10})?"))
