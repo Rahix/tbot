@@ -14,8 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import contextlib
 import typing
 import pathlib
+import tbot
 from .. import linux
 
 
@@ -45,6 +47,42 @@ class PasswordAuthenticator(AuthenticatorBase):
 
     def __init__(self, password: str) -> None:
         self.password = password
+
+    @contextlib.contextmanager
+    def with_sshpass_env(
+        self, host: "linux.LinuxShell"
+    ) -> "typing.Iterator[linux.LinuxShell]":
+        """
+        Subshell of ``host`` with the password in ``SSHPASS``, for
+        ``sshpass -e``.
+
+        Unlike ``sshpass -p <password>``, this keeps the password off the
+        command line, so it shows up neither in tbot's command log nor in
+        the process list.  The line that sets it is sent with the channel
+        trace paused, so it does not show up at ``CHANNEL`` verbosity
+        either.  ``SSHPASS`` ends with the subshell.
+
+        **Example**:
+
+        .. code-block:: python
+
+            with authenticator.with_sshpass_env(lh):
+                lh.exec0("sshpass", "-e", "scp", ...)
+
+        .. versionadded:: UNRELEASED
+        """
+        with host.subshell():
+            self._export_sshpass(host)
+            yield host
+
+    def _export_sshpass(self, host: "linux.LinuxShell") -> None:
+        old = tbot.log.VERBOSITY
+        tbot.log.VERBOSITY = min(old, tbot.log.Verbosity.STDOUT)
+        try:
+            host.ch.sendline("export SSHPASS=" + host.escape(self.password))
+            host.ch.read_until_prompt()
+        finally:
+            tbot.log.VERBOSITY = old
 
 
 class PrivateKeyAuthenticator(AuthenticatorBase):
