@@ -202,6 +202,18 @@ class TbotArgumentParser(argparse.ArgumentParser):
         return [arg_line_expanded]
 
 
+def _commandline(argv: Optional[Sequence[str]]) -> List[str]:
+    """
+    The commandline tbot was started with: the program Python runs, then
+    ``argv`` or else ``sys.argv[1:]``.
+
+    The program is the file of the ``__main__`` module, as a starter script
+    may rewrite ``sys.argv``, and ``sys.argv[0]`` only without such a file.
+    """
+    prog = getattr(sys.modules.get("__main__"), "__file__", None) or sys.argv[0]
+    return [prog] + list(sys.argv[1:] if argv is None else argv)
+
+
 def main(argv: Optional[Sequence[str]] = None) -> None:
     parser = build_parser()
 
@@ -244,7 +256,7 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
         tbot.log.Verbosity.STDOUT + args.verbosity - args.quiet
     )
 
-    tbot.log_event.tbot_start()
+    tbot.log_event.tbot_start(_commandline(argv))
 
     # Initialize tbot context with our settings
     tbot.ctx = tbot.Context(add_defaults=True, keep_alive=args.keep_alive)
