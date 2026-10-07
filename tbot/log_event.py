@@ -114,8 +114,19 @@ def command(mach: str, cmd: str) -> log.EventIO:
     return ev
 
 
-def tbot_start() -> None:
-    print(log.c("tbot").yellow.bold + " starting ...")
+def tbot_start(argv: typing.Optional[typing.Sequence[str]] = None) -> None:
+    """
+    Log tbot's start.
+
+    :param argv: Optionally log the commandline that tbot was started with.
+    """
+    log.EventIO(
+        ["tbot", "begin"],
+        log.c("tbot").yellow.bold + " starting ...",
+        verbosity=log.Verbosity.QUIET,
+        date=time.strftime("%Y-%m-%d %H:%M:%S"),
+        argv=None if argv is None else list(argv),
+    )
     log.NESTING += 1
 
 
