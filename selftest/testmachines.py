@@ -23,6 +23,14 @@ class Localhost(connector.SubprocessConnector, linux.Bash, tbot.role.Role):
         self.exec0("mkdir", self.workdir)
 
 
+# Prompt hooks as a shell profile may install them, for example systemd's
+# 80-systemd-osc-context.sh: a function in the PROMPT_COMMAND array (run
+# before every prompt, bash >= 5.1) and PS0 (printed before the output of
+# every command, bash >= 4.4).  Index 0 is left empty, so that a plain
+# PROMPT_COMMAND='' does not remove the hook.
+PROMPT_HOOKS = "PROMPT_COMMAND=('' 'printf PROMPT-HOOK'); PS0='PS0-HOOK'"
+
+
 class LocalhostBash(connector.ConsoleConnector, linux.Bash, tbot.role.Role):
     name = "local-bash"
 
@@ -35,7 +43,9 @@ class LocalhostBash(connector.ConsoleConnector, linux.Bash, tbot.role.Role):
         self.exec0("mkdir", self.workdir)
 
     def connect(self, mach: linux.LinuxShell) -> channel.Channel:
-        return mach.open_channel("bash", "--norc", "--noprofile")
+        ch = mach.open_channel("bash", "--norc", "--noprofile")
+        ch.sendline(PROMPT_HOOKS)
+        return ch
 
 
 class LocalhostSlowBash(LocalhostBash, tbot.role.Role):
@@ -78,9 +88,11 @@ class LocalhostAsh(connector.ConsoleConnector, linux.Ash, tbot.role.Role):
     def connect(self, mach: linux.LinuxShell) -> channel.Channel:
         # Make sure the terminal is wide enough to not cause breaks.
         mach.exec0("stty", "cols", "1024")
-        return mach.open_channel(
+        ch = mach.open_channel(
             "bash", "--posix", "--norc", "--noprofile", "--noediting"
         )
+        ch.sendline(PROMPT_HOOKS)
+        return ch
 
 
 # Different distros like to store this binary in different locations.  Thus we
