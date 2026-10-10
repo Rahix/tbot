@@ -25,6 +25,8 @@ AnyLinuxShell = Callable[[], ContextManager[tbot.machine.linux.LinuxShell]]
         testmachines.LocalhostBash,
         testmachines.LocalhostSlowBash,
         testmachines.LocalhostAsh,
+        testmachines.LocalhostBashPromptHooks,
+        testmachines.LocalhostAshPromptHooks,
         testmachines.MocksshClient,
     ],
 )

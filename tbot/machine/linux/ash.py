@@ -67,8 +67,14 @@ class Ash(linux_shell.LinuxShell):
             # The prompt is mangled in a way which will be unfolded by the
             # shell.  This will ensure tbot won't accidentally read the prompt
             # back early if the connection is slow.
+            #
+            # /bin/sh is often bash, so remove its prompt hooks as well:
+            # PROMPT_COMMAND may be an array (bash >= 5.1), where assigning ''
+            # only clears index 0, and PS0 is printed before the output of
+            # each command.  Shell profiles install both, e.g. systemd's
+            # osc-context.
             self.ch.sendline(
-                b"PROMPT_COMMAND=''; PS1='"
+                b"unset PROMPT_COMMAND; PS0=''; PS1='"
                 + TBOT_PROMPT[:6]
                 + b"''"
                 + TBOT_PROMPT[6:]
