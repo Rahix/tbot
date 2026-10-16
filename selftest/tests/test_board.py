@@ -46,6 +46,17 @@ def test_uboot_simple_environment(tbot_context: tbot.Context) -> None:
         assert ub.env("tbot_test_env_var") == value
 
 
+def test_uboot_simple_readline(tbot_context: tbot.Context) -> None:
+    # Without CONFIG_CMDLINE_EDITING, U-Boot echoes the Enter key as "\r\r\n".
+    with tbot_context.request(testmachines.MockUBootSimpleReadline) as ub:
+        assert ub.exec0("echo", "Hello World") == "Hello World\n"
+        assert ub.test("true")
+        assert not ub.test("false")
+        value = "192.168.3.1"
+        ub.env("serverip", value)
+        assert ub.env("serverip") == value
+
+
 def test_uboot_simple_control(tbot_context: tbot.Context) -> None:
     with tbot_context.request(testmachines.MockhwBoardUBoot) as ub:
         out = ub.exec0(
