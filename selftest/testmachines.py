@@ -325,6 +325,12 @@ class MockhwBoardUBoot(
     prompt = "=> "
 
 
+class MockhwBoardUBootDeath(MockhwBoardUBoot):
+    name = "mockhw-uboot-death"
+
+    uboot_crash_death_strings = ["TBOT_DEATH"]
+
+
 class MockhwBoardLinux(
     board.LinuxUbootConnector,
     board.AskfirstInitializer,
@@ -349,4 +355,5 @@ def register_machines(ctx: tbot.Context) -> None:
     ctx.register(MocksshClient, [MocksshClient])
     ctx.register(MockhwBoard, [MockhwBoard, tbot.role.Board])
     ctx.register(MockhwBoardUBoot, [MockhwBoardUBoot, tbot.role.BoardUBoot])
+    ctx.register(MockhwBoardUBootDeath, [MockhwBoardUBootDeath])
     ctx.register(MockhwBoardLinux, [MockhwBoardLinux, tbot.role.BoardLinux])
