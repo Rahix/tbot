@@ -1,8 +1,10 @@
+from typing import Any
+
 import pytest
 import testmachines
 
 import tbot
-from tbot.machine import board
+from tbot.machine import board, linux
 
 
 def test_board_power(tbot_context: tbot.Context) -> None:
@@ -55,6 +57,28 @@ def test_uboot_simple_readline(tbot_context: tbot.Context) -> None:
         value = "192.168.3.1"
         ub.env("serverip", value)
         assert ub.env("serverip") == value
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "mach", [testmachines.MockhwBoardUBoot, testmachines.MockUBootSimpleReadline]
+)
+def test_uboot_run(tbot_context: tbot.Context, mach: Any) -> None:
+    with tbot_context.request(mach) as ub:
+        with ub.run("echo", "Hello World") as echo:
+            assert echo.terminate0() == "Hello World\n"
+
+        with pytest.raises(tbot.error.CommandFailure):
+            with ub.run("false") as false:
+                false.terminate0()
+
+        with ub.run("echo", "Hello World") as echo:
+            with pytest.raises(linux.CommandEndedException) as e:
+                echo.read_until_prompt("Lorem Ipsum")
+            assert "exited prematurely" in str(e.value)
+            retcode, _ = echo.terminate()
+            assert retcode == 0, "Did not capture retcode of early exiting command"
+
+        assert ub.exec0("echo", "Hello") == "Hello\n"
 
 
 def test_uboot_simple_control(tbot_context: tbot.Context) -> None:
