@@ -117,6 +117,11 @@ def selftest_tc_git_checkout(
         repo = git.GitRepository(target, remote, clean=True)
         assert not (repo / "file.txt").is_file()
 
+        tbot.log.message("Clean quietly ...")
+        lh.exec0("echo", "Test 123", linux.RedirStdout(repo / "untracked.txt"))
+        repo.clean(untracked=True, quiet=True)
+        assert not (repo / "untracked.txt").is_file()
+
         tbot.log.message("Add dirty commit ...")
         lh.exec0("echo", "Test 123", linux.RedirStdout(repo / "file.txt"))
         repo.add(repo / "file.txt")
