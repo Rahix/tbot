@@ -97,8 +97,24 @@ class UBootAutobootIntercept(machine.Initializer, UbootStartup):
     Keys to press as soon as autoboot prompt is detected.
     """
 
+    @property
+    def uboot_crash_death_strings(self) -> typing.List[str]:
+        """
+        Strings in the output that mean U-Boot crashed.
+
+        They are added to the channel when the machine is initialized, and
+        the channel raises a
+        :py:class:`~tbot.machine.channel.DeathStringException` when one of
+        them appears.  None by default.  A board class sets them as a class
+        attribute, or as a property when they are only known at run time.
+        """
+        return []
+
     @contextlib.contextmanager
     def _init_machine(self) -> typing.Iterator:
+        for death_string in self.uboot_crash_death_strings:
+            self.ch.add_death_string(death_string)
+
         if self.autoboot_prompt is not None:
             with self.ch.with_stream(self._uboot_startup_event()):
                 timeout = None
