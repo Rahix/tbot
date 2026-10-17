@@ -4,7 +4,7 @@ import pytest
 import testmachines
 
 import tbot
-from tbot.machine import board, linux
+from tbot.machine import board, channel, linux
 
 
 def test_board_power(tbot_context: tbot.Context) -> None:
@@ -79,6 +79,18 @@ def test_uboot_run(tbot_context: tbot.Context, mach: Any) -> None:
             assert retcode == 0, "Did not capture retcode of early exiting command"
 
         assert ub.exec0("echo", "Hello") == "Hello\n"
+
+
+def test_uboot_death_string(tbot_context: tbot.Context) -> None:
+    tbot_context.teardown_if_alive(testmachines.MockhwBoardUBoot)
+    with tbot_context.request(testmachines.MockhwBoardUBootDeath) as ub:
+        assert ub.exec0("echo", "Hello") == "Hello\n"
+        # The channel checks death strings on everything it reads, the echo
+        # of the command line included.  Spell the D as \x44, so only the
+        # output of printf contains the death string, not the echo.
+        with pytest.raises(channel.DeathStringException):
+            ub.exec0(linux.Raw("printf 'TBOT_\\x44EATH\\n'"))
+    tbot_context.teardown_if_alive(testmachines.MockhwBoardUBootDeath)
 
 
 def test_uboot_simple_control(tbot_context: tbot.Context) -> None:

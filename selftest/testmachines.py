@@ -1,7 +1,7 @@
 import os
 import time
 import contextlib
-from typing import Iterator, Union
+from typing import List, Iterator, Union
 
 import pytest
 
@@ -340,6 +340,13 @@ class MockUBootSimpleReadline(
         return ch
 
 
+class MockhwBoardUBootDeath(MockhwBoardUBoot):
+    name = "mockhw-uboot-death"
+
+    def get_death_strings(self) -> List[str]:
+        return ["TBOT_DEATH"]
+
+
 class MockhwBoardLinux(
     board.LinuxUbootConnector,
     board.AskfirstInitializer,
@@ -364,5 +371,6 @@ def register_machines(ctx: tbot.Context) -> None:
     ctx.register(MocksshClient, [MocksshClient])
     ctx.register(MockhwBoard, [MockhwBoard, tbot.role.Board])
     ctx.register(MockhwBoardUBoot, [MockhwBoardUBoot, tbot.role.BoardUBoot])
+    ctx.register(MockhwBoardUBootDeath, [MockhwBoardUBootDeath])
     ctx.register(MockhwBoardLinux, [MockhwBoardLinux, tbot.role.BoardLinux])
     ctx.register(MockUBootSimpleReadline, [MockUBootSimpleReadline])
