@@ -1,7 +1,7 @@
 import os
 import time
 import contextlib
-from typing import Iterator, Union
+from typing import List, Iterator, Union
 
 import pytest
 
@@ -325,6 +325,28 @@ class MockhwBoardUBoot(
     prompt = "=> "
 
 
+class MockUBootSimpleReadline(
+    connector.ConsoleConnector, board.UBootShell, tbot.role.Role
+):
+    """U-Boot without CONFIG_CMDLINE_EDITING, see mock_uboot_readline.py."""
+
+    name = "mock-uboot-simple-readline"
+    prompt = "=> "
+
+    def connect(self, mach: linux.LinuxShell) -> channel.Channel:
+        script = os.path.join(os.path.dirname(__file__), "mock_uboot_readline.py")
+        ch = mach.open_channel("python3", linux.Path(mach, script))
+        ch.read_until_prompt(prompt="=> ")
+        return ch
+
+
+class MockhwBoardUBootDeath(MockhwBoardUBoot):
+    name = "mockhw-uboot-death"
+
+    def get_death_strings(self) -> List[str]:
+        return ["TBOT_DEATH"]
+
+
 class MockhwBoardLinux(
     board.LinuxUbootConnector,
     board.AskfirstInitializer,
@@ -349,4 +371,6 @@ def register_machines(ctx: tbot.Context) -> None:
     ctx.register(MocksshClient, [MocksshClient])
     ctx.register(MockhwBoard, [MockhwBoard, tbot.role.Board])
     ctx.register(MockhwBoardUBoot, [MockhwBoardUBoot, tbot.role.BoardUBoot])
+    ctx.register(MockhwBoardUBootDeath, [MockhwBoardUBootDeath])
     ctx.register(MockhwBoardLinux, [MockhwBoardLinux, tbot.role.BoardLinux])
+    ctx.register(MockUBootSimpleReadline, [MockUBootSimpleReadline])

@@ -21,7 +21,7 @@ import typing
 
 import tbot
 from .. import shell, machine, channel
-from ..linux import special
+from ..linux import special, util
 
 
 class UBootStartupEvent(tbot.log.EventIO):
@@ -97,8 +97,22 @@ class UBootAutobootIntercept(machine.Initializer, UbootStartup):
     Keys to press as soon as autoboot prompt is detected.
     """
 
+    def get_death_strings(self) -> typing.List[str]:
+        """
+        Death strings to add to the channel when the machine is initialized.
+
+        If one of them appears in the output later, the channel raises a
+        :py:class:`~tbot.machine.channel.DeathStringException`.  None by
+        default; override it in the board class, e.g. to stop on a crash
+        message of U-Boot.
+        """
+        return []
+
     @contextlib.contextmanager
     def _init_machine(self) -> typing.Iterator:
+        for death_string in self.get_death_strings():
+            self.ch.add_death_string(death_string)
+
         if self.autoboot_prompt is not None:
             with self.ch.with_stream(self._uboot_startup_event()):
                 timeout = None
@@ -236,6 +250,22 @@ class UBootShell(shell.Shell, UbootStartup):
 
         yield None
 
+    def _sendline_read_echo(self, ch: channel.Channel, cmd: str) -> None:
+        """
+        Send a command line to U-Boot and read back its echo.
+
+        U-Boot echoes the Enter key as ``"\\r\\n"`` when it is built with
+        ``CONFIG_CMDLINE_EDITING``.  Without it, the simple readline of
+        ``common/cli_readline.c`` answers with ``puts("\\r\\n")`` and the
+        serial uclass puts a ``\\r`` in front of every ``\\n``, so the echo
+        is ``"\\r\\r\\n"``.  Read back the command by its length and the
+        echo of the Enter key up to the newline, so that no part of the echo
+        is left in front of the output of the command.
+        """
+        ch.send(cmd, read_back=True)
+        ch.sendline()
+        ch.readline(lineending="\n")
+
     def escape(self, *args: ArgTypes) -> str:
         """Escape a string so it can be used safely on the U-Boot command-line."""
         string_args = []
@@ -284,7 +314,7 @@ class UBootShell(shell.Shell, UbootStartup):
             override_prompt = None
 
         with tbot.log_event.command(self.name, cmd) as ev:
-            self.ch.sendline(cmd, read_back=True)
+            self._sendline_read_echo(self.ch, cmd)
             with self.ch.with_prompt(override_prompt):
                 with self.ch.with_stream(ev, show_prompt=False):
                     out = self.ch.read_until_prompt(prompt=override_prompt)
@@ -294,7 +324,7 @@ class UBootShell(shell.Shell, UbootStartup):
                         out += "\n"
             ev.data["stdout"] = out
 
-            self.ch.sendline("echo $?", read_back=True)
+            self._sendline_read_echo(self.ch, "echo $?")
             retcode_str = self.ch.read_until_prompt()
             try:
                 retcode = int(retcode_str)
@@ -393,7 +423,7 @@ class UBootShell(shell.Shell, UbootStartup):
         cmd = self.escape(*args)
 
         with tbot.log_event.command(self.name, cmd):
-            self.ch.sendline(cmd, read_back=True)
+            self._sendline_read_echo(self.ch, cmd)
 
         return self.ch.take()
 
@@ -422,6 +452,58 @@ class UBootShell(shell.Shell, UbootStartup):
             )
 
         tbot.log.message("Exiting interactive shell ...")
+
+    @contextlib.contextmanager
+    def run(self, *args: ArgTypes) -> typing.Iterator[util.RunCommandProxy]:
+        def cmd_context(
+            proxy_ch: util.RunCommandProxy,
+        ) -> typing.Generator[str, None, typing.Tuple[int, str]]:
+            cmd = self.escape(*args)
+
+            with contextlib.ExitStack() as cx:
+                ev = cx.enter_context(tbot.log_event.command(self.name, cmd))
+                self._sendline_read_echo(proxy_ch, cmd)
+                cx.enter_context(proxy_ch.with_stream(ev, show_prompt=False))
+
+                assert proxy_ch.prompt is not None, "prompt is missing!"
+
+                # During the context (before calling terminate), the prompt
+                # string may never appear in the command output.  If it does
+                # anyway, raise an Exception.
+                #
+                # The exception type is dynamically created here to capture
+                # some variables from the context.  This way, the context knows
+                # of an early exit happening and can behave differently because
+                # of it.
+
+                early_exit = False
+
+                class CommandEndedException(util.CommandEndedException):
+                    def __init__(self, string: bytes):
+                        nonlocal early_exit
+                        early_exit = True
+                        proxy_ch._pre_terminate()
+                        super().__init__(string)
+
+                    def __str__(self) -> str:
+                        return f"The interactive command {cmd!r} exited prematurely."
+
+                with proxy_ch.with_death_string(proxy_ch.prompt, CommandEndedException):
+                    yield cmd
+
+                output = ""
+                if not early_exit:
+                    output = proxy_ch.read_until_prompt()
+                ev.data["stdout"] = ev.getvalue()
+
+            self._sendline_read_echo(proxy_ch, "echo $?")
+            retcode = int(proxy_ch.read_until_prompt())
+
+            return (retcode, output)
+
+        yield from util.RunCommandProxy._ctx(
+            channel=self.ch, context=cmd_context, host=self, args=args
+        )
 
     # Utilities ----- {{{
     _ram_base: int
