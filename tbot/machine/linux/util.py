@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import re
 import typing
 from typing import Any
 
@@ -275,3 +276,34 @@ class CommandEndedException(
 
 class CommandEndedChannel(channel.channel.ChannelTaken):
     exception = CommandEndedException
+
+
+def interactive_prompt(
+    name: str, plain: bool
+) -> typing.Tuple[str, "re.Pattern[bytes]"]:
+    """
+    The prompt of the shell of an interactive session and the pattern of
+    this prompt as the shell prints it.
+
+    The shell echoes the line that sets the prompt before it prints the
+    prompt, and the echo of ``PS1='...> '`` contains ``> `` as well.  Both
+    may arrive in pieces, so a pattern that also matches the echo may be
+    found there when the echo happens to end a read, and the rest of the
+    echo then shows up in the interactive session.  The pattern only
+    matches the printed prompt: the colored one ends in the escape
+    sequence ``ESC[0m`` before ``> ``, where the echo has the characters
+    ``\\033[0m\\]``; the plain one starts a line, where the echo has
+    ``PS1='`` in front of it.  An escape sequence may follow, as bash
+    sends one after the prompt.
+
+    :param name: name of the machine, shown in the prompt
+    :param plain: a plain prompt without colors and directory, see
+        ``interactive_plain_prompt``
+    :returns: the value for ``PS1`` (not yet escaped) and the pattern
+    """
+    after = rb"(\x1B\[.{0,10})?"
+    if plain:
+        ps1 = f"{name}> "
+        return ps1, re.compile(b"\n" + re.escape(ps1.encode()) + after)
+    ps1 = f"\\[\\033[36m\\]{name}: \\[\\033[32m\\]\\w\\[\\033[0m\\]> "
+    return ps1, re.compile(rb"\x1B\[0m> " + after)
