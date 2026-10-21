@@ -15,7 +15,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import contextlib
-import re
 import shlex
 import shutil
 import typing
@@ -31,6 +30,16 @@ Self = typing.TypeVar("Self", bound="Ash")
 
 class Ash(linux_shell.LinuxShell):
     """Ash/Dash shell."""
+
+    interactive_plain_prompt: bool = False
+    """
+    Use a plain prompt in :py:meth:`interactive`.
+
+    By default the interactive shell gets a colored prompt which also shows
+    the current directory.  Some shells print these escape sequences
+    literally, for example the ash of old busybox versions.  Set this to
+    ``True`` to get a plain ``<name>> `` prompt instead.
+    """
 
     @contextlib.contextmanager
     def _init_shell(self) -> typing.Iterator:
@@ -67,8 +76,14 @@ class Ash(linux_shell.LinuxShell):
             # The prompt is mangled in a way which will be unfolded by the
             # shell.  This will ensure tbot won't accidentally read the prompt
             # back early if the connection is slow.
+            #
+            # /bin/sh is often bash, so remove its prompt hooks as well:
+            # PROMPT_COMMAND may be an array (bash >= 5.1), where assigning ''
+            # only clears index 0, and PS0 is printed before the output of
+            # each command.  Shell profiles install both, e.g. systemd's
+            # osc-context.
             self.ch.sendline(
-                b"PROMPT_COMMAND=''; PS1='"
+                b"unset PROMPT_COMMAND; PS0=''; PS1='"
                 + TBOT_PROMPT[:6]
                 + b"''"
                 + TBOT_PROMPT[6:]
@@ -256,12 +271,10 @@ class Ash(linux_shell.LinuxShell):
 
         # Inner shell which will be used by the user
         self.ch.sendline("ash")
-        prompt = self.escape(
-            f"\\[\\033[36m\\]{self.name}: \\[\\033[32m\\]\\w\\[\\033[0m\\]> "
-        )
-        self.ch.sendline(f"PS1={prompt}")
+        ps1, prompt = util.interactive_prompt(self.name, self.interactive_plain_prompt)
+        self.ch.sendline(f"PS1={self.escape(ps1)}")
 
-        self.ch.read_until_prompt(prompt=re.compile(b"> (\x1B\\[.{0,10})?"))
+        self.ch.read_until_prompt(prompt=prompt)
         self.ch.sendline()
         tbot.log.message("Entering interactive shell ...")
 
