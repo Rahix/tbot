@@ -15,7 +15,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import contextlib
-import re
 import shlex
 import shutil
 import typing
@@ -280,15 +279,10 @@ class Bash(linux_shell.LinuxShell):
         # Inner shell which will be used by the user
         self.ch.sendline("bash --norc --noprofile")
         self.ch.sendline("set -o emacs")
-        if self.interactive_plain_prompt:
-            prompt = self.escape(f"{self.name}> ")
-        else:
-            prompt = self.escape(
-                f"\\[\\033[36m\\]{self.name}: \\[\\033[32m\\]\\w\\[\\033[0m\\]> "
-            )
-        self.ch.sendline(f"PS1={prompt}")
+        ps1, prompt = util.interactive_prompt(self.name, self.interactive_plain_prompt)
+        self.ch.sendline(f"PS1={self.escape(ps1)}")
 
-        self.ch.read_until_prompt(prompt=re.compile(b"> (\x1B\\[.{0,10})?"))
+        self.ch.read_until_prompt(prompt=prompt)
         self.ch.sendline()
         tbot.log.message("Entering interactive shell ...")
 
