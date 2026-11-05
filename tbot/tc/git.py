@@ -184,6 +184,9 @@ class GitRepository(linux.Path[H]):
         :param bool quiet: ``-q``, do not list the removed files
 
         Refer to the ``git-clean`` man-page for more info.
+
+        .. versionchanged:: UNRELEASED
+            Added the ``quiet`` parameter.
         """
         options = "-"
 

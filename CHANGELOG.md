@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Added a `quiet` option to `GitRepository.clean()` ([#134]).
+
 ### Fixed
 - Fixed `Path.unlink()` hanging on write-protected files ([#130]). Now it
   removes them correctly, if possible, like the `pathlink` equivalent does.
@@ -12,6 +15,7 @@
 [#127]: https://github.com/rahix/tbot/pull/127
 [#130]: https://github.com/rahix/tbot/pull/130
 [#133]: https://github.com/rahix/tbot/pull/133
+[#134]: https://github.com/rahix/tbot/pull/134
 
 
 ## [0.10.10] - 2025-11-25
