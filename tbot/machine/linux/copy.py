@@ -115,9 +115,27 @@ def copy(p1: linux.Path[H1], p2: linux.Path[H2]) -> None:
 
     .. versionadded:: 0.10.2
     """
-    if isinstance(p1.host, p2.host.__class__) or isinstance(p2.host, p1.host.__class__):
-        # Both paths are on the same host
-        p2_w1 = linux.Path(p1.host, p2)
+    if (
+        isinstance(p1.host, p2.host.__class__)
+        or isinstance(p2.host, p1.host.__class__)
+        or (
+            isinstance(p1.host, connector.SubprocessConnector)
+            and isinstance(p2.host, connector.SubprocessConnector)
+        )
+    ):
+        # Both paths are on the same host.  Besides the case where one
+        # machine's class is a subclass of the other's, this is also true
+        # whenever both machines are `SubprocessConnector`-based: There is
+        # only one localhost, so any two such machines are guaranteed to
+        # share the same filesystem even if their classes are unrelated.
+        #
+        # `p2` is reinterpreted as a path on `p1.host` below.  This has to
+        # go through `_local_str()` rather than `Path(p1.host, p2)` because
+        # the latter additionally requires `p2.host == p1.host`, which is
+        # generally false here: `p1.host` and `p2.host` are two distinct
+        # machine instances (not clones of the same original), even though
+        # we've just established they share the same filesystem.
+        p2_w1 = linux.Path(p1.host, p2._local_str())
         p1.host.exec0("cp", p1, p2_w1)
         return
     elif isinstance(p1.host, connector.SSHConnector) and p1.host.host is p2.host:
