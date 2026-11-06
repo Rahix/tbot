@@ -83,6 +83,40 @@ class LocalhostAsh(connector.ConsoleConnector, linux.Ash, tbot.role.Role):
         )
 
 
+# Prompt hooks as a shell profile may install them, for example systemd's
+# 80-systemd-osc-context.sh: a function in the PROMPT_COMMAND array (run
+# before every prompt, bash >= 5.1) and PS0 (printed before the output of
+# every command, bash >= 4.4).  Index 0 is left empty, so that a plain
+# PROMPT_COMMAND='' does not remove the hook.
+PROMPT_HOOKS = "PROMPT_COMMAND=('' 'printf PROMPT-HOOK'); PS0='PS0-HOOK'"
+
+
+class LocalhostBashPromptHooks(LocalhostBash, tbot.role.Role):
+    name = "local-bash-prompt-hooks"
+
+    @property
+    def workdir(self) -> linux.Path:
+        return linux.Workdir.xdg_runtime(self, "selftest-data-bash-prompt-hooks")
+
+    def connect(self, mach: linux.LinuxShell) -> channel.Channel:
+        ch = super().connect(mach)
+        ch.sendline(PROMPT_HOOKS)
+        return ch
+
+
+class LocalhostAshPromptHooks(LocalhostAsh, tbot.role.Role):
+    name = "local-ash-prompt-hooks"
+
+    @property
+    def workdir(self) -> linux.Path:
+        return linux.Workdir.xdg_runtime(self, "selftest-data-ash-prompt-hooks")
+
+    def connect(self, mach: linux.LinuxShell) -> channel.Channel:
+        ch = super().connect(mach)
+        ch.sendline(PROMPT_HOOKS)
+        return ch
+
+
 # Different distros like to store this binary in different locations.  Thus we
 # need to adapt to the system where tests are running to find the correct
 # one...
@@ -345,6 +379,8 @@ def register_machines(ctx: tbot.Context) -> None:
     ctx.register(LocalhostBash, [LocalhostBash])
     ctx.register(LocalhostSlowBash, [LocalhostSlowBash])
     ctx.register(LocalhostAsh, [LocalhostAsh])
+    ctx.register(LocalhostBashPromptHooks, [LocalhostBashPromptHooks])
+    ctx.register(LocalhostAshPromptHooks, [LocalhostAshPromptHooks])
     ctx.register(MocksshServer, [MocksshServer])
     ctx.register(MocksshClient, [MocksshClient])
     ctx.register(MockhwBoard, [MockhwBoard, tbot.role.Board])
