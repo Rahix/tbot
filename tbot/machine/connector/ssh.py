@@ -193,7 +193,8 @@ class SSHConnector(connector.Connector):
                     authenticator.get_key_for_host(h),
                 ]
             elif isinstance(authenticator, auth.PasswordAuthenticator):
-                cmd = ["sshpass", "-p", authenticator.password, "ssh"]
+                authenticator.export_sshpass(h)
+                cmd = ["sshpass", "-e", "ssh"]
             else:
                 if typing.TYPE_CHECKING:
                     authenticator._undefined_marker

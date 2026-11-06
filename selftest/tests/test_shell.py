@@ -301,3 +301,13 @@ def test_unclean_shell(tbot_context: tbot.Context) -> None:
             with pytest.raises(tbot.error.UncleanShellError):
                 with lnx.subshell():
                     lnx.exec0("uname")
+
+
+def test_export_sshpass(any_linux_shell: AnyLinuxShell) -> None:
+    with any_linux_shell() as linux_shell:
+        password = "pass word 'quoted' \"too\" $HOME"
+        verbosity = tbot.log.VERBOSITY
+        with linux_shell.subshell():
+            linux.auth.PasswordAuthenticator(password).export_sshpass(linux_shell)
+            assert linux_shell.env("SSHPASS") == password
+        assert tbot.log.VERBOSITY == verbosity
