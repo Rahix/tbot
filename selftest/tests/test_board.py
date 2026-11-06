@@ -2,7 +2,7 @@ import pytest
 import testmachines
 
 import tbot
-from tbot.machine import board
+from tbot.machine import board, channel, linux
 
 
 def test_board_power(tbot_context: tbot.Context) -> None:
@@ -44,6 +44,37 @@ def test_uboot_simple_environment(tbot_context: tbot.Context) -> None:
         value = "12 foo !? # true; exit"
         ub.env("tbot_test_env_var", value)
         assert ub.env("tbot_test_env_var") == value
+
+
+def test_uboot_run(tbot_context: tbot.Context) -> None:
+    with tbot_context.request(testmachines.MockhwBoardUBoot) as ub:
+        with ub.run("echo", "Hello World") as echo:
+            assert echo.terminate0() == "Hello World\n"
+
+        with pytest.raises(tbot.error.CommandFailure):
+            with ub.run("false") as false:
+                false.terminate0()
+
+        with ub.run("echo", "Hello World") as echo:
+            with pytest.raises(linux.CommandEndedException) as e:
+                echo.read_until_prompt("Lorem Ipsum")
+            assert "exited prematurely" in str(e.value)
+            retcode, _ = echo.terminate()
+            assert retcode == 0, "Did not capture retcode of early exiting command"
+
+        assert ub.exec0("echo", "Hello") == "Hello\n"
+
+
+def test_uboot_death_string(tbot_context: tbot.Context) -> None:
+    tbot_context.teardown_if_alive(testmachines.MockhwBoardUBoot)
+    with tbot_context.request(testmachines.MockhwBoardUBootDeath) as ub:
+        assert ub.exec0("echo", "Hello") == "Hello\n"
+        # The channel checks death strings on everything it reads, the echo
+        # of the command line included.  Spell the D as \x44, so only the
+        # output of printf contains the death string, not the echo.
+        with pytest.raises(channel.DeathStringException):
+            ub.exec0(linux.Raw("printf 'TBOT_\\x44EATH\\n'"))
+    tbot_context.teardown_if_alive(testmachines.MockhwBoardUBootDeath)
 
 
 def test_uboot_simple_control(tbot_context: tbot.Context) -> None:
