@@ -107,6 +107,8 @@ class UBootAutobootIntercept(machine.Initializer, UbootStartup):
         :py:class:`~tbot.machine.channel.DeathStringException` when one of
         them appears.  None by default.  A board class sets them as a class
         attribute, or as a property when they are only known at run time.
+
+        .. versionadded:: UNRELEASED
         """
         return []
 
@@ -457,6 +459,12 @@ class UBootShell(shell.Shell, UbootStartup):
 
     @contextlib.contextmanager
     def run(self, *args: ArgTypes) -> typing.Iterator[util.RunCommandProxy]:
+        """
+        Start an interactive command.
+
+        .. versionadded:: UNRELEASED
+        """
+
         def cmd_context(
             proxy_ch: util.RunCommandProxy,
         ) -> typing.Generator[str, None, typing.Tuple[int, str]]:

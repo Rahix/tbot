@@ -3,6 +3,10 @@
 ## [Unreleased]
 ### Added
 - Added a `quiet` option to `GitRepository.clean()` ([#134]).
+- Added `UBootShell.run()` for interactive commands, similar to the Linux shell
+  implementation ([#136]).
+- Added a `uboot_crash_death_strings` to `UBootAutobootIntercept` to detect
+  U-Boot crashes before autoboot ([#136]).
 
 ### Fixed
 - Fixed `Path.unlink()` hanging on write-protected files ([#130]). Now it
@@ -11,11 +15,14 @@
   on python versions >=3.11 ([#127]).
 - Fixed the `test_rglob_error` selftest failing on some modern Linux systems
   ([#133]).
+- Fixed `UBootShell` not correctly reading back commands in some configurations
+  of `CONFIG_CMDLINE_EDITING` where U-Boot sends `\r\r\n` as line ending ([#136]).
 
 [#127]: https://github.com/rahix/tbot/pull/127
 [#130]: https://github.com/rahix/tbot/pull/130
 [#133]: https://github.com/rahix/tbot/pull/133
 [#134]: https://github.com/rahix/tbot/pull/134
+[#136]: https://github.com/rahix/tbot/pull/136
 
 
 ## [0.10.10] - 2025-11-25
