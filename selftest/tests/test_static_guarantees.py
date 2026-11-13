@@ -54,7 +54,7 @@ def invalid_path() -> None:
 """,
         """\
 ##FILE##:15: error: Argument 1 to "annotated" has incompatible type "Path[LocalHost]"; expected "Path[BoardLinux]"
-##FILE##:23: error: Argument 2 to "exec0" of "LinuxShell" has incompatible type "Path[BoardLinux]"; expected "Union[str, Special[LocalHost], Path[LocalHost]]"
+##FILE##:23: error: Argument 2 to "exec0" of "LinuxShell" has incompatible type "Path[BoardLinux]"; expected "str | Special[LocalHost] | Path[LocalHost]"
 ##FILE##:26: error: Argument 1 to "RedirStdout" has incompatible type "Path[BoardLinux]"; expected "Path[LocalHost]"
 ##FILE##:29: error: Argument 1 to "RedirStderr" has incompatible type "Path[LocalHost]"; expected "Path[BoardLinux]"
 Found 4 errors in 1 file (checked 1 source file)
@@ -90,12 +90,12 @@ def linux() -> None:
         lnx.exec0("echo", path_lh)
 """,
         """\
-##FILE##:18: error: Argument 2 to "exec0" of "LinuxShell" has incompatible type "Path[LabHost]"; expected "Union[str, Special[LocalHost], Path[LocalHost]]"
-##FILE##:19: error: Argument 2 to "exec0" of "LinuxShell" has incompatible type "Path[BoardLinux]"; expected "Union[str, Special[LocalHost], Path[LocalHost]]"
-##FILE##:20: error: Argument 2 to "exec0" of "LinuxShell" has incompatible type "Path[LocalHost]"; expected "Union[str, Special[LabHost], Path[LabHost]]"
-##FILE##:21: error: Argument 2 to "exec0" of "LinuxShell" has incompatible type "Path[BoardLinux]"; expected "Union[str, Special[LabHost], Path[LabHost]]"
-##FILE##:22: error: Argument 2 to "exec0" of "LinuxShell" has incompatible type "Path[LocalHost]"; expected "Union[str, Special[BoardLinux], Path[BoardLinux]]"
-##FILE##:23: error: Argument 2 to "exec0" of "LinuxShell" has incompatible type "Path[LabHost]"; expected "Union[str, Special[BoardLinux], Path[BoardLinux]]"
+##FILE##:18: error: Argument 2 to "exec0" of "LinuxShell" has incompatible type "Path[LabHost]"; expected "str | Special[LocalHost] | Path[LocalHost]"
+##FILE##:19: error: Argument 2 to "exec0" of "LinuxShell" has incompatible type "Path[BoardLinux]"; expected "str | Special[LocalHost] | Path[LocalHost]"
+##FILE##:20: error: Argument 2 to "exec0" of "LinuxShell" has incompatible type "Path[LocalHost]"; expected "str | Special[LabHost] | Path[LabHost]"
+##FILE##:21: error: Argument 2 to "exec0" of "LinuxShell" has incompatible type "Path[BoardLinux]"; expected "str | Special[LabHost] | Path[LabHost]"
+##FILE##:22: error: Argument 2 to "exec0" of "LinuxShell" has incompatible type "Path[LocalHost]"; expected "str | Special[BoardLinux] | Path[BoardLinux]"
+##FILE##:23: error: Argument 2 to "exec0" of "LinuxShell" has incompatible type "Path[LabHost]"; expected "str | Special[BoardLinux] | Path[BoardLinux]"
 Found 6 errors in 1 file (checked 1 source file)
 """,
     )
