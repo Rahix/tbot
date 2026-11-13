@@ -16,6 +16,7 @@
 
 import typing
 import pathlib
+import tbot
 from .. import linux
 
 
@@ -45,6 +46,24 @@ class PasswordAuthenticator(AuthenticatorBase):
 
     def __init__(self, password: str) -> None:
         self.password = password
+
+    def export_sshpass(self, host: "linux.LinuxShell") -> None:
+        """
+        Put the password into ``SSHPASS`` in the shell of ``host``, for
+        ``sshpass -e``.
+
+        Unlike ``sshpass -p <password>``, this keeps the password off the
+        command line, so it shows up neither in tbot's command log nor in
+        the process list.  The line is sent with the channel trace paused,
+        so it does not show up at ``CHANNEL`` verbosity either.
+        """
+        old = tbot.log.VERBOSITY
+        tbot.log.VERBOSITY = min(old, tbot.log.Verbosity.STDOUT)
+        try:
+            host.ch.sendline("export SSHPASS=" + host.escape(self.password))
+            host.ch.read_until_prompt()
+        finally:
+            tbot.log.VERBOSITY = old
 
 
 class PrivateKeyAuthenticator(AuthenticatorBase):
