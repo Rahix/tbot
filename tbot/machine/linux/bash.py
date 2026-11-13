@@ -40,6 +40,8 @@ class Bash(linux_shell.LinuxShell):
     the current directory.  Some shells print these escape sequences
     literally, for example the ash of old busybox versions.  Set this to
     ``True`` to get a plain ``<name>> `` prompt instead.
+
+    .. versionadded:: UNRELEASED
     """
 
     @contextlib.contextmanager

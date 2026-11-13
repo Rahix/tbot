@@ -7,8 +7,16 @@
   implementation ([#136]).
 - Added a `uboot_crash_death_strings` to `UBootAutobootIntercept` to detect
   U-Boot crashes before autoboot ([#136]).
+- Added an `interactive_plain_prompt` setting to Ash and Bash shells for a
+  prompt without colors in interactive sessions ([#135]).
+
+### Changed
+- tbot now requires Python 3.11 ([#138]).
+- Documentation fixes ([#139]).
 
 ### Fixed
+- Fixed tbot not disabling all `PROMPT_COMMAND`s on modern shells (where this
+  variable can be an array) ([#135]).
 - Fixed `Path.unlink()` hanging on write-protected files ([#130]). Now it
   removes them correctly, if possible, like the `pathlink` equivalent does.
 - Fixed the ever-present `DeprecationWarning: module 'sre_parse' is deprecated`
@@ -22,7 +30,10 @@
 [#130]: https://github.com/rahix/tbot/pull/130
 [#133]: https://github.com/rahix/tbot/pull/133
 [#134]: https://github.com/rahix/tbot/pull/134
+[#135]: https://github.com/rahix/tbot/pull/135
 [#136]: https://github.com/rahix/tbot/pull/136
+[#138]: https://github.com/rahix/tbot/pull/138
+[#139]: https://github.com/rahix/tbot/pull/139
 
 
 ## [0.10.10] - 2025-11-25
