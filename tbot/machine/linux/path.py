@@ -411,7 +411,7 @@ class Path(typing.Generic[H]):
             ps ax
             ''')
 
-            f.exec0("chmod", "+x", f)
+            lnx.exec0("chmod", "+x", f)
 
         .. warning::
 
