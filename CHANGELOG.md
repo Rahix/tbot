@@ -13,6 +13,10 @@
 ### Changed
 - tbot now requires Python 3.11 ([#138]).
 - Documentation fixes ([#139]).
+- tbot now puts a bit more effort into not displaying ssh passwords in its
+  output/logs ([#137]).
+- The start of tbot is now emitted as a log event, including the commandline
+  args that tbot was called with ([#140]).
 
 ### Fixed
 - Fixed tbot not disabling all `PROMPT_COMMAND`s on modern shells (where this
@@ -32,8 +36,10 @@
 [#134]: https://github.com/rahix/tbot/pull/134
 [#135]: https://github.com/rahix/tbot/pull/135
 [#136]: https://github.com/rahix/tbot/pull/136
+[#137]: https://github.com/rahix/tbot/pull/137
 [#138]: https://github.com/rahix/tbot/pull/138
 [#139]: https://github.com/rahix/tbot/pull/139
+[#140]: https://github.com/rahix/tbot/pull/140
 
 
 ## [0.10.10] - 2025-11-25
