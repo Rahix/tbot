@@ -56,7 +56,7 @@ __all__ = (
     "role",
 )
 
-flags: typing.Set[str] = set()
+flags: typing.Dict[str, typing.Any] = dict()
 
 F_tc = typing.TypeVar("F_tc", bound=typing.Callable[..., typing.Any])
 
